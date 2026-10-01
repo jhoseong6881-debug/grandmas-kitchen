@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Crop" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/crop.gd" id="1_crop"]
+[ext_resource type="Resource" path="res://data/ingredients/carrot.tres" id="2_carrot"]
+
+[resource]
+script = ExtResource("1_crop")
+ingredient = ExtResource("2_carrot")
+harvest_amount = 1
+regrow_days = 2

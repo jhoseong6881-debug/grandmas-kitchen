@@ -1,0 +1,120 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/garden/garden.gd" id="1_garden"]
+[ext_resource type="PackedScene" path="res://scenes/ui/inventory_panel.tscn" id="2_inventory"]
+
+[node name="Garden" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_garden")
+
+[node name="Sky" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.74, 0.87, 0.96, 1)
+
+[node name="Sun" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = 1140.0
+offset_top = 130.0
+offset_right = 1260.0
+offset_bottom = 250.0
+color = Color(1, 0.9, 0.55, 1)
+
+[node name="Ground" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -520.0
+grow_horizontal = 2
+grow_vertical = 0
+color = Color(0.56, 0.43, 0.29, 1)
+
+[node name="DayLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 48.0
+offset_top = 36.0
+offset_right = 548.0
+offset_bottom = 96.0
+theme_override_colors/font_color = Color(0.25, 0.3, 0.4, 1)
+theme_override_font_sizes/font_size = 44
+text = "1일째 아침"
+
+[node name="InventoryPanel" parent="." instance=ExtResource("2_inventory")]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -488.0
+offset_top = 36.0
+offset_right = -48.0
+offset_bottom = 136.0
+grow_horizontal = 0
+
+[node name="StatusLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -700.0
+offset_top = 440.0
+offset_right = 700.0
+offset_bottom = 510.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.25, 0.3, 0.4, 1)
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BasketButton" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 160.0
+offset_top = 620.0
+offset_right = 460.0
+offset_bottom = 800.0
+theme_override_font_sizes/font_size = 30
+text = "이웃 바구니"
+
+[node name="PlotRow" type="HBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -500.0
+offset_top = 590.0
+offset_right = 500.0
+offset_bottom = 830.0
+grow_horizontal = 2
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="KitchenButton" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -180.0
+offset_right = 200.0
+offset_bottom = -100.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 36
+text = "부엌으로 가기"

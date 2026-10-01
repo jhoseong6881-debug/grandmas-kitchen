@@ -1,6 +1,6 @@
 extends Control
 ## 저녁 평상 장면. 오늘 대접한 손님 중 한 명이 찾아와 이야기를 들려주고,
-## 돌려줄 할머니 레시피 노트 페이지가 있으면 건네준다. 다 듣고 나면 잠자리에 들어 다음 날 부엌으로 간다.
+## 돌려줄 할머니 레시피 노트 페이지가 있으면 건네준다. 다 듣고 나면 잠자리에 들어 다음 날 아침 텃밭으로 간다.
 ## 장면은 "다음" 버튼을 누를 때마다 한 단계씩 진행한다.
 
 const DAY_TEXT_FORMAT: String = "%d일째 저녁"
@@ -12,8 +12,8 @@ const FALLBACK_STORY_LINE: String = "오늘도 잘 먹었어요."
 const NEXT_TEXT: String = "다음"
 const SLEEP_TEXT: String = "잠자리에 들기"
 
-## 잠자리에 든 뒤 넘어갈 부엌 장면
-@export_file("*.tscn") var kitchen_scene_path: String = "res://scenes/kitchen/kitchen.tscn"
+## 잠자리에 든 뒤 넘어갈 다음 날 아침 장면
+@export_file("*.tscn") var morning_scene_path: String = "res://scenes/garden/garden.tscn"
 ## 노트 카드가 뜰 때 커졌다 돌아오는 정도와 시간(초)
 @export var note_pop_scale: float = 1.1
 @export var note_pop_duration: float = 0.2
@@ -117,4 +117,4 @@ func _receive_note_page(recipe: Recipe) -> void:
 
 func _go_to_sleep() -> void:
 	GameState.advance_day()
-	get_tree().change_scene_to_file(kitchen_scene_path)
+	get_tree().change_scene_to_file(morning_scene_path)

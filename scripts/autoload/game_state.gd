@@ -16,6 +16,10 @@ var current_day: int = STARTING_DAY
 ## 재료 id → 개수
 var inventory: Dictionary[StringName, int] = {}
 var unlocked_recipe_ids: Array[StringName] = []
+## 텃밭 칸마다 다시 다 자라기까지 남은 날 수 (0 = 지금 거둘 수 있음). 칸 순서는 StartingSetup.garden_plots 와 같다.
+var garden_days_left: Array[int] = []
+## 오늘 아침 이웃 바구니를 이미 열어 봤는지. 하루가 지나면 다시 false.
+var is_todays_gift_collected: bool = false
 ## 손님 id → 저녁 평상에서 지금까지 들려준 이야기 수
 var guest_story_progress: Dictionary[StringName, int] = {}
 ## 새 게임을 시작했거나 세이브를 불러왔으면 true. 화면이 바뀌어도 게임을 다시 시작하지 않게 할 때 쓴다.
@@ -73,12 +77,30 @@ func remove_ingredients(counts: Dictionary[StringName, int]) -> bool:
 func advance_day() -> void:
 	current_day += 1
 	todays_served_guests.clear()
+	is_todays_gift_collected = false
+	for i: int in garden_days_left.size():
+		garden_days_left[i] = maxi(garden_days_left[i] - 1, 0)
 	day_changed.emit(current_day)
 
 
 ## 오늘 대접한 손님을 기록한다. 같은 손님을 여러 번 대접했으면 한 번이라도 완벽했는지를 남긴다.
 func record_served_guest(guest_id: StringName, is_perfect: bool) -> void:
 	todays_served_guests[guest_id] = todays_served_guests.get(guest_id, false) or is_perfect
+
+
+# --- 텃밭 ---
+
+func is_plot_ripe(plot_index: int) -> bool:
+	return garden_days_left[plot_index] == 0
+
+
+## 다 자란 칸을 거둔다. 재료를 받고, 그 칸은 regrow_days 일 뒤에 다시 자란다. 아직 안 자랐으면 false.
+func harvest_plot(plot_index: int, crop: Crop) -> bool:
+	if not is_plot_ripe(plot_index):
+		return false
+	add_ingredient(crop.ingredient.id, crop.harvest_amount)
+	garden_days_left[plot_index] = crop.regrow_days
+	return true
 
 
 # --- 저녁 이야기 ---
@@ -112,6 +134,8 @@ func new_game() -> void:
 	unlocked_recipe_ids.clear()
 	guest_story_progress.clear()
 	todays_served_guests.clear()
+	garden_days_left.clear()
+	is_todays_gift_collected = false
 	is_game_started = false
 
 
@@ -126,6 +150,9 @@ func start_new_game() -> void:
 		add_ingredient(ingredient.id)
 	for recipe: Recipe in setup.starting_recipes:
 		unlock_recipe(recipe.id)
+	# 텃밭은 처음에 모두 다 자란 상태로 시작한다.
+	garden_days_left.resize(setup.garden_plots.size())
+	garden_days_left.fill(0)
 
 
 func has_save() -> bool:
@@ -169,6 +196,7 @@ func _to_save_data() -> Dictionary:
 		"inventory": inventory_data,
 		"unlocked_recipe_ids": recipe_data,
 		"guest_story_progress": story_data,
+		"garden_days_left": garden_days_left,
 	}
 
 
@@ -185,3 +213,6 @@ func _from_save_data(data: Dictionary) -> void:
 	var story_data: Dictionary = data.get("guest_story_progress", {})
 	for guest_id: String in story_data:
 		guest_story_progress[StringName(guest_id)] = int(story_data[guest_id])
+	var garden_data: Array = data.get("garden_days_left", [])
+	for days_left: Variant in garden_data:
+		garden_days_left.append(int(days_left))

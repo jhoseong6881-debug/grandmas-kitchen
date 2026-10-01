@@ -6,3 +6,5 @@ extends Resource
 @export var starting_ingredients: Array[Ingredient] = []
 ## 처음부터 열려 있는 레시피. 나머지는 저녁 평상에서 손님에게 레시피 노트를 돌려받아 연다.
 @export var starting_recipes: Array[Recipe] = []
+## 텃밭 칸마다 자라는 작물. 칸 수만큼 넣는다. 같은 작물을 여러 칸에 심으려면 여러 번 넣는다.
+@export var garden_plots: Array[Crop] = []

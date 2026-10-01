@@ -30,3 +30,6 @@
 | scenes/porch/porch.tscn (Pyeongsang) | 평상 | 1200x120 | 할 일 |
 | scenes/porch/porch.tscn (NoteCard) | 할머니 레시피 노트 종이 | 720x360 | 할 일 |
 | data/recipes/carrot_acorn_jeon.tres (finished_image) | 할머니표 당근 도토리전 완성 그림 | 미정 | 할 일 |
+| scenes/garden/garden.tscn (Sky, Sun, Ground) | 아침 텃밭 배경 | 1920x1080 | 할 일 |
+| scenes/garden/garden.tscn (텃밭 칸 버튼) | 텃밭 칸 (다 자람 / 자라는 중, 작물마다) | 260x240 | 할 일 |
+| scenes/garden/garden.tscn (BasketButton) | 이웃 바구니 (찬 것 / 빈 것) | 300x180 | 할 일 |

@@ -7,8 +7,11 @@
 [ext_resource type="Resource" path="res://data/ingredients/acorn.tres" id="5_acorn"]
 [ext_resource type="Script" path="res://scripts/data/recipe.gd" id="6_recipe"]
 [ext_resource type="Resource" path="res://data/recipes/carrot_kimbop.tres" id="7_kimbop"]
+[ext_resource type="Script" path="res://scripts/data/crop.gd" id="8_crop"]
+[ext_resource type="Resource" path="res://data/crops/carrot_crop.tres" id="9_carrot_crop"]
 
 [resource]
 script = ExtResource("1_setup")
 starting_ingredients = Array[ExtResource("2_ingredient")]([ExtResource("3_carrot"), ExtResource("3_carrot"), ExtResource("3_carrot"), ExtResource("4_egg"), ExtResource("4_egg"), ExtResource("5_acorn"), ExtResource("5_acorn")])
 starting_recipes = Array[ExtResource("6_recipe")]([ExtResource("7_kimbop")])
+garden_plots = Array[ExtResource("8_crop")]([ExtResource("9_carrot_crop"), ExtResource("9_carrot_crop")])
