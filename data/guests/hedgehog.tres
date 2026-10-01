@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="AnimalGuest" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/animal_guest.gd" id="1_guest"]
+[ext_resource type="Script" path="res://scripts/data/recipe.gd" id="2_recipe"]
+[ext_resource type="Script" path="res://scripts/data/ingredient.gd" id="3_ingredient"]
+[ext_resource type="Resource" path="res://data/recipes/carrot_kimbop.tres" id="4_carrot_kimbop"]
+[ext_resource type="Resource" path="res://data/recipes/forest_mushroom_stir_fry.tres" id="5_forest_mushroom_stir_fry"]
+[ext_resource type="Resource" path="res://data/recipes/mushroom_egg_jeon.tres" id="6_mushroom_egg_jeon"]
+[ext_resource type="Resource" path="res://data/recipes/acorn_jelly_mushroom_bap.tres" id="7_acorn_jelly_mushroom_bap"]
+[ext_resource type="Resource" path="res://data/ingredients/mushroom.tres" id="8_mushroom"]
+[ext_resource type="Resource" path="res://data/recipes/honey_egg_roll.tres" id="9_disliked"]
+
+[resource]
+script = ExtResource("1_guest")
+id = &"hedgehog"
+display_name = "고슴도치"
+personality = "가시가 뾰족해 무뚝뚝해 보이지만 꼼꼼하고 다정하다. 숲 바닥 버섯 자리는 모르는 데가 없다."
+favorite_recipes = Array[ExtResource("2_recipe")]([ExtResource("4_carrot_kimbop"), ExtResource("5_forest_mushroom_stir_fry"), ExtResource("6_mushroom_egg_jeon"), ExtResource("7_acorn_jelly_mushroom_bap")])
+disliked_recipes = Array[ExtResource("2_recipe")]([ExtResource("9_disliked")])
+payment_ingredients = Array[ExtResource("3_ingredient")]([ExtResource("8_mushroom"), ExtResource("8_mushroom")])
+order_line = "{recipe}. 따뜻하게 부탁해."
+fallback_order_line = "없나. …그럼 {recipe}. 그걸로 하지."
+thanks_line = "…잘 먹었어. 버섯, 두고 간다."
+perfect_line = "흠… 완벽하군. 제일 좋은 버섯으로 더 주지."
+dialogue_lines = Array[String](["버섯은 비 온 다음 날 아침에 따야 해.", "할머니는 내 가시를 무서워하지 않았어.", "숲속 길은 내가 다 알아. 길 잃으면 불러."])
+note_recipes = Array[ExtResource("2_recipe")]([ExtResource("5_forest_mushroom_stir_fry"), ExtResource("6_mushroom_egg_jeon")])
+note_line = "할머니가 내게 맡겨 둔 거다. 「{recipe}」. 돌려줄 때가 됐군."

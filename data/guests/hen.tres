@@ -6,17 +6,21 @@
 [ext_resource type="Resource" path="res://data/recipes/carrot_egg_stir_fry.tres" id="4_stir_fry"]
 [ext_resource type="Resource" path="res://data/recipes/carrot_kimbop.tres" id="5_kimbop"]
 [ext_resource type="Resource" path="res://data/ingredients/egg.tres" id="6_egg"]
+[ext_resource type="Resource" path="res://data/recipes/honey_egg_roll.tres" id="7_egg_roll"]
+[ext_resource type="Resource" path="res://data/recipes/acorn_honey_gangjeong.tres" id="8_disliked"]
 
 [resource]
 script = ExtResource("1_guest")
 id = &"hen"
 display_name = "암탉"
 personality = "새벽마다 마을을 깨우는 부지런한 수다쟁이. 할머니와 아침마다 수다를 떨던 사이."
-favorite_recipes = Array[ExtResource("2_recipe")]([ExtResource("4_stir_fry"), ExtResource("5_kimbop")])
+favorite_recipes = Array[ExtResource("2_recipe")]([ExtResource("4_stir_fry"), ExtResource("5_kimbop"), ExtResource("7_egg_roll")])
+disliked_recipes = Array[ExtResource("2_recipe")]([ExtResource("8_disliked")])
 payment_ingredients = Array[ExtResource("3_ingredient")]([ExtResource("6_egg"), ExtResource("6_egg")])
 order_line = "어머, 밥집 다시 열었구나! {recipe} 하나 줄래?"
+fallback_order_line = "어머, 오늘은 그게 없니? 그럼 {recipe}, 그거 줘!"
 thanks_line = "꼬꼬, 잘 먹었다! 계란은 내일도 갖다줄게."
 perfect_line = "어머머, 이 솜씨 좀 봐! 네 할머니가 보셨으면 좋아하셨겠다. 계란 하나 더!"
 dialogue_lines = Array[String](["오늘 아침엔 해가 일찍 떴지 뭐야.", "네 할머니는 계란말이를 참 잘하셨어."])
-note_recipes = Array[ExtResource("2_recipe")]([ExtResource("4_stir_fry")])
+note_recipes = Array[ExtResource("2_recipe")]([ExtResource("4_stir_fry"), ExtResource("7_egg_roll")])
 note_line = "참, 이거 네 할머니가 나한테 적어 준 레시피야. 「{recipe}」. 이제 네가 가지고 있어야지."

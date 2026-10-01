@@ -34,3 +34,13 @@
 | scenes/garden/garden.tscn (텃밭 칸 버튼) | 텃밭 칸 (다 자람 / 자라는 중, 작물마다) | 260x240 | 할 일 |
 | scenes/garden/garden.tscn (BasketButton) | 이웃 바구니 (찬 것 / 빈 것) | 300x180 | 할 일 |
 | scenes/ui/title.tscn (Background, GameTitle) | 타이틀 배경 / 제목 로고 | 1920x1080 | 할 일 |
+| data/ingredients/honey.tres (icon) | 꿀 아이콘 | 미정 | 할 일 |
+| data/ingredients/mushroom.tres (icon) | 버섯 아이콘 | 미정 | 할 일 |
+| data/guests/bear.tres (portrait) | 곰 손님 | 240x320 | 할 일 |
+| data/guests/hedgehog.tres (portrait) | 고슴도치 손님 | 240x320 | 할 일 |
+| data/recipes/forest_mushroom_stir_fry.tres (finished_image) | 숲속 버섯 볶음 완성 그림 | 미정 | 할 일 |
+| data/recipes/honey_carrot_jorim.tres (finished_image) | 꿀 당근 조림 완성 그림 | 미정 | 할 일 |
+| data/recipes/acorn_honey_gangjeong.tres (finished_image) | 도토리 꿀강정 완성 그림 | 미정 | 할 일 |
+| data/recipes/mushroom_egg_jeon.tres (finished_image) | 버섯 계란전 완성 그림 | 미정 | 할 일 |
+| data/recipes/honey_egg_roll.tres (finished_image) | 꿀 계란말이 완성 그림 | 미정 | 할 일 |
+| data/recipes/acorn_jelly_mushroom_bap.tres (finished_image) | 버섯 도토리묵밥 완성 그림 | 미정 | 할 일 |

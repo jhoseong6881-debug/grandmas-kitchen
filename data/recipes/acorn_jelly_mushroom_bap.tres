@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="Recipe" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/recipe.gd" id="1_recipe"]
+[ext_resource type="Script" path="res://scripts/data/ingredient.gd" id="2_ingredient"]
+[ext_resource type="Resource" path="res://data/ingredients/acorn.tres" id="3_acorn"]
+[ext_resource type="Resource" path="res://data/ingredients/mushroom.tres" id="4_mushroom"]
+
+[resource]
+script = ExtResource("1_recipe")
+id = &"acorn_jelly_mushroom_bap"
+display_name = "버섯 도토리묵밥"
+ingredients = Array[ExtResource("2_ingredient")]([ExtResource("3_acorn"), ExtResource("4_mushroom")])
+minigame_steps = Array[int]([0, 2])
+minigame_ingredient_name = "도토리묵"

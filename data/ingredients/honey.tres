@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="Ingredient" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/ingredient.gd" id="1_ingredient"]
+
+[resource]
+script = ExtResource("1_ingredient")
+id = &"honey"
+display_name = "꿀"
+description = "곰이 아껴 둔 달콤한 봄꽃 꿀."

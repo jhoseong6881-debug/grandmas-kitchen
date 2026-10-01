@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="Recipe" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/recipe.gd" id="1_recipe"]
+[ext_resource type="Script" path="res://scripts/data/ingredient.gd" id="2_ingredient"]
+[ext_resource type="Resource" path="res://data/ingredients/carrot.tres" id="3_carrot"]
+[ext_resource type="Resource" path="res://data/ingredients/honey.tres" id="4_honey"]
+
+[resource]
+script = ExtResource("1_recipe")
+id = &"honey_carrot_jorim"
+display_name = "꿀 당근 조림"
+ingredients = Array[ExtResource("2_ingredient")]([ExtResource("3_carrot"), ExtResource("4_honey")])
+minigame_steps = Array[int]([0, 1, 2])
+stir_fry_action_name = "조리기"

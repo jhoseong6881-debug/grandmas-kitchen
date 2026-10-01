@@ -21,6 +21,8 @@ const OUT_OF_INGREDIENTS_TEXT: String = "재료가 다 떨어져서 오늘 장�
 @export var start_new_game_on_ready: bool = true
 ## 점심 장사가 끝나면 넘어갈 저녁 평상 장면
 @export_file("*.tscn") var porch_scene_path: String = "res://scenes/porch/porch.tscn"
+## 좋아하는 요리 대신 다른 요리를 주문한 손님은 첫 번째 밥값 재료를 이만큼만 낸다.
+@export var fallback_payment_amount: int = 1
 ## 미니게임을 한 번도 안 틀리면 밥값 재료마다 이만큼 더 받는다.
 @export var perfect_bonus_amount: int = 1
 ## 완벽하게 요리했을 때 아래 안내 글자 색
@@ -29,6 +31,8 @@ const OUT_OF_INGREDIENTS_TEXT: String = "재료가 다 떨어져서 오늘 장�
 ## 지금 와 있는 손님과 그 손님의 주문. 손님이 없으면 null.
 var current_guest: AnimalGuest
 var current_order: Recipe
+## 지금 주문이 좋아하는 요리 대신 고른 요리인지
+var _is_fallback_order: bool = false
 
 ## 오늘 점심에 대접을 마친 손님 수
 var _guests_served: int = 0
@@ -101,11 +105,17 @@ func _call_next_guest() -> void:
 	for i: int in guest_count:
 		var guest: AnimalGuest = _pop_next_guest()
 		var order: Recipe = _choose_order(guest)
+		_is_fallback_order = order == null
+		if _is_fallback_order:
+			order = _choose_fallback_order(guest)
 		if order != null:
 			current_guest = guest
 			current_order = order
 			_last_guest = guest
-			_guest_spot.show_order(current_guest, current_order)
+			if _is_fallback_order:
+				_guest_spot.show_guest(guest, guest.fallback_order_line.format({"recipe": order.display_name}))
+			else:
+				_guest_spot.show_order(guest, order)
 			_show_only_button(_cook_button)
 			return
 	_end_lunch(OUT_OF_INGREDIENTS_TEXT)
@@ -124,14 +134,20 @@ func _pop_next_guest() -> AnimalGuest:
 
 ## 손님이 좋아하는 요리 중, 레시피 노트로 되찾았고 지금 재료로 만들 수 있는 것 하나. 없으면 null.
 func _choose_order(guest: AnimalGuest) -> Recipe:
-	var possible: Array[Recipe] = []
-	for recipe: Recipe in guest.favorite_recipes:
-		if GameState.is_recipe_unlocked(recipe.id) \
-				and GameState.has_ingredients(recipe.get_ingredient_counts()):
-			possible.append(recipe)
-	if possible.is_empty():
-		return null
-	return possible.pick_random()
+	var possible: Array[Recipe] = guest.favorite_recipes.filter(_can_cook)
+	return possible.pick_random() if not possible.is_empty() else null
+
+
+## 좋아하는 요리를 못 만들 때 대신 주문할 요리: 만들 수 있고, 싫어하지 않는 아무 요리 하나. 없으면 null.
+func _choose_fallback_order(guest: AnimalGuest) -> Recipe:
+	var possible: Array[Recipe] = GameData.get_all_recipes().filter(
+			func(recipe: Recipe) -> bool: return _can_cook(recipe) and recipe not in guest.disliked_recipes)
+	return possible.pick_random() if not possible.is_empty() else null
+
+
+## 레시피 노트로 되찾았고 지금 재료로 만들 수 있는지
+func _can_cook(recipe: Recipe) -> bool:
+	return GameState.is_recipe_unlocked(recipe.id) and GameState.has_ingredients(recipe.get_ingredient_counts())
 
 
 func _end_lunch(message: String) -> void:
@@ -182,8 +198,12 @@ func _run_next_step() -> void:
 ## 대접하면 손님이 고맙다고 말하고, 밥값 재료를 준다. 완벽했으면 재료마다 보너스를 더 준다.
 func _on_serve_button_pressed() -> void:
 	var payment: Dictionary[StringName, int] = {}
-	for ingredient: Ingredient in current_guest.payment_ingredients:
-		payment[ingredient.id] = payment.get(ingredient.id, 0) + 1
+	if _is_fallback_order:
+		if not current_guest.payment_ingredients.is_empty():
+			payment[current_guest.payment_ingredients[0].id] = fallback_payment_amount
+	else:
+		for ingredient: Ingredient in current_guest.payment_ingredients:
+			payment[ingredient.id] = payment.get(ingredient.id, 0) + 1
 	if _is_perfect_cook:
 		for ingredient_id: StringName in payment:
 			payment[ingredient_id] += perfect_bonus_amount
