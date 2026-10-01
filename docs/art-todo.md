@@ -14,3 +14,6 @@
 | scenes/kitchen/minigames/chop_minigame.tscn (Ingredient, Slices) | 썰기 전 재료 / 썬 조각 (재료마다) | 420x160 / 24x120 | 할 일 |
 | scenes/kitchen/minigames/chop_minigame.tscn (Knife, TargetZone) | 칼 / 썰 자리 표시 | 10x300 / 50x240 | 할 일 |
 | scenes/kitchen/minigames/chop_minigame.tscn (PerfectStamp) | 완벽 도장 (지금은 금색 글자) | 900x200 | 선택 |
+| scenes/kitchen/minigames/plate_minigame.tscn (Bowl) | 그릇 | 400x480 | 할 일 |
+| scenes/kitchen/minigames/plate_minigame.tscn (Fill) | 그릇에 차오르는 음식 (레시피마다) | 340x420 | 할 일 |
+| scenes/kitchen/minigames/plate_minigame.tscn (BowlDotTemplate) | 완성한 그릇 표시 | 40x40 | 선택 |

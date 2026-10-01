@@ -31,13 +31,20 @@ var _status_default_color: Color
 @onready var _serve_button: Button = %ServeButton
 @onready var _cook_status_label: Label = %CookStatusLabel
 @onready var _chop_minigame: ChopMinigame = %ChopMinigame
+@onready var _plate_minigame: PlateMinigame = %PlateMinigame
+## 레시피의 미니게임 종류마다 실제로 실행할 미니게임
+@onready var _minigames: Dictionary[Recipe.MinigameType, Minigame] = {
+	Recipe.MinigameType.CHOP: _chop_minigame,
+	Recipe.MinigameType.PLATE: _plate_minigame,
+}
 
 
 func _ready() -> void:
 	GameState.day_changed.connect(_on_day_changed)
 	_cook_button.pressed.connect(_on_cook_button_pressed)
 	_serve_button.pressed.connect(_on_serve_button_pressed)
-	_chop_minigame.finished.connect(_on_minigame_finished)
+	for minigame: Minigame in _minigames.values():
+		minigame.finished.connect(_on_minigame_finished)
 	_cook_button.hide()
 	_serve_button.hide()
 	_cook_status_label.text = ""
@@ -85,12 +92,11 @@ func _run_next_step() -> void:
 		_show_button(_serve_button)
 		return
 	var step: Recipe.MinigameType = _remaining_steps.pop_front()
-	match step:
-		Recipe.MinigameType.CHOP:
-			_chop_minigame.start(current_order)
-		_:
-			# 볶기, 담기 미니게임은 아직 없어서 건너뛴다.
-			_run_next_step()
+	if _minigames.has(step):
+		_minigames[step].start(current_order)
+	else:
+		# 볶기 미니게임은 아직 없어서 건너뛴다.
+		_run_next_step()
 
 
 ## 대접하면 손님이 고맙다고 말하고, 밥값 재료를 준다. 완벽했으면 재료마다 보너스를 더 준다.

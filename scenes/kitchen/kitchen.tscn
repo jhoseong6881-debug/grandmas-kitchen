@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/inventory_panel.tscn" id="2_inventory"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/guest_spot.tscn" id="4_guest_spot"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/chop_minigame.tscn" id="5_chop"]
+[ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/plate_minigame.tscn" id="6_plate"]
 
 [node name="Kitchen" type="Control"]
 layout_mode = 3
@@ -118,5 +119,9 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="ChopMinigame" parent="." instance=ExtResource("5_chop")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="PlateMinigame" parent="." instance=ExtResource("6_plate")]
 unique_name_in_owner = true
 layout_mode = 1
