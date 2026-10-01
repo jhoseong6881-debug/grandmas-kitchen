@@ -10,3 +10,6 @@
 | scenes/kitchen/kitchen.tscn (Counter) | 조리대 | 1920x300 | 할 일 |
 | data/guests/rabbit.tres (portrait) | 토끼 손님 | 240x320 | 할 일 |
 | scenes/kitchen/guest_spot.tscn (SpeechBubble) | 말풍선 | 가변 (늘어나는 9칸 그림) | 할 일 |
+| scenes/kitchen/minigames/chop_minigame.tscn (Board) | 도마 | 900x500 | 할 일 |
+| scenes/kitchen/minigames/chop_minigame.tscn (Ingredient, Slices) | 썰기 전 재료 / 썬 조각 (재료마다) | 420x160 / 24x120 | 할 일 |
+| scenes/kitchen/minigames/chop_minigame.tscn (Knife, TargetZone) | 칼 / 썰 자리 표시 | 10x300 / 50x240 | 할 일 |

@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/inventory_panel.tscn" id="2_inventory"]
 [ext_resource type="Resource" path="res://data/ingredients/carrot.tres" id="3_carrot"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/guest_spot.tscn" id="4_guest_spot"]
+[ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/chop_minigame.tscn" id="5_chop"]
 
 [node name="Kitchen" type="Control"]
 layout_mode = 3
@@ -74,3 +75,43 @@ offset_top = 36.0
 offset_right = -48.0
 offset_bottom = 136.0
 grow_horizontal = 0
+
+[node name="CookButton" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -180.0
+offset_top = -240.0
+offset_right = 180.0
+offset_bottom = -160.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 36
+text = "요리하기"
+
+[node name="CookStatusLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -600.0
+offset_top = -140.0
+offset_right = 600.0
+offset_bottom = -70.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 0.96, 0.88, 1)
+theme_override_font_sizes/font_size = 44
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ChopMinigame" parent="." instance=ExtResource("5_chop")]
+unique_name_in_owner = true
+layout_mode = 1
