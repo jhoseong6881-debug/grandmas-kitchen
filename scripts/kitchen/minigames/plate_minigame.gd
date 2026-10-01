@@ -5,13 +5,14 @@ extends Minigame
 ## 모자라거나 많거나 넘치면 그릇을 비우고 다시 담는다. 벌칙은 없다.
 ## 누르기/손 떼기 입력, 연타 방지, 완벽 표시는 공통 틀(Minigame)이 맡는다.
 
-const TITLE_FORMAT: String = "%s 담기"
+## 요리 이름 + 동작 이름 (예: "할머니표 당근 김밥 담기")
+const TITLE_FORMAT: String = "%s %s"
 const READY_FORMAT: String = "0 / %d"
 const HIT_FORMAT: String = "쏙! %d / %d"
 const UNDER_FORMAT: String = "조금 모자라요… 다시 담아요 %d / %d"
 const OVER_FORMAT: String = "조금 많아요… 다시 담아요 %d / %d"
 const OVERFLOW_FORMAT: String = "넘쳤어요! 다시 담아요 %d / %d"
-const DONE_TEXT: String = "예쁘게 담았어요!"
+const DONE_TEXT: String = "예쁘게 완성했어요!"
 
 ## 채울 그릇 수
 @export var bowl_count: int = 3
@@ -87,7 +88,7 @@ func _on_start(recipe: Recipe) -> void:
 	_stream.hide()
 	_splash.emitting = false
 	_start_new_bowl()
-	_title_label.text = TITLE_FORMAT % recipe.display_name
+	_title_label.text = TITLE_FORMAT % [recipe.display_name, recipe.get_action_name(Recipe.MinigameType.PLATE)]
 	_progress_label.text = READY_FORMAT % bowl_count
 
 

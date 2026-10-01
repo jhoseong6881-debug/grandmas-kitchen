@@ -7,12 +7,13 @@ extends Minigame
 
 enum TossState { RESTING, AIRBORNE }
 
-const TITLE_FORMAT: String = "%s 볶기"
+## 재료 이름 + 동작 이름 (예: "당근 볶기", "당근 부치기")
+const TITLE_FORMAT: String = "%s %s"
 const READY_TEXT: String = "눌러서 재료를 띄워요"
 const CATCH_FORMAT: String = "착! %d / %d"
 const EARLY_FORMAT: String = "아직 높아요! %d / %d"
 const DROP_FORMAT: String = "툭… 다시 띄워요 %d / %d"
-const DONE_TEXT: String = "맛있게 볶았어요!"
+const DONE_TEXT: String = "잘 익었어요!"
 const FALLBACK_INGREDIENT_NAME: String = "재료"
 
 @export var tosses_needed: int = 6
@@ -88,7 +89,7 @@ func _on_start(recipe: Recipe) -> void:
 	var ingredient_name: String = recipe.get_minigame_ingredient_name()
 	if ingredient_name.is_empty():
 		ingredient_name = FALLBACK_INGREDIENT_NAME
-	_title_label.text = TITLE_FORMAT % ingredient_name
+	_title_label.text = TITLE_FORMAT % [ingredient_name, recipe.get_action_name(Recipe.MinigameType.STIR_FRY)]
 	_progress_label.text = READY_TEXT
 
 

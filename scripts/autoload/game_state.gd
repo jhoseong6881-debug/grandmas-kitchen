@@ -16,6 +16,13 @@ var current_day: int = STARTING_DAY
 ## 재료 id → 개수
 var inventory: Dictionary[StringName, int] = {}
 var unlocked_recipe_ids: Array[StringName] = []
+## 손님 id → 저녁 평상에서 지금까지 들려준 이야기 수
+var guest_story_progress: Dictionary[StringName, int] = {}
+## 새 게임을 시작했거나 세이브를 불러왔으면 true. 화면이 바뀌어도 게임을 다시 시작하지 않게 할 때 쓴다.
+var is_game_started: bool = false
+## 오늘 대접한 손님 id → 한 번도 안 틀리고 대접했는지. 저녁 평상에 올 손님을 고를 때 쓴다.
+## 하루가 지나면 비운다. 하루가 끝날 때 저장할 것이라 세이브에는 넣지 않는다.
+var todays_served_guests: Dictionary[StringName, bool] = {}
 
 
 # --- 인벤토리 ---
@@ -65,7 +72,23 @@ func remove_ingredients(counts: Dictionary[StringName, int]) -> bool:
 
 func advance_day() -> void:
 	current_day += 1
+	todays_served_guests.clear()
 	day_changed.emit(current_day)
+
+
+## 오늘 대접한 손님을 기록한다. 같은 손님을 여러 번 대접했으면 한 번이라도 완벽했는지를 남긴다.
+func record_served_guest(guest_id: StringName, is_perfect: bool) -> void:
+	todays_served_guests[guest_id] = todays_served_guests.get(guest_id, false) or is_perfect
+
+
+# --- 저녁 이야기 ---
+
+func get_story_progress(guest_id: StringName) -> int:
+	return guest_story_progress.get(guest_id, 0)
+
+
+func advance_story(guest_id: StringName) -> void:
+	guest_story_progress[guest_id] = get_story_progress(guest_id) + 1
 
 
 # --- 레시피 ---
@@ -87,16 +110,22 @@ func new_game() -> void:
 	current_day = STARTING_DAY
 	inventory.clear()
 	unlocked_recipe_ids.clear()
+	guest_story_progress.clear()
+	todays_served_guests.clear()
+	is_game_started = false
 
 
-## 새 게임을 시작하고, data/starting_setup.tres 에 적힌 시작 재료를 받는다.
+## 새 게임을 시작하고, data/starting_setup.tres 에 적힌 시작 재료와 레시피를 받는다.
 func start_new_game() -> void:
 	new_game()
+	is_game_started = true
 	var setup: StartingSetup = GameData.get_starting_setup()
 	if setup == null:
 		return
 	for ingredient: Ingredient in setup.starting_ingredients:
 		add_ingredient(ingredient.id)
+	for recipe: Recipe in setup.starting_recipes:
+		unlock_recipe(recipe.id)
 
 
 func has_save() -> bool:
@@ -120,6 +149,7 @@ func load_game() -> bool:
 		push_error("세이브 파일을 읽을 수 없습니다: %s" % SAVE_PATH)
 		return false
 	_from_save_data(data)
+	is_game_started = true
 	return true
 
 
@@ -130,11 +160,15 @@ func _to_save_data() -> Dictionary:
 	var recipe_data: Array[String] = []
 	for recipe_id: StringName in unlocked_recipe_ids:
 		recipe_data.append(String(recipe_id))
+	var story_data: Dictionary = {}
+	for guest_id: StringName in guest_story_progress:
+		story_data[String(guest_id)] = guest_story_progress[guest_id]
 	return {
 		"version": SAVE_VERSION,
 		"current_day": current_day,
 		"inventory": inventory_data,
 		"unlocked_recipe_ids": recipe_data,
+		"guest_story_progress": story_data,
 	}
 
 
@@ -148,3 +182,6 @@ func _from_save_data(data: Dictionary) -> void:
 	var recipe_data: Array = data.get("unlocked_recipe_ids", [])
 	for recipe_id: Variant in recipe_data:
 		unlocked_recipe_ids.append(StringName(str(recipe_id)))
+	var story_data: Dictionary = data.get("guest_story_progress", {})
+	for guest_id: String in story_data:
+		guest_story_progress[StringName(guest_id)] = int(story_data[guest_id])

@@ -1,7 +1,7 @@
 class_name GuestSpot
 extends Control
-## 조리대 앞 손님 자리. 손님 모습과 주문 말풍선을 보여 준다.
-## 누가 무엇을 주문할지는 정하지 않는다. 부엌(Kitchen)이 정해서 show_order 로 알려 준다.
+## 손님 자리. 손님 모습과 말풍선을 보여 준다. 부엌 조리대 앞과 저녁 평상에서 쓴다.
+## 누가 무엇을 말할지는 정하지 않는다. 부엌이나 평상이 정해서 show_order / show_guest 로 알려 준다.
 
 @onready var _portrait: TextureRect = %Portrait
 @onready var _portrait_placeholder: ColorRect = %PortraitPlaceholder
@@ -14,12 +14,17 @@ func _ready() -> void:
 
 
 func show_order(guest: AnimalGuest, recipe: Recipe) -> void:
+	show_guest(guest, guest.order_line.format({"recipe": recipe.display_name}))
+
+
+## 손님 모습을 보여 주고 말풍선에 text 를 띄운다.
+func show_guest(guest: AnimalGuest, text: String) -> void:
 	var has_portrait: bool = guest.portrait != null
 	_portrait.texture = guest.portrait
 	_portrait.visible = has_portrait
 	_portrait_placeholder.visible = not has_portrait
 	_name_label.text = guest.display_name
-	_bubble_text.text = guest.order_line.format({"recipe": recipe.display_name})
+	_bubble_text.text = text
 	show()
 
 

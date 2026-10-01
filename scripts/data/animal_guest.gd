@@ -19,5 +19,9 @@ extends Resource
 @export var thanks_line: String = "잘 먹었어요!"
 ## 미니게임을 한 번도 안 틀리고 대접받았을 때 하는 말
 @export var perfect_line: String = "와, 정말 맛있어요!"
-## 손님이 하는 말. 한 줄에 대사 하나.
+## 저녁 평상에서 들려주는 이야기. 저녁마다 한 줄씩 순서대로 들려주고, 다 들려주면 처음부터 다시.
 @export_multiline var dialogue_lines: Array[String] = []
+## 저녁 평상에서 돌려주는 할머니 레시피 노트 페이지. 찾아올 때마다 아직 안 돌려준 첫 페이지를 준다.
+@export var note_recipes: Array[Recipe] = []
+## 레시피 노트를 건넬 때 하는 말. {recipe} 자리에 요리 이름이 들어간다.
+@export var note_line: String = "이거, 할머니가 주셨던 레시피예요. 「{recipe}」 돌려드릴게요."

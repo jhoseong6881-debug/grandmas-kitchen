@@ -1,7 +1,7 @@
 extends Control
 ## 부엌 화면. 점심 장사를 한다.
 ## 손님이 한 명씩 와서 주문하면 요리(미니게임)를 하고, 대접한 뒤 밥값으로 재료를 받는다.
-## 정해진 수만큼 대접하거나, 재료가 떨어져 아무도 주문할 수 없으면 점심 장사가 끝난다.
+## 정해진 수만큼 대접하거나, 재료가 떨어져 아무도 주문할 수 없으면 점심 장사가 끝나고 저녁 평상으로 간다.
 
 const DAY_TEXT_FORMAT: String = "%d일째"
 const LUNCH_PROGRESS_FORMAT: String = "점심 손님 %d / %d"
@@ -16,9 +16,11 @@ const OUT_OF_INGREDIENTS_TEXT: String = "재료가 다 떨어져서 오늘 장�
 
 ## 점심 한 번에 받는 손님 수
 @export var guests_per_lunch: int = 3
-## 이 화면을 켤 때 새 게임을 시작한다 (시작 재료를 받는다).
+## 이 화면을 켤 때 게임이 아직 시작 전이면 새 게임을 시작한다 (시작 재료와 레시피를 받는다).
 ## 타이틀 화면과 불러오기가 생기면 그쪽에서 새 게임을 시작하고 이 값은 끈다.
 @export var start_new_game_on_ready: bool = true
+## 점심 장사가 끝나면 넘어갈 저녁 평상 장면
+@export_file("*.tscn") var porch_scene_path: String = "res://scenes/porch/porch.tscn"
 ## 미니게임을 한 번도 안 틀리면 밥값 재료마다 이만큼 더 받는다.
 @export var perfect_bonus_amount: int = 1
 ## 완벽하게 요리했을 때 아래 안내 글자 색
@@ -47,7 +49,7 @@ var _status_default_color: Color
 @onready var _cook_button: Button = %CookButton
 @onready var _serve_button: Button = %ServeButton
 @onready var _next_guest_button: Button = %NextGuestButton
-@onready var _next_day_button: Button = %NextDayButton
+@onready var _evening_button: Button = %EveningButton
 @onready var _cook_status_label: Label = %CookStatusLabel
 @onready var _chop_minigame: ChopMinigame = %ChopMinigame
 @onready var _stir_fry_minigame: StirFryMinigame = %StirFryMinigame
@@ -58,7 +60,7 @@ var _status_default_color: Color
 	Recipe.MinigameType.STIR_FRY: _stir_fry_minigame,
 	Recipe.MinigameType.PLATE: _plate_minigame,
 }
-@onready var _buttons: Array[Button] = [_cook_button, _serve_button, _next_guest_button, _next_day_button]
+@onready var _buttons: Array[Button] = [_cook_button, _serve_button, _next_guest_button, _evening_button]
 
 
 func _ready() -> void:
@@ -66,11 +68,11 @@ func _ready() -> void:
 	_cook_button.pressed.connect(_on_cook_button_pressed)
 	_serve_button.pressed.connect(_on_serve_button_pressed)
 	_next_guest_button.pressed.connect(_on_next_guest_button_pressed)
-	_next_day_button.pressed.connect(_on_next_day_button_pressed)
+	_evening_button.pressed.connect(_on_evening_button_pressed)
 	for minigame: Minigame in _minigames.values():
 		minigame.finished.connect(_on_minigame_finished)
 	_status_default_color = _cook_status_label.get_theme_color("font_color")
-	if start_new_game_on_ready:
+	if start_new_game_on_ready and not GameState.is_game_started:
 		GameState.start_new_game()
 	_on_day_changed(GameState.current_day)
 	_start_lunch()
@@ -120,11 +122,12 @@ func _pop_next_guest() -> AnimalGuest:
 	return _guest_queue.pop_front()
 
 
-## 손님이 좋아하는 요리 중 지금 재료로 만들 수 있는 것 하나. 없으면 null.
+## 손님이 좋아하는 요리 중, 레시피 노트로 되찾았고 지금 재료로 만들 수 있는 것 하나. 없으면 null.
 func _choose_order(guest: AnimalGuest) -> Recipe:
 	var possible: Array[Recipe] = []
 	for recipe: Recipe in guest.favorite_recipes:
-		if GameState.has_ingredients(recipe.get_ingredient_counts()):
+		if GameState.is_recipe_unlocked(recipe.id) \
+				and GameState.has_ingredients(recipe.get_ingredient_counts()):
 			possible.append(recipe)
 	if possible.is_empty():
 		return null
@@ -134,17 +137,15 @@ func _choose_order(guest: AnimalGuest) -> Recipe:
 func _end_lunch(message: String) -> void:
 	_guest_spot.clear()
 	_set_status(message, false)
-	_show_only_button(_next_day_button)
+	_show_only_button(_evening_button)
 
 
 func _on_next_guest_button_pressed() -> void:
 	_call_next_guest()
 
 
-## 저녁 장면이 생기기 전까지 쓰는 임시 버튼: 날짜를 넘기고 점심 장사를 다시 시작한다.
-func _on_next_day_button_pressed() -> void:
-	GameState.advance_day()
-	_start_lunch()
+func _on_evening_button_pressed() -> void:
+	get_tree().change_scene_to_file(porch_scene_path)
 
 
 # --- 요리 ---
@@ -197,6 +198,7 @@ func _on_serve_button_pressed() -> void:
 	if _is_perfect_cook:
 		payment_text += PERFECT_BONUS_FORMAT % perfect_bonus_amount
 	_set_status(payment_text, _is_perfect_cook)
+	GameState.record_served_guest(current_guest.id, _is_perfect_cook)
 	_guests_served += 1
 	_update_lunch_label()
 	_show_only_button(_next_guest_button)

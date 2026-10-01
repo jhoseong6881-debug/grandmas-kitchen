@@ -26,3 +26,7 @@
 | data/recipes/carrot_egg_stir_fry.tres (finished_image) | 당근 계란 볶음 완성 그림 | 미정 | 할 일 |
 | data/guests/hen.tres (portrait) | 암탉 손님 | 240x320 | 할 일 |
 | data/guests/squirrel.tres (portrait) | 다람쥐 손님 | 240x320 | 할 일 |
+| scenes/porch/porch.tscn (Sky, Sunset, Ground) | 저녁 마당 배경 (노을, 마당) | 1920x1080 | 할 일 |
+| scenes/porch/porch.tscn (Pyeongsang) | 평상 | 1200x120 | 할 일 |
+| scenes/porch/porch.tscn (NoteCard) | 할머니 레시피 노트 종이 | 720x360 | 할 일 |
+| data/recipes/carrot_acorn_jeon.tres (finished_image) | 할머니표 당근 도토리전 완성 그림 | 미정 | 할 일 |

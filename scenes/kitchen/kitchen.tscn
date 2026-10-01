@@ -129,7 +129,7 @@ grow_vertical = 0
 theme_override_font_sizes/font_size = 36
 text = "다음 손님"
 
-[node name="NextDayButton" type="Button" parent="."]
+[node name="EveningButton" type="Button" parent="."]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
@@ -145,7 +145,7 @@ offset_bottom = -160.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_font_sizes/font_size = 36
-text = "다음 날로 (임시)"
+text = "평상으로 가기"
 
 [node name="CookStatusLabel" type="Label" parent="."]
 unique_name_in_owner = true

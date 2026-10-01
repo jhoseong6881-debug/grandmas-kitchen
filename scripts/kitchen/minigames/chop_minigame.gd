@@ -3,11 +3,12 @@ extends Minigame
 ## 썰기 미니게임. 칼이 재료 위를 좌우로 오가고, 칼이 썰 자리(하얀 띠)에 왔을 때 누르면 한 번 썬다.
 ## 누르기 입력, 연타 방지, 완벽 표시는 공통 틀(Minigame)이 맡는다.
 
-const TITLE_FORMAT: String = "%s 썰기"
+## 재료 이름 + 동작 이름 (예: "당근 썰기")
+const TITLE_FORMAT: String = "%s %s"
 const READY_FORMAT: String = "0 / %d"
 const HIT_FORMAT: String = "탁! %d / %d"
 const MISS_FORMAT: String = "틱… 다시 한 번! %d / %d"
-const DONE_TEXT: String = "다 썰었어요!"
+const DONE_TEXT: String = "손질 끝!"
 const FALLBACK_INGREDIENT_NAME: String = "재료"
 
 @export var chops_needed: int = 8
@@ -63,7 +64,7 @@ func _on_start(recipe: Recipe) -> void:
 	var ingredient_name: String = recipe.get_minigame_ingredient_name()
 	if ingredient_name.is_empty():
 		ingredient_name = FALLBACK_INGREDIENT_NAME
-	_title_label.text = TITLE_FORMAT % ingredient_name
+	_title_label.text = TITLE_FORMAT % [ingredient_name, recipe.get_action_name(Recipe.MinigameType.CHOP)]
 	_progress_label.text = READY_FORMAT % chops_needed
 
 
