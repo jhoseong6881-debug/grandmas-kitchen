@@ -60,9 +60,9 @@ func _on_start(recipe: Recipe) -> void:
 	_update_knife()
 	_update_target()
 	_target_zone.show()
-	var ingredient_name: String = FALLBACK_INGREDIENT_NAME
-	if not recipe.ingredients.is_empty():
-		ingredient_name = recipe.ingredients[0].display_name
+	var ingredient_name: String = recipe.get_minigame_ingredient_name()
+	if ingredient_name.is_empty():
+		ingredient_name = FALLBACK_INGREDIENT_NAME
 	_title_label.text = TITLE_FORMAT % ingredient_name
 	_progress_label.text = READY_FORMAT % chops_needed
 

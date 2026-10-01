@@ -85,9 +85,9 @@ func _on_start(recipe: Recipe) -> void:
 	var catch_height: float = _height_at(1.0 - catch_window)
 	_catch_band.position.y = _food_layer.position.y - catch_height
 	_catch_band.size.y = catch_height
-	var ingredient_name: String = FALLBACK_INGREDIENT_NAME
-	if not recipe.ingredients.is_empty():
-		ingredient_name = recipe.ingredients[0].display_name
+	var ingredient_name: String = recipe.get_minigame_ingredient_name()
+	if ingredient_name.is_empty():
+		ingredient_name = FALLBACK_INGREDIENT_NAME
 	_title_label.text = TITLE_FORMAT % ingredient_name
 	_progress_label.text = READY_TEXT
 

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="Ingredient" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/ingredient.gd" id="1_ingredient"]
+
+[resource]
+script = ExtResource("1_ingredient")
+id = &"acorn"
+display_name = "도토리"
+description = "뒷산 도토리나무에서 주운 동글동글한 도토리."

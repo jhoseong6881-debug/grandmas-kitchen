@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="Ingredient" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/ingredient.gd" id="1_ingredient"]
+
+[resource]
+script = ExtResource("1_ingredient")
+id = &"egg"
+display_name = "계란"
+description = "암탉네서 갓 낳은 따끈한 계란."

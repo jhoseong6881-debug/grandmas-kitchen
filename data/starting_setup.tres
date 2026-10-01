@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="StartingSetup" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/starting_setup.gd" id="1_setup"]
+[ext_resource type="Script" path="res://scripts/data/ingredient.gd" id="2_ingredient"]
+[ext_resource type="Resource" path="res://data/ingredients/carrot.tres" id="3_carrot"]
+[ext_resource type="Resource" path="res://data/ingredients/egg.tres" id="4_egg"]
+[ext_resource type="Resource" path="res://data/ingredients/acorn.tres" id="5_acorn"]
+
+[resource]
+script = ExtResource("1_setup")
+starting_ingredients = Array[ExtResource("2_ingredient")]([ExtResource("3_carrot"), ExtResource("3_carrot"), ExtResource("3_carrot"), ExtResource("4_egg"), ExtResource("4_egg"), ExtResource("5_acorn"), ExtResource("5_acorn")])

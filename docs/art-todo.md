@@ -20,3 +20,9 @@
 | scenes/kitchen/minigames/stir_fry_minigame.tscn (Pan, Handle) | 팬 | 520x70 + 손잡이 | 할 일 |
 | scenes/kitchen/minigames/stir_fry_minigame.tscn (Flame) | 불꽃 | 340x60 | 할 일 |
 | scenes/kitchen/minigames/stir_fry_minigame.tscn (FoodTemplate) | 볶는 재료 조각 (재료마다) | 36x36 | 할 일 |
+| data/ingredients/egg.tres (icon) | 계란 아이콘 | 미정 | 할 일 |
+| data/ingredients/acorn.tres (icon) | 도토리 아이콘 | 미정 | 할 일 |
+| data/recipes/acorn_jelly_muchim.tres (finished_image) | 도토리묵 무침 완성 그림 | 미정 | 할 일 |
+| data/recipes/carrot_egg_stir_fry.tres (finished_image) | 당근 계란 볶음 완성 그림 | 미정 | 할 일 |
+| data/guests/hen.tres (portrait) | 암탉 손님 | 240x320 | 할 일 |
+| data/guests/squirrel.tres (portrait) | 다람쥐 손님 | 240x320 | 할 일 |

@@ -44,6 +44,23 @@ func get_ingredient_count(ingredient_id: StringName) -> int:
 	return inventory.get(ingredient_id, 0)
 
 
+## counts: 재료 id → 필요한 개수 (Recipe.get_ingredient_counts() 결과)
+func has_ingredients(counts: Dictionary[StringName, int]) -> bool:
+	for ingredient_id: StringName in counts:
+		if get_ingredient_count(ingredient_id) < counts[ingredient_id]:
+			return false
+	return true
+
+
+## 전부 충분하면 한꺼번에 빼고 true, 하나라도 모자라면 아무것도 안 빼고 false.
+func remove_ingredients(counts: Dictionary[StringName, int]) -> bool:
+	if not has_ingredients(counts):
+		return false
+	for ingredient_id: StringName in counts:
+		remove_ingredient(ingredient_id, counts[ingredient_id])
+	return true
+
+
 # --- 날짜 ---
 
 func advance_day() -> void:
@@ -70,6 +87,16 @@ func new_game() -> void:
 	current_day = STARTING_DAY
 	inventory.clear()
 	unlocked_recipe_ids.clear()
+
+
+## 새 게임을 시작하고, data/starting_setup.tres 에 적힌 시작 재료를 받는다.
+func start_new_game() -> void:
+	new_game()
+	var setup: StartingSetup = GameData.get_starting_setup()
+	if setup == null:
+		return
+	for ingredient: Ingredient in setup.starting_ingredients:
+		add_ingredient(ingredient.id)
 
 
 func has_save() -> bool:

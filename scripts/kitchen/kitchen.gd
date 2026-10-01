@@ -1,14 +1,24 @@
 extends Control
-## 부엌 화면. 손님이 와서 주문하면 요리(미니게임)를 하고, 대접한 뒤 밥값으로 재료를 받는다.
+## 부엌 화면. 점심 장사를 한다.
+## 손님이 한 명씩 와서 주문하면 요리(미니게임)를 하고, 대접한 뒤 밥값으로 재료를 받는다.
+## 정해진 수만큼 대접하거나, 재료가 떨어져 아무도 주문할 수 없으면 점심 장사가 끝난다.
 
 const DAY_TEXT_FORMAT: String = "%d일째"
+const LUNCH_PROGRESS_FORMAT: String = "점심 손님 %d / %d"
 const COOKED_TEXT_FORMAT: String = "%s 완성!"
 const PERFECT_COOKED_TEXT_FORMAT: String = "%s 완성! 한 번도 안 틀렸어요!"
 const PAYMENT_TEXT_FORMAT: String = "밥값으로 %s 받았어요"
 const PAYMENT_ITEM_FORMAT: String = "%s ×%d"
 const PAYMENT_ITEM_SEPARATOR: String = ", "
 const PERFECT_BONUS_FORMAT: String = " (완벽 보너스 +%d!)"
+const LUNCH_DONE_TEXT: String = "오늘 점심 장사 끝! 수고했어요."
+const OUT_OF_INGREDIENTS_TEXT: String = "재료가 다 떨어져서 오늘 장사는 여기까지예요."
 
+## 점심 한 번에 받는 손님 수
+@export var guests_per_lunch: int = 3
+## 이 화면을 켤 때 새 게임을 시작한다 (시작 재료를 받는다).
+## 타이틀 화면과 불러오기가 생기면 그쪽에서 새 게임을 시작하고 이 값은 끈다.
+@export var start_new_game_on_ready: bool = true
 ## 미니게임을 한 번도 안 틀리면 밥값 재료마다 이만큼 더 받는다.
 @export var perfect_bonus_amount: int = 1
 ## 완벽하게 요리했을 때 아래 안내 글자 색
@@ -18,6 +28,12 @@ const PERFECT_BONUS_FORMAT: String = " (완벽 보너스 +%d!)"
 var current_guest: AnimalGuest
 var current_order: Recipe
 
+## 오늘 점심에 대접을 마친 손님 수
+var _guests_served: int = 0
+## 다음에 올 손님 차례. 비면 손님 목록을 섞어서 다시 채운다.
+var _guest_queue: Array[AnimalGuest] = []
+## 바로 앞에 왔던 손님 (같은 손님이 연달아 오지 않게 할 때 쓴다)
+var _last_guest: AnimalGuest
 ## 요리 중에 아직 남은 미니게임 단계
 var _remaining_steps: Array[Recipe.MinigameType] = []
 ## 이번 요리의 미니게임을 지금까지 전부 한 번도 안 틀렸는지
@@ -26,9 +42,12 @@ var _is_perfect_cook: bool = true
 var _status_default_color: Color
 
 @onready var _day_label: Label = %DayLabel
+@onready var _lunch_label: Label = %LunchLabel
 @onready var _guest_spot: GuestSpot = %GuestSpot
 @onready var _cook_button: Button = %CookButton
 @onready var _serve_button: Button = %ServeButton
+@onready var _next_guest_button: Button = %NextGuestButton
+@onready var _next_day_button: Button = %NextDayButton
 @onready var _cook_status_label: Label = %CookStatusLabel
 @onready var _chop_minigame: ChopMinigame = %ChopMinigame
 @onready var _stir_fry_minigame: StirFryMinigame = %StirFryMinigame
@@ -39,40 +58,100 @@ var _status_default_color: Color
 	Recipe.MinigameType.STIR_FRY: _stir_fry_minigame,
 	Recipe.MinigameType.PLATE: _plate_minigame,
 }
+@onready var _buttons: Array[Button] = [_cook_button, _serve_button, _next_guest_button, _next_day_button]
 
 
 func _ready() -> void:
 	GameState.day_changed.connect(_on_day_changed)
 	_cook_button.pressed.connect(_on_cook_button_pressed)
 	_serve_button.pressed.connect(_on_serve_button_pressed)
+	_next_guest_button.pressed.connect(_on_next_guest_button_pressed)
+	_next_day_button.pressed.connect(_on_next_day_button_pressed)
 	for minigame: Minigame in _minigames.values():
 		minigame.finished.connect(_on_minigame_finished)
-	_cook_button.hide()
-	_serve_button.hide()
-	_cook_status_label.text = ""
 	_status_default_color = _cook_status_label.get_theme_color("font_color")
+	if start_new_game_on_ready:
+		GameState.start_new_game()
 	_on_day_changed(GameState.current_day)
+	_start_lunch()
+
+
+# --- 점심 장사 흐름 ---
+
+func _start_lunch() -> void:
+	_guests_served = 0
+	_guest_queue.clear()
+	_update_lunch_label()
 	_call_next_guest()
 
 
-## data/guests 의 손님 중 한 명을 불러, 그 손님이 좋아하는 요리 중 하나를 주문받는다.
+## 다음 손님을 부른다. 지금 재료로 만들 수 있는 요리를 주문할 손님이 올 때까지 차례를 넘긴다.
 func _call_next_guest() -> void:
-	var guests: Array[AnimalGuest] = GameData.get_all_guests()
-	if guests.is_empty():
-		push_warning("data/guests 에 손님이 없습니다")
+	_show_only_button(null)
+	_set_status("", false)
+	_guest_spot.clear()
+	current_guest = null
+	current_order = null
+	if _guests_served >= guests_per_lunch:
+		_end_lunch(LUNCH_DONE_TEXT)
 		return
-	var guest: AnimalGuest = guests.pick_random()
-	if guest.favorite_recipes.is_empty():
-		push_warning("손님 '%s'의 Favorite Recipes 가 비어 있어 주문할 수 없습니다" % guest.id)
-		return
-	current_guest = guest
-	current_order = guest.favorite_recipes.pick_random()
-	_guest_spot.show_order(current_guest, current_order)
-	_show_button(_cook_button)
+	var guest_count: int = GameData.get_all_guests().size()
+	for i: int in guest_count:
+		var guest: AnimalGuest = _pop_next_guest()
+		var order: Recipe = _choose_order(guest)
+		if order != null:
+			current_guest = guest
+			current_order = order
+			_last_guest = guest
+			_guest_spot.show_order(current_guest, current_order)
+			_show_only_button(_cook_button)
+			return
+	_end_lunch(OUT_OF_INGREDIENTS_TEXT)
 
+
+## 손님 차례에서 한 명을 꺼낸다. 차례가 비면 손님 목록을 섞어서 다시 채운다.
+## 같은 손님이 연달아 오지 않도록, 새로 섞은 차례의 첫 손님이 방금 손님이면 뒤로 보낸다.
+func _pop_next_guest() -> AnimalGuest:
+	if _guest_queue.is_empty():
+		_guest_queue = GameData.get_all_guests()
+		_guest_queue.shuffle()
+		if _guest_queue.size() > 1 and _guest_queue[0] == _last_guest:
+			_guest_queue.push_back(_guest_queue.pop_front())
+	return _guest_queue.pop_front()
+
+
+## 손님이 좋아하는 요리 중 지금 재료로 만들 수 있는 것 하나. 없으면 null.
+func _choose_order(guest: AnimalGuest) -> Recipe:
+	var possible: Array[Recipe] = []
+	for recipe: Recipe in guest.favorite_recipes:
+		if GameState.has_ingredients(recipe.get_ingredient_counts()):
+			possible.append(recipe)
+	if possible.is_empty():
+		return null
+	return possible.pick_random()
+
+
+func _end_lunch(message: String) -> void:
+	_guest_spot.clear()
+	_set_status(message, false)
+	_show_only_button(_next_day_button)
+
+
+func _on_next_guest_button_pressed() -> void:
+	_call_next_guest()
+
+
+## 저녁 장면이 생기기 전까지 쓰는 임시 버튼: 날짜를 넘기고 점심 장사를 다시 시작한다.
+func _on_next_day_button_pressed() -> void:
+	GameState.advance_day()
+	_start_lunch()
+
+
+# --- 요리 ---
 
 func _on_cook_button_pressed() -> void:
-	_cook_button.hide()
+	_show_only_button(null)
+	GameState.remove_ingredients(current_order.get_ingredient_counts())
 	_is_perfect_cook = true
 	_remaining_steps = current_order.minigame_steps.duplicate()
 	_run_next_step()
@@ -88,10 +167,8 @@ func _on_minigame_finished(is_perfect: bool) -> void:
 func _run_next_step() -> void:
 	if _remaining_steps.is_empty():
 		var format: String = PERFECT_COOKED_TEXT_FORMAT if _is_perfect_cook else COOKED_TEXT_FORMAT
-		_cook_status_label.text = format % current_order.display_name
-		_cook_status_label.add_theme_color_override("font_color",
-				perfect_text_color if _is_perfect_cook else _status_default_color)
-		_show_button(_serve_button)
+		_set_status(format % current_order.display_name, _is_perfect_cook)
+		_show_only_button(_serve_button)
 		return
 	var step: Recipe.MinigameType = _remaining_steps.pop_front()
 	if _minigames.has(step):
@@ -103,7 +180,6 @@ func _run_next_step() -> void:
 
 ## 대접하면 손님이 고맙다고 말하고, 밥값 재료를 준다. 완벽했으면 재료마다 보너스를 더 준다.
 func _on_serve_button_pressed() -> void:
-	_serve_button.hide()
 	var payment: Dictionary[StringName, int] = {}
 	for ingredient: Ingredient in current_guest.payment_ingredients:
 		payment[ingredient.id] = payment.get(ingredient.id, 0) + 1
@@ -120,13 +196,31 @@ func _on_serve_button_pressed() -> void:
 	var payment_text: String = PAYMENT_TEXT_FORMAT % PAYMENT_ITEM_SEPARATOR.join(payment_texts)
 	if _is_perfect_cook:
 		payment_text += PERFECT_BONUS_FORMAT % perfect_bonus_amount
-	_cook_status_label.text = payment_text
+	_set_status(payment_text, _is_perfect_cook)
+	_guests_served += 1
+	_update_lunch_label()
+	_show_only_button(_next_guest_button)
 
 
-## 버튼을 보여 주고 선택해 둔다. 그래야 게임패드 A 버튼으로도 바로 누를 수 있다.
-func _show_button(button: Button) -> void:
-	button.show()
-	button.grab_focus()
+# --- 화면 ---
+
+## 버튼은 한 번에 하나만 보여 주고 선택해 둔다. 그래야 게임패드 A 버튼으로도 바로 누를 수 있다.
+## null 이면 모든 버튼을 숨긴다.
+func _show_only_button(button: Button) -> void:
+	for other: Button in _buttons:
+		other.visible = other == button
+	if button != null:
+		button.grab_focus()
+
+
+func _set_status(text: String, is_perfect: bool) -> void:
+	_cook_status_label.text = text
+	_cook_status_label.add_theme_color_override("font_color",
+			perfect_text_color if is_perfect else _status_default_color)
+
+
+func _update_lunch_label() -> void:
+	_lunch_label.text = LUNCH_PROGRESS_FORMAT % [_guests_served, guests_per_lunch]
 
 
 func _on_day_changed(new_day: int) -> void:

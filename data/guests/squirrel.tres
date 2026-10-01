@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="AnimalGuest" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/animal_guest.gd" id="1_guest"]
+[ext_resource type="Script" path="res://scripts/data/recipe.gd" id="2_recipe"]
+[ext_resource type="Script" path="res://scripts/data/ingredient.gd" id="3_ingredient"]
+[ext_resource type="Resource" path="res://data/recipes/acorn_jelly_muchim.tres" id="4_acorn_jelly"]
+[ext_resource type="Resource" path="res://data/recipes/carrot_kimbop.tres" id="5_kimbop"]
+[ext_resource type="Resource" path="res://data/ingredients/acorn.tres" id="6_acorn"]
+
+[resource]
+script = ExtResource("1_guest")
+id = &"squirrel"
+display_name = "다람쥐"
+personality = "겁이 많아 말이 짧지만, 도토리 얘기만 나오면 눈이 반짝인다. 뒷산 도토리나무 자리를 마을에서 제일 잘 안다."
+favorite_recipes = Array[ExtResource("2_recipe")]([ExtResource("4_acorn_jelly"), ExtResource("5_kimbop")])
+payment_ingredients = Array[ExtResource("3_ingredient")]([ExtResource("6_acorn"), ExtResource("6_acorn")])
+order_line = "…{recipe}. 주, 주세요."
+thanks_line = "…맛있어요. 도토리, 두고 갈게요."
+perfect_line = "…! 진짜 맛있어요! 제일 동글동글한 도토리로 더 드릴게요."
+dialogue_lines = Array[String](["…뒷산 도토리나무, 올해 많이 열렸어요.", "…할머니가 도토리묵 해 주셨었어요."])

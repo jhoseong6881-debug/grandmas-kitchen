@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Recipe" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/recipe.gd" id="1_recipe"]
+[ext_resource type="Script" path="res://scripts/data/ingredient.gd" id="2_ingredient"]
+[ext_resource type="Resource" path="res://data/ingredients/carrot.tres" id="3_carrot"]
+[ext_resource type="Resource" path="res://data/ingredients/egg.tres" id="4_egg"]
+
+[resource]
+script = ExtResource("1_recipe")
+id = &"carrot_egg_stir_fry"
+display_name = "당근 계란 볶음"
+ingredients = Array[ExtResource("2_ingredient")]([ExtResource("3_carrot"), ExtResource("4_egg")])
+minigame_steps = Array[int]([0, 1, 2])
