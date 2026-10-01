@@ -13,3 +13,4 @@
 | scenes/kitchen/minigames/chop_minigame.tscn (Board) | 도마 | 900x500 | 할 일 |
 | scenes/kitchen/minigames/chop_minigame.tscn (Ingredient, Slices) | 썰기 전 재료 / 썬 조각 (재료마다) | 420x160 / 24x120 | 할 일 |
 | scenes/kitchen/minigames/chop_minigame.tscn (Knife, TargetZone) | 칼 / 썰 자리 표시 | 10x300 / 50x240 | 할 일 |
+| scenes/kitchen/minigames/chop_minigame.tscn (PerfectStamp) | 완벽 도장 (지금은 금색 글자) | 900x200 | 선택 |

@@ -23,5 +23,10 @@ func show_order(guest: AnimalGuest, recipe: Recipe) -> void:
 	show()
 
 
+## 말풍선 내용을 바꾼다.
+func say(text: String) -> void:
+	_bubble_text.text = text
+
+
 func clear() -> void:
 	hide()

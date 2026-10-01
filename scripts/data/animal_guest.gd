@@ -15,5 +15,9 @@ extends Resource
 @export var payment_ingredients: Array[Ingredient] = []
 ## 주문할 때 하는 말. {recipe} 자리에 요리 이름이 들어간다.
 @export var order_line: String = "{recipe} 주세요!"
+## 대접받고 하는 말
+@export var thanks_line: String = "잘 먹었어요!"
+## 미니게임을 한 번도 안 틀리고 대접받았을 때 하는 말
+@export var perfect_line: String = "와, 정말 맛있어요!"
 ## 손님이 하는 말. 한 줄에 대사 하나.
 @export_multiline var dialogue_lines: Array[String] = []

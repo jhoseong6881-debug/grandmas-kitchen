@@ -97,6 +97,19 @@ mouse_filter = 2
 theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 10
 
+[node name="PerfectStreakLabel" type="Label" parent="Board"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 560.0
+offset_top = 14.0
+offset_right = 884.0
+offset_bottom = 56.0
+theme_override_colors/font_color = Color(0.85, 0.6, 0.05, 1)
+theme_override_font_sizes/font_size = 30
+text = "★ 완벽 도전 중"
+horizontal_alignment = 2
+vertical_alignment = 1
+
 [node name="ProgressLabel" type="Label" parent="."]
 unique_name_in_owner = true
 layout_mode = 1
@@ -131,5 +144,28 @@ grow_horizontal = 2
 grow_vertical = 0
 theme_override_font_sizes/font_size = 32
 text = "칼이 하얀 자리에 왔을 때 클릭하거나 스페이스 / Ⓐ 버튼을 눌러요"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PerfectStamp" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -450.0
+offset_top = -100.0
+offset_right = 450.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.84, 0.25, 1)
+theme_override_colors/font_outline_color = Color(0.4, 0.22, 0.08, 1)
+theme_override_constants/outline_size = 16
+theme_override_font_sizes/font_size = 120
+text = "★ 완벽! ★"
 horizontal_alignment = 1
 vertical_alignment = 1

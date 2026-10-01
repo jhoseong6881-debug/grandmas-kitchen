@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" path="res://scripts/kitchen/kitchen.gd" id="1_kitchen"]
 [ext_resource type="PackedScene" path="res://scenes/ui/inventory_panel.tscn" id="2_inventory"]
-[ext_resource type="Resource" path="res://data/ingredients/carrot.tres" id="3_carrot"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/guest_spot.tscn" id="4_guest_spot"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/chop_minigame.tscn" id="5_chop"]
 
@@ -14,7 +13,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_kitchen")
-test_ingredient = ExtResource("3_carrot")
 
 [node name="Background" type="ColorRect" parent="."]
 layout_mode = 1
@@ -55,16 +53,6 @@ theme_override_colors/font_color = Color(0.32, 0.22, 0.14, 1)
 theme_override_font_sizes/font_size = 44
 text = "1일째"
 
-[node name="TestButton" type="Button" parent="."]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 48.0
-offset_top = 130.0
-offset_right = 448.0
-offset_bottom = 200.0
-theme_override_font_sizes/font_size = 28
-text = "재료 받기 (테스트)"
-
 [node name="InventoryPanel" parent="." instance=ExtResource("2_inventory")]
 layout_mode = 1
 anchors_preset = 1
@@ -92,6 +80,23 @@ grow_horizontal = 2
 grow_vertical = 0
 theme_override_font_sizes/font_size = 36
 text = "요리하기"
+
+[node name="ServeButton" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -180.0
+offset_top = -240.0
+offset_right = 180.0
+offset_bottom = -160.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 36
+text = "대접하기"
 
 [node name="CookStatusLabel" type="Label" parent="."]
 unique_name_in_owner = true

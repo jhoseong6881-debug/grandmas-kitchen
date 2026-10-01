@@ -14,4 +14,6 @@ personality = "수줍음이 많지만 당근 이야기만 나오면 말이 많�
 favorite_recipes = Array[ExtResource("2_recipe")]([ExtResource("4_kimbop")])
 payment_ingredients = Array[ExtResource("3_ingredient")]([ExtResource("5_carrot")])
 order_line = "저, 저기... {recipe} 하나 주실 수 있나요?"
+thanks_line = "정말 맛있었어요... 또 와도 되죠?"
+perfect_line = "와... 칼질 솜씨가 할머니랑 똑같아요! 이거, 당근 더 드릴게요."
 dialogue_lines = Array[String](["안녕하세요... 여기 밥집 다시 연 거 맞죠?", "할머니 김밥, 정말 그리웠어요."])

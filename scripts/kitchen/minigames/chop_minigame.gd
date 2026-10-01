@@ -4,7 +4,8 @@ extends Control
 ## 클릭, 스페이스/Enter, 게임패드 A 버튼(ui_accept)을 누르면 한 번 썬다.
 ## 빗나가도 벌칙은 없다. 시간 제한과 실패 없이, chops_needed 번 썰면 끝나고 finished 시그널을 보낸다.
 
-signal finished
+## is_perfect: 한 번도 빗나가지 않았으면 true
+signal finished(is_perfect: bool)
 
 const TITLE_FORMAT: String = "%s 썰기"
 const READY_FORMAT: String = "0 / %d"
@@ -20,8 +21,16 @@ const FALLBACK_INGREDIENT_NAME: String = "재료"
 @export var target_width: float = 50.0
 ## 한 번 누른 뒤 다음 입력을 받기까지 쉬는 시간(초). 마구 눌러 통과하는 것을 막는다.
 @export var press_cooldown: float = 0.15
-## 다 썬 뒤 "다 썰었어요!"를 보여 주는 시간(초)
+## 다 썬 뒤 "다 썰었어요!"를 보여 주는 시간(초). 완벽했을 때는 도장이 잘 보이게 더 길게 보여 준다.
 @export var finish_delay: float = 0.8
+@export var perfect_finish_delay: float = 1.5
+## 완벽 도장이 튀어나오는 크기 변화와 시간(초)
+@export var stamp_start_scale: float = 0.3
+@export var stamp_overshoot_scale: float = 1.15
+@export var stamp_pop_duration: float = 0.18
+@export var stamp_settle_duration: float = 0.1
+## 처음 빗나갔을 때 "완벽 도전 중" 표시가 사라지는 시간(초)
+@export var streak_fade_duration: float = 0.3
 ## 썰 때마다 도마가 살짝 커졌다 돌아오는 정도와 시간(초)
 @export var bounce_scale: float = 1.03
 @export var bounce_duration: float = 0.08
@@ -33,6 +42,7 @@ const FALLBACK_INGREDIENT_NAME: String = "재료"
 @export var ingredient_color: Color = Color(0.85, 0.55, 0.3)
 
 var _chop_count: int = 0
+var _miss_count: int = 0
 var _is_chopping: bool = false
 var _cooldown_left: float = 0.0
 var _ingredient_left: float = 0.0
@@ -49,17 +59,21 @@ var _target_center: float = 0.0
 @onready var _slices: HFlowContainer = %Slices
 @onready var _title_label: Label = %TitleLabel
 @onready var _progress_label: Label = %ProgressLabel
+@onready var _perfect_streak_label: Label = %PerfectStreakLabel
+@onready var _perfect_stamp: Label = %PerfectStamp
 
 
 func _ready() -> void:
 	_ingredient_left = _ingredient.position.x
 	_ingredient_full_width = _ingredient.size.x
 	_knife.pivot_offset = Vector2(_knife.size.x / 2.0, 0.0)
+	_perfect_stamp.pivot_offset = _perfect_stamp.size / 2.0
 	hide()
 
 
 func start(recipe: Recipe) -> void:
 	_chop_count = 0
+	_miss_count = 0
 	_is_chopping = true
 	_cooldown_left = 0.0
 	for slice: Node in _slices.get_children():
@@ -75,6 +89,9 @@ func start(recipe: Recipe) -> void:
 		ingredient_name = recipe.ingredients[0].display_name
 	_title_label.text = TITLE_FORMAT % ingredient_name
 	_progress_label.text = READY_FORMAT % chops_needed
+	_perfect_streak_label.modulate.a = 1.0
+	_perfect_streak_label.show()
+	_perfect_stamp.hide()
 	show()
 	# 포커스를 가져와야 키보드와 게임패드 입력이 뒤에 있는 버튼으로 새지 않는다.
 	grab_focus()
@@ -133,6 +150,9 @@ func _chop() -> void:
 
 
 func _miss() -> void:
+	_miss_count += 1
+	if _miss_count == 1:
+		_fade_out_streak_label()
 	_progress_label.text = MISS_FORMAT % [_chop_count, chops_needed]
 	_knife.rotation = miss_wobble_angle
 	var tween: Tween = create_tween()
@@ -157,11 +177,30 @@ func _bounce_board() -> void:
 	tween.tween_property(_board, "scale", Vector2.ONE, bounce_duration)
 
 
+func _fade_out_streak_label() -> void:
+	var tween: Tween = create_tween()
+	tween.tween_property(_perfect_streak_label, "modulate:a", 0.0, streak_fade_duration)
+	tween.tween_callback(_perfect_streak_label.hide)
+
+
+## 완벽 도장이 작게 시작해서 살짝 크게 튀어나왔다가 제자리로 돌아온다.
+func _pop_perfect_stamp() -> void:
+	_perfect_streak_label.hide()
+	_perfect_stamp.scale = Vector2.ONE * stamp_start_scale
+	_perfect_stamp.show()
+	var tween: Tween = create_tween()
+	tween.tween_property(_perfect_stamp, "scale", Vector2.ONE * stamp_overshoot_scale, stamp_pop_duration)
+	tween.tween_property(_perfect_stamp, "scale", Vector2.ONE, stamp_settle_duration)
+
+
 func _finish() -> void:
 	_is_chopping = false
 	_target_zone.hide()
 	_progress_label.text = DONE_TEXT
-	await get_tree().create_timer(finish_delay).timeout
+	var is_perfect: bool = _miss_count == 0
+	if is_perfect:
+		_pop_perfect_stamp()
+	await get_tree().create_timer(perfect_finish_delay if is_perfect else finish_delay).timeout
 	_target_zone.show()
 	hide()
-	finished.emit()
+	finished.emit(is_perfect)
