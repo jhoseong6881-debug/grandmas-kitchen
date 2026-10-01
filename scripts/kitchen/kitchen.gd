@@ -31,10 +31,12 @@ var _status_default_color: Color
 @onready var _serve_button: Button = %ServeButton
 @onready var _cook_status_label: Label = %CookStatusLabel
 @onready var _chop_minigame: ChopMinigame = %ChopMinigame
+@onready var _stir_fry_minigame: StirFryMinigame = %StirFryMinigame
 @onready var _plate_minigame: PlateMinigame = %PlateMinigame
 ## 레시피의 미니게임 종류마다 실제로 실행할 미니게임
 @onready var _minigames: Dictionary[Recipe.MinigameType, Minigame] = {
 	Recipe.MinigameType.CHOP: _chop_minigame,
+	Recipe.MinigameType.STIR_FRY: _stir_fry_minigame,
 	Recipe.MinigameType.PLATE: _plate_minigame,
 }
 
@@ -95,7 +97,7 @@ func _run_next_step() -> void:
 	if _minigames.has(step):
 		_minigames[step].start(current_order)
 	else:
-		# 볶기 미니게임은 아직 없어서 건너뛴다.
+		push_warning("미니게임 종류 %d 에 연결된 미니게임이 없어 건너뜁니다" % step)
 		_run_next_step()
 
 

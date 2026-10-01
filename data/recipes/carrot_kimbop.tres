@@ -9,5 +9,5 @@ script = ExtResource("2_ae6f3")
 id = &"carrot_kimbop"
 display_name = "할머니표 당근 김밥"
 ingredients = Array[ExtResource("1_o7sd4")]([ExtResource("2_0ar3d")])
-minigame_steps = Array[int]([0, 2])
+minigame_steps = Array[int]([0, 1, 2])
 metadata/_custom_type_script = "uid://fbx0a77slaix"

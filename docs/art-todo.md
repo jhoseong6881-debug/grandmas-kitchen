@@ -17,3 +17,6 @@
 | scenes/kitchen/minigames/plate_minigame.tscn (Bowl) | 그릇 | 400x480 | 할 일 |
 | scenes/kitchen/minigames/plate_minigame.tscn (Fill) | 그릇에 차오르는 음식 (레시피마다) | 340x420 | 할 일 |
 | scenes/kitchen/minigames/plate_minigame.tscn (BowlDotTemplate) | 완성한 그릇 표시 | 40x40 | 선택 |
+| scenes/kitchen/minigames/stir_fry_minigame.tscn (Pan, Handle) | 팬 | 520x70 + 손잡이 | 할 일 |
+| scenes/kitchen/minigames/stir_fry_minigame.tscn (Flame) | 불꽃 | 340x60 | 할 일 |
+| scenes/kitchen/minigames/stir_fry_minigame.tscn (FoodTemplate) | 볶는 재료 조각 (재료마다) | 36x36 | 할 일 |
