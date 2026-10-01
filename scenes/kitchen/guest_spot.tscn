@@ -1,0 +1,62 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/kitchen/guest_spot.gd" id="1_spot"]
+
+[node name="GuestSpot" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1040.0
+offset_bottom = 480.0
+mouse_filter = 2
+script = ExtResource("1_spot")
+
+[node name="PortraitPlaceholder" type="ColorRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_top = 160.0
+offset_right = 240.0
+offset_bottom = 480.0
+color = Color(0.86, 0.84, 0.8, 1)
+
+[node name="Portrait" type="TextureRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_top = 160.0
+offset_right = 240.0
+offset_bottom = 480.0
+expand_mode = 1
+stretch_mode = 5
+
+[node name="NameLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_top = 290.0
+offset_right = 240.0
+offset_bottom = 350.0
+theme_override_colors/font_color = Color(0.32, 0.22, 0.14, 1)
+theme_override_font_sizes/font_size = 32
+text = "손님"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SpeechBubble" type="PanelContainer" parent="."]
+layout_mode = 0
+offset_left = 270.0
+offset_top = 40.0
+offset_right = 1030.0
+offset_bottom = 160.0
+
+[node name="Margin" type="MarginContainer" parent="SpeechBubble"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 20
+
+[node name="BubbleText" type="Label" parent="SpeechBubble/Margin"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "주문"
+autowrap_mode = 3

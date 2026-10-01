@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="AnimalGuest" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/animal_guest.gd" id="1_guest"]
+[ext_resource type="Script" path="res://scripts/data/recipe.gd" id="2_recipe"]
+[ext_resource type="Script" path="res://scripts/data/ingredient.gd" id="3_ingredient"]
+[ext_resource type="Resource" path="res://data/recipes/carrot_kimbop.tres" id="4_kimbop"]
+[ext_resource type="Resource" path="res://data/ingredients/carrot.tres" id="5_carrot"]
+
+[resource]
+script = ExtResource("1_guest")
+id = &"rabbit"
+display_name = "토끼"
+personality = "수줍음이 많지만 당근 이야기만 나오면 말이 많아진다."
+favorite_recipes = Array[ExtResource("2_recipe")]([ExtResource("4_kimbop")])
+payment_ingredients = Array[ExtResource("3_ingredient")]([ExtResource("5_carrot")])
+order_line = "저, 저기... {recipe} 하나 주실 수 있나요?"
+dialogue_lines = Array[String](["안녕하세요... 여기 밥집 다시 연 거 맞죠?", "할머니 김밥, 정말 그리웠어요."])

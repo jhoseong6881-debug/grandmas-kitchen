@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://scripts/kitchen/kitchen.gd" id="1_kitchen"]
 [ext_resource type="PackedScene" path="res://scenes/ui/inventory_panel.tscn" id="2_inventory"]
 [ext_resource type="Resource" path="res://data/ingredients/carrot.tres" id="3_carrot"]
+[ext_resource type="PackedScene" path="res://scenes/kitchen/guest_spot.tscn" id="4_guest_spot"]
 
 [node name="Kitchen" type="Control"]
 layout_mode = 3
@@ -33,6 +34,14 @@ offset_top = -300.0
 grow_horizontal = 2
 grow_vertical = 0
 color = Color(0.6, 0.42, 0.28, 1)
+
+[node name="GuestSpot" parent="." instance=ExtResource("4_guest_spot")]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 760.0
+offset_top = 300.0
+offset_right = 1800.0
+offset_bottom = 780.0
 
 [node name="DayLabel" type="Label" parent="."]
 unique_name_in_owner = true
