@@ -115,6 +115,8 @@ func _receive_note_page(recipe: Recipe) -> void:
 	tween.tween_property(_note_card, "scale", Vector2.ONE, note_pop_duration)
 
 
+## 잠자리에 들면 날짜를 넘기고 자동 저장한다. 이어 하면 다음 날 아침부터 시작한다.
 func _go_to_sleep() -> void:
 	GameState.advance_day()
+	GameState.has_unshown_save_notice = GameState.save_game()
 	get_tree().change_scene_to_file(morning_scene_path)

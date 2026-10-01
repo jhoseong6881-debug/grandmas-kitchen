@@ -10,6 +10,7 @@ const GIFT_FORMAT: String = "%s%s %s %d개를 두고 갔어요."
 const GIFT_READY_TEXT: String = "이웃 바구니\n(뭔가 들어 있어요)"
 const GIFT_EMPTY_TEXT: String = "이웃 바구니\n(비었어요)"
 const WELCOME_TEXT: String = "좋은 아침이에요. 텃밭을 둘러볼까요?"
+const SAVED_NOTICE_TEXT: String = "어젯밤까지의 이야기를 저장했어요."
 
 ## 이 화면을 켤 때 게임이 아직 시작 전이면 새 게임을 시작한다 (시작 재료, 레시피, 텃밭을 받는다).
 @export var start_new_game_on_ready: bool = true
@@ -40,6 +41,9 @@ func _ready() -> void:
 		GameState.start_new_game()
 	_day_label.text = DAY_TEXT_FORMAT % GameState.current_day
 	_status_label.text = WELCOME_TEXT
+	if GameState.has_unshown_save_notice:
+		_status_label.text = SAVED_NOTICE_TEXT + "\n" + WELCOME_TEXT
+		GameState.has_unshown_save_notice = false
 	_basket_button.pressed.connect(_on_basket_button_pressed)
 	_kitchen_button.pressed.connect(_on_kitchen_button_pressed)
 	_build_plots()

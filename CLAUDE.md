@@ -1,4 +1,4 @@
-# 할머니네 밥집 (Grandma's Little Kitchen)
+# 숲속의 할매식당 (Granny's Kitchen in the Woods)
 
 ## 게임 소개
 도시에서 지친 주인공이 돌아가신 할머니의 시골집을 물려받아, 집 한쪽의 작은 밥집을 다시 연다.

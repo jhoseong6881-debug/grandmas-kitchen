@@ -33,3 +33,4 @@
 | scenes/garden/garden.tscn (Sky, Sun, Ground) | 아침 텃밭 배경 | 1920x1080 | 할 일 |
 | scenes/garden/garden.tscn (텃밭 칸 버튼) | 텃밭 칸 (다 자람 / 자라는 중, 작물마다) | 260x240 | 할 일 |
 | scenes/garden/garden.tscn (BasketButton) | 이웃 바구니 (찬 것 / 빈 것) | 300x180 | 할 일 |
+| scenes/ui/title.tscn (Background, GameTitle) | 타이틀 배경 / 제목 로고 | 1920x1080 | 할 일 |

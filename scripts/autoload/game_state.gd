@@ -27,6 +27,8 @@ var is_game_started: bool = false
 ## 오늘 대접한 손님 id → 한 번도 안 틀리고 대접했는지. 저녁 평상에 올 손님을 고를 때 쓴다.
 ## 하루가 지나면 비운다. 하루가 끝날 때 저장할 것이라 세이브에는 넣지 않는다.
 var todays_served_guests: Dictionary[StringName, bool] = {}
+## 방금 잠자리에 들며 자동 저장했으면 true. 다음 날 아침 텃밭이 "저장했어요"를 한 번 보여 주고 끈다.
+var has_unshown_save_notice: bool = false
 
 
 # --- 인벤토리 ---
@@ -157,6 +159,19 @@ func start_new_game() -> void:
 
 func has_save() -> bool:
 	return FileAccess.file_exists(SAVE_PATH)
+
+
+## 세이브 파일을 불러오지 않고 내용만 읽는다. 타이틀 화면에서 "N일째"를 보여 줄 때 쓴다. 못 읽으면 빈 Dictionary.
+func read_save_summary() -> Dictionary:
+	if not has_save():
+		return {}
+	var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(SAVE_PATH))
+	return data if data is Dictionary else {}
+
+
+func delete_save() -> void:
+	if has_save():
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
 
 
 func save_game() -> bool:
