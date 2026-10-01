@@ -1,0 +1,67 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/kitchen/kitchen.gd" id="1_kitchen"]
+[ext_resource type="PackedScene" path="res://scenes/ui/inventory_panel.tscn" id="2_inventory"]
+[ext_resource type="Resource" path="res://data/ingredients/carrot.tres" id="3_carrot"]
+
+[node name="Kitchen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_kitchen")
+test_ingredient = ExtResource("3_carrot")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.93, 0.86, 0.72, 1)
+
+[node name="Counter" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -300.0
+grow_horizontal = 2
+grow_vertical = 0
+color = Color(0.6, 0.42, 0.28, 1)
+
+[node name="DayLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 48.0
+offset_top = 36.0
+offset_right = 448.0
+offset_bottom = 96.0
+theme_override_colors/font_color = Color(0.32, 0.22, 0.14, 1)
+theme_override_font_sizes/font_size = 44
+text = "1일째"
+
+[node name="TestButton" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 48.0
+offset_top = 130.0
+offset_right = 448.0
+offset_bottom = 200.0
+theme_override_font_sizes/font_size = 28
+text = "재료 받기 (테스트)"
+
+[node name="InventoryPanel" parent="." instance=ExtResource("2_inventory")]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -488.0
+offset_top = 36.0
+offset_right = -48.0
+offset_bottom = 136.0
+grow_horizontal = 0

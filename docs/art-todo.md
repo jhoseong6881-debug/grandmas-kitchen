@@ -6,3 +6,5 @@
 |---|---|---|---|
 | data/ingredients/carrot.tres (icon) | 당근 아이콘 | 미정 | 할 일 |
 | data/recipes/carrot_kimbop.tres (finished_image) | 할머니표 당근 김밥 완성 그림 | 미정 | 할 일 |
+| scenes/kitchen/kitchen.tscn (Background) | 부엌 배경 | 1920x1080 | 할 일 |
+| scenes/kitchen/kitchen.tscn (Counter) | 조리대 | 1920x300 | 할 일 |
