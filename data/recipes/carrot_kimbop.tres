@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Recipe" format=3 uid="uid://b580q70jkdeba"]
+
+[ext_resource type="Script" uid="uid://jdo3q781e21o" path="res://scripts/data/ingredient.gd" id="1_o7sd4"]
+[ext_resource type="Resource" uid="uid://cbhyfvk1vplmf" path="res://data/ingredients/carrot.tres" id="2_0ar3d"]
+[ext_resource type="Script" uid="uid://fbx0a77slaix" path="res://scripts/data/recipe.gd" id="2_ae6f3"]
+
+[resource]
+script = ExtResource("2_ae6f3")
+id = &"carrot_kimbop"
+display_name = "할머니표 당근 김밥"
+ingredients = Array[ExtResource("1_o7sd4")]([ExtResource("2_0ar3d")])
+minigame_steps = Array[int]([0, 2])
+metadata/_custom_type_script = "uid://fbx0a77slaix"

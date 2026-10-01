@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Ingredient" format=3 uid="uid://cbhyfvk1vplmf"]
+
+[ext_resource type="Script" uid="uid://jdo3q781e21o" path="res://scripts/data/ingredient.gd" id="1_u2dq7"]
+
+[resource]
+script = ExtResource("1_u2dq7")
+id = &"carrot"
+display_name = "당근"
+description = "당근 그림 그려줘요.."
+metadata/_custom_type_script = "uid://jdo3q781e21o"
