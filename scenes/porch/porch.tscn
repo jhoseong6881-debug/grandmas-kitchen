@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/porch/porch.gd" id="1_porch"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/guest_spot.tscn" id="2_guest_spot"]
+[ext_resource type="PackedScene" path="res://scenes/ui/guest_notebook.tscn" id="3_notebook"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_note"]
 bg_color = Color(0.98, 0.94, 0.82, 1)
@@ -177,3 +178,17 @@ theme_override_colors/font_color = Color(1, 0.84, 0.25, 1)
 theme_override_font_sizes/font_size = 40
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="NotebookButton" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 48.0
+offset_top = 110.0
+offset_right = 288.0
+offset_bottom = 170.0
+theme_override_font_sizes/font_size = 30
+text = "손님 수첩"
+
+[node name="GuestNotebook" parent="." instance=ExtResource("3_notebook")]
+unique_name_in_owner = true
+layout_mode = 1

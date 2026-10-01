@@ -44,3 +44,4 @@
 | data/recipes/mushroom_egg_jeon.tres (finished_image) | 버섯 계란전 완성 그림 | 미정 | 할 일 |
 | data/recipes/honey_egg_roll.tres (finished_image) | 꿀 계란말이 완성 그림 | 미정 | 할 일 |
 | data/recipes/acorn_jelly_mushroom_bap.tres (finished_image) | 버섯 도토리묵밥 완성 그림 | 미정 | 할 일 |
+| scenes/ui/guest_notebook.tscn (Book) | 손님 수첩 종이 (+ 손님 얼굴 작은 그림) | 1440x840 | 할 일 |

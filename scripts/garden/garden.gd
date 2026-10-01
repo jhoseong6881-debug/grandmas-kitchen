@@ -34,6 +34,8 @@ var _plot_buttons: Array[Button] = []
 @onready var _basket_button: Button = %BasketButton
 @onready var _kitchen_button: Button = %KitchenButton
 @onready var _status_label: Label = %StatusLabel
+@onready var _notebook: GuestNotebook = %GuestNotebook
+@onready var _notebook_button: Button = %NotebookButton
 
 
 func _ready() -> void:
@@ -46,6 +48,7 @@ func _ready() -> void:
 		GameState.has_unshown_save_notice = false
 	_basket_button.pressed.connect(_on_basket_button_pressed)
 	_kitchen_button.pressed.connect(_on_kitchen_button_pressed)
+	_notebook_button.pressed.connect(_notebook.open)
 	_build_plots()
 	_update_basket()
 	_focus_next_thing_to_do()

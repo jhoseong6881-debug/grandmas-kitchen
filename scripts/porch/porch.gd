@@ -29,6 +29,8 @@ var _evening_guest: AnimalGuest
 @onready var _note_recipe_label: Label = %NoteRecipeLabel
 @onready var _note_ingredients_label: Label = %NoteIngredientsLabel
 @onready var _next_button: Button = %NextButton
+@onready var _notebook: GuestNotebook = %GuestNotebook
+@onready var _notebook_button: Button = %NotebookButton
 
 
 func _ready() -> void:
@@ -36,6 +38,7 @@ func _ready() -> void:
 	_note_card.hide()
 	_status_label.text = ""
 	_next_button.pressed.connect(_on_next_button_pressed)
+	_notebook_button.pressed.connect(_notebook.open)
 	_evening_guest = _choose_evening_guest()
 	if _evening_guest == null:
 		_beats.append(func() -> void: _status_label.text = QUIET_EVENING_TEXT)

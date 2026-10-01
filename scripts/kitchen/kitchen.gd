@@ -55,6 +55,8 @@ var _status_default_color: Color
 @onready var _next_guest_button: Button = %NextGuestButton
 @onready var _evening_button: Button = %EveningButton
 @onready var _cook_status_label: Label = %CookStatusLabel
+@onready var _notebook: GuestNotebook = %GuestNotebook
+@onready var _notebook_button: Button = %NotebookButton
 @onready var _chop_minigame: ChopMinigame = %ChopMinigame
 @onready var _stir_fry_minigame: StirFryMinigame = %StirFryMinigame
 @onready var _plate_minigame: PlateMinigame = %PlateMinigame
@@ -73,6 +75,7 @@ func _ready() -> void:
 	_serve_button.pressed.connect(_on_serve_button_pressed)
 	_next_guest_button.pressed.connect(_on_next_guest_button_pressed)
 	_evening_button.pressed.connect(_on_evening_button_pressed)
+	_notebook_button.pressed.connect(_notebook.open)
 	for minigame: Minigame in _minigames.values():
 		minigame.finished.connect(_on_minigame_finished)
 	_status_default_color = _cook_status_label.get_theme_color("font_color")
