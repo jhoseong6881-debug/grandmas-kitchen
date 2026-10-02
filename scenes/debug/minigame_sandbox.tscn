@@ -1,0 +1,75 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/debug/minigame_sandbox.gd" id="1_sandbox"]
+[ext_resource type="Resource" path="res://data/recipes/carrot_egg_stir_fry.tres" id="2_recipe"]
+[ext_resource type="Resource" path="res://data/requests/fine_chop.tres" id="3_request"]
+[ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/chop_minigame.tscn" id="10_chop"]
+[ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/stir_fry_minigame.tscn" id="11_stir_fry"]
+[ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/plate_minigame.tscn" id="12_plate"]
+[ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/pan_fry_minigame.tscn" id="13_pan_fry"]
+[ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/roll_minigame.tscn" id="14_roll"]
+[ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/rice_minigame.tscn" id="15_rice"]
+[ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/mix_minigame.tscn" id="16_mix"]
+[ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/simmer_minigame.tscn" id="17_simmer"]
+[ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/mince_minigame.tscn" id="18_mince"]
+
+[node name="MinigameSandbox" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_sandbox")
+recipe = ExtResource("2_recipe")
+request = ExtResource("3_request")
+minigame_scenes = Dictionary[int, PackedScene]({
+0: ExtResource("10_chop"),
+1: ExtResource("11_stir_fry"),
+2: ExtResource("12_plate"),
+3: ExtResource("13_pan_fry"),
+4: ExtResource("14_roll"),
+5: ExtResource("15_rice"),
+6: ExtResource("16_mix"),
+7: ExtResource("17_simmer"),
+8: ExtResource("18_mince")
+})
+
+[node name="Background" type="ColorRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.5, 0.45, 0.4, 1)
+
+[node name="InfoLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 24.0
+offset_top = 12.0
+offset_right = 1896.0
+offset_bottom = 48.0
+theme_override_font_sizes/font_size = 24
+text = "연습장"
+
+[node name="ResultLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -60.0
+offset_right = -24.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 0.84, 0.25, 1)
+theme_override_font_sizes/font_size = 24
+text = "결과가 여기에 나와요"
+horizontal_alignment = 1
