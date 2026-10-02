@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Crop" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/crop.gd" id="1_crop"]
+[ext_resource type="Resource" path="res://data/ingredients/mushroom.tres" id="2_mushroom"]
+
+[resource]
+script = ExtResource("1_crop")
+id = &"mushroom"
+ingredient = ExtResource("2_mushroom")
+harvest_amount = 3
+grow_days = 3
+seed_ingredient = ExtResource("2_mushroom")
+seed_amount = 1

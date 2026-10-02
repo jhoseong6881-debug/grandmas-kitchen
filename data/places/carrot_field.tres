@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="GardenPlace" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/garden_place.gd" id="1_place"]
+[ext_resource type="Script" path="res://scripts/data/crop.gd" id="2_crop"]
+[ext_resource type="Resource" path="res://data/crops/carrot_crop.tres" id="3_carrot_crop"]
+
+[resource]
+script = ExtResource("1_place")
+id = &"carrot_field"
+display_name = "당근 텃밭"
+plot_name = "밭"
+plot_count = 2
+crops = Array[ExtResource("2_crop")]([ExtResource("3_carrot_crop")])
+starting_crop = ExtResource("3_carrot_crop")

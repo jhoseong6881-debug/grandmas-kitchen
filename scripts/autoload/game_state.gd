@@ -9,15 +9,22 @@ signal recipe_unlocked(recipe_id: StringName)
 
 const SAVE_PATH: String = "user://save.json"
 ## 세이브 파일 구조가 바뀌면 숫자를 올린다. 옛 세이브를 읽을 때 구분하는 데 쓴다.
-const SAVE_VERSION: int = 1
+## 2: 텃밭이 여러 곳(GardenPlace)이 되고 칸마다 심은 작물을 저장한다.
+const SAVE_VERSION: int = 2
+## 빈 칸의 작물 id
+const EMPTY_PLOT: StringName = &""
+## 옛 세이브(버전 1)의 텃밭 칸이 속한 밭
+const LEGACY_GARDEN_PLACE_ID: StringName = &"carrot_field"
 const STARTING_DAY: int = 1
 
 var current_day: int = STARTING_DAY
 ## 재료 id → 개수
 var inventory: Dictionary[StringName, int] = {}
 var unlocked_recipe_ids: Array[StringName] = []
-## 텃밭 칸마다 다시 다 자라기까지 남은 날 수 (0 = 지금 거둘 수 있음). 칸 순서는 StartingSetup.garden_plots 와 같다.
-var garden_days_left: Array[int] = []
+## 밭 id → 칸마다 심은 작물 id (EMPTY_PLOT = 빈 칸)
+var plot_crop_ids: Dictionary[StringName, Array] = {}
+## 밭 id → 칸마다 다 자라기까지 남은 날 수 (0 = 거둘 수 있음)
+var plot_days_left: Dictionary[StringName, Array] = {}
 ## 오늘 아침 이웃 바구니를 이미 열어 봤는지. 하루가 지나면 다시 false.
 var is_todays_gift_collected: bool = false
 ## 아침에 고른 오늘의 메뉴 (레시피 id). 점심 손님은 이 안에서만 주문한다.
@@ -89,8 +96,10 @@ func advance_day() -> void:
 	current_day += 1
 	todays_served_guests.clear()
 	is_todays_gift_collected = false
-	for i: int in garden_days_left.size():
-		garden_days_left[i] = maxi(garden_days_left[i] - 1, 0)
+	for place_id: StringName in plot_days_left:
+		var days: Array = plot_days_left[place_id]
+		for i: int in days.size():
+			days[i] = maxi(days[i] - 1, 0)
 	day_changed.emit(current_day)
 
 
@@ -112,17 +121,62 @@ func is_on_menu(recipe_id: StringName) -> bool:
 
 # --- 텃밭 ---
 
-func is_plot_ripe(plot_index: int) -> bool:
-	return garden_days_left[plot_index] == 0
+## 그 칸에 심긴 작물. 빈 칸이면 null.
+func get_plot_crop(place_id: StringName, plot_index: int) -> Crop:
+	var crop_ids: Array = plot_crop_ids.get(place_id, [])
+	if plot_index >= crop_ids.size() or crop_ids[plot_index] == EMPTY_PLOT:
+		return null
+	return GameData.get_crop(crop_ids[plot_index])
 
 
-## 다 자란 칸을 거둔다. 재료를 받고, 그 칸은 regrow_days 일 뒤에 다시 자란다. 아직 안 자랐으면 false.
-func harvest_plot(plot_index: int, crop: Crop) -> bool:
-	if not is_plot_ripe(plot_index):
+func get_plot_days_left(place_id: StringName, plot_index: int) -> int:
+	var days: Array = plot_days_left.get(place_id, [])
+	return days[plot_index] if plot_index < days.size() else 0
+
+
+func is_plot_ripe(place_id: StringName, plot_index: int) -> bool:
+	return get_plot_crop(place_id, plot_index) != null and get_plot_days_left(place_id, plot_index) == 0
+
+
+## 씨앗(심는 데 드는 재료)이 넉넉한지
+func can_plant(crop: Crop) -> bool:
+	return has_ingredients(crop.get_seed_cost())
+
+
+## 빈 칸에 작물을 심는다. 씨앗 재료를 쓰고, grow_days 일 뒤에 거둘 수 있다. 빈 칸이 아니거나 씨앗이 모자라면 false.
+func plant_plot(place_id: StringName, plot_index: int, crop: Crop) -> bool:
+	if get_plot_crop(place_id, plot_index) != null or not can_plant(crop):
 		return false
-	add_ingredient(crop.ingredient.id, crop.harvest_amount)
-	garden_days_left[plot_index] = crop.regrow_days
+	remove_ingredients(crop.get_seed_cost())
+	plot_crop_ids[place_id][plot_index] = crop.id
+	plot_days_left[place_id][plot_index] = crop.grow_days
 	return true
+
+
+## 다 자란 칸을 거둔다. 재료를 받고 그 칸은 빈 칸이 된다. 거둔 작물을 돌려준다. 아직 안 자랐으면 null.
+func harvest_plot(place_id: StringName, plot_index: int) -> Crop:
+	if not is_plot_ripe(place_id, plot_index):
+		return null
+	var crop: Crop = get_plot_crop(place_id, plot_index)
+	add_ingredient(crop.ingredient.id, crop.harvest_amount)
+	plot_crop_ids[place_id][plot_index] = EMPTY_PLOT
+	plot_days_left[place_id][plot_index] = 0
+	return crop
+
+
+## data/places/ 의 밭마다 칸을 만든다. 시작 작물이 있으면 다 자란 채로 심어 둔다.
+func _reset_garden() -> void:
+	plot_crop_ids.clear()
+	plot_days_left.clear()
+	for place: GardenPlace in GameData.get_all_garden_places():
+		var crop_ids: Array = []
+		crop_ids.resize(place.plot_count)
+		crop_ids.fill(place.starting_crop.id if place.starting_crop != null else EMPTY_PLOT)
+		var days: Array = []
+		days.resize(place.plot_count)
+		days.fill(0)
+		plot_crop_ids[place.id] = crop_ids
+		plot_days_left[place.id] = days
 
 
 # --- 저녁 이야기 ---
@@ -163,7 +217,8 @@ func new_game() -> void:
 	unlocked_recipe_ids.clear()
 	guest_story_progress.clear()
 	todays_served_guests.clear()
-	garden_days_left.clear()
+	plot_crop_ids.clear()
+	plot_days_left.clear()
 	met_guest_ids.clear()
 	menu_recipe_ids.clear()
 	notes_completed_day = 0
@@ -176,6 +231,7 @@ func new_game() -> void:
 func start_new_game() -> void:
 	new_game()
 	is_game_started = true
+	_reset_garden()
 	var setup: StartingSetup = GameData.get_starting_setup()
 	if setup == null:
 		return
@@ -183,9 +239,6 @@ func start_new_game() -> void:
 		add_ingredient(ingredient.id)
 	for recipe: Recipe in setup.starting_recipes:
 		unlock_recipe(recipe.id)
-	# 텃밭은 처음에 모두 다 자란 상태로 시작한다.
-	garden_days_left.resize(setup.garden_plots.size())
-	garden_days_left.fill(0)
 
 
 func has_save() -> bool:
@@ -242,7 +295,7 @@ func _to_save_data() -> Dictionary:
 		"inventory": inventory_data,
 		"unlocked_recipe_ids": recipe_data,
 		"guest_story_progress": story_data,
-		"garden_days_left": garden_days_left,
+		"garden": _garden_save_data(),
 		"met_guest_ids": Array(met_guest_ids).map(func(guest_id: StringName) -> String: return String(guest_id)),
 		"menu_recipe_ids": Array(menu_recipe_ids).map(func(recipe_id: StringName) -> String: return String(recipe_id)),
 		"notes_completed_day": notes_completed_day,
@@ -263,9 +316,7 @@ func _from_save_data(data: Dictionary) -> void:
 	var story_data: Dictionary = data.get("guest_story_progress", {})
 	for guest_id: String in story_data:
 		guest_story_progress[StringName(guest_id)] = int(story_data[guest_id])
-	var garden_data: Array = data.get("garden_days_left", [])
-	for days_left: Variant in garden_data:
-		garden_days_left.append(int(days_left))
+	_load_garden(data)
 	var met_data: Array = data.get("met_guest_ids", [])
 	for guest_id: Variant in met_data:
 		met_guest_ids.append(StringName(str(guest_id)))
@@ -274,3 +325,37 @@ func _from_save_data(data: Dictionary) -> void:
 		menu_recipe_ids.append(StringName(str(recipe_id)))
 	notes_completed_day = int(data.get("notes_completed_day", 0))
 	is_spring_completed = bool(data.get("is_spring_completed", false))
+
+
+## {밭 id: [{"crop": 작물 id, "days_left": 남은 날}, ...]}
+func _garden_save_data() -> Dictionary:
+	var garden_data: Dictionary = {}
+	for place_id: StringName in plot_crop_ids:
+		var plots: Array = []
+		for i: int in plot_crop_ids[place_id].size():
+			plots.append({"crop": String(plot_crop_ids[place_id][i]), "days_left": plot_days_left[place_id][i]})
+		garden_data[String(place_id)] = plots
+	return garden_data
+
+
+## 지금 data/places/ 의 밭으로 칸을 만든 뒤, 세이브에 있는 칸만 덮어쓴다.
+## 그래서 세이브 뒤에 새 밭이 생겨도 그 밭은 처음 상태로 나온다.
+## 옛 세이브(버전 1)는 당근 텃밭 칸의 남은 날만 있으므로 그 칸들은 당근이 심긴 것으로 읽는다.
+func _load_garden(data: Dictionary) -> void:
+	_reset_garden()
+	var garden_data: Dictionary = data.get("garden", {})
+	for place_id: String in garden_data:
+		if not plot_crop_ids.has(StringName(place_id)):
+			continue
+		var plots: Array = garden_data[place_id]
+		for i: int in mini(plots.size(), plot_crop_ids[StringName(place_id)].size()):
+			var crop_id: StringName = StringName(str(plots[i].get("crop", "")))
+			if crop_id != EMPTY_PLOT and GameData.get_crop(crop_id) == null:
+				crop_id = EMPTY_PLOT
+			plot_crop_ids[StringName(place_id)][i] = crop_id
+			plot_days_left[StringName(place_id)][i] = int(plots[i].get("days_left", 0))
+	var legacy_days: Array = data.get("garden_days_left", [])
+	if garden_data.is_empty() and plot_days_left.has(LEGACY_GARDEN_PLACE_ID):
+		var days: Array = plot_days_left[LEGACY_GARDEN_PLACE_ID]
+		for i: int in mini(legacy_days.size(), days.size()):
+			days[i] = int(legacy_days[i])

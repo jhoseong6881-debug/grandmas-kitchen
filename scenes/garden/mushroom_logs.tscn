@@ -1,0 +1,138 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/garden/mushroom_logs.gd" id="1_logs"]
+[ext_resource type="PackedScene" path="res://scenes/ui/inventory_panel.tscn" id="2_inventory"]
+[ext_resource type="Script" path="res://scripts/garden/plot_row.gd" id="3_plot_row"]
+[ext_resource type="PackedScene" path="res://scenes/garden/plant_picker.tscn" id="4_picker"]
+
+[node name="MushroomLogs" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_logs")
+
+[node name="ForestShade" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.4, 0.55, 0.42, 1)
+
+[node name="TreeLeft" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = 80.0
+offset_top = 120.0
+offset_right = 200.0
+offset_bottom = 600.0
+color = Color(0.36, 0.26, 0.18, 1)
+
+[node name="TreeRight" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = 1700.0
+offset_top = 180.0
+offset_right = 1800.0
+offset_bottom = 600.0
+color = Color(0.36, 0.26, 0.18, 1)
+
+[node name="Ground" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -520.0
+grow_horizontal = 2
+grow_vertical = 0
+color = Color(0.35, 0.3, 0.22, 1)
+
+[node name="DayLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 48.0
+offset_top = 36.0
+offset_right = 548.0
+offset_bottom = 96.0
+theme_override_colors/font_color = Color(1, 0.96, 0.88, 1)
+theme_override_font_sizes/font_size = 48
+text = "1일째 아침"
+
+[node name="InventoryPanel" parent="." instance=ExtResource("2_inventory")]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -608.0
+offset_top = 36.0
+offset_right = -48.0
+offset_bottom = 136.0
+grow_horizontal = 0
+
+[node name="StatusLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -700.0
+offset_top = 380.0
+offset_right = 700.0
+offset_bottom = 520.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.96, 0.88, 1)
+theme_override_font_sizes/font_size = 36
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="PlaceLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 530.0
+offset_right = 300.0
+offset_bottom = 580.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.96, 0.88, 1)
+theme_override_font_sizes/font_size = 36
+text = "버섯 원목"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PlotRow" type="HBoxContainer" parent="." node_paths=PackedStringArray("plant_picker")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -500.0
+offset_top = 590.0
+offset_right = 500.0
+offset_bottom = 830.0
+grow_horizontal = 2
+theme_override_constants/separation = 40
+alignment = 1
+script = ExtResource("3_plot_row")
+place_id = &"mushroom_logs"
+plant_picker = NodePath("../PlantPicker")
+
+[node name="BackButton" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 160.0
+offset_top = 620.0
+offset_right = 460.0
+offset_bottom = 800.0
+theme_override_font_sizes/font_size = 24
+text = "←
+당근 텃밭으로"
+
+[node name="PlantPicker" parent="." instance=ExtResource("4_picker")]
+unique_name_in_owner = true
+layout_mode = 1

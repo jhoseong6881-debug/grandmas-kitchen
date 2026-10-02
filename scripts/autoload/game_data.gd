@@ -1,11 +1,13 @@
 extends Node
-## data/ 폴더의 재료, 레시피, 동물 손님 .tres 파일을 게임 시작 때 모두 읽어 id로 찾을 수 있게 하는 오토로드.
+## data/ 폴더의 재료, 레시피, 동물 손님, 작물, 밭 .tres 파일을 게임 시작 때 모두 읽어 id로 찾을 수 있게 하는 오토로드.
 ## 프로젝트 설정 > 전역 > 오토로드 에 "GameData" 이름으로 등록해서 쓴다.
 ## 읽기 전용 원본 데이터만 다룬다. 플레이 중 바뀌는 상태는 GameState 가 맡는다.
 
 const INGREDIENTS_DIR: String = "res://data/ingredients/"
 const RECIPES_DIR: String = "res://data/recipes/"
 const GUESTS_DIR: String = "res://data/guests/"
+const CROPS_DIR: String = "res://data/crops/"
+const PLACES_DIR: String = "res://data/places/"
 const STARTING_SETUP_PATH: String = "res://data/starting_setup.tres"
 const SEASON_ENDING_PATH: String = "res://data/seasons/spring_ending.tres"
 const RESOURCE_EXTENSIONS: PackedStringArray = ["tres", "res"]
@@ -13,6 +15,8 @@ const RESOURCE_EXTENSIONS: PackedStringArray = ["tres", "res"]
 var _ingredients: Dictionary[StringName, Ingredient] = {}
 var _recipes: Dictionary[StringName, Recipe] = {}
 var _guests: Dictionary[StringName, AnimalGuest] = {}
+var _crops: Dictionary[StringName, Crop] = {}
+var _places: Dictionary[StringName, GardenPlace] = {}
 var _starting_setup: StartingSetup
 var _season_ending: SeasonEnding
 
@@ -41,6 +45,16 @@ func _ready() -> void:
 			_register(_guests, resource.id, resource)
 		else:
 			_warn_wrong_type(resource, "AnimalGuest")
+	for resource: Resource in _load_folder(CROPS_DIR):
+		if resource is Crop:
+			_register(_crops, resource.id, resource)
+		else:
+			_warn_wrong_type(resource, "Crop")
+	for resource: Resource in _load_folder(PLACES_DIR):
+		if resource is GardenPlace:
+			_register(_places, resource.id, resource)
+		else:
+			_warn_wrong_type(resource, "GardenPlace")
 
 
 # --- 하나 찾기 (없으면 null) ---
@@ -55,6 +69,14 @@ func get_recipe(recipe_id: StringName) -> Recipe:
 
 func get_guest(guest_id: StringName) -> AnimalGuest:
 	return _guests.get(guest_id)
+
+
+func get_crop(crop_id: StringName) -> Crop:
+	return _crops.get(crop_id)
+
+
+func get_garden_place(place_id: StringName) -> GardenPlace:
+	return _places.get(place_id)
 
 
 ## 새 게임 시작 설정 (없으면 null)
@@ -79,6 +101,10 @@ func get_all_recipes() -> Array[Recipe]:
 
 func get_all_guests() -> Array[AnimalGuest]:
 	return _guests.values()
+
+
+func get_all_garden_places() -> Array[GardenPlace]:
+	return _places.values()
 
 
 # --- 내부 ---

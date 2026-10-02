@@ -67,3 +67,6 @@
 | scenes/porch/spring_feast.tscn (Teaser) | 여름 예고 그림 | 1920x1080 | 선택 |
 | scenes/ui/pause_menu.tscn (Box) | 일시 정지 메뉴 판 | 840x660 | 선택 |
 | scenes/garden/menu_board.tscn (Board) | 오늘의 메뉴 칠판 | 1560x960 | 할 일 |
+| scenes/garden/mushroom_logs.tscn (ForestShade, TreeLeft, TreeRight, Ground) | 버섯 원목이 있는 숲 그늘 배경 | 1920x1080 | 할 일 |
+| scenes/garden/mushroom_logs.tscn (PlotRow 버튼) | 버섯 원목 (빈 원목 / 자라는 중 / 다 자람) | 260x240 | 할 일 |
+| scenes/garden/plant_picker.tscn (Board) | "무엇을 심을까요?" 나무 판 | 1120x520 | 선택 |

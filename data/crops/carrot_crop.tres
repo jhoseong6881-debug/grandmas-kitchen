@@ -5,6 +5,7 @@
 
 [resource]
 script = ExtResource("1_crop")
+id = &"carrot"
 ingredient = ExtResource("2_carrot")
 harvest_amount = 1
-regrow_days = 2
+grow_days = 2
