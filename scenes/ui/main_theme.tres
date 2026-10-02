@@ -1,6 +1,6 @@
-[gd_resource type="Theme" load_steps=3 format=3]
+[gd_resource type="Theme" format=3 uid="uid://dp3vyouf74wx6"]
 
-[ext_resource type="FontFile" path="res://assets/fonts/MaruMinyaHangul/x12y12pxMaruMinyaHangul.ttf" id="1_maru"]
+[ext_resource type="FontFile" uid="uid://qlsdte53dndq" path="res://assets/fonts/MaruMinyaHangul/x12y12pxMaruMinyaHangul.ttf" id="1_maru"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_focus"]
 draw_center = false
