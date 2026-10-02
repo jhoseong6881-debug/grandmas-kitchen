@@ -70,3 +70,5 @@
 | scenes/garden/mushroom_logs.tscn (ForestShade, TreeLeft, TreeRight, Ground) | 버섯 원목이 있는 숲 그늘 배경 | 1920x1080 | 할 일 |
 | scenes/garden/mushroom_logs.tscn (PlotRow 버튼) | 버섯 원목 (빈 원목 / 자라는 중 / 다 자람) | 260x240 | 할 일 |
 | scenes/garden/plant_picker.tscn (Board) | "무엇을 심을까요?" 나무 판 | 1120x520 | 선택 |
+| data/story/prologue.tres (각 장 Background Image) | 프롤로그 배경 8장: 밤 지하철, 아침 전화, 여름 평상 회상, 소포와 빈 공책, 편지, 시골 버스, 숲속 밥집, 문틈의 토끼 | 1920x1080 | 할 일 |
+| scenes/story/prologue.tscn (Paper) | 할머니 편지지 | 1000x900 | 선택 |

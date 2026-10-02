@@ -2,10 +2,12 @@ extends CanvasLayer
 ## 일시 정지 메뉴. 오토로드로 등록해서 모든 장면에서 쓴다 (프로젝트 설정 > 전역 > 오토로드, 이름 "PauseMenu").
 ## Esc 또는 게임패드 Start 로 열고 닫는다. 열려 있는 동안 게임이 멈춘다(get_tree().paused).
 ## 게임이 시작될 때 기본 입력(게임패드 A/B, 일시 정지)도 여기서 채운다 (InputDefaults).
-## 타이틀 화면에서는 열리지 않는다.
+## 타이틀 화면과 프롤로그에서는 열리지 않는다.
 
 ## 이 장면에서는 일시 정지 메뉴를 열지 않는다. "타이틀로"를 누르면 이 장면으로 간다.
 @export_file("*.tscn") var title_scene_path: String = "res://scenes/ui/title.tscn"
+## 타이틀 말고도 일시 정지 메뉴를 열지 않는 장면 (프롤로그는 Esc 가 건너뛰기라서)
+@export_file("*.tscn") var no_pause_scene_paths: Array[String] = ["res://scenes/story/prologue.tscn"]
 
 ## 메뉴를 열기 전에 선택돼 있던 것. 닫으면 다시 선택한다.
 var _previous_focus: Control
@@ -56,7 +58,8 @@ func resume() -> void:
 
 func _can_pause() -> bool:
 	var scene: Node = get_tree().current_scene
-	return scene != null and scene.scene_file_path != title_scene_path
+	return scene != null and scene.scene_file_path != title_scene_path \
+			and scene.scene_file_path not in no_pause_scene_paths
 
 
 func _on_title_button_pressed() -> void:

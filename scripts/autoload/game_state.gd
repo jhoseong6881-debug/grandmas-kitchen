@@ -18,6 +18,8 @@ const LEGACY_GARDEN_PLACE_ID: StringName = &"carrot_field"
 const STARTING_DAY: int = 1
 
 var current_day: int = STARTING_DAY
+## 프롤로그에서 지은 주인공 이름 (할머니의 손주). 아직 안 지었으면 빈 문자열.
+var player_name: String = ""
 ## 재료 id → 개수
 var inventory: Dictionary[StringName, int] = {}
 var unlocked_recipe_ids: Array[StringName] = []
@@ -213,6 +215,7 @@ func is_recipe_unlocked(recipe_id: StringName) -> bool:
 
 func new_game() -> void:
 	current_day = STARTING_DAY
+	player_name = ""
 	inventory.clear()
 	unlocked_recipe_ids.clear()
 	guest_story_progress.clear()
@@ -292,6 +295,7 @@ func _to_save_data() -> Dictionary:
 	return {
 		"version": SAVE_VERSION,
 		"current_day": current_day,
+		"player_name": player_name,
 		"inventory": inventory_data,
 		"unlocked_recipe_ids": recipe_data,
 		"guest_story_progress": story_data,
@@ -307,6 +311,7 @@ func _to_save_data() -> Dictionary:
 func _from_save_data(data: Dictionary) -> void:
 	new_game()
 	current_day = int(data.get("current_day", STARTING_DAY))
+	player_name = str(data.get("player_name", ""))
 	var inventory_data: Dictionary = data.get("inventory", {})
 	for ingredient_id: String in inventory_data:
 		inventory[StringName(ingredient_id)] = int(inventory_data[ingredient_id])

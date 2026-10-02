@@ -1,13 +1,15 @@
 extends Control
 ## 타이틀 화면. 저장된 게임이 있으면 이어 하기, 없으면 새 게임으로 시작한다.
-## 새 게임을 고를 때 저장된 게임이 있으면 지워도 되는지 한 번 묻는다.
+## 새 게임을 고를 때 저장된 게임이 있으면 지워도 되는지 한 번 묻는다. 새 게임은 프롤로그부터 시작한다.
 
 const CONTINUE_FORMAT: String = "이어 하기 (%d일째 아침)"
 const SPRING_COMPLETED_TEXT: String = "봄 완료 (여름은 준비 중)"
 const LOAD_FAILED_TEXT: String = "저장된 게임을 불러오지 못했어요. 새 게임으로 시작해 주세요."
 
-## 이어 하기나 새 게임으로 시작할 아침 장면
+## 이어 하기로 시작할 아침 장면
 @export_file("*.tscn") var morning_scene_path: String = "res://scenes/garden/garden.tscn"
+## 새 게임을 시작하면 먼저 보여 주는 프롤로그 장면
+@export_file("*.tscn") var prologue_scene_path: String = "res://scenes/story/prologue.tscn"
 
 ## 이어 할 수 있는 세이브가 있는지 (봄을 마친 세이브는 아직 이어 할 수 없다)
 var _can_continue: bool = false
@@ -68,7 +70,7 @@ func _on_new_game_button_pressed() -> void:
 func _start_new_game() -> void:
 	GameState.delete_save()
 	GameState.start_new_game()
-	get_tree().change_scene_to_file(morning_scene_path)
+	get_tree().change_scene_to_file(prologue_scene_path)
 
 
 func _close_confirm() -> void:

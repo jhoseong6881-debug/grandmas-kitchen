@@ -1,0 +1,214 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/story/prologue.gd" id="1_prologue"]
+[ext_resource type="Resource" path="res://data/story/prologue.tres" id="2_story"]
+[ext_resource type="FontFile" path="res://assets/fonts/KyoboHandwriting/KyoboHandwriting2025lyb.ttf" id="3_kyobo"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_text_box"]
+bg_color = Color(0.1, 0.1, 0.12, 0.82)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_paper"]
+bg_color = Color(0.97, 0.93, 0.84, 1)
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
+border_color = Color(0.85, 0.78, 0.65, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_name_box"]
+bg_color = Color(0.36, 0.27, 0.18, 0.97)
+border_width_left = 8
+border_width_top = 8
+border_width_right = 8
+border_width_bottom = 8
+border_color = Color(0.55, 0.42, 0.28, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[node name="Prologue" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_prologue")
+story = ExtResource("2_story")
+
+[node name="Background" type="ColorRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="BackgroundImage" type="TextureRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="ChapterLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 360.0
+offset_top = 48.0
+offset_right = 1560.0
+offset_bottom = 120.0
+theme_override_colors/font_color = Color(1, 0.96, 0.88, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.6)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 48
+text = "1장"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextBox" type="Panel" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 160.0
+offset_top = 700.0
+offset_right = 1760.0
+offset_bottom = 1000.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_text_box")
+
+[node name="SpeakerLabel" type="Label" parent="TextBox"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 48.0
+offset_top = 24.0
+offset_right = 648.0
+offset_bottom = 72.0
+theme_override_colors/font_color = Color(1, 0.84, 0.25, 1)
+theme_override_font_sizes/font_size = 36
+
+[node name="LineLabel" type="Label" parent="TextBox"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 48.0
+offset_top = 84.0
+offset_right = 1552.0
+offset_bottom = 268.0
+theme_override_colors/font_color = Color(1, 0.96, 0.88, 1)
+theme_override_font_sizes/font_size = 36
+autowrap_mode = 3
+
+[node name="Paper" type="Panel" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 460.0
+offset_top = 140.0
+offset_right = 1460.0
+offset_bottom = 1040.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_paper")
+
+[node name="LetterLabel" type="Label" parent="Paper"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 64.0
+offset_top = 56.0
+offset_right = -64.0
+offset_bottom = -56.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.32, 0.2, 0.12, 1)
+theme_override_fonts/font = ExtResource("3_kyobo")
+theme_override_font_sizes/font_size = 32
+autowrap_mode = 3
+
+[node name="NextMark" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 1780.0
+offset_top = 980.0
+offset_right = 1860.0
+offset_bottom = 1040.0
+theme_override_colors/font_color = Color(1, 0.84, 0.25, 1)
+theme_override_font_sizes/font_size = 36
+text = "▼"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SkipButton" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 1560.0
+offset_top = 36.0
+offset_right = 1872.0
+offset_bottom = 96.0
+focus_mode = 0
+theme_override_font_sizes/font_size = 24
+text = "건너뛰기 (Esc / Ⓑ)"
+
+[node name="NameBox" type="Panel" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 560.0
+offset_top = 320.0
+offset_right = 1360.0
+offset_bottom = 660.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_name_box")
+
+[node name="NamePrompt" type="Label" parent="NameBox"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 40.0
+offset_top = 32.0
+offset_right = 760.0
+offset_bottom = 92.0
+theme_override_colors/font_color = Color(1, 0.96, 0.88, 1)
+theme_override_font_sizes/font_size = 36
+text = "이름을 알려 주세요"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="NameEdit" type="LineEdit" parent="NameBox"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 160.0
+offset_top = 120.0
+offset_right = 640.0
+offset_bottom = 204.0
+focus_neighbor_bottom = NodePath("../NameConfirmButton")
+theme_override_font_sizes/font_size = 48
+alignment = 1
+
+[node name="NameConfirmButton" type="Button" parent="NameBox"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 270.0
+offset_top = 236.0
+offset_right = 530.0
+offset_bottom = 300.0
+focus_neighbor_top = NodePath("../NameEdit")
+theme_override_font_sizes/font_size = 36
+text = "정했어요"
