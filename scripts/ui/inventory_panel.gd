@@ -6,8 +6,8 @@ const ROW_TEXT_FORMAT: String = "%s  × %d"
 const EMPTY_TEXT: String = "아직 재료가 없어요"
 
 @export var icon_size: Vector2 = Vector2(48, 48)
-## 그림이 아직 없는 재료에 쓰는 임시 사각형 색
-@export var placeholder_icon_color: Color = Color(0.85, 0.55, 0.3)
+## data/ 에 없는 재료(알 수 없는 id)에 쓰는 임시 사각형 색
+@export var unknown_icon_color: Color = Color(0.5, 0.5, 0.5)
 @export var row_font_size: int = 24
 
 @onready var _item_rows: VBoxContainer = %ItemRows
@@ -43,15 +43,16 @@ func _make_row(ingredient_id: StringName, count: int) -> HBoxContainer:
 
 
 func _make_icon(ingredient: Ingredient) -> Control:
-	if ingredient != null and ingredient.icon != null:
+	# 그림이 없는 재료는 재료마다 정한 임시 색 사각형이 나온다 (Ingredient.get_icon_texture).
+	if ingredient != null:
 		var texture_rect: TextureRect = TextureRect.new()
-		texture_rect.texture = ingredient.icon
+		texture_rect.texture = ingredient.get_icon_texture()
 		texture_rect.custom_minimum_size = icon_size
 		texture_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		return texture_rect
 	var placeholder: ColorRect = ColorRect.new()
-	placeholder.color = placeholder_icon_color
+	placeholder.color = unknown_icon_color
 	placeholder.custom_minimum_size = icon_size
 	return placeholder
 

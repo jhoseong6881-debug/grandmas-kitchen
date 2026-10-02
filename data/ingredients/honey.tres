@@ -6,4 +6,5 @@
 script = ExtResource("1_ingredient")
 id = &"honey"
 display_name = "꿀"
+placeholder_color = Color(0.96, 0.74, 0.18, 1)
 description = "곰이 아껴 둔 달콤한 봄꽃 꿀."

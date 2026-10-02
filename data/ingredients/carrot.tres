@@ -6,5 +6,6 @@
 script = ExtResource("1_u2dq7")
 id = &"carrot"
 display_name = "당근"
+placeholder_color = Color(0.93, 0.55, 0.25, 1)
 description = "당근 그림 그려줘요.."
 metadata/_custom_type_script = "uid://jdo3q781e21o"

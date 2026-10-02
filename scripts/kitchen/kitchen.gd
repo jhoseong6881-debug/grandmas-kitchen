@@ -7,8 +7,10 @@ const DAY_TEXT_FORMAT: String = "%d일째"
 const LUNCH_PROGRESS_FORMAT: String = "점심 손님 %d / %d"
 const COOKED_TEXT_FORMAT: String = "%s 완성!"
 const PERFECT_COOKED_TEXT_FORMAT: String = "%s 완성! 한 번도 안 틀렸어요!"
-const PAYMENT_TEXT_FORMAT: String = "밥값으로 %s 받았어요"
-const PAYMENT_ITEM_FORMAT: String = "%s ×%d"
+const PAYMENT_PREFIX: String = "밥값으로 "
+const PAYMENT_SUFFIX: String = " 받았어요"
+const PAYMENT_ITEM_FORMAT: String = " %s ×%d"
+const PAYMENT_ITEM_ICON_ONLY_FORMAT: String = " ×%d"
 const PAYMENT_ITEM_SEPARATOR: String = ", "
 const PERFECT_BONUS_FORMAT: String = " (완벽 보너스 +%d!)"
 const LUNCH_DONE_TEXT: String = "오늘 점심 장사 끝! 수고했어요."
@@ -27,6 +29,10 @@ const OUT_OF_INGREDIENTS_TEXT: String = "재료가 다 떨어져서 오늘 장�
 @export var fallback_payment_amount: int = 1
 ## 미니게임을 한 번도 안 틀리면 밥값 재료마다 이만큼 더 받는다.
 @export var perfect_bonus_amount: int = 1
+## 밥값 문구에서 재료 아이콘 크기(픽셀). 픽셀 글꼴에 맞춰 12의 배수로.
+@export var payment_icon_size: int = 48
+## true: "아이콘 당근 ×2", false: "아이콘 ×2". 재료 그림이 다 생기면 false로 바꿔도 된다.
+@export var show_ingredient_names_with_icons: bool = true
 ## 완벽하게 요리했을 때 아래 안내 글자 색
 @export var perfect_text_color: Color = Color(1, 0.84, 0.25)
 
@@ -56,7 +62,7 @@ var _status_default_color: Color
 @onready var _serve_button: Button = %ServeButton
 @onready var _next_guest_button: Button = %NextGuestButton
 @onready var _evening_button: Button = %EveningButton
-@onready var _cook_status_label: Label = %CookStatusLabel
+@onready var _cook_status_label: RichTextLabel = %CookStatusLabel
 @onready var _notebook: GuestNotebook = %GuestNotebook
 @onready var _notebook_button: Button = %NotebookButton
 @onready var _chop_minigame: ChopMinigame = %ChopMinigame
@@ -80,7 +86,7 @@ func _ready() -> void:
 	_notebook_button.pressed.connect(_notebook.open)
 	for minigame: Minigame in _minigames.values():
 		minigame.finished.connect(_on_minigame_finished)
-	_status_default_color = _cook_status_label.get_theme_color("font_color")
+	_status_default_color = _cook_status_label.get_theme_color("default_color")
 	if start_new_game_on_ready and not GameState.is_game_started:
 		GameState.start_new_game()
 	_on_day_changed(GameState.current_day)
@@ -212,17 +218,10 @@ func _on_serve_button_pressed() -> void:
 	if _is_perfect_cook:
 		for ingredient_id: StringName in payment:
 			payment[ingredient_id] += perfect_bonus_amount
-	var payment_texts: PackedStringArray = []
 	for ingredient_id: StringName in payment:
 		GameState.add_ingredient(ingredient_id, payment[ingredient_id])
-		var ingredient: Ingredient = GameData.get_ingredient(ingredient_id)
-		var ingredient_name: String = ingredient.display_name if ingredient != null else String(ingredient_id)
-		payment_texts.append(PAYMENT_ITEM_FORMAT % [ingredient_name, payment[ingredient_id]])
 	_guest_spot.say(current_guest.perfect_line if _is_perfect_cook else current_guest.thanks_line)
-	var payment_text: String = PAYMENT_TEXT_FORMAT % PAYMENT_ITEM_SEPARATOR.join(payment_texts)
-	if _is_perfect_cook:
-		payment_text += PERFECT_BONUS_FORMAT % perfect_bonus_amount
-	_set_status(payment_text, _is_perfect_cook)
+	_set_payment_status(payment, _is_perfect_cook)
 	GameState.record_served_guest(current_guest.id, _is_perfect_cook)
 	_guests_served += 1
 	_update_lunch_label()
@@ -241,9 +240,42 @@ func _show_only_button(button: Button) -> void:
 
 
 func _set_status(text: String, is_perfect: bool) -> void:
-	_cook_status_label.text = text
-	_cook_status_label.add_theme_color_override("font_color",
+	_begin_status(is_perfect)
+	_cook_status_label.add_text(text)
+	_cook_status_label.pop()
+
+
+## "밥값으로 [아이콘] 당근 ×2, [아이콘] 꿀 ×1 받았어요 (완벽 보너스 +1!)"
+func _set_payment_status(payment: Dictionary[StringName, int], is_perfect: bool) -> void:
+	_begin_status(is_perfect)
+	_cook_status_label.add_text(PAYMENT_PREFIX)
+	var is_first: bool = true
+	for ingredient_id: StringName in payment:
+		if not is_first:
+			_cook_status_label.add_text(PAYMENT_ITEM_SEPARATOR)
+		is_first = false
+		var ingredient: Ingredient = GameData.get_ingredient(ingredient_id)
+		if ingredient == null:
+			_cook_status_label.add_text(PAYMENT_ITEM_FORMAT % [String(ingredient_id), payment[ingredient_id]])
+			continue
+		_cook_status_label.add_image(ingredient.get_icon_texture(), payment_icon_size, payment_icon_size,
+				Color.WHITE, INLINE_ALIGNMENT_CENTER)
+		if show_ingredient_names_with_icons:
+			_cook_status_label.add_text(PAYMENT_ITEM_FORMAT % [ingredient.display_name, payment[ingredient_id]])
+		else:
+			_cook_status_label.add_text(PAYMENT_ITEM_ICON_ONLY_FORMAT % payment[ingredient_id])
+	_cook_status_label.add_text(PAYMENT_SUFFIX)
+	if is_perfect:
+		_cook_status_label.add_text(PERFECT_BONUS_FORMAT % perfect_bonus_amount)
+	_cook_status_label.pop()
+
+
+## 안내 글을 비우고 색을 정한 뒤, 가운데 정렬 문단을 연다. 쓰고 나면 pop() 으로 닫는다.
+func _begin_status(is_perfect: bool) -> void:
+	_cook_status_label.clear()
+	_cook_status_label.add_theme_color_override("default_color",
 			perfect_text_color if is_perfect else _status_default_color)
+	_cook_status_label.push_paragraph(HORIZONTAL_ALIGNMENT_CENTER)
 
 
 func _update_lunch_label() -> void:

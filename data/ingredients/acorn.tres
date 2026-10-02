@@ -6,4 +6,5 @@
 script = ExtResource("1_ingredient")
 id = &"acorn"
 display_name = "도토리"
+placeholder_color = Color(0.55, 0.36, 0.2, 1)
 description = "뒷산 도토리나무에서 주운 동글동글한 도토리."
