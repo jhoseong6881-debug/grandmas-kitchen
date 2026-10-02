@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/ui/title.gd" id="1_title"]
 [ext_resource type="FontFile" path="res://assets/fonts/KyoboHandwriting/KyoboHandwriting2025lyb.ttf" id="9_kyobo"]
+[ext_resource type="PackedScene" path="res://scenes/ui/settings_panel.tscn" id="10_settings"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_confirm"]
 bg_color = Color(0.98, 0.94, 0.82, 1)
@@ -72,9 +73,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -240.0
-offset_top = 520.0
+offset_top = 470.0
 offset_right = 240.0
-offset_bottom = 860.0
+offset_bottom = 878.0
 grow_horizontal = 2
 theme_override_constants/separation = 24
 
@@ -91,6 +92,13 @@ custom_minimum_size = Vector2(0, 84)
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "새 게임"
+
+[node name="SettingsButton" type="Button" parent="Menu"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 84)
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "설정"
 
 [node name="QuitButton" type="Button" parent="Menu"]
 unique_name_in_owner = true
@@ -196,3 +204,8 @@ custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "아니요"
+
+[node name="SettingsPanel" parent="." instance=ExtResource("10_settings")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1

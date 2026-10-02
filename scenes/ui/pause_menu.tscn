@@ -1,6 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/pause_menu.gd" id="1_pause"]
+[ext_resource type="PackedScene" path="res://scenes/ui/settings_panel.tscn" id="2_settings"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_box"]
 bg_color = Color(0.98, 0.94, 0.82, 1)
@@ -45,9 +46,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -420.0
-offset_top = -330.0
+offset_top = -390.0
 offset_right = 420.0
-offset_bottom = 330.0
+offset_bottom = 390.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_box")
@@ -80,6 +81,13 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "계속하기"
 
+[node name="SettingsButton" type="Button" parent="Screen/Box/Rows"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 84)
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "설정"
+
 [node name="TitleButton" type="Button" parent="Screen/Box/Rows"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 84)
@@ -101,3 +109,8 @@ theme_override_font_sizes/font_size = 24
 text = "저장은 잠자리에 들 때 돼요.
 지금 나가면 오늘 한 일은 저장되지 않아요."
 horizontal_alignment = 1
+
+[node name="SettingsPanel" parent="Screen" instance=ExtResource("2_settings")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1

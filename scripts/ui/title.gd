@@ -1,5 +1,5 @@
 extends Control
-## 타이틀 화면. 저장된 게임이 있으면 이어 하기, 없으면 새 게임으로 시작한다.
+## 타이틀 화면. 저장된 게임이 있으면 이어 하기, 없으면 새 게임으로 시작한다. 설정 창도 여기서 연다.
 ## 새 게임을 고를 때 저장된 게임이 있으면 지워도 되는지 한 번 묻는다. 새 게임은 프롤로그부터 시작한다.
 
 const CONTINUE_FORMAT: String = "이어 하기 (%d일째 아침)"
@@ -16,7 +16,9 @@ var _can_continue: bool = false
 
 @onready var _continue_button: Button = %ContinueButton
 @onready var _new_game_button: Button = %NewGameButton
+@onready var _settings_button: Button = %SettingsButton
 @onready var _quit_button: Button = %QuitButton
+@onready var _settings_panel: SettingsPanel = %SettingsPanel
 @onready var _message_label: Label = %MessageLabel
 @onready var _confirm_panel: Control = %ConfirmPanel
 @onready var _confirm_yes_button: Button = %ConfirmYesButton
@@ -26,6 +28,7 @@ var _can_continue: bool = false
 func _ready() -> void:
 	_continue_button.pressed.connect(_on_continue_button_pressed)
 	_new_game_button.pressed.connect(_on_new_game_button_pressed)
+	_settings_button.pressed.connect(_on_settings_button_pressed)
 	_quit_button.pressed.connect(_on_quit_button_pressed)
 	_confirm_yes_button.pressed.connect(_start_new_game)
 	_confirm_no_button.pressed.connect(_close_confirm)
@@ -79,10 +82,19 @@ func _close_confirm() -> void:
 	_new_game_button.grab_focus()
 
 
-## 확인 창이 떠 있는 동안 뒤의 버튼을 막는다. 비활성 버튼도 선택은 될 수 있어서 선택 자체를 끈다.
+## 설정 창이 떠 있는 동안 뒤의 버튼을 막고, 닫히면 설정 버튼을 다시 선택한다.
+func _on_settings_button_pressed() -> void:
+	_set_menu_enabled(false)
+	_settings_panel.open()
+	await _settings_panel.closed
+	_set_menu_enabled(true)
+	_settings_button.grab_focus()
+
+
+## 확인 창이나 설정 창이 떠 있는 동안 뒤의 버튼을 막는다. 비활성 버튼도 선택은 될 수 있어서 선택 자체를 끈다.
 ## 그래야 방향키로 뒤 버튼에 가지 않는다.
 func _set_menu_enabled(is_enabled: bool) -> void:
-	for button: Button in [_continue_button, _new_game_button, _quit_button]:
+	for button: Button in [_continue_button, _new_game_button, _settings_button, _quit_button]:
 		var can_use: bool = is_enabled and (button != _continue_button or _can_continue)
 		button.disabled = not can_use
 		button.focus_mode = Control.FOCUS_ALL if can_use else Control.FOCUS_NONE

@@ -1,7 +1,7 @@
 extends CanvasLayer
 ## 일시 정지 메뉴. 오토로드로 등록해서 모든 장면에서 쓴다 (프로젝트 설정 > 전역 > 오토로드, 이름 "PauseMenu").
 ## Esc 또는 게임패드 Start 로 열고 닫는다. 열려 있는 동안 게임이 멈춘다(get_tree().paused).
-## 게임이 시작될 때 기본 입력(게임패드 A/B, 일시 정지)도 여기서 채운다 (InputDefaults).
+## 게임이 시작될 때 기본 입력(게임패드 A/B, 일시 정지)과 저장된 설정(GameSettings)도 여기서 채운다.
 ## 타이틀 화면과 프롤로그에서는 열리지 않는다.
 
 ## 이 장면에서는 일시 정지 메뉴를 열지 않는다. "타이틀로"를 누르면 이 장면으로 간다.
@@ -13,6 +13,8 @@ extends CanvasLayer
 var _previous_focus: Control
 
 @onready var _resume_button: Button = %ResumeButton
+@onready var _settings_button: Button = %SettingsButton
+@onready var _settings_panel: SettingsPanel = %SettingsPanel
 @onready var _title_button: Button = %TitleButton
 @onready var _quit_button: Button = %QuitButton
 
@@ -21,10 +23,12 @@ func _ready() -> void:
 	# 게임이 멈춰 있어도 이 메뉴는 움직여야 한다.
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	InputDefaults.apply()
+	GameSettings.load_and_apply()
 	_resume_button.pressed.connect(resume)
+	_settings_button.pressed.connect(_settings_panel.open)
 	_title_button.pressed.connect(_on_title_button_pressed)
 	_quit_button.pressed.connect(_on_quit_button_pressed)
-	_keep_focus_inside([_resume_button, _title_button, _quit_button])
+	_keep_focus_inside([_resume_button, _settings_button, _title_button, _quit_button])
 	hide()
 
 
@@ -50,6 +54,9 @@ func open() -> void:
 
 
 func resume() -> void:
+	# 설정 창이 열린 채로 게임패드 Start 를 누르면, 설정을 저장하고 같이 닫는다.
+	if _settings_panel.visible:
+		_settings_panel.close()
 	hide()
 	get_tree().paused = false
 	if is_instance_valid(_previous_focus) and _previous_focus.is_visible_in_tree():
