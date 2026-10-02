@@ -4,7 +4,7 @@ extends Resource
 
 ## 요리 미니게임 종류
 ## 세이브와 .tres 에는 번호로 저장되니, 새 종류는 맨 뒤에만 붙인다.
-enum MinigameType { CHOP, STIR_FRY, PLATE, PAN_FRY, ROLL, COOK_RICE }
+enum MinigameType { CHOP, STIR_FRY, PLATE, PAN_FRY, ROLL, COOK_RICE, MIX }
 
 ## 미니게임 화면 제목에 쓰는 기본 동작 이름. 레시피의 ○○ Action Name 칸이 비어 있으면 이걸 쓴다.
 const DEFAULT_ACTION_NAMES: Dictionary[MinigameType, String] = {
@@ -14,6 +14,7 @@ const DEFAULT_ACTION_NAMES: Dictionary[MinigameType, String] = {
 	MinigameType.PAN_FRY: "부치기",
 	MinigameType.ROLL: "말기",
 	MinigameType.COOK_RICE: "밥 짓기",
+	MinigameType.MIX: "버무리기",
 }
 
 ## 세이브 파일에 저장되는 고유 이름표. 영어 소문자로 짓고 한 번 정하면 바꾸지 않는다. (예: spring_bibimbap)
@@ -34,8 +35,13 @@ const DEFAULT_ACTION_NAMES: Dictionary[MinigameType, String] = {
 @export var pan_fry_action_name: String = ""
 @export var roll_action_name: String = ""
 @export var cook_rice_action_name: String = ""
+@export var mix_action_name: String = ""
 ## 완성된 요리 그림. 비워 두면 임시 도형으로 표시한다.
 @export var finished_image: Texture2D
+## 버무리기 미니게임에서 묻히는 양념 (data/coatings/). 버무리기가 없는 레시피는 비워 둔다.
+@export var mix_coating: Coating
+## 버무리기 미니게임에서 양념을 묻힐 재료. 비워 두면 첫 번째 재료를 쓴다.
+@export var mix_piece_ingredient: Ingredient
 
 
 ## 썰기/볶기 화면 제목에 쓸 재료 이름. 정해 둔 이름이 없으면 첫 번째 재료 이름, 재료도 없으면 빈 문자열.
@@ -56,10 +62,18 @@ func get_action_name(minigame_type: MinigameType) -> String:
 		MinigameType.PAN_FRY: pan_fry_action_name,
 		MinigameType.ROLL: roll_action_name,
 		MinigameType.COOK_RICE: cook_rice_action_name,
+		MinigameType.MIX: mix_action_name,
 	}
 	if not custom_names[minigame_type].is_empty():
 		return custom_names[minigame_type]
 	return DEFAULT_ACTION_NAMES[minigame_type]
+
+
+## 버무리기에서 양념을 묻힐 재료. 정해 둔 재료가 없으면 첫 번째 재료, 재료도 없으면 null.
+func get_mix_piece_ingredient() -> Ingredient:
+	if mix_piece_ingredient != null:
+		return mix_piece_ingredient
+	return ingredients[0] if not ingredients.is_empty() else null
 
 
 ## 재료 id별로 몇 개 필요한지 센다. (예: {carrot: 1, egg: 2})

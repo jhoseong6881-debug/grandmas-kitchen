@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/pan_fry_minigame.tscn" id="9_pan_fry"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/roll_minigame.tscn" id="10_roll"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/rice_minigame.tscn" id="11_rice"]
+[ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/mix_minigame.tscn" id="12_mix"]
 
 [node name="Kitchen" type="Control"]
 layout_mode = 3
@@ -193,6 +194,10 @@ unique_name_in_owner = true
 layout_mode = 1
 
 [node name="RiceMinigame" parent="." instance=ExtResource("11_rice")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="MixMinigame" parent="." instance=ExtResource("12_mix")]
 unique_name_in_owner = true
 layout_mode = 1
 

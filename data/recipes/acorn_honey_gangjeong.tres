@@ -4,11 +4,12 @@
 [ext_resource type="Script" path="res://scripts/data/ingredient.gd" id="2_ingredient"]
 [ext_resource type="Resource" path="res://data/ingredients/acorn.tres" id="3_acorn"]
 [ext_resource type="Resource" path="res://data/ingredients/honey.tres" id="4_honey"]
+[ext_resource type="Resource" path="res://data/coatings/honey.tres" id="5_honey_coating"]
 
 [resource]
 script = ExtResource("1_recipe")
 id = &"acorn_honey_gangjeong"
 display_name = "도토리 꿀강정"
 ingredients = Array[ExtResource("2_ingredient")]([ExtResource("3_acorn"), ExtResource("3_acorn"), ExtResource("4_honey")])
-minigame_steps = Array[int]([1, 2])
-stir_fry_action_name = "버무리기"
+minigame_steps = Array[int]([6, 2])
+mix_coating = ExtResource("5_honey_coating")

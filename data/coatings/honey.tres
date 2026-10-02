@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="Coating" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/coating.gd" id="1_coating"]
+
+[resource]
+script = ExtResource("1_coating")
+display_name = "꿀"
+color = Color(0.96, 0.74, 0.18, 1)

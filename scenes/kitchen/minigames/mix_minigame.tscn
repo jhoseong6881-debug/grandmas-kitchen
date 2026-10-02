@@ -1,0 +1,240 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/kitchen/minigames/mix_minigame.gd" id="1_mix"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bowl"]
+bg_color = Color(0.93, 0.9, 0.84, 1)
+border_width_left = 14
+border_width_top = 14
+border_width_right = 14
+border_width_bottom = 14
+border_color = Color(0.72, 0.8, 0.88, 1)
+corner_radius_top_left = 200
+corner_radius_top_right = 200
+corner_radius_bottom_right = 200
+corner_radius_bottom_left = 200
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_glow"]
+draw_center = false
+border_width_left = 8
+border_width_top = 8
+border_width_right = 8
+border_width_bottom = 8
+border_color = Color(1, 0.84, 0.25, 1)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_coat"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 1, 1, 0.6)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_spatula_head"]
+bg_color = Color(0.72, 0.52, 0.32, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[node name="MixMinigame" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 2
+script = ExtResource("1_mix")
+
+[node name="Dim" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.45)
+
+[node name="TitleLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 360.0
+offset_top = 50.0
+offset_right = 1560.0
+offset_bottom = 130.0
+theme_override_font_sizes/font_size = 60
+text = "재료 버무리기"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SideLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 560.0
+offset_top = 140.0
+offset_right = 1360.0
+offset_bottom = 200.0
+theme_override_font_sizes/font_size = 36
+text = "양념 묻힌 조각 0 / 7"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Bowl" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 480.0
+offset_top = 260.0
+offset_right = 1440.0
+offset_bottom = 700.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bowl")
+
+[node name="PieceArea" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 580.0
+offset_top = 340.0
+offset_right = 1340.0
+offset_bottom = 620.0
+mouse_filter = 2
+
+[node name="Spatula" type="Control" parent="PieceArea"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_top = -60.0
+offset_right = 36.0
+offset_bottom = 320.0
+mouse_filter = 2
+
+[node name="Handle" type="ColorRect" parent="PieceArea/Spatula"]
+layout_mode = 0
+offset_left = 12.0
+offset_right = 24.0
+offset_bottom = 220.0
+mouse_filter = 2
+color = Color(0.55, 0.38, 0.22, 1)
+
+[node name="Head" type="Panel" parent="PieceArea/Spatula"]
+layout_mode = 0
+offset_top = 200.0
+offset_right = 36.0
+offset_bottom = 380.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_spatula_head")
+
+[node name="PieceTemplate" type="Control" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_right = 64.0
+offset_bottom = 64.0
+mouse_filter = 2
+
+[node name="Glow" type="Panel" parent="PieceTemplate"]
+layout_mode = 0
+offset_left = -10.0
+offset_top = -10.0
+offset_right = 74.0
+offset_bottom = 74.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_glow")
+
+[node name="Icon" type="TextureRect" parent="PieceTemplate"]
+layout_mode = 0
+offset_right = 64.0
+offset_bottom = 64.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Coat" type="Panel" parent="PieceTemplate"]
+visible = false
+layout_mode = 0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 60.0
+offset_bottom = 60.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_coat")
+
+[node name="PerfectStreakLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 240.0
+offset_top = 390.0
+offset_right = 640.0
+offset_bottom = 440.0
+theme_override_colors/font_color = Color(1, 0.84, 0.25, 1)
+theme_override_font_sizes/font_size = 24
+text = "★ 완벽 도전 중"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="ProgressLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -600.0
+offset_top = -250.0
+offset_right = 600.0
+offset_bottom = -180.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 48
+text = "주걱이 안 묻은 조각 위를 지날 때 눌러요"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HintLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -900.0
+offset_top = -160.0
+offset_right = 900.0
+offset_bottom = -100.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 36
+text = "주걱이 지나가는 조각이 금색으로 빛날 때 눌러요 (클릭 / 스페이스 / Ⓐ)"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PerfectStamp" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -450.0
+offset_top = -140.0
+offset_right = 450.0
+offset_bottom = 60.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.84, 0.25, 1)
+theme_override_colors/font_outline_color = Color(0.4, 0.22, 0.08, 1)
+theme_override_constants/outline_size = 16
+theme_override_font_sizes/font_size = 120
+text = "★ 완벽! ★"
+horizontal_alignment = 1
+vertical_alignment = 1

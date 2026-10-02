@@ -30,6 +30,9 @@
 | scenes/kitchen/minigames/rice_minigame.tscn (Bowl, Water) | 쌀 씻는 바가지 / 물 (물 색은 코드가 입힘) | 480x480 / 420x420 | 할 일 |
 | scenes/kitchen/minigames/rice_minigame.tscn (RiceTemplate, Hand) | 쌀알 / 씻는 손 | 8x18 / 64x64 | 할 일 |
 | scenes/kitchen/minigames/rice_minigame.tscn (Pot, Lid, Flame) | 가마솥 / 솥뚜껑 / 아궁이 불 | 420x270 / 480x44 / 260x80 | 할 일 |
+| scenes/kitchen/minigames/mix_minigame.tscn (Bowl) | 넓은 버무리기 그릇 | 960x440 | 할 일 |
+| scenes/kitchen/minigames/mix_minigame.tscn (Spatula) | 나무 주걱 (위에서 본 모습) | 36x380 | 할 일 |
+| scenes/kitchen/minigames/mix_minigame.tscn (PieceTemplate/Coat) | 양념 묻은 반짝임 (조각은 재료 아이콘을 그대로 씀, 양념 색은 data/coatings/) | 56x56 | 선택 |
 | data/ingredients/egg.tres (icon) | 계란 아이콘 | 미정 | 할 일 |
 | data/ingredients/acorn.tres (icon) | 도토리 아이콘 | 미정 | 할 일 |
 | data/recipes/acorn_jelly_muchim.tres (finished_image) | 도토리묵 무침 완성 그림 | 미정 | 할 일 |
