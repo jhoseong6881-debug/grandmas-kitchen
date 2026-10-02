@@ -27,6 +27,9 @@
 | scenes/kitchen/minigames/roll_minigame.tscn (Pan, Handle) | 위에서 본 네모난 계란말이 팬 | 800x400 + 손잡이 | 할 일 |
 | scenes/kitchen/minigames/roll_minigame.tscn (Sheet) | 팬에 펴진 계란물 | 늘어나는 띠 (높이 312) | 할 일 |
 | scenes/kitchen/minigames/roll_minigame.tscn (Roll) | 말린 계란 (겹마다 두꺼워짐) | 36~144 x 336 | 할 일 |
+| scenes/kitchen/minigames/rice_minigame.tscn (Bowl, Water) | 쌀 씻는 바가지 / 물 (물 색은 코드가 입힘) | 480x480 / 420x420 | 할 일 |
+| scenes/kitchen/minigames/rice_minigame.tscn (RiceTemplate, Hand) | 쌀알 / 씻는 손 | 8x18 / 64x64 | 할 일 |
+| scenes/kitchen/minigames/rice_minigame.tscn (Pot, Lid, Flame) | 가마솥 / 솥뚜껑 / 아궁이 불 | 420x270 / 480x44 / 260x80 | 할 일 |
 | data/ingredients/egg.tres (icon) | 계란 아이콘 | 미정 | 할 일 |
 | data/ingredients/acorn.tres (icon) | 도토리 아이콘 | 미정 | 할 일 |
 | data/recipes/acorn_jelly_muchim.tres (finished_image) | 도토리묵 무침 완성 그림 | 미정 | 할 일 |

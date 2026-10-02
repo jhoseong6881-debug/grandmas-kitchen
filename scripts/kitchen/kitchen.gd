@@ -74,6 +74,7 @@ var _status_default_color: Color
 @onready var _plate_minigame: PlateMinigame = %PlateMinigame
 @onready var _pan_fry_minigame: PanFryMinigame = %PanFryMinigame
 @onready var _roll_minigame: RollMinigame = %RollMinigame
+@onready var _rice_minigame: RiceMinigame = %RiceMinigame
 ## 레시피의 미니게임 종류마다 실제로 실행할 미니게임
 @onready var _minigames: Dictionary[Recipe.MinigameType, Minigame] = {
 	Recipe.MinigameType.CHOP: _chop_minigame,
@@ -81,6 +82,7 @@ var _status_default_color: Color
 	Recipe.MinigameType.PLATE: _plate_minigame,
 	Recipe.MinigameType.PAN_FRY: _pan_fry_minigame,
 	Recipe.MinigameType.ROLL: _roll_minigame,
+	Recipe.MinigameType.COOK_RICE: _rice_minigame,
 }
 @onready var _buttons: Array[Button] = [_cook_button, _serve_button, _next_guest_button, _evening_button]
 

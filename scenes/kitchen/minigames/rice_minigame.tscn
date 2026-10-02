@@ -1,0 +1,413 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/kitchen/minigames/rice_minigame.gd" id="1_rice"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bowl"]
+bg_color = Color(0.72, 0.55, 0.36, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(0.55, 0.4, 0.25, 1)
+corner_radius_top_left = 240
+corner_radius_top_right = 240
+corner_radius_bottom_right = 240
+corner_radius_bottom_left = 240
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_water"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 210
+corner_radius_top_right = 210
+corner_radius_bottom_right = 210
+corner_radius_bottom_left = 210
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_grain"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_spot"]
+bg_color = Color(1, 0.84, 0.25, 0.8)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hand"]
+bg_color = Color(1, 0.85, 0.7, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.85, 0.65, 0.5, 1)
+corner_radius_top_left = 32
+corner_radius_top_right = 32
+corner_radius_bottom_right = 32
+corner_radius_bottom_left = 32
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pot"]
+bg_color = Color(0.18, 0.17, 0.17, 1)
+border_width_left = 8
+border_width_right = 8
+border_width_bottom = 8
+border_color = Color(0.3, 0.29, 0.29, 1)
+corner_radius_bottom_right = 140
+corner_radius_bottom_left = 140
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lid"]
+bg_color = Color(0.55, 0.38, 0.22, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_flame"]
+bg_color = Color(1, 0.55, 0.15, 0.9)
+corner_radius_top_left = 130
+corner_radius_top_right = 130
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[node name="RiceMinigame" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 2
+script = ExtResource("1_rice")
+
+[node name="Dim" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.45)
+
+[node name="TitleLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 360.0
+offset_top = 50.0
+offset_right = 1560.0
+offset_bottom = 130.0
+theme_override_font_sizes/font_size = 60
+text = "쌀 씻기"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SideLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 560.0
+offset_top = 140.0
+offset_right = 1360.0
+offset_bottom = 200.0
+theme_override_font_sizes/font_size = 36
+text = "① 쌀 씻기 0 / 5"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="WashArea" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 680.0
+offset_top = 200.0
+offset_right = 1240.0
+offset_bottom = 760.0
+mouse_filter = 2
+
+[node name="Bowl" type="Panel" parent="WashArea"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 520.0
+offset_bottom = 520.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bowl")
+
+[node name="Water" type="Panel" parent="WashArea"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 70.0
+offset_top = 70.0
+offset_right = 490.0
+offset_bottom = 490.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_water")
+
+[node name="RiceLayer" type="Control" parent="WashArea"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 280.0
+offset_top = 280.0
+offset_right = 280.0
+offset_bottom = 280.0
+mouse_filter = 2
+
+[node name="RiceTemplate" type="Panel" parent="WashArea"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 8.0
+offset_bottom = 18.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_grain")
+
+[node name="WashSpot" type="Panel" parent="WashArea"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 80.0
+offset_bottom = 80.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_spot")
+
+[node name="Hand" type="Panel" parent="WashArea"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 64.0
+offset_bottom = 64.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_hand")
+
+[node name="FireArea" type="Control" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="CookLabel" type="Label" parent="FireArea"]
+layout_mode = 0
+offset_left = 420.0
+offset_top = 746.0
+offset_right = 640.0
+offset_bottom = 790.0
+theme_override_font_sizes/font_size = 24
+text = "밥 짓는 중"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="CookBar" type="ColorRect" parent="FireArea"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 660.0
+offset_top = 756.0
+offset_right = 1260.0
+offset_bottom = 780.0
+mouse_filter = 2
+color = Color(0.25, 0.22, 0.2, 1)
+
+[node name="CookFill" type="ColorRect" parent="FireArea/CookBar"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 24.0
+mouse_filter = 2
+color = Color(1, 0.98, 0.92, 1)
+
+[node name="Flame" type="Panel" parent="FireArea"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 830.0
+offset_top = 560.0
+offset_right = 1090.0
+offset_bottom = 640.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_flame")
+
+[node name="Pot" type="Panel" parent="FireArea"]
+layout_mode = 0
+offset_left = 750.0
+offset_top = 310.0
+offset_right = 1170.0
+offset_bottom = 580.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_pot")
+
+[node name="Lid" type="Panel" parent="FireArea"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 720.0
+offset_top = 272.0
+offset_right = 1200.0
+offset_bottom = 316.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_lid")
+
+[node name="Knob" type="ColorRect" parent="FireArea/Lid"]
+layout_mode = 0
+offset_left = 210.0
+offset_top = -20.0
+offset_right = 270.0
+offset_bottom = 0.0
+mouse_filter = 2
+color = Color(0.45, 0.3, 0.17, 1)
+
+[node name="Steam" type="CPUParticles2D" parent="FireArea"]
+unique_name_in_owner = true
+position = Vector2(960, 262)
+amount = 24
+lifetime = 1.0
+emission_shape = 3
+emission_rect_extents = Vector2(180, 4)
+direction = Vector2(0, -1)
+spread = 12.0
+gravity = Vector2(0, -30)
+initial_velocity_min = 20.0
+initial_velocity_max = 40.0
+scale_amount_min = 6.0
+scale_amount_max = 12.0
+color = Color(1, 1, 1, 0.4)
+
+[node name="HeatLabel" type="Label" parent="FireArea"]
+layout_mode = 0
+offset_left = 420.0
+offset_top = 684.0
+offset_right = 640.0
+offset_bottom = 728.0
+theme_override_font_sizes/font_size = 24
+text = "불 세기"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="HeatBar" type="Control" parent="FireArea"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 660.0
+offset_top = 690.0
+offset_right = 1260.0
+offset_bottom = 722.0
+mouse_filter = 2
+
+[node name="BarBack" type="ColorRect" parent="FireArea/HeatBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.98, 0.75, 0.5, 1)
+
+[node name="HeatGoldZone" type="ColorRect" parent="FireArea/HeatBar"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 330.0
+offset_top = 0.0
+offset_right = 468.0
+offset_bottom = 32.0
+mouse_filter = 2
+color = Color(1, 0.84, 0.25, 1)
+
+[node name="HeatOverZone" type="ColorRect" parent="FireArea/HeatBar"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 468.0
+offset_top = 0.0
+offset_right = 600.0
+offset_bottom = 32.0
+mouse_filter = 2
+color = Color(0.85, 0.3, 0.2, 1)
+
+[node name="HeatMarker" type="ColorRect" parent="FireArea/HeatBar"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = -4.0
+offset_top = -10.0
+offset_right = 4.0
+offset_bottom = 42.0
+mouse_filter = 2
+color = Color(1, 1, 1, 1)
+
+[node name="PerfectStreakLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 240.0
+offset_top = 390.0
+offset_right = 640.0
+offset_bottom = 440.0
+theme_override_colors/font_color = Color(1, 0.84, 0.25, 1)
+theme_override_font_sizes/font_size = 24
+text = "★ 완벽 도전 중"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="ProgressLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -600.0
+offset_top = -250.0
+offset_right = 600.0
+offset_bottom = -180.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 48
+text = "손이 금색 자리에 올 때 눌러요"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HintLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -900.0
+offset_top = -160.0
+offset_right = 900.0
+offset_bottom = -100.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 36
+text = "빙글빙글 도는 손이 금색 자리에 오면 눌러서 씻어요 (클릭 / 스페이스 / Ⓐ)"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PerfectStamp" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -450.0
+offset_top = -140.0
+offset_right = 450.0
+offset_bottom = 60.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.84, 0.25, 1)
+theme_override_colors/font_outline_color = Color(0.4, 0.22, 0.08, 1)
+theme_override_constants/outline_size = 16
+theme_override_font_sizes/font_size = 120
+text = "★ 완벽! ★"
+horizontal_alignment = 1
+vertical_alignment = 1

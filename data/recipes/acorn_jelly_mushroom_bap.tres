@@ -10,5 +10,5 @@ script = ExtResource("1_recipe")
 id = &"acorn_jelly_mushroom_bap"
 display_name = "버섯 도토리묵밥"
 ingredients = Array[ExtResource("2_ingredient")]([ExtResource("3_acorn"), ExtResource("4_mushroom")])
-minigame_steps = Array[int]([0, 2])
+minigame_steps = Array[int]([5, 0, 2])
 minigame_ingredient_name = "도토리묵"
