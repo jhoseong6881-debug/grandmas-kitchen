@@ -17,9 +17,9 @@
 
 [sub_resource type="Resource" id="EveningTalk_1"]
 script = ExtResource("10_talk")
-line = "버섯은 비 온 다음 날 아침에 따야 해."
-replies = Array[String](["다음에 알려 줄래?", "역시 잘 아는구나."])
-reactions = Array[String](["…비 온 다음 날, 새벽에 와. 늦으면 안 기다린다.", "흠. 숲에서 오래 살았으니까."])
+line = "…네가 할머니 손주냐. …눈매가 닮았군."
+replies = Array[String](["할머니를 잘 알았구나", "잘 부탁해"])
+reactions = Array[String](["…버섯 철마다 왔다. 비 온 다음 날 새벽에 딴 걸 들고.", "…흥. 밥이 맛있으면 버섯은 계속 가져온다."])
 
 [sub_resource type="Resource" id="EveningTalk_2"]
 script = ExtResource("10_talk")
