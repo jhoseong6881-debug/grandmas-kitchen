@@ -24,6 +24,9 @@
 | scenes/kitchen/minigames/pan_fry_minigame.tscn (Jeon) | 전 (흰 그림, 익는 색은 코드가 입힘. 레시피마다 다르면 좋음) | 320x320 | 할 일 |
 | scenes/kitchen/minigames/pan_fry_minigame.tscn (Plate, DoneTemplate) | 접시 / 접시 위 작은 전 | 340x120 / 64x64 | 선택 |
 | scenes/kitchen/minigames/pan_fry_minigame.tscn (DonenessBar) | 익힘 막대 | 600x32 | 선택 |
+| scenes/kitchen/minigames/roll_minigame.tscn (Pan, Handle) | 위에서 본 네모난 계란말이 팬 | 800x400 + 손잡이 | 할 일 |
+| scenes/kitchen/minigames/roll_minigame.tscn (Sheet) | 팬에 펴진 계란물 | 늘어나는 띠 (높이 312) | 할 일 |
+| scenes/kitchen/minigames/roll_minigame.tscn (Roll) | 말린 계란 (겹마다 두꺼워짐) | 36~144 x 336 | 할 일 |
 | data/ingredients/egg.tres (icon) | 계란 아이콘 | 미정 | 할 일 |
 | data/ingredients/acorn.tres (icon) | 도토리 아이콘 | 미정 | 할 일 |
 | data/recipes/acorn_jelly_muchim.tres (finished_image) | 도토리묵 무침 완성 그림 | 미정 | 할 일 |

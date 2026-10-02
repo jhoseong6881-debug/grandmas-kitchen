@@ -1,0 +1,209 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/kitchen/minigames/roll_minigame.gd" id="1_roll"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pan"]
+bg_color = Color(0.22, 0.22, 0.25, 1)
+border_width_left = 20
+border_width_top = 20
+border_width_right = 20
+border_width_bottom = 20
+border_color = Color(0.4, 0.4, 0.45, 1)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_roll"]
+bg_color = Color(0.98, 0.78, 0.3, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.85, 0.6, 0.2, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[node name="RollMinigame" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 2
+script = ExtResource("1_roll")
+
+[node name="Dim" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.45)
+
+[node name="TitleLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 360.0
+offset_top = 50.0
+offset_right = 1560.0
+offset_bottom = 130.0
+theme_override_font_sizes/font_size = 60
+text = "계란 말기"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SideLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 560.0
+offset_top = 140.0
+offset_right = 1360.0
+offset_bottom = 200.0
+theme_override_font_sizes/font_size = 36
+text = "1 / 3겹 · 붓기"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Handle" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = 300.0
+offset_top = 440.0
+offset_right = 560.0
+offset_bottom = 476.0
+mouse_filter = 2
+color = Color(0.4, 0.27, 0.16, 1)
+
+[node name="Pan" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 560.0
+offset_top = 260.0
+offset_right = 1360.0
+offset_bottom = 660.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_pan")
+
+[node name="PanInner" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 580.0
+offset_top = 280.0
+offset_right = 1340.0
+offset_bottom = 640.0
+mouse_filter = 2
+
+[node name="Sheet" type="ColorRect" parent="PanInner"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 36.0
+offset_top = 24.0
+offset_right = 36.0
+offset_bottom = 336.0
+mouse_filter = 2
+color = Color(1, 0.93, 0.6, 1)
+
+[node name="PourZone" type="ColorRect" parent="PanInner"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 600.0
+offset_right = 700.0
+offset_bottom = 360.0
+mouse_filter = 2
+color = Color(1, 0.84, 0.25, 0.4)
+
+[node name="RollZone" type="ColorRect" parent="PanInner"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 600.0
+offset_right = 700.0
+offset_bottom = 360.0
+mouse_filter = 2
+color = Color(1, 0.84, 0.25, 0.4)
+
+[node name="Roll" type="Panel" parent="PanInner"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_top = 12.0
+offset_right = 36.0
+offset_bottom = 348.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_roll")
+
+[node name="PerfectStreakLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 240.0
+offset_top = 390.0
+offset_right = 640.0
+offset_bottom = 440.0
+theme_override_colors/font_color = Color(1, 0.84, 0.25, 1)
+theme_override_font_sizes/font_size = 24
+text = "★ 완벽 도전 중"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="ProgressLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -600.0
+offset_top = -250.0
+offset_right = 600.0
+offset_bottom = -180.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 48
+text = "꾹 눌러서 계란물을 부어요"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HintLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -900.0
+offset_top = -160.0
+offset_right = 900.0
+offset_bottom = -100.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 36
+text = "꾹 눌러 붓고 금색 칸에서 떼요 → 굴러가는 계란이 금색 칸에 닿으면 눌러요 (Ⓐ)"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PerfectStamp" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -450.0
+offset_top = -140.0
+offset_right = 450.0
+offset_bottom = 60.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.84, 0.25, 1)
+theme_override_colors/font_outline_color = Color(0.4, 0.22, 0.08, 1)
+theme_override_constants/outline_size = 16
+theme_override_font_sizes/font_size = 120
+text = "★ 완벽! ★"
+horizontal_alignment = 1
+vertical_alignment = 1

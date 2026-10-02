@@ -4,7 +4,7 @@ extends Resource
 
 ## 요리 미니게임 종류
 ## 세이브와 .tres 에는 번호로 저장되니, 새 종류는 맨 뒤에만 붙인다.
-enum MinigameType { CHOP, STIR_FRY, PLATE, PAN_FRY }
+enum MinigameType { CHOP, STIR_FRY, PLATE, PAN_FRY, ROLL }
 
 ## 미니게임 화면 제목에 쓰는 기본 동작 이름. 레시피의 ○○ Action Name 칸이 비어 있으면 이걸 쓴다.
 const DEFAULT_ACTION_NAMES: Dictionary[MinigameType, String] = {
@@ -12,6 +12,7 @@ const DEFAULT_ACTION_NAMES: Dictionary[MinigameType, String] = {
 	MinigameType.STIR_FRY: "볶기",
 	MinigameType.PLATE: "담기",
 	MinigameType.PAN_FRY: "부치기",
+	MinigameType.ROLL: "말기",
 }
 
 ## 세이브 파일에 저장되는 고유 이름표. 영어 소문자로 짓고 한 번 정하면 바꾸지 않는다. (예: spring_bibimbap)
@@ -30,6 +31,7 @@ const DEFAULT_ACTION_NAMES: Dictionary[MinigameType, String] = {
 @export var stir_fry_action_name: String = ""
 @export var plate_action_name: String = ""
 @export var pan_fry_action_name: String = ""
+@export var roll_action_name: String = ""
 ## 완성된 요리 그림. 비워 두면 임시 도형으로 표시한다.
 @export var finished_image: Texture2D
 
@@ -50,6 +52,7 @@ func get_action_name(minigame_type: MinigameType) -> String:
 		MinigameType.STIR_FRY: stir_fry_action_name,
 		MinigameType.PLATE: plate_action_name,
 		MinigameType.PAN_FRY: pan_fry_action_name,
+		MinigameType.ROLL: roll_action_name,
 	}
 	if not custom_names[minigame_type].is_empty():
 		return custom_names[minigame_type]

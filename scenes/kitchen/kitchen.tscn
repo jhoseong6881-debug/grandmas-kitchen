@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/stir_fry_minigame.tscn" id="7_stir_fry"]
 [ext_resource type="PackedScene" path="res://scenes/ui/guest_notebook.tscn" id="8_notebook"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/pan_fry_minigame.tscn" id="9_pan_fry"]
+[ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/roll_minigame.tscn" id="10_roll"]
 
 [node name="Kitchen" type="Control"]
 layout_mode = 3
@@ -183,6 +184,10 @@ unique_name_in_owner = true
 layout_mode = 1
 
 [node name="PanFryMinigame" parent="." instance=ExtResource("9_pan_fry")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="RollMinigame" parent="." instance=ExtResource("10_roll")]
 unique_name_in_owner = true
 layout_mode = 1
 

@@ -10,6 +10,5 @@ script = ExtResource("1_recipe")
 id = &"honey_egg_roll"
 display_name = "꿀 계란말이"
 ingredients = Array[ExtResource("2_ingredient")]([ExtResource("3_egg"), ExtResource("3_egg"), ExtResource("4_honey")])
-minigame_steps = Array[int]([1, 2])
+minigame_steps = Array[int]([4, 2])
 minigame_ingredient_name = "계란"
-stir_fry_action_name = "말기"
