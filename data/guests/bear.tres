@@ -9,6 +9,25 @@
 [ext_resource type="Resource" path="res://data/recipes/honey_egg_roll.tres" id="7_honey_egg_roll"]
 [ext_resource type="Resource" path="res://data/ingredients/honey.tres" id="8_honey"]
 [ext_resource type="Resource" path="res://data/recipes/acorn_jelly_muchim.tres" id="9_disliked"]
+[ext_resource type="Script" path="res://scripts/data/evening_talk.gd" id="10_talk"]
+
+[sub_resource type="Resource" id="EveningTalk_1"]
+script = ExtResource("10_talk")
+line = "겨울잠 자는 동안 할머니 꿈을 꿨어."
+replies = Array[String](["무슨 꿈이었어?", "할머니가 뭐라고 하셨어?"])
+reactions = Array[String](["밥 냄새 나는 꿈… 깨 보니 진짜 밥 냄새가 나더라. 여기서.", "\"배고프면 언제든 와라.\" 그래서 왔지."])
+
+[sub_resource type="Resource" id="EveningTalk_2"]
+script = ExtResource("10_talk")
+line = "할머니는 내가 오면 늘 꿀 넣은 반찬을 해 주셨지."
+replies = Array[String](["꿀은 곰이 가져온 거였어?", "나도 꿀 반찬 연구해 볼게."])
+reactions = Array[String](["응. 꿀 한 병에 반찬 한 접시. 그게 우리 약속이었어.", "음~ 기대된다. 꿀은 넉넉히 있어."])
+
+[sub_resource type="Resource" id="EveningTalk_3"]
+script = ExtResource("10_talk")
+line = "봄바람 냄새가 좋다. 낮잠 자기 딱이야."
+replies = Array[String](["여기서 한숨 자고 가.", "밥 먹고 바로 자면 안 돼요!"])
+reactions = Array[String](["음… 평상이 딱 좋은 크기네… 쿨…", "에이, 곰은 원래 그래도 돼. 음~"])
 
 [resource]
 script = ExtResource("1_guest")
@@ -22,7 +41,7 @@ order_line = "음… 배고프다… {recipe} 하나 줄 수 있니?"
 fallback_order_line = "음… 아무거나 좋아… {recipe}, 그거 줄래?"
 thanks_line = "음~ 든든하다. 꿀 두고 갈게."
 perfect_line = "우와… 이 맛이야! 할머니 생각난다. 꿀 듬뿍 줄게."
-dialogue_lines = Array[String](["겨울잠 자는 동안 할머니 꿈을 꿨어.", "할머니는 내가 오면 늘 꿀 넣은 반찬을 해 주셨지.", "봄바람 냄새가 좋다. 낮잠 자기 딱이야."])
+evening_talks = Array[ExtResource("10_talk")]([SubResource("EveningTalk_1"), SubResource("EveningTalk_2"), SubResource("EveningTalk_3")])
 note_recipes = Array[ExtResource("2_recipe")]([ExtResource("5_honey_carrot_jorim"), ExtResource("6_acorn_honey_gangjeong")])
 feast_line = "음~ 겨울잠 깨길 정말 잘했다. 이 밥집 덕분에."
 note_line = "할머니가 겨울잠 자기 전에 주신 쪽지야. 「{recipe}」… 이제 네 거야."

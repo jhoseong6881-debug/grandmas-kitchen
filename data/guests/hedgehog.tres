@@ -9,6 +9,25 @@
 [ext_resource type="Resource" path="res://data/recipes/acorn_jelly_mushroom_bap.tres" id="7_acorn_jelly_mushroom_bap"]
 [ext_resource type="Resource" path="res://data/ingredients/mushroom.tres" id="8_mushroom"]
 [ext_resource type="Resource" path="res://data/recipes/honey_egg_roll.tres" id="9_disliked"]
+[ext_resource type="Script" path="res://scripts/data/evening_talk.gd" id="10_talk"]
+
+[sub_resource type="Resource" id="EveningTalk_1"]
+script = ExtResource("10_talk")
+line = "버섯은 비 온 다음 날 아침에 따야 해."
+replies = Array[String](["다음에 알려 줄래?", "역시 잘 아는구나."])
+reactions = Array[String](["…비 온 다음 날, 새벽에 와. 늦으면 안 기다린다.", "흠. 숲에서 오래 살았으니까."])
+
+[sub_resource type="Resource" id="EveningTalk_2"]
+script = ExtResource("10_talk")
+line = "할머니는 내 가시를 무서워하지 않았어."
+replies = Array[String](["나도 안 무서워.", "가시가 따갑진 않아?"])
+reactions = Array[String](["…그런가. …그래.", "…다정한 사람한테는 안 세운다. 지금처럼."])
+
+[sub_resource type="Resource" id="EveningTalk_3"]
+script = ExtResource("10_talk")
+line = "숲속 길은 내가 다 알아. 길 잃으면 불러."
+replies = Array[String](["든든하다. 고마워.", "길 잃을 일 있으면 꼭 부를게."])
+reactions = Array[String](["…흥. 밥값이다.", "…부르기 전에 찾아갈 거다."])
 
 [resource]
 script = ExtResource("1_guest")
@@ -22,7 +41,7 @@ order_line = "{recipe}. 따뜻하게 부탁해."
 fallback_order_line = "없나. …그럼 {recipe}. 그걸로 하지."
 thanks_line = "…잘 먹었어. 버섯, 두고 간다."
 perfect_line = "흠… 완벽하군. 제일 좋은 버섯으로 더 주지."
-dialogue_lines = Array[String](["버섯은 비 온 다음 날 아침에 따야 해.", "할머니는 내 가시를 무서워하지 않았어.", "숲속 길은 내가 다 알아. 길 잃으면 불러."])
+evening_talks = Array[ExtResource("10_talk")]([SubResource("EveningTalk_1"), SubResource("EveningTalk_2"), SubResource("EveningTalk_3")])
 note_recipes = Array[ExtResource("2_recipe")]([ExtResource("5_forest_mushroom_stir_fry"), ExtResource("6_mushroom_egg_jeon")])
 feast_line = "…흠. 이런 날도 나쁘지 않군. 다음 계절에도 들르지."
 note_line = "할머니가 내게 맡겨 둔 거다. 「{recipe}」. 돌려줄 때가 됐군."

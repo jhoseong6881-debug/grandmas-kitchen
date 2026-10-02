@@ -89,6 +89,16 @@ theme_override_colors/font_color = Color(1, 0.94, 0.82, 1)
 theme_override_font_sizes/font_size = 48
 text = "1일째 저녁"
 
+[node name="ReplyBox" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 1030.0
+offset_top = 490.0
+offset_right = 1790.0
+offset_bottom = 760.0
+theme_override_constants/separation = 16
+
 [node name="NoteCard" type="Panel" parent="."]
 unique_name_in_owner = true
 visible = false
