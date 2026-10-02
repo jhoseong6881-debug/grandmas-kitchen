@@ -1,7 +1,8 @@
 class_name Coating
 extends Resource
-## 버무리기 미니게임에서 재료에 묻히는 양념 (예: 꿀, 고추장 양념, 참기름). data/coatings/ 에 .tres 파일로 하나씩 만든다.
-## 새 양념이 필요하면 코드 수정 없이 이 파일만 하나 더 만들고, 레시피의 Mix Coating 칸에 넣으면 된다.
+## 재료에 묻히거나 졸이는 양념 (예: 꿀, 고추장 양념, 간장 조림장). data/coatings/ 에 .tres 파일로 하나씩 만든다.
+## 버무리기는 레시피의 Mix Coating 칸, 조리기는 Simmer Sauce 칸에 넣는다.
+## 새 양념이 필요하면 코드 수정 없이 이 파일만 하나 더 만들면 된다.
 
 ## 화면에 보이는 이름 (예: 꿀)
 @export var display_name: String = ""
