@@ -106,7 +106,8 @@ func _complete(done_text: String) -> void:
 	var is_perfect: bool = _miss_count == 0
 	if is_perfect:
 		_pop_perfect_stamp()
-	await get_tree().create_timer(perfect_finish_delay if is_perfect else finish_delay).timeout
+	# 두 번째 값 false: 일시 정지 중에는 이 기다림도 멈춘다.
+	await get_tree().create_timer(perfect_finish_delay if is_perfect else finish_delay, false).timeout
 	hide()
 	finished.emit(is_perfect)
 

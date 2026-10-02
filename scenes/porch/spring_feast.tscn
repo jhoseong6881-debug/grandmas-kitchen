@@ -1,7 +1,7 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://c6jgq3v13f7wy"]
 
-[ext_resource type="Script" path="res://scripts/porch/spring_feast.gd" id="1_feast"]
-[ext_resource type="FontFile" path="res://assets/fonts/KyoboHandwriting/KyoboHandwriting2025lyb.ttf" id="9_kyobo"]
+[ext_resource type="Script" uid="uid://cu8mck3j1hn1v" path="res://scripts/porch/spring_feast.gd" id="1_feast"]
+[ext_resource type="FontFile" uid="uid://lr2a8emruvb8" path="res://assets/fonts/KyoboHandwriting/KyoboHandwriting2025lyb.ttf" id="9_kyobo"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dialogue"]
 bg_color = Color(0.15, 0.12, 0.1, 0.85)
@@ -29,7 +29,7 @@ corner_radius_bottom_left = 8
 shadow_color = Color(0, 0, 0, 0.4)
 shadow_size = 14
 
-[node name="SpringFeast" type="Control"]
+[node name="SpringFeast" type="Control" unique_id=1429913137]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -38,7 +38,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_feast")
 
-[node name="Sky" type="ColorRect" parent="."]
+[node name="Sky" type="ColorRect" parent="." unique_id=1221634125]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -47,7 +47,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.16, 0.16, 0.3, 1)
 
-[node name="Lanterns" type="HBoxContainer" parent="."]
+[node name="Lanterns" type="HBoxContainer" parent="." unique_id=585536029]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -59,42 +59,42 @@ grow_horizontal = 2
 theme_override_constants/separation = 110
 alignment = 1
 
-[node name="Lantern1" type="ColorRect" parent="Lanterns"]
+[node name="Lantern1" type="ColorRect" parent="Lanterns" unique_id=1036548522]
 custom_minimum_size = Vector2(40, 50)
 layout_mode = 2
 color = Color(1, 0.72, 0.35, 1)
 
-[node name="Lantern2" type="ColorRect" parent="Lanterns"]
+[node name="Lantern2" type="ColorRect" parent="Lanterns" unique_id=1645049559]
 custom_minimum_size = Vector2(40, 50)
 layout_mode = 2
 color = Color(1, 0.55, 0.45, 1)
 
-[node name="Lantern3" type="ColorRect" parent="Lanterns"]
+[node name="Lantern3" type="ColorRect" parent="Lanterns" unique_id=198392047]
 custom_minimum_size = Vector2(40, 50)
 layout_mode = 2
 color = Color(1, 0.72, 0.35, 1)
 
-[node name="Lantern4" type="ColorRect" parent="Lanterns"]
+[node name="Lantern4" type="ColorRect" parent="Lanterns" unique_id=794966238]
 custom_minimum_size = Vector2(40, 50)
 layout_mode = 2
 color = Color(1, 0.55, 0.45, 1)
 
-[node name="Lantern5" type="ColorRect" parent="Lanterns"]
+[node name="Lantern5" type="ColorRect" parent="Lanterns" unique_id=1482294238]
 custom_minimum_size = Vector2(40, 50)
 layout_mode = 2
 color = Color(1, 0.72, 0.35, 1)
 
-[node name="Lantern6" type="ColorRect" parent="Lanterns"]
+[node name="Lantern6" type="ColorRect" parent="Lanterns" unique_id=1453077017]
 custom_minimum_size = Vector2(40, 50)
 layout_mode = 2
 color = Color(1, 0.55, 0.45, 1)
 
-[node name="Lantern7" type="ColorRect" parent="Lanterns"]
+[node name="Lantern7" type="ColorRect" parent="Lanterns" unique_id=1551624202]
 custom_minimum_size = Vector2(40, 50)
 layout_mode = 2
 color = Color(1, 0.72, 0.35, 1)
 
-[node name="Ground" type="ColorRect" parent="."]
+[node name="Ground" type="ColorRect" parent="." unique_id=5603589]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -105,7 +105,7 @@ grow_horizontal = 2
 grow_vertical = 0
 color = Color(0.2, 0.25, 0.18, 1)
 
-[node name="Pyeongsang" type="ColorRect" parent="."]
+[node name="Pyeongsang" type="ColorRect" parent="." unique_id=148749022]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -116,7 +116,7 @@ offset_bottom = 740.0
 grow_horizontal = 2
 color = Color(0.62, 0.45, 0.28, 1)
 
-[node name="GuestRow" type="HBoxContainer" parent="."]
+[node name="GuestRow" type="HBoxContainer" parent="." unique_id=1282425482]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 10
@@ -129,7 +129,7 @@ grow_horizontal = 2
 theme_override_constants/separation = 60
 alignment = 1
 
-[node name="DialogueBox" type="Panel" parent="."]
+[node name="DialogueBox" type="Panel" parent="." unique_id=1067870202]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 7
@@ -145,7 +145,7 @@ grow_horizontal = 2
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_dialogue")
 
-[node name="SpeakerLabel" type="Label" parent="DialogueBox"]
+[node name="SpeakerLabel" type="Label" parent="DialogueBox" unique_id=1176169278]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 40.0
@@ -155,7 +155,7 @@ offset_bottom = 66.0
 theme_override_colors/font_color = Color(1, 0.84, 0.45, 1)
 theme_override_font_sizes/font_size = 36
 
-[node name="DialogueLabel" type="Label" parent="DialogueBox"]
+[node name="DialogueLabel" type="Label" parent="DialogueBox" unique_id=908411934]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 40.0
@@ -166,7 +166,7 @@ theme_override_colors/font_color = Color(1, 0.97, 0.9, 1)
 theme_override_font_sizes/font_size = 36
 autowrap_mode = 3
 
-[node name="NoteCard" type="Panel" parent="."]
+[node name="NoteCard" type="Panel" parent="." unique_id=272342466]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
@@ -183,7 +183,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_paper")
 
-[node name="Rows" type="VBoxContainer" parent="NoteCard"]
+[node name="Rows" type="VBoxContainer" parent="NoteCard" unique_id=707570950]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -197,7 +197,7 @@ grow_vertical = 2
 theme_override_constants/separation = 36
 alignment = 1
 
-[node name="NotesTitleLabel" type="Label" parent="NoteCard/Rows"]
+[node name="NotesTitleLabel" type="Label" parent="NoteCard/Rows" unique_id=1103851993]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.4, 0.26, 0.15, 1)
@@ -205,7 +205,7 @@ theme_override_font_sizes/font_size = 48
 horizontal_alignment = 1
 autowrap_mode = 3
 
-[node name="NotesGrid" type="GridContainer" parent="NoteCard/Rows"]
+[node name="NotesGrid" type="GridContainer" parent="NoteCard/Rows" unique_id=468332677]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
@@ -213,7 +213,7 @@ theme_override_constants/h_separation = 80
 theme_override_constants/v_separation = 14
 columns = 2
 
-[node name="Letter" type="Panel" parent="."]
+[node name="Letter" type="Panel" parent="." unique_id=1023406289]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
@@ -230,8 +230,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_paper")
 
-[node name="LetterTitleLabel" type="Label" parent="Letter"]
-theme_override_fonts/font = ExtResource("9_kyobo")
+[node name="LetterTitleLabel" type="Label" parent="Letter" unique_id=940441114]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 10
@@ -242,11 +241,11 @@ offset_right = -60.0
 offset_bottom = 90.0
 grow_horizontal = 2
 theme_override_colors/font_color = Color(0.6, 0.45, 0.28, 1)
+theme_override_fonts/font = ExtResource("9_kyobo")
 theme_override_font_sizes/font_size = 30
 horizontal_alignment = 1
 
-[node name="LetterLabel" type="Label" parent="Letter"]
-theme_override_fonts/font = ExtResource("9_kyobo")
+[node name="LetterLabel" type="Label" parent="Letter" unique_id=1511159563]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -259,10 +258,11 @@ offset_bottom = -50.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(0.3, 0.2, 0.12, 1)
+theme_override_fonts/font = ExtResource("9_kyobo")
 theme_override_font_sizes/font_size = 34
 autowrap_mode = 3
 
-[node name="Teaser" type="ColorRect" parent="."]
+[node name="Teaser" type="ColorRect" parent="." unique_id=515415088]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
@@ -273,7 +273,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.1, 0.16, 0.1, 1)
 
-[node name="TeaserLabel" type="Label" parent="Teaser"]
+[node name="TeaserLabel" type="Label" parent="Teaser" unique_id=1946073375]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -286,7 +286,7 @@ theme_override_font_sizes/font_size = 48
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="NextButton" type="Button" parent="."]
+[node name="NextButton" type="Button" parent="." unique_id=1711337253]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 3
