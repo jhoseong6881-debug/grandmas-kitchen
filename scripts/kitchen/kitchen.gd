@@ -9,6 +9,8 @@ const COOKED_TEXT_FORMAT: String = "%s 완성!"
 const PERFECT_COOKED_TEXT_FORMAT: String = "%s 완성! 한 번도 안 틀렸어요!"
 const GRANDMA_COOKED_TEXT_FORMAT: String = "%s 완성! ♥ 할머니 손맛이 났어요!"
 const GRANDMA_STAMP_TEXT: String = "♥ 레시피 노트에 할머니 손맛 도장!"
+const TASTE_MATCH_POP_TEXT: String = "♥ 입맛 딱!"
+const TIER_UP_FORMAT: String = "%s%s 더 가까워졌어요 · %s"
 const PAYMENT_PREFIX: String = "밥값으로 "
 const PAYMENT_SUFFIX: String = " 받았어요"
 const PAYMENT_ITEM_FORMAT: String = " %s ×%d"
@@ -44,6 +46,8 @@ const OUT_OF_INGREDIENTS_TEXT: String = "재료가 다 떨어져서 오늘 장�
 @export var stamp_pop_rise: float = 140.0
 @export var stamp_pop_duration: float = 2.4
 @export var stamp_pop_font_size: int = 48
+## 떠오르는 글이 여러 개일 때 하나씩 띄우는 간격(초)
+@export var pop_interval: float = 0.9
 
 ## 지금 와 있는 손님과 그 손님의 주문. 손님이 없으면 null.
 var current_guest: AnimalGuest
@@ -78,6 +82,7 @@ var _status_default_color: Color
 @onready var _cook_status_label: RichTextLabel = %CookStatusLabel
 @onready var _notebook: GuestNotebook = %GuestNotebook
 @onready var _notebook_button: Button = %NotebookButton
+@onready var _garnish_picker: GarnishPicker = %GarnishPicker
 @onready var _chop_minigame: ChopMinigame = %ChopMinigame
 @onready var _stir_fry_minigame: StirFryMinigame = %StirFryMinigame
 @onready var _plate_minigame: PlateMinigame = %PlateMinigame
@@ -252,8 +257,20 @@ func _run_next_step() -> void:
 		_run_next_step()
 
 
-## 대접하면 손님이 고맙다고 말하고, 밥값 재료를 준다. 완벽했으면 재료마다 보너스를 더 준다.
+## 대접하기 전에 마무리 고명을 고른다. 그만두면 다시 대접하기 버튼으로 돌아간다.
 func _on_serve_button_pressed() -> void:
+	_garnish_picker.open()
+	var garnish: Garnish = await _garnish_picker.closed
+	if garnish == null:
+		_serve_button.grab_focus()
+		return
+	_serve(garnish)
+
+
+## 대접하면 손님이 고맙다고 말하고, 밥값 재료를 준다. 완벽했으면 재료마다 보너스를 더 준다.
+## 고명이 손님 입맛에 맞거나 할머니 손맛이면 단골도가 더 오르고, 손님 말도 달라진다.
+func _serve(garnish: Garnish) -> void:
+	GameState.remove_ingredients(garnish.get_cost())
 	var payment: Dictionary[StringName, int] = {}
 	if _is_fallback_order:
 		if not current_guest.payment_ingredients.is_empty():
@@ -266,21 +283,50 @@ func _on_serve_button_pressed() -> void:
 			payment[ingredient_id] += perfect_bonus_amount
 	for ingredient_id: StringName in payment:
 		GameState.add_ingredient(ingredient_id, payment[ingredient_id])
-	var line: String = current_guest.perfect_line if _is_perfect_cook else current_guest.thanks_line
-	# 할머니 손맛: 손님이 할머니를 떠올리는 말을 하고, 레시피 노트에 도장이 찍힌다 (처음이면 도장 글이 떠오른다).
-	if _is_grandma_cook():
+	var guest: AnimalGuest = current_guest
+	var is_grandma_taste: bool = _is_grandma_cook()
+	var has_taste: bool = guest.favorite_garnish != null
+	var is_taste_match: bool = has_taste and guest.favorite_garnish.id == garnish.id
+	# 손님 말: 할머니 손맛 > 입맛에 맞음 > 입맛에 안 맞음(힌트) > 완벽 / 보통
+	var line: String = guest.perfect_line if _is_perfect_cook else guest.thanks_line
+	if has_taste:
+		line = guest.taste_match_line if is_taste_match else guest.taste_miss_line
+	var pops: Array[String] = []
+	if is_grandma_taste:
 		if not current_order.grandma_taste_line.is_empty():
 			line = current_order.grandma_taste_line.format({"name": GameState.player_name})
 		if not GameState.has_grandma_taste(current_order.id):
-			FloatingText.pop(self, GRANDMA_STAMP_TEXT, _guest_spot, stamp_pop_rise, stamp_pop_duration,
-					stamp_pop_font_size, perfect_text_color)
+			pops.append(GRANDMA_STAMP_TEXT)
 		GameState.record_grandma_taste(current_order.id)
+	if is_taste_match:
+		GameState.learn_taste(guest.id)
+		pops.append(TASTE_MATCH_POP_TEXT)
+	var settings: RegularSettings = GameData.get_regular_settings()
+	var points: int = settings.serve_points
+	if is_taste_match:
+		points += settings.taste_match_points
+	if is_grandma_taste:
+		points += settings.grandma_taste_points
+	var new_tier: int = GameState.add_affection(guest.id, points)
+	if new_tier >= 0:
+		pops.append(TIER_UP_FORMAT % [guest.display_name, Korean.with_particle(guest.display_name), settings.get_tier_name(new_tier)])
 	_guest_spot.say(line)
-	_set_payment_status(payment, _is_perfect_cook, _is_grandma_cook())
-	GameState.record_served_guest(current_guest.id, _is_perfect_cook)
+	_set_payment_status(payment, _is_perfect_cook, is_grandma_taste)
+	GameState.record_served_guest(guest.id, _is_perfect_cook)
 	_guests_served += 1
 	_update_lunch_label()
 	_show_only_button(_next_guest_button)
+	_pop_one_by_one(pops)
+
+
+## 손님 위로 글을 하나씩 띄운다 (도장, 입맛, 단골 단계).
+func _pop_one_by_one(texts: Array[String]) -> void:
+	for i: int in texts.size():
+		if i > 0:
+			# 두 번째 값 false: 일시 정지 중에는 이 기다림도 멈춘다.
+			await get_tree().create_timer(pop_interval, false).timeout
+		FloatingText.pop(self, texts[i], _guest_spot, stamp_pop_rise, stamp_pop_duration,
+				stamp_pop_font_size, perfect_text_color)
 
 
 # --- 화면 ---

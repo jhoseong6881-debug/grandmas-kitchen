@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="Story" format=3]
+[gd_resource type="Resource" script_class="Story" format=3 uid="uid://cg5iq346fsjaq"]
 
-[ext_resource type="Script" path="res://scripts/data/story.gd" id="1_story"]
-[ext_resource type="Script" path="res://scripts/data/story_chapter.gd" id="2_chapter"]
+[ext_resource type="Script" uid="uid://ksjejo13xfkx" path="res://scripts/data/story.gd" id="1_story"]
+[ext_resource type="Script" uid="uid://h2aojxuhiml4" path="res://scripts/data/story_chapter.gd" id="2_chapter"]
 
 [sub_resource type="Resource" id="Chapter_1"]
 script = ExtResource("2_chapter")
@@ -32,7 +32,11 @@ script = ExtResource("2_chapter")
 title = "5장. 할머니의 편지"
 background_color = Color(0.3, 0.26, 0.22, 1)
 is_letter = true
-lines = Array[String](["우리 강아지에게.", "이 편지 읽을 즈음엔 할미는 먼 데 가 있겠구나. 너무 울지 말어.", "숲속 집이랑 작은 밥집, 너한테 남긴다.\n할미가 문 닫으면 숲 이웃들이 배곯을까, 그게 제일 걱정이여.", "레시피 노트는 한 장씩 뜯어서 이웃들한테 맡겨 뒀다.\n공책만 남겨 두면 너는 바빠서 펴 보지도 않을 것 같아서. 할미 꾀여.\n네가 따뜻한 밥 지어 주면, 다들 한 장씩 돌려줄 거다.", "도시 생활 힘들면 언제든 쉬러 오렴.\n밥은 마음으로 짓는 거여. 너는 잘할 거다.", "— 할미가"])
+lines = Array[String](["우리 강아지에게.", "이 편지 읽을 즈음엔 할미는 먼 데 가 있겠구나. 너무 울지 말어.", "숲속 집이랑 작은 밥집, 너한테 남긴다.
+할미가 문 닫으면 숲 이웃들이 배곯을까, 그게 제일 걱정이여.", "레시피 노트는 한 장씩 뜯어서 이웃들한테 맡겨 뒀다.
+공책만 남겨 두면 너는 바빠서 펴 보지도 않을 것 같아서. 할미 꾀여.
+네가 따뜻한 밥 지어 주면, 다들 한 장씩 돌려줄 거다.", "도시 생활 힘들면 언제든 쉬러 오렴.
+밥은 마음으로 짓는 거여. 너는 잘할 거다.", "— 할미가"])
 
 [sub_resource type="Resource" id="Chapter_6"]
 script = ExtResource("2_chapter")
@@ -56,4 +60,3 @@ lines = Array[String](["짐을 풀다 지쳐 깜빡 잠이 들었다. 똑, 똑. 
 script = ExtResource("1_story")
 chapters = Array[ExtResource("2_chapter")]([SubResource("Chapter_1"), SubResource("Chapter_2"), SubResource("Chapter_3"), SubResource("Chapter_4"), SubResource("Chapter_5"), SubResource("Chapter_6"), SubResource("Chapter_7"), SubResource("Chapter_8")])
 name_prompt = "토끼가 이름을 물어봐요"
-default_name = "봄이"

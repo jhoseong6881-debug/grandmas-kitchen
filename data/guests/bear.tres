@@ -10,6 +10,7 @@
 [ext_resource type="Resource" path="res://data/ingredients/honey.tres" id="8_honey"]
 [ext_resource type="Resource" path="res://data/recipes/acorn_jelly_muchim.tres" id="9_disliked"]
 [ext_resource type="Script" path="res://scripts/data/evening_talk.gd" id="10_talk"]
+[ext_resource type="Resource" path="res://data/garnishes/honey_spoon.tres" id="20_garnish"]
 
 [sub_resource type="Resource" id="EveningTalk_1"]
 script = ExtResource("10_talk")
@@ -45,3 +46,6 @@ evening_talks = Array[ExtResource("10_talk")]([SubResource("EveningTalk_1"), Sub
 note_recipes = Array[ExtResource("2_recipe")]([ExtResource("5_honey_carrot_jorim"), ExtResource("6_acorn_honey_gangjeong")])
 feast_line = "음~ 겨울잠 깨길 정말 잘했다. 이 밥집 덕분에."
 note_line = "할머니가 겨울잠 자기 전에 주신 쪽지야. 「{recipe}」… 이제 네 거야."
+favorite_garnish = ExtResource("20_garnish")
+taste_miss_line = "음~ 맛있다. 근데 조금만 더 달콤했으면…"
+taste_match_line = "음~! 꿀이다! 이렇게 달콤할 수가!"

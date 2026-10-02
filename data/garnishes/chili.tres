@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Garnish" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/garnish.gd" id="1_garnish"]
+
+[resource]
+script = ExtResource("1_garnish")
+id = &"chili"
+display_name = "고춧가루 솔솔"
+taste_name = "매콤한 맛"
+sort_order = 4

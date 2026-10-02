@@ -9,6 +9,7 @@
 [ext_resource type="Resource" path="res://data/recipes/honey_carrot_jorim.tres" id="7_jorim"]
 [ext_resource type="Resource" path="res://data/recipes/forest_mushroom_stir_fry.tres" id="8_disliked"]
 [ext_resource type="Script" path="res://scripts/data/evening_talk.gd" id="9_talk"]
+[ext_resource type="Resource" path="res://data/garnishes/plain.tres" id="20_garnish"]
 
 [sub_resource type="Resource" id="EveningTalk_1"]
 script = ExtResource("9_talk")
@@ -44,3 +45,6 @@ evening_talks = Array[ExtResource("9_talk")]([SubResource("EveningTalk_1"), SubR
 note_recipes = Array[ExtResource("2_recipe")]([ExtResource("6_jeon")])
 feast_line = "저… 이렇게 다 같이 모이니까, 할머니 계실 때 같아요."
 note_line = "그때 할머니가 적어 주신 레시피예요. 「{recipe}」… 이제 여기 있어야 할 것 같아서요."
+favorite_garnish = ExtResource("20_garnish")
+taste_miss_line = "음… 저는 당근 본맛이 좋은데. 아무것도 안 올려도 돼요."
+taste_match_line = "이거예요! 당근 맛이 그대로 나요."

@@ -40,6 +40,10 @@ var guest_story_progress: Dictionary[StringName, int] = {}
 var learned_secret_ids: Array[StringName] = []
 ## 할머니 손맛으로 한 번이라도 대접한 레시피 (레시피 노트 도장)
 var grandma_taste_recipe_ids: Array[StringName] = []
+## 손님 id → 단골도 (대접할수록 오른다. 단계는 RegularSettings 로 정한다)
+var guest_affection: Dictionary[StringName, int] = {}
+## 입맛(좋아하는 고명)을 알아낸 손님 id. 손님 수첩에 입맛을 보여 줄 때 쓴다.
+var known_taste_guest_ids: Array[StringName] = []
 ## 레시피 노트를 다 모은 날 (0 = 아직). 그다음 날 저녁에 봄 잔치가 열린다.
 var notes_completed_day: int = 0
 ## 봄 잔치까지 보고 봄을 마쳤는지
@@ -236,6 +240,34 @@ func record_grandma_taste(recipe_id: StringName) -> void:
 		grandma_taste_recipe_ids.append(recipe_id)
 
 
+# --- 단골도와 입맛 ---
+
+func get_affection(guest_id: StringName) -> int:
+	return guest_affection.get(guest_id, 0)
+
+
+## 단골 단계 (0 = 낯선 손님)
+func get_regular_tier(guest_id: StringName) -> int:
+	return GameData.get_regular_settings().get_tier(get_affection(guest_id))
+
+
+## 단골도를 올린다. 단골 단계가 오르면 새 단계를, 그대로면 -1 을 돌려준다.
+func add_affection(guest_id: StringName, points: int) -> int:
+	var before: int = get_regular_tier(guest_id)
+	guest_affection[guest_id] = get_affection(guest_id) + points
+	var after: int = get_regular_tier(guest_id)
+	return after if after > before else -1
+
+
+func knows_taste(guest_id: StringName) -> bool:
+	return guest_id in known_taste_guest_ids
+
+
+func learn_taste(guest_id: StringName) -> void:
+	if guest_id not in known_taste_guest_ids:
+		known_taste_guest_ids.append(guest_id)
+
+
 # --- 새 게임 / 세이브 / 로드 ---
 
 func new_game() -> void:
@@ -251,6 +283,8 @@ func new_game() -> void:
 	menu_recipe_ids.clear()
 	learned_secret_ids.clear()
 	grandma_taste_recipe_ids.clear()
+	guest_affection.clear()
+	known_taste_guest_ids.clear()
 	notes_completed_day = 0
 	is_spring_completed = false
 	is_todays_gift_collected = false
@@ -331,6 +365,8 @@ func _to_save_data() -> Dictionary:
 		"menu_recipe_ids": Array(menu_recipe_ids).map(func(recipe_id: StringName) -> String: return String(recipe_id)),
 		"learned_secret_ids": Array(learned_secret_ids).map(func(recipe_id: StringName) -> String: return String(recipe_id)),
 		"grandma_taste_recipe_ids": Array(grandma_taste_recipe_ids).map(func(recipe_id: StringName) -> String: return String(recipe_id)),
+		"guest_affection": _string_keys(guest_affection),
+		"known_taste_guest_ids": Array(known_taste_guest_ids).map(func(guest_id: StringName) -> String: return String(guest_id)),
 		"notes_completed_day": notes_completed_day,
 		"is_spring_completed": is_spring_completed,
 	}
@@ -361,6 +397,11 @@ func _from_save_data(data: Dictionary) -> void:
 		learned_secret_ids.append(StringName(str(recipe_id)))
 	for recipe_id: Variant in data.get("grandma_taste_recipe_ids", []):
 		grandma_taste_recipe_ids.append(StringName(str(recipe_id)))
+	var affection_data: Dictionary = data.get("guest_affection", {})
+	for guest_id: String in affection_data:
+		guest_affection[StringName(guest_id)] = int(affection_data[guest_id])
+	for guest_id: Variant in data.get("known_taste_guest_ids", []):
+		known_taste_guest_ids.append(StringName(str(guest_id)))
 	notes_completed_day = int(data.get("notes_completed_day", 0))
 	is_spring_completed = bool(data.get("is_spring_completed", false))
 
@@ -397,3 +438,11 @@ func _load_garden(data: Dictionary) -> void:
 		var days: Array = plot_days_left[LEGACY_GARDEN_PLACE_ID]
 		for i: int in mini(legacy_days.size(), days.size()):
 			days[i] = int(legacy_days[i])
+
+
+## Dictionary 의 StringName 키를 JSON 에 넣을 수 있게 String 키로 바꾼다.
+func _string_keys(table: Dictionary) -> Dictionary:
+	var result: Dictionary = {}
+	for key: Variant in table:
+		result[String(key)] = table[key]
+	return result

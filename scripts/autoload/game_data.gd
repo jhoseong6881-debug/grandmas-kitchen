@@ -1,5 +1,5 @@
 extends Node
-## data/ 폴더의 재료, 레시피, 동물 손님, 작물, 밭 .tres 파일을 게임 시작 때 모두 읽어 id로 찾을 수 있게 하는 오토로드.
+## data/ 폴더의 재료, 레시피, 동물 손님, 작물, 밭, 고명 .tres 파일을 게임 시작 때 모두 읽어 id로 찾을 수 있게 하는 오토로드.
 ## 프로젝트 설정 > 전역 > 오토로드 에 "GameData" 이름으로 등록해서 쓴다.
 ## 읽기 전용 원본 데이터만 다룬다. 플레이 중 바뀌는 상태는 GameState 가 맡는다.
 
@@ -8,6 +8,8 @@ const RECIPES_DIR: String = "res://data/recipes/"
 const GUESTS_DIR: String = "res://data/guests/"
 const CROPS_DIR: String = "res://data/crops/"
 const PLACES_DIR: String = "res://data/places/"
+const GARNISHES_DIR: String = "res://data/garnishes/"
+const REGULAR_SETTINGS_PATH: String = "res://data/regular_settings.tres"
 const STARTING_SETUP_PATH: String = "res://data/starting_setup.tres"
 const SEASON_ENDING_PATH: String = "res://data/seasons/spring_ending.tres"
 const RESOURCE_EXTENSIONS: PackedStringArray = ["tres", "res"]
@@ -17,6 +19,8 @@ var _recipes: Dictionary[StringName, Recipe] = {}
 var _guests: Dictionary[StringName, AnimalGuest] = {}
 var _crops: Dictionary[StringName, Crop] = {}
 var _places: Dictionary[StringName, GardenPlace] = {}
+var _garnishes: Dictionary[StringName, Garnish] = {}
+var _regular_settings: RegularSettings
 var _starting_setup: StartingSetup
 var _season_ending: SeasonEnding
 
@@ -50,6 +54,16 @@ func _ready() -> void:
 			_register(_crops, resource.id, resource)
 		else:
 			_warn_wrong_type(resource, "Crop")
+	if ResourceLoader.exists(REGULAR_SETTINGS_PATH):
+		_regular_settings = load(REGULAR_SETTINGS_PATH)
+	else:
+		push_warning("단골도 설정 파일이 없습니다: %s" % REGULAR_SETTINGS_PATH)
+		_regular_settings = RegularSettings.new()
+	for resource: Resource in _load_folder(GARNISHES_DIR):
+		if resource is Garnish:
+			_register(_garnishes, resource.id, resource)
+		else:
+			_warn_wrong_type(resource, "Garnish")
 	for resource: Resource in _load_folder(PLACES_DIR):
 		if resource is GardenPlace:
 			_register(_places, resource.id, resource)
@@ -79,6 +93,15 @@ func get_garden_place(place_id: StringName) -> GardenPlace:
 	return _places.get(place_id)
 
 
+func get_garnish(garnish_id: StringName) -> Garnish:
+	return _garnishes.get(garnish_id)
+
+
+## 단골도 규칙 (파일이 없으면 기본값)
+func get_regular_settings() -> RegularSettings:
+	return _regular_settings
+
+
 ## 새 게임 시작 설정 (없으면 null)
 func get_starting_setup() -> StartingSetup:
 	return _starting_setup
@@ -105,6 +128,13 @@ func get_all_guests() -> Array[AnimalGuest]:
 
 func get_all_garden_places() -> Array[GardenPlace]:
 	return _places.values()
+
+
+## 고명 전부, 고르는 창에 놓일 순서대로
+func get_all_garnishes() -> Array[Garnish]:
+	var garnishes: Array[Garnish] = _garnishes.values()
+	garnishes.sort_custom(func(a: Garnish, b: Garnish) -> bool: return a.sort_order < b.sort_order)
+	return garnishes
 
 
 # --- 내부 ---

@@ -10,6 +10,7 @@
 [ext_resource type="Resource" path="res://data/recipes/acorn_honey_gangjeong.tres" id="8_gangjeong"]
 [ext_resource type="Resource" path="res://data/recipes/carrot_egg_stir_fry.tres" id="9_disliked"]
 [ext_resource type="Script" path="res://scripts/data/evening_talk.gd" id="10_talk"]
+[ext_resource type="Resource" path="res://data/garnishes/sesame_salt.tres" id="20_garnish"]
 
 [sub_resource type="Resource" id="EveningTalk_1"]
 script = ExtResource("10_talk")
@@ -45,3 +46,6 @@ evening_talks = Array[ExtResource("10_talk")]([SubResource("EveningTalk_1"), Sub
 note_recipes = Array[ExtResource("2_recipe")]([ExtResource("4_acorn_jelly"), ExtResource("7_mukbap")])
 feast_line = "…오늘은, 하나도 안 무서워요. 도토리 많이 가져왔어요."
 note_line = "…이거, 할머니가 주신 거예요. 「{recipe}」… 돌려드릴게요."
+favorite_garnish = ExtResource("20_garnish")
+taste_miss_line = "…맛있어요. …톡톡 씹히는 게 있으면 더 좋을 것 같아요."
+taste_match_line = "…! 깨가 톡톡. …제일 좋아하는 맛이에요."

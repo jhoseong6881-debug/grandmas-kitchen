@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/roll_minigame.tscn" id="10_roll"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/rice_minigame.tscn" id="11_rice"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/mix_minigame.tscn" id="12_mix"]
+[ext_resource type="PackedScene" path="res://scenes/kitchen/garnish_picker.tscn" id="14_garnish"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/simmer_minigame.tscn" id="13_simmer"]
 
 [node name="Kitchen" type="Control"]
@@ -108,14 +109,14 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -180.0
+offset_left = -260.0
 offset_top = -240.0
-offset_right = 180.0
+offset_right = 260.0
 offset_bottom = -160.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_font_sizes/font_size = 36
-text = "대접하기"
+text = "마무리하고 대접하기"
 
 [node name="NextGuestButton" type="Button" parent="."]
 unique_name_in_owner = true
@@ -217,5 +218,9 @@ theme_override_font_sizes/font_size = 24
 text = "손님 수첩"
 
 [node name="GuestNotebook" parent="." instance=ExtResource("8_notebook")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="GarnishPicker" parent="." instance=ExtResource("14_garnish")]
 unique_name_in_owner = true
 layout_mode = 1

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Garnish" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/garnish.gd" id="1_garnish"]
+
+[resource]
+script = ExtResource("1_garnish")
+id = &"sesame_salt"
+display_name = "깨소금 솔솔"
+taste_name = "고소한 맛"
+sort_order = 2

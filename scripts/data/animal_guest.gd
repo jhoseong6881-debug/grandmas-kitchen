@@ -30,3 +30,9 @@ extends Resource
 @export var feast_line: String = "잔치, 정말 즐거워요!"
 ## 레시피 노트를 건넬 때 하는 말. {recipe} 자리에 요리 이름이 들어간다.
 @export var note_line: String = "이거, 할머니가 주셨던 레시피예요. 「{recipe}」 돌려드릴게요."
+## 좋아하는 마무리 고명 (data/garnishes/). 이걸 올려 대접하면 단골도가 더 오른다.
+@export var favorite_garnish: Garnish
+## 입맛에 안 맞는 고명을 올렸을 때 하는 말 (무엇을 좋아하는지 힌트가 되게)
+@export_multiline var taste_miss_line: String = ""
+## 입맛에 맞는 고명을 올렸을 때 하는 말
+@export_multiline var taste_match_line: String = ""

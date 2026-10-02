@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="Garnish" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/garnish.gd" id="1_garnish"]
+[ext_resource type="Resource" path="res://data/ingredients/honey.tres" id="2_honey"]
+
+[resource]
+script = ExtResource("1_garnish")
+id = &"honey_spoon"
+display_name = "꿀 한 숟갈"
+taste_name = "달콤한 맛"
+sort_order = 3
+cost_ingredient = ExtResource("2_honey")

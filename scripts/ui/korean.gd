@@ -13,6 +13,11 @@ static func object_particle(word: String) -> String:
 	return "을" if has_final_consonant(word) else "를"
 
 
+## 받침이 있으면 "과", 없으면 "와" (예: 곰과, 토끼와)
+static func with_particle(word: String) -> String:
+	return "과" if has_final_consonant(word) else "와"
+
+
 ## 마지막 글자가 받침 있는 한글인지
 static func has_final_consonant(word: String) -> bool:
 	if word.is_empty():
