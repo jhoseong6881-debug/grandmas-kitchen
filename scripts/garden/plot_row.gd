@@ -10,6 +10,9 @@ signal planted(crop: Crop, plot_button: Button)
 const RIPE_FORMAT: String = "%s\n거두기"
 const GROWING_FORMAT: String = "%s\n%d일 뒤"
 const EMPTY_FORMAT: String = "빈 %s\n심기"
+## 효과음 이름 (data/sounds/ 의 id)
+const HARVEST_SOUND: StringName = &"harvest"
+const PLANT_SOUND: StringName = &"plant"
 
 ## 보여 줄 밭 (data/places/ 의 id)
 @export var place_id: StringName = &""
@@ -72,12 +75,14 @@ func get_next_action_button() -> Button:
 func _on_plot_pressed(plot_index: int) -> void:
 	if GameState.is_plot_ripe(place_id, plot_index):
 		var crop: Crop = GameState.harvest_plot(place_id, plot_index)
+		Sound.play(HARVEST_SOUND)
 		refresh()
 		harvested.emit(crop, _buttons[plot_index])
 	elif GameState.get_plot_crop(place_id, plot_index) == null and plant_picker != null:
 		plant_picker.open(_place)
 		var crop: Crop = await plant_picker.closed
 		if crop != null and GameState.plant_plot(place_id, plot_index, crop):
+			Sound.play(PLANT_SOUND)
 			refresh()
 			planted.emit(crop, _buttons[plot_index])
 		else:

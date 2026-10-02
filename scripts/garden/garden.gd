@@ -12,6 +12,8 @@ const GIFT_READY_TEXT: String = "이웃 바구니\n(뭔가 들어 있어요)"
 const GIFT_EMPTY_TEXT: String = "이웃 바구니\n(비었어요)"
 const WELCOME_TEXT: String = "좋은 아침이에요. 텃밭을 둘러볼까요?"
 const SAVED_NOTICE_TEXT: String = "어젯밤까지의 이야기를 저장했어요."
+## 이웃 바구니에서 재료를 꺼낼 때 나는 소리 (data/sounds/ 의 id)
+const RECEIVE_SOUND: StringName = &"receive"
 
 ## 이 화면을 켤 때 게임이 아직 시작 전이면 새 게임을 시작한다 (시작 재료, 레시피, 텃밭을 받는다).
 @export var start_new_game_on_ready: bool = true
@@ -82,6 +84,7 @@ func _on_basket_button_pressed() -> void:
 	var neighbor: AnimalGuest = neighbors.pick_random()
 	var gift: Ingredient = neighbor.payment_ingredients.pick_random()
 	GameState.add_ingredient(gift.id, gift_amount)
+	Sound.play(RECEIVE_SOUND)
 	_status_label.text = GIFT_FORMAT % [neighbor.display_name, Korean.subject_particle(neighbor.display_name),
 			gift.display_name, gift_amount]
 	_pop_text(HARVEST_POP_FORMAT % [gift_amount, gift.display_name], _basket_button)

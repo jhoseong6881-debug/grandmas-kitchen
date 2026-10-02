@@ -24,6 +24,8 @@ const SECRET_TITLE_TEXT: String = "할머니 비법"
 const SECRET_LINE_FORMAT: String = "• %s — %s%s"
 const SECRET_UNKNOWN_TEXT: String = "●●●●"
 const GRANDMA_STAMP_TEXT: String = "  ♥ 할머니 손맛"
+## 수첩을 펼 때 나는 소리 (data/sounds/ 의 id)
+const OPEN_SOUND: StringName = &"book"
 
 @export var guest_button_font_size: int = 36
 @export var guest_button_height: float = 72.0
@@ -65,6 +67,7 @@ func open() -> void:
 		buttons.append(button)
 	_keep_focus_inside(buttons)
 	show()
+	Sound.play(OPEN_SOUND)
 	if not buttons.is_empty():
 		buttons[0].grab_focus()
 

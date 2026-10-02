@@ -3,6 +3,7 @@ extends Control
 ## 요리 미니게임들의 공통 틀. 썰기, 담기, 볶기 미니게임이 이 스크립트를 물려받는다(extends Minigame).
 ## 공통으로 맡는 일: 시작 전 "준비~ 시작!" 보여 주기(그동안 입력은 무시), 누르기/손 떼기 입력(클릭, 스페이스/Enter,
 ## 게임패드 A) 감지, 연타 방지, 빗나간 횟수 세기, "완벽 도전 중" 표시, 완벽 도장, 끝나면 finished 시그널 보내기,
+## 효과음 (맞힐 때 "hit_미니게임종류" 소리, 없으면 "hit". 빗나감, 준비~ 시작!, 완성/완벽/할머니 손맛 소리),
 ## 할머니 비법(요리 단계의 비법 자리) 확인과 "할머니 손맛" 도장, 비법을 알면 비법 한 줄 보여 주기,
 ## 손님의 오늘의 부탁(GuestRequest) 보여 주기와 들어줬는지 확인하기,
 ## 가게가 커지면 생기는 조리도구(ShopTool) 찾기와 보여 주기 (효과는 _window_scale, _duration_scale 로 각 미니게임이 쓴다).
@@ -35,6 +36,15 @@ const TOOL_SEPARATOR: String = " · "
 ## 금색 칸 안에 그리는 표시의 이름 (지울 때 찾는 데 쓴다)
 const SECRET_ZONE_NAME: String = "SecretZone"
 const REQUEST_ZONE_NAME: String = "RequestZone"
+## 효과음 이름 (data/sounds/ 의 id). 맞히는 소리는 HIT_SOUND_PREFIX + 미니게임 종류 (예: hit_chop)
+const HIT_SOUND_PREFIX: String = "hit_"
+const HIT_SOUND_FALLBACK: StringName = &"hit"
+const MISS_SOUND: StringName = &"miss"
+const READY_SOUND: StringName = &"ready"
+const GO_SOUND: StringName = &"go"
+const DONE_SOUND: StringName = &"done"
+const PERFECT_SOUND: StringName = &"perfect"
+const GRANDMA_TASTE_SOUND: StringName = &"grandma_taste"
 
 ## 한 번 누른 뒤 다음 입력을 받기까지 쉬는 시간(초). 마구 눌러 통과하는 것을 막는다.
 @export var press_cooldown: float = 0.15
@@ -87,6 +97,8 @@ var _duration_scale: float = 1.0
 var _is_converted: bool = false
 ## 처음 보여 줄 완벽 도장 글 (할머니 손맛 도장을 썼다가 되돌릴 때 쓴다)
 var _perfect_stamp_text: String = ""
+## 이 미니게임의 맞히는 소리 이름 (예: &"hit_chop")
+var _hit_sound: StringName
 
 @onready var _title_label: Label = %TitleLabel
 @onready var _progress_label: Label = %ProgressLabel
@@ -105,6 +117,7 @@ var _perfect_stamp_text: String = ""
 func _ready() -> void:
 	_perfect_stamp.pivot_offset = _perfect_stamp.size / 2.0
 	_perfect_stamp_text = _perfect_stamp.text
+	_hit_sound = StringName(HIT_SOUND_PREFIX + String(Recipe.MinigameType.find_key(_get_minigame_type())).to_lower())
 	add_child(_ready_label)
 	_ready_label.pivot_offset = _ready_label.size / 2.0
 	_ready_label.hide()
@@ -171,11 +184,12 @@ func start(recipe: Recipe, step: CookStep = null, request: GuestRequest = null) 
 
 ## "준비~"와 "시작!"을 차례로 톡 튀어나오게 보여 준다. 끝날 때까지 _is_playing 이 false 라 입력과 움직임이 멈춰 있다.
 func _show_ready() -> void:
-	for text_and_duration: Array in [[ready_text, ready_duration], [go_text, go_duration]]:
-		_ready_label.text = text_and_duration[0]
+	for text_duration_sound: Array in [[ready_text, ready_duration, READY_SOUND], [go_text, go_duration, GO_SOUND]]:
+		_ready_label.text = text_duration_sound[0]
 		_pop(_ready_label)
+		Sound.play(text_duration_sound[2])
 		# 두 번째 값 false: 일시 정지 중에는 이 기다림도 멈춘다.
-		await get_tree().create_timer(text_and_duration[1], false).timeout
+		await get_tree().create_timer(text_duration_sound[1], false).timeout
 	_ready_label.hide()
 
 
@@ -278,6 +292,7 @@ func _step_color(default_color: Color) -> Color:
 
 ## 맞혔을 때 부른다. position: 금색 칸(맞는 구간) 안에서 어디쯤 맞혔는지 (0 ~ 1).
 func _register_hit(position: float) -> void:
+	_play_hit_sound()
 	_hit_count += 1
 	var clamped: float = clampf(position, 0.0, 1.0)
 	if _step != null and not _is_converted and _step.is_in_secret(clamped):
@@ -320,7 +335,13 @@ func _clear_zones(parent: Control) -> void:
 			old.queue_free()
 
 
+## 이 미니게임의 맞히는 소리를 낸다. _register_hit 이 부르고, 맞힘으로 치지 않는 동작에도 소리를 내고 싶을 때 쓴다.
+func _play_hit_sound() -> void:
+	Sound.play_or(_hit_sound, HIT_SOUND_FALLBACK)
+
+
 func _register_miss() -> void:
+	Sound.play(MISS_SOUND)
 	_miss_count += 1
 	if _miss_count == 1:
 		var tween: Tween = create_tween()
@@ -340,6 +361,12 @@ func _complete(done_text: String) -> void:
 		_perfect_stamp.text = grandma_stamp_text
 	if is_perfect or is_grandma_taste:
 		_pop_perfect_stamp()
+	if is_grandma_taste:
+		Sound.play(GRANDMA_TASTE_SOUND)
+	elif is_perfect:
+		Sound.play(PERFECT_SOUND)
+	else:
+		Sound.play(DONE_SOUND)
 	# 두 번째 값 false: 일시 정지 중에는 이 기다림도 멈춘다.
 	var delay: float = perfect_finish_delay if is_perfect or is_grandma_taste else finish_delay
 	await get_tree().create_timer(delay, false).timeout

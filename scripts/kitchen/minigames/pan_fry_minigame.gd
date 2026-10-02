@@ -110,6 +110,8 @@ func _on_press() -> void:
 		return
 	if _doneness > golden_end + judge_margin:
 		_register_miss()
+		# 늦었어도 전은 뒤집으니까 뒤집는 소리는 낸다.
+		_play_hit_sound()
 		_progress_label.text = LATE_TEXT
 	else:
 		# 막 금색이 됐을 때 = 0, 짙은 금색 끝 = 1

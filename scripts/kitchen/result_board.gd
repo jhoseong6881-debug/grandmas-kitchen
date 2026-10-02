@@ -22,6 +22,9 @@ const GAUGE_FORMAT: String = "%s   %d / %d   다음: %s"
 const GAUGE_MAX_FORMAT: String = "%s   소문 %d"
 const SHOP_UP_FORMAT: String = "가게 이름이 바뀌었어요!  「%s」"
 const SHOP_UNLOCK_FORMAT: String = "\n%s"
+## 효과음 이름 (data/sounds/ 의 id): 줄이 하나씩 나타날 때, 가게 이름이 바뀔 때
+const LINE_SOUND: StringName = &"result_line"
+const SHOP_UP_SOUND: StringName = &"shop_up"
 
 ## 줄이 하나씩 나타나는 간격(초)과 나타나는 시간(초)
 @export var line_interval: float = 0.35
@@ -126,6 +129,7 @@ func _reveal() -> void:
 	_is_revealing = true
 	_tween = create_tween()
 	for row: Control in rows:
+		_tween.tween_callback(Sound.play.bind(LINE_SOUND))
 		_tween.tween_property(row, "modulate:a", 1.0, line_fade_duration)
 		_tween.tween_interval(line_interval)
 	_tween.tween_method(_set_reputation_count, 0, _final_reputation_points, count_duration)
@@ -147,6 +151,8 @@ func _finish_reveal() -> void:
 	_set_reputation_count(_final_reputation_points)
 	_gauge_fill.size.x = _gauge_to * _gauge_bar.size.x
 	_shop_up_label.visible = _new_shop_tier >= 0
+	if _new_shop_tier >= 0:
+		Sound.play(SHOP_UP_SOUND)
 	_continue_button.show()
 	_continue_button.grab_focus()
 

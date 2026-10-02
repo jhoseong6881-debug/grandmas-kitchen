@@ -24,6 +24,12 @@ const PERFECT_BONUS_FORMAT: String = " (완벽 +%d)"
 const REGULAR_BONUS_FORMAT: String = " (%s 덤 +%d)"
 const LUNCH_DONE_TEXT: String = "오늘 점심 장사 끝! 수고했어요."
 const OUT_OF_INGREDIENTS_TEXT: String = "재료가 다 떨어져서 오늘 장사는 여기까지예요."
+## 효과음 이름 (data/sounds/ 의 id)
+const GUEST_ARRIVE_SOUND: StringName = &"guest_arrive"
+const SERVE_SOUND: StringName = &"serve"
+const RECEIVE_SOUND: StringName = &"receive"
+const POP_SOUND: StringName = &"pop"
+const TIER_UP_SOUND: StringName = &"tier_up"
 
 ## 점심 한 번에 받는 손님 수의 최대값 (가게 단계 데이터가 없을 때만 쓴다. 보통은 ShopLevel.max_guests)
 @export var guests_per_lunch: int = 3
@@ -187,6 +193,7 @@ func _call_next_guest() -> void:
 			if current_request != null:
 				order_text += REQUEST_JOIN + current_request.line
 			_guest_spot.show_guest(guest, order_text)
+			Sound.play(GUEST_ARRIVE_SOUND)
 			_show_only_button(_cook_button)
 			return
 	_end_lunch(OUT_OF_INGREDIENTS_TEXT)
@@ -364,34 +371,41 @@ func _serve(garnish: Garnish) -> void:
 	if is_grandma_taste and not current_order.grandma_taste_line.is_empty():
 		line = current_order.grandma_taste_line.format({"name": GameState.player_name})
 
-	# 손님 위로 떠오르는 글과 단골도
+	# 손님 위로 떠오르는 글(과 그때 나는 소리)과 단골도
 	var pops: Array[String] = []
+	var pop_sounds: Array[StringName] = []
 	var points: int = settings.serve_points
 	if is_grandma_taste:
 		if not GameState.has_grandma_taste(current_order.id):
 			pops.append(GRANDMA_STAMP_TEXT)
+			pop_sounds.append(POP_SOUND)
 		GameState.record_grandma_taste(current_order.id)
 		points += settings.grandma_taste_points
 	if is_request_met:
 		pops.append(REQUEST_DONE_POP_TEXT)
+		pop_sounds.append(POP_SOUND)
 		points += settings.request_points
 	if is_taste_match:
 		GameState.learn_taste(guest.id)
 		pops.append(TASTE_MATCH_POP_TEXT)
+		pop_sounds.append(POP_SOUND)
 		points += settings.taste_match_points
 	var new_tier: int = GameState.add_affection(guest.id, points)
 	_record_serve(guest, payment, is_grandma_taste, is_request_met, is_taste_match, points)
 	if new_tier >= 0:
 		pops.append(TIER_UP_FORMAT % [guest.display_name, Korean.with_particle(guest.display_name), settings.get_tier_name(new_tier)])
+		pop_sounds.append(TIER_UP_SOUND)
 
 	_guest_spot.say(line)
+	Sound.play(SERVE_SOUND)
+	Sound.play(RECEIVE_SOUND)
 	_set_payment_status(payment, _is_perfect_cook, is_grandma_taste or is_request_met, bonus_text)
 	GameState.record_served_guest(guest.id, _is_perfect_cook)
 	current_request = null
 	_guests_served += 1
 	_update_lunch_label()
 	_show_only_button(_next_guest_button)
-	_pop_one_by_one(pops)
+	_pop_one_by_one(pops, pop_sounds)
 
 
 ## 오늘 장사 기록에 이번 대접을 적고, 쌓인 소문을 센다.
@@ -431,12 +445,13 @@ func _base_payment(guest: AnimalGuest) -> Dictionary[StringName, int]:
 	return payment
 
 
-## 손님 위로 글을 하나씩 띄운다 (도장, 부탁, 입맛, 단골 단계).
-func _pop_one_by_one(texts: Array[String]) -> void:
+## 손님 위로 글을 하나씩 띄운다 (도장, 부탁, 입맛, 단골 단계). sounds 는 글마다 낼 효과음 (texts 와 같은 순서).
+func _pop_one_by_one(texts: Array[String], sounds: Array[StringName]) -> void:
 	for i: int in texts.size():
 		if i > 0:
 			# 두 번째 값 false: 일시 정지 중에는 이 기다림도 멈춘다.
 			await get_tree().create_timer(pop_interval, false).timeout
+		Sound.play(sounds[i])
 		FloatingText.pop(self, texts[i], _guest_spot, stamp_pop_rise, stamp_pop_duration,
 				stamp_pop_font_size, perfect_text_color)
 

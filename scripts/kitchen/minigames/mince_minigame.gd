@@ -131,6 +131,9 @@ func _on_press() -> void:
 	if _pace == Pace.GOOD:
 		# 금색 칸 왼쪽(알맞은 빠르기 중 느린 쪽) = 0, 오른쪽 = 1
 		_register_hit((_needle * max_rate - _target_min) / (_target_max - _target_min))
+	else:
+		# 빠르기가 안 맞아도 칼은 내려가니까 탁 소리는 낸다.
+		_play_hit_sound()
 	_knife.position.y = _knife_home_y + knife_drop
 	var tween: Tween = create_tween()
 	tween.tween_property(_knife, "position:y", _knife_home_y, knife_drop_duration)

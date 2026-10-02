@@ -19,6 +19,10 @@ const FALLBACK_STORY_LINE: String = "오늘도 잘 먹었어요."
 const REPLY_FORMAT: String = "▸ %s"
 const NEXT_TEXT: String = "다음"
 const SLEEP_TEXT: String = "잠자리에 들기"
+## 효과음 이름 (data/sounds/ 의 id)
+const SECRET_SOUND: StringName = &"secret"
+const GIFT_SOUND: StringName = &"gift"
+const NOTE_PAGE_SOUND: StringName = &"note_page"
 
 ## 잠자리에 든 뒤 넘어갈 다음 날 아침 장면
 @export_file("*.tscn") var morning_scene_path: String = "res://scenes/garden/garden.tscn"
@@ -136,6 +140,7 @@ func _next_secret(guest: AnimalGuest) -> Recipe:
 
 func _learn_secret(recipe: Recipe) -> void:
 	GameState.learn_secret(recipe.id)
+	Sound.play(SECRET_SOUND)
 	_status_label.text = SECRET_LEARNED_FORMAT % recipe.secret_hint
 
 
@@ -182,6 +187,7 @@ func _receive_gift(tier: int, reward: RegularReward) -> void:
 		GameState.add_keepsake(reward.keepsake.id)
 		lines.append(GIFT_KEEPSAKE_FORMAT % reward.keepsake.display_name)
 	GameState.finish_reward_tier(_evening_guest.id, tier)
+	Sound.play(GIFT_SOUND)
 	_status_label.text = GIFT_SEPARATOR.join(lines)
 
 
@@ -223,6 +229,7 @@ func _on_reply_chosen(reply_index: int) -> void:
 
 func _receive_note_page(recipe: Recipe) -> void:
 	GameState.unlock_recipe(recipe.id)
+	Sound.play(NOTE_PAGE_SOUND)
 	var ingredient_names: PackedStringArray = []
 	for ingredient: Ingredient in recipe.ingredients:
 		ingredient_names.append(ingredient.display_name)
