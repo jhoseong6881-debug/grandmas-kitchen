@@ -1,8 +1,8 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://x3ef510qot4e"]
 
-[ext_resource type="Script" path="res://scripts/kitchen/minigames/chop_minigame.gd" id="1_chop"]
+[ext_resource type="Script" uid="uid://cdtqnwao656ik" path="res://scripts/kitchen/minigames/chop_minigame.gd" id="1_chop"]
 
-[node name="ChopMinigame" type="Control"]
+[node name="ChopMinigame" type="Control" unique_id=1176403729]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -12,7 +12,7 @@ grow_vertical = 2
 focus_mode = 2
 script = ExtResource("1_chop")
 
-[node name="Dim" type="ColorRect" parent="."]
+[node name="Dim" type="ColorRect" parent="." unique_id=117272277]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,7 +22,7 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0.45)
 
-[node name="TitleLabel" type="Label" parent="."]
+[node name="TitleLabel" type="Label" parent="." unique_id=1228754095]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 5
@@ -38,7 +38,7 @@ text = "재료 썰기"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Board" type="ColorRect" parent="."]
+[node name="Board" type="ColorRect" parent="." unique_id=448912522]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 8
@@ -56,7 +56,7 @@ pivot_offset = Vector2(450, 250)
 mouse_filter = 2
 color = Color(0.88, 0.74, 0.54, 1)
 
-[node name="Ingredient" type="ColorRect" parent="Board"]
+[node name="Ingredient" type="ColorRect" parent="Board" unique_id=1330541450]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 80.0
@@ -66,7 +66,7 @@ offset_bottom = 330.0
 mouse_filter = 2
 color = Color(0.85, 0.55, 0.3, 1)
 
-[node name="TargetZone" type="ColorRect" parent="Board"]
+[node name="TargetZone" type="ColorRect" parent="Board" unique_id=1848635084]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 400.0
@@ -76,7 +76,7 @@ offset_bottom = 370.0
 mouse_filter = 2
 color = Color(1, 1, 1, 0.45)
 
-[node name="Knife" type="ColorRect" parent="Board"]
+[node name="Knife" type="ColorRect" parent="Board" unique_id=1069184278]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 75.0
@@ -86,7 +86,7 @@ offset_bottom = 390.0
 mouse_filter = 2
 color = Color(0.35, 0.36, 0.4, 1)
 
-[node name="Slices" type="HFlowContainer" parent="Board"]
+[node name="Slices" type="HFlowContainer" parent="Board" unique_id=336463227]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 560.0
@@ -97,7 +97,7 @@ mouse_filter = 2
 theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 10
 
-[node name="PerfectStreakLabel" type="Label" parent="Board"]
+[node name="PerfectStreakLabel" type="Label" parent="Board" unique_id=1299617232]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 560.0
@@ -110,7 +110,7 @@ text = "★ 완벽 도전 중"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="ProgressLabel" type="Label" parent="."]
+[node name="ProgressLabel" type="Label" parent="." unique_id=584740493]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 7
@@ -129,7 +129,7 @@ text = "0 / 8"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HintLabel" type="Label" parent="."]
+[node name="HintLabel" type="Label" parent="." unique_id=912563869]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -147,7 +147,7 @@ text = "칼이 하얀 자리에 왔을 때 클릭하거나 스페이스 / Ⓐ �
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PerfectStamp" type="Label" parent="."]
+[node name="PerfectStamp" type="Label" parent="." unique_id=1528329264]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
