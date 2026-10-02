@@ -11,7 +11,10 @@ const PAUSE_ACTION: StringName = &"pause"
 const ACCEPT_JOY_BUTTON: JoyButton = JOY_BUTTON_A
 const CANCEL_JOY_BUTTON: JoyButton = JOY_BUTTON_B
 const PAUSE_KEY: Key = KEY_ESCAPE
-const PAUSE_JOY_BUTTON: JoyButton = JOY_BUTTON_START
+## 일시 정지는 Start 와 Select/Back 둘 다로 열린다. 게임패드마다 Start 위치가 달라서 둘 다 연결한다.
+const PAUSE_JOY_BUTTONS: Array[JoyButton] = [JOY_BUTTON_START, JOY_BUTTON_BACK]
+## 어느 게임패드에서 눌러도 받도록 하는 기기 번호 (-1 = 모든 기기)
+const ALL_DEVICES: int = -1
 
 
 static func apply() -> void:
@@ -21,8 +24,10 @@ static func apply() -> void:
 		InputMap.add_action(PAUSE_ACTION)
 		var key_event: InputEventKey = InputEventKey.new()
 		key_event.physical_keycode = PAUSE_KEY
+		key_event.device = ALL_DEVICES
 		InputMap.action_add_event(PAUSE_ACTION, key_event)
-	_add_joy_button(PAUSE_ACTION, PAUSE_JOY_BUTTON)
+	for button: JoyButton in PAUSE_JOY_BUTTONS:
+		_add_joy_button(PAUSE_ACTION, button)
 
 
 ## 그 동작에 같은 게임패드 버튼이 아직 없으면 더한다.
@@ -32,4 +37,6 @@ static func _add_joy_button(action: StringName, button: JoyButton) -> void:
 			return
 	var joy_event: InputEventJoypadButton = InputEventJoypadButton.new()
 	joy_event.button_index = button
+	# 기본값(0)이면 0번 게임패드에서만 동작한다. Mac에서는 게임패드가 다른 번호를 받을 수 있다.
+	joy_event.device = ALL_DEVICES
 	InputMap.action_add_event(action, joy_event)
