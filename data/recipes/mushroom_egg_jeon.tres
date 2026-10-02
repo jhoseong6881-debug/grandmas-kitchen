@@ -19,6 +19,8 @@ type = 3
 subject_name = "버섯전"
 count = 4
 speed = 1.1
+secret_start = 0.0
+secret_end = 0.45
 
 [sub_resource type="Resource" id="CookStep_3"]
 script = ExtResource("14_cook_step")
@@ -32,3 +34,7 @@ display_name = "버섯 계란전"
 ingredients = Array[ExtResource("2_ingredient")]([ExtResource("3_mushroom"), ExtResource("4_egg")])
 cook_steps = Array[ExtResource("14_cook_step")]([SubResource("CookStep_1"), SubResource("CookStep_2"), SubResource("CookStep_3")])
 minigame_ingredient_name = "버섯"
+secret_hint = "버섯전은 막 금색이 됐을 때 바로"
+secret_teller_id = &"hedgehog"
+secret_reveal_line = "…버섯전은 막 금색이 되자마자 뒤집어야 촉촉하다. 네 할머니가 그랬다."
+grandma_taste_line = "…촉촉하군. …고맙다, {name}."

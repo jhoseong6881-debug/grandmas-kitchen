@@ -83,6 +83,7 @@ func _on_start(recipe: Recipe) -> void:
 	for child: Node in _done_row.get_children():
 		child.queue_free()
 	_layout_doneness_bar()
+	_clear_secret_zone(_gold_zone)
 	_title_label.text = _step_title(Recipe.MinigameType.PAN_FRY, _default_subject(recipe))
 	_progress_label.text = READY_TEXT
 	_place_new_jeon()
@@ -106,11 +107,20 @@ func _on_press() -> void:
 	if _doneness > golden_end + judge_margin:
 		_register_miss()
 		_progress_label.text = LATE_TEXT
+	else:
+		# 막 금색이 됐을 때 = 0, 짙은 금색 끝 = 1
+		_register_hit((_doneness - golden_start) / (golden_end - golden_start))
 	_sides_done += 1
 	if _sides_done >= SIDES_PER_JEON:
 		_lift_jeon()
 	else:
 		_flip_jeon()
+
+
+## 익힘 막대의 금색 칸 안에 비법 자리를 그린다.
+func _show_secret_zone(start: float, end: float) -> void:
+	var width: float = _gold_zone.size.x
+	_make_secret_zone(_gold_zone, Rect2(start * width, 0.0, (end - start) * width, _gold_zone.size.y))
 
 
 func is_golden() -> bool:

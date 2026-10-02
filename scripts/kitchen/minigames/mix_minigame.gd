@@ -132,6 +132,9 @@ func _bare_piece_under_spatula() -> int:
 
 
 func _coat(index: int) -> void:
+	# 조각 왼쪽 판정 끝 = 0, 오른쪽 판정 끝 = 1
+	var center_x: float = _pieces[index].position.x + _pieces[index].size.x / 2.0
+	_register_hit((_spatula_x() - (center_x - catch_half_width)) / (2.0 * catch_half_width))
 	_is_coated[index] = true
 	_coated_count += 1
 	var piece: Control = _pieces[index]

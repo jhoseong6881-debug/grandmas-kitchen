@@ -65,6 +65,7 @@ func _on_start(recipe: Recipe) -> void:
 	_update_knife()
 	_update_target()
 	_target_zone.show()
+	_clear_secret_zone(_target_zone)
 	_title_label.text = _step_title(Recipe.MinigameType.CHOP, _default_subject(recipe))
 	_progress_label.text = READY_FORMAT % _chops_needed
 
@@ -92,11 +93,18 @@ func _on_press() -> void:
 		_miss()
 
 
+## 하얀 칸 안에 비법 자리를 그린다. 하얀 칸이 옮겨 가면 함께 옮겨 간다.
+func _show_secret_zone(start: float, end: float) -> void:
+	_make_secret_zone(_target_zone, Rect2(start * target_width, 0.0, (end - start) * target_width, _target_zone.size.y))
+
+
 func is_knife_on_target() -> bool:
 	return absf(_knife_x - _target_center) <= target_width / 2.0 + judge_margin
 
 
 func _chop() -> void:
+	# 하얀 칸 왼쪽 끝 = 0, 오른쪽 끝 = 1
+	_register_hit((_knife_x - (_target_center - target_width / 2.0)) / target_width)
 	_chop_count += 1
 	_ingredient.size.x = _ingredient_full_width * (1.0 - float(_chop_count) / _chops_needed)
 	var slice: ColorRect = ColorRect.new()

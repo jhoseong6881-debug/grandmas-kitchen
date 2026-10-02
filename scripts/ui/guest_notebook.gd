@@ -1,6 +1,7 @@
 class_name GuestNotebook
 extends Control
-## 손님 수첩. 손님마다 성격, 좋아하는/싫어하는 요리, 밥값을 보여 준다.
+## 손님 수첩. 손님마다 성격, 좋아하는/싫어하는 요리, 밥값, 그 손님이 알려 주는 할머니 비법을 보여 준다.
+## 비법은 아직 모르면 ●●●●, 알면 비법 한 줄, 할머니 손맛으로 대접한 적이 있으면 도장(♥)이 붙는다.
 ## 한 번도 대접하지 않은 손님과 아직 노트로 되찾지 못한 요리는 "???"로 가린다.
 ## open() 으로 열고, 닫기 버튼이나 Esc/게임패드 B(ui_cancel)로 닫는다.
 
@@ -13,6 +14,10 @@ const NOTE_HINT_TEXT: String = "할머니 레시피 노트를 아직 가지고 �
 const NO_NOTE_TEXT: String = "가지고 있던 레시피 노트는 다 돌려받았어요."
 const LIST_SEPARATOR: String = ", "
 const NONE_TEXT: String = "없음"
+const SECRET_TITLE_TEXT: String = "할머니 비법"
+const SECRET_LINE_FORMAT: String = "• %s — %s%s"
+const SECRET_UNKNOWN_TEXT: String = "●●●●"
+const GRANDMA_STAMP_TEXT: String = "  ♥ 할머니 손맛"
 
 @export var guest_button_font_size: int = 36
 @export var guest_button_height: float = 72.0
@@ -27,6 +32,7 @@ var _previous_focus: Control
 @onready var _dislikes_label: Label = %DislikesLabel
 @onready var _payment_label: Label = %PaymentLabel
 @onready var _note_label: Label = %NoteLabel
+@onready var _secret_label: Label = %SecretLabel
 @onready var _close_button: Button = %CloseButton
 
 
@@ -97,7 +103,7 @@ func _show_guest(guest: AnimalGuest) -> void:
 	if not GameState.has_met_guest(guest.id):
 		_name_label.text = UNKNOWN_TEXT
 		_personality_label.text = UNMET_GUEST_TEXT
-		for label: Label in [_likes_label, _dislikes_label, _payment_label, _note_label]:
+		for label: Label in [_likes_label, _dislikes_label, _payment_label, _note_label, _secret_label]:
 			label.text = ""
 		return
 	_name_label.text = guest.display_name
@@ -112,6 +118,22 @@ func _show_guest(guest: AnimalGuest) -> void:
 	var has_page_left: bool = guest.note_recipes.any(
 			func(recipe: Recipe) -> bool: return not GameState.is_recipe_unlocked(recipe.id))
 	_note_label.text = NOTE_HINT_TEXT if has_page_left else (NO_NOTE_TEXT if not guest.note_recipes.is_empty() else "")
+	_secret_label.text = _secret_text(guest)
+
+
+## 이 손님이 알려 주는 할머니 비법 목록. 하나도 없으면 빈 문자열.
+func _secret_text(guest: AnimalGuest) -> String:
+	var lines: PackedStringArray = []
+	for recipe: Recipe in GameData.get_all_recipes():
+		if recipe.secret_teller_id != guest.id or recipe.secret_hint.is_empty():
+			continue
+		var recipe_name: String = recipe.display_name if GameState.is_recipe_unlocked(recipe.id) else UNKNOWN_TEXT
+		var hint: String = recipe.secret_hint if GameState.is_secret_learned(recipe.id) else SECRET_UNKNOWN_TEXT
+		var stamp: String = GRANDMA_STAMP_TEXT if GameState.has_grandma_taste(recipe.id) else ""
+		lines.append(SECRET_LINE_FORMAT % [recipe_name, hint, stamp])
+	if lines.is_empty():
+		return ""
+	return SECRET_TITLE_TEXT + "\n" + "\n".join(lines)
 
 
 ## 되찾은 레시피는 이름으로, 아직 못 찾은 레시피는 ??? 로 적는다.

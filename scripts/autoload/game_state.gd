@@ -36,6 +36,10 @@ var menu_recipe_ids: Array[StringName] = []
 var met_guest_ids: Array[StringName] = []
 ## 손님 id → 저녁 평상에서 지금까지 들려준 이야기 수
 var guest_story_progress: Dictionary[StringName, int] = {}
+## 손님에게 들어서 알게 된 할머니 비법 (레시피 id)
+var learned_secret_ids: Array[StringName] = []
+## 할머니 손맛으로 한 번이라도 대접한 레시피 (레시피 노트 도장)
+var grandma_taste_recipe_ids: Array[StringName] = []
 ## 레시피 노트를 다 모은 날 (0 = 아직). 그다음 날 저녁에 봄 잔치가 열린다.
 var notes_completed_day: int = 0
 ## 봄 잔치까지 보고 봄을 마쳤는지
@@ -211,6 +215,27 @@ func is_recipe_unlocked(recipe_id: StringName) -> bool:
 	return recipe_id in unlocked_recipe_ids
 
 
+# --- 할머니 비법 ---
+
+func is_secret_learned(recipe_id: StringName) -> bool:
+	return recipe_id in learned_secret_ids
+
+
+func learn_secret(recipe_id: StringName) -> void:
+	if recipe_id not in learned_secret_ids:
+		learned_secret_ids.append(recipe_id)
+
+
+## 레시피 노트에 "할머니 손맛" 도장이 찍혔는지
+func has_grandma_taste(recipe_id: StringName) -> bool:
+	return recipe_id in grandma_taste_recipe_ids
+
+
+func record_grandma_taste(recipe_id: StringName) -> void:
+	if recipe_id not in grandma_taste_recipe_ids:
+		grandma_taste_recipe_ids.append(recipe_id)
+
+
 # --- 새 게임 / 세이브 / 로드 ---
 
 func new_game() -> void:
@@ -224,6 +249,8 @@ func new_game() -> void:
 	plot_days_left.clear()
 	met_guest_ids.clear()
 	menu_recipe_ids.clear()
+	learned_secret_ids.clear()
+	grandma_taste_recipe_ids.clear()
 	notes_completed_day = 0
 	is_spring_completed = false
 	is_todays_gift_collected = false
@@ -302,6 +329,8 @@ func _to_save_data() -> Dictionary:
 		"garden": _garden_save_data(),
 		"met_guest_ids": Array(met_guest_ids).map(func(guest_id: StringName) -> String: return String(guest_id)),
 		"menu_recipe_ids": Array(menu_recipe_ids).map(func(recipe_id: StringName) -> String: return String(recipe_id)),
+		"learned_secret_ids": Array(learned_secret_ids).map(func(recipe_id: StringName) -> String: return String(recipe_id)),
+		"grandma_taste_recipe_ids": Array(grandma_taste_recipe_ids).map(func(recipe_id: StringName) -> String: return String(recipe_id)),
 		"notes_completed_day": notes_completed_day,
 		"is_spring_completed": is_spring_completed,
 	}
@@ -328,6 +357,10 @@ func _from_save_data(data: Dictionary) -> void:
 	var menu_data: Array = data.get("menu_recipe_ids", [])
 	for recipe_id: Variant in menu_data:
 		menu_recipe_ids.append(StringName(str(recipe_id)))
+	for recipe_id: Variant in data.get("learned_secret_ids", []):
+		learned_secret_ids.append(StringName(str(recipe_id)))
+	for recipe_id: Variant in data.get("grandma_taste_recipe_ids", []):
+		grandma_taste_recipe_ids.append(StringName(str(recipe_id)))
 	notes_completed_day = int(data.get("notes_completed_day", 0))
 	is_spring_completed = bool(data.get("is_spring_completed", false))
 

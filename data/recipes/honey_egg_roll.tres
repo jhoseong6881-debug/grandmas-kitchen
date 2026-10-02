@@ -11,6 +11,8 @@ script = ExtResource("14_cook_step")
 type = 4
 subject_name = "계란"
 count = 4
+secret_start = 0.55
+secret_end = 0.95
 
 [sub_resource type="Resource" id="CookStep_2"]
 script = ExtResource("14_cook_step")
@@ -31,3 +33,7 @@ display_name = "꿀 계란말이"
 ingredients = Array[ExtResource("2_ingredient")]([ExtResource("3_egg"), ExtResource("3_egg"), ExtResource("4_honey")])
 cook_steps = Array[ExtResource("14_cook_step")]([SubResource("CookStep_1"), SubResource("CookStep_2"), SubResource("CookStep_3")])
 minigame_ingredient_name = "계란"
+secret_hint = "계란말이는 끝에 닿기 직전에 말기"
+secret_teller_id = &"hen"
+secret_reveal_line = "계란말이는 끝에 닿기 바로 전에 돌돌! 그게 네 할머니 비법이었지. 늦으면 터지거든!"
+grandma_taste_line = "꼬꼬꼬! 폭신폭신! 네 할머니 계란말이 그대로야!"

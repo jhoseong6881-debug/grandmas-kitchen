@@ -2,7 +2,8 @@ class_name Minigame
 extends Control
 ## 요리 미니게임들의 공통 틀. 썰기, 담기, 볶기 미니게임이 이 스크립트를 물려받는다(extends Minigame).
 ## 공통으로 맡는 일: 시작 전 "준비~ 시작!" 보여 주기(그동안 입력은 무시), 누르기/손 떼기 입력(클릭, 스페이스/Enter,
-## 게임패드 A) 감지, 연타 방지, 빗나간 횟수 세기, "완벽 도전 중" 표시, 완벽 도장, 끝나면 finished 시그널 보내기.
+## 게임패드 A) 감지, 연타 방지, 빗나간 횟수 세기, "완벽 도전 중" 표시, 완벽 도장, 끝나면 finished 시그널 보내기,
+## 할머니 비법(요리 단계의 비법 자리) 확인과 "할머니 손맛" 도장, 비법을 알면 비법 한 줄 보여 주기.
 ## 시간 제한과 실패는 없다. 빗나가도 벌칙 없이 다시 하면 된다.
 ##
 ## 물려받는 미니게임 씬에는 %TitleLabel, %ProgressLabel, %PerfectStreakLabel, %PerfectStamp 노드가 있어야 한다.
@@ -11,15 +12,18 @@ extends Control
 ##   _on_start(recipe)  : 미니게임을 처음 상태로 준비한다.
 ##   _on_press()        : 누를 때마다 불린다. 맞으면 진행하고, 빗나가면 _register_miss() 를 부른다.
 ##   _on_release()      : 손을 뗄 때마다 불린다. 꾹 누르는 미니게임에서 쓴다. (필요 없으면 안 채워도 된다)
-##   다 끝나면 _complete(완료 문구) 를 부른다.
+##   _show_secret_zone(start, end) : 비법을 알 때 금색 칸 안에 비법 자리를 그린다. (그릴 수 없으면 안 채워도 된다)
+##   맞힐 때마다 _register_hit(금색 칸 안의 위치 0~1) 을 부르고, 다 끝나면 _complete(완료 문구) 를 부른다.
 
 ## is_perfect: 한 번도 빗나가지 않았으면 true
-signal finished(is_perfect: bool)
+## is_grandma_taste: 이 단계에 할머니 비법이 있고, 모든 동작을 비법 자리에서 해냈으면 true
+signal finished(is_perfect: bool, is_grandma_taste: bool)
 
 ## 미니게임 제목: 이름 + 동작 (예: "당근 채썰기")
 const STEP_TITLE_FORMAT: String = "%s %s"
 ## 레시피에 재료가 하나도 없을 때 제목에 쓰는 이름
 const FALLBACK_SUBJECT: String = "재료"
+const SECRET_HINT_FORMAT: String = "★ 할머니 비법: %s"
 
 ## 한 번 누른 뒤 다음 입력을 받기까지 쉬는 시간(초). 마구 눌러 통과하는 것을 막는다.
 @export var press_cooldown: float = 0.15
@@ -38,6 +42,13 @@ const FALLBACK_SUBJECT: String = "재료"
 @export var go_text: String = "시작!"
 @export var ready_duration: float = 0.9
 @export var go_duration: float = 0.5
+## 할머니 비법대로 해냈을 때 도장 글
+@export var grandma_stamp_text: String = "♥ 할머니 손맛 ♥"
+## 비법 자리 표시 색 (금색 칸보다 진하게)
+@export var secret_zone_color: Color = Color(0.95, 0.55, 0.1, 0.9)
+## 비법 한 줄이 보이는 자리와 글자 크기
+@export var secret_hint_rect: Rect2 = Rect2(60, 240, 900, 48)
+@export var secret_hint_font_size: int = 24
 
 var _miss_count: int = 0
 ## 지금 하는 요리 단계. 없으면 null (기본값으로 한다).
@@ -46,6 +57,11 @@ var _step: CookStep
 var _speed: float = 1.0
 var _is_playing: bool = false
 var _cooldown_left: float = 0.0
+## 이번 단계에서 맞힌 수와, 그중 비법 자리에서 맞힌 수
+var _hit_count: int = 0
+var _secret_hit_count: int = 0
+## 처음 보여 줄 완벽 도장 글 (할머니 손맛 도장을 썼다가 되돌릴 때 쓴다)
+var _perfect_stamp_text: String = ""
 
 @onready var _title_label: Label = %TitleLabel
 @onready var _progress_label: Label = %ProgressLabel
@@ -53,13 +69,22 @@ var _cooldown_left: float = 0.0
 @onready var _perfect_stamp: Label = %PerfectStamp
 ## "준비~ 시작!" 글. 완벽 도장과 같은 모양으로 쓰려고 도장을 복사해서 만든다.
 @onready var _ready_label: Label = _perfect_stamp.duplicate()
+## "★ 할머니 비법: …" 한 줄. "완벽 도전 중" 글과 같은 모양으로 쓰려고 복사해서 만든다.
+@onready var _secret_hint_label: Label = _perfect_streak_label.duplicate()
 
 
 func _ready() -> void:
 	_perfect_stamp.pivot_offset = _perfect_stamp.size / 2.0
+	_perfect_stamp_text = _perfect_stamp.text
 	add_child(_ready_label)
 	_ready_label.pivot_offset = _ready_label.size / 2.0
 	_ready_label.hide()
+	add_child(_secret_hint_label)
+	_secret_hint_label.position = secret_hint_rect.position
+	_secret_hint_label.size = secret_hint_rect.size
+	_secret_hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	_secret_hint_label.add_theme_font_size_override("font_size", secret_hint_font_size)
+	_secret_hint_label.hide()
 	hide()
 
 
@@ -67,12 +92,21 @@ func start(recipe: Recipe, step: CookStep = null) -> void:
 	_step = step
 	_speed = step.speed if step != null and step.speed > 0.0 else 1.0
 	_miss_count = 0
+	_hit_count = 0
+	_secret_hit_count = 0
 	_is_playing = false
 	_cooldown_left = 0.0
 	_perfect_streak_label.modulate.a = 1.0
 	_perfect_streak_label.show()
 	_perfect_stamp.hide()
+	_perfect_stamp.text = _perfect_stamp_text
 	_on_start(recipe)
+	# 비법을 알면 비법 한 줄과 비법 자리를 보여 준다. 몰라도 비법 자리에서 해내면 할머니 손맛이 된다.
+	var is_secret_known: bool = _step != null and _step.has_secret() and GameState.is_secret_learned(recipe.id)
+	_secret_hint_label.visible = is_secret_known and not recipe.secret_hint.is_empty()
+	_secret_hint_label.text = SECRET_HINT_FORMAT % recipe.secret_hint
+	if is_secret_known:
+		_show_secret_zone(_step.secret_start, _step.secret_end)
 	show()
 	# 포커스를 가져와야 키보드와 게임패드 입력이 뒤에 있는 버튼으로 새지 않는다.
 	grab_focus()
@@ -124,6 +158,10 @@ func _on_release() -> void:
 	pass
 
 
+func _show_secret_zone(_start: float, _end: float) -> void:
+	pass
+
+
 # --- 물려받는 스크립트가 부르는 함수 ---
 
 ## 요리 단계에 이름도 재료도 없을 때 쓰는 이름: 레시피에서 정한 이름 → 첫 번째 재료 이름 → "재료"
@@ -163,6 +201,37 @@ func _step_color(default_color: Color) -> Color:
 	return default_color
 
 
+## 맞혔을 때 부른다. position: 금색 칸(맞는 구간) 안에서 어디쯤 맞혔는지 (0 ~ 1).
+func _register_hit(position: float) -> void:
+	_hit_count += 1
+	if _step != null and _step.is_in_secret(clampf(position, 0.0, 1.0)):
+		_secret_hit_count += 1
+
+
+func _is_grandma_taste() -> bool:
+	return _step != null and _step.has_secret() and _hit_count > 0 and _secret_hit_count == _hit_count
+
+
+## 비법 자리 표시를 하나 만든다. parent 안에서 rect 자리에 놓인다. 물려받는 스크립트가 _show_secret_zone 에서 쓴다.
+func _make_secret_zone(parent: Control, rect: Rect2) -> ColorRect:
+	var zone: ColorRect = ColorRect.new()
+	zone.name = "SecretZone"
+	zone.color = secret_zone_color
+	zone.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parent.add_child(zone)
+	zone.position = rect.position
+	zone.size = rect.size
+	return zone
+
+
+## 지난 단계에서 만든 비법 자리 표시를 지운다. 물려받는 스크립트가 _on_start 에서 부른다.
+func _clear_secret_zone(parent: Control) -> void:
+	var old: Node = parent.get_node_or_null("SecretZone")
+	if old != null:
+		parent.remove_child(old)
+		old.queue_free()
+
+
 func _register_miss() -> void:
 	_miss_count += 1
 	if _miss_count == 1:
@@ -175,12 +244,16 @@ func _complete(done_text: String) -> void:
 	_is_playing = false
 	_progress_label.text = done_text
 	var is_perfect: bool = _miss_count == 0
-	if is_perfect:
+	var is_grandma_taste: bool = _is_grandma_taste()
+	if is_grandma_taste:
+		_perfect_stamp.text = grandma_stamp_text
+	if is_perfect or is_grandma_taste:
 		_pop_perfect_stamp()
 	# 두 번째 값 false: 일시 정지 중에는 이 기다림도 멈춘다.
-	await get_tree().create_timer(perfect_finish_delay if is_perfect else finish_delay, false).timeout
+	var delay: float = perfect_finish_delay if is_perfect or is_grandma_taste else finish_delay
+	await get_tree().create_timer(delay, false).timeout
 	hide()
-	finished.emit(is_perfect)
+	finished.emit(is_perfect, is_grandma_taste)
 
 
 func _pop_perfect_stamp() -> void:

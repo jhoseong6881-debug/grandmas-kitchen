@@ -1,11 +1,13 @@
 extends Control
 ## 저녁 평상 장면. 오늘 대접한 손님 중 한 명이 찾아와 이야기를 하고, 대답을 골라 주면 손님이 반응한다.
+## 이미 되찾은 레시피의 할머니 비법을 아는 손님이면 비법을 알려 준다.
 ## 돌려줄 할머니 레시피 노트 페이지가 있으면 건네준다. 다 듣고 나면 잠자리에 들어 다음 날 아침 텃밭으로 간다.
 ## 장면은 "다음" 버튼을 누를 때마다 한 단계씩 진행한다. 대답을 고르는 동안에는 "다음" 버튼이 숨는다.
 
 const DAY_TEXT_FORMAT: String = "%d일째 저녁"
 const QUIET_EVENING_TEXT: String = "오늘 저녁은 조용하네요. 별이 참 많아요."
 const NOTE_FOUND_TEXT: String = "할머니 레시피 노트 한 장을 되찾았어요!"
+const SECRET_LEARNED_FORMAT: String = "할머니 비법을 알았어요!  ★ %s"
 const NOTE_INGREDIENTS_FORMAT: String = "재료: %s"
 const NOTE_INGREDIENT_SEPARATOR: String = ", "
 const FALLBACK_STORY_LINE: String = "오늘도 잘 먹었어요."
@@ -51,6 +53,10 @@ func _ready() -> void:
 		_beats.append(func() -> void: _status_label.text = QUIET_EVENING_TEXT)
 	else:
 		_beats.append(_tell_story)
+		var secret: Recipe = _next_secret(_evening_guest)
+		if secret != null:
+			_beats.append(func() -> void: _guest_spot.say(secret.secret_reveal_line.format({"name": GameState.player_name})))
+			_beats.append(func() -> void: _learn_secret(secret))
 		var page: Recipe = _next_note_page(_evening_guest)
 		if page != null:
 			_beats.append(func() -> void: _guest_spot.say(_evening_guest.note_line.format({"recipe": page.display_name})))
@@ -74,7 +80,7 @@ func _run_next_beat() -> void:
 
 
 ## 오늘 대접한 손님 중 한 명. 완벽하게 대접한 손님이 있으면 그중에서,
-## 그 안에서도 돌려줄 레시피 노트가 남은 손님이 있으면 그중에서 고른다. 아무도 없으면 null.
+## 그 안에서도 돌려줄 레시피 노트나 알려 줄 할머니 비법이 남은 손님이 있으면 그중에서 고른다. 아무도 없으면 null.
 func _choose_evening_guest() -> AnimalGuest:
 	var served: Array[AnimalGuest] = []
 	for guest_id: StringName in GameState.todays_served_guests:
@@ -87,7 +93,7 @@ func _choose_evening_guest() -> AnimalGuest:
 			func(guest: AnimalGuest) -> bool: return GameState.todays_served_guests[guest.id])
 	var candidates: Array[AnimalGuest] = perfect if not perfect.is_empty() else served
 	var with_page: Array[AnimalGuest] = candidates.filter(
-			func(guest: AnimalGuest) -> bool: return _next_note_page(guest) != null)
+			func(guest: AnimalGuest) -> bool: return _next_note_page(guest) != null or _next_secret(guest) != null)
 	if not with_page.is_empty():
 		candidates = with_page
 	return candidates.pick_random()
@@ -99,6 +105,20 @@ func _next_note_page(guest: AnimalGuest) -> Recipe:
 		if not GameState.is_recipe_unlocked(recipe.id):
 			return recipe
 	return null
+
+
+## 이 손님이 알려 줄 할머니 비법: 이미 되찾았고 아직 비법을 모르는 레시피 중 이 손님이 알려 주는 것. 없으면 null.
+func _next_secret(guest: AnimalGuest) -> Recipe:
+	for recipe: Recipe in GameData.get_all_recipes():
+		if recipe.secret_teller_id == guest.id and not recipe.secret_hint.is_empty() \
+				and GameState.is_recipe_unlocked(recipe.id) and not GameState.is_secret_learned(recipe.id):
+			return recipe
+	return null
+
+
+func _learn_secret(recipe: Recipe) -> void:
+	GameState.learn_secret(recipe.id)
+	_status_label.text = SECRET_LEARNED_FORMAT % recipe.secret_hint
 
 
 ## 찾아올 때마다 대화를 하나씩 순서대로 나눈다. 다 나누면 처음부터 다시.

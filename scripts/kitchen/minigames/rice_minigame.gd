@@ -261,6 +261,8 @@ func _process(delta: float) -> void:
 func _on_press() -> void:
 	if _phase == Phase.WASHING:
 		if is_hand_on_spot():
+			# 손이 금색 자리에 들어오는 쪽 = 0, 나가는 쪽 = 1
+			_register_hit((wrapf(_hand_angle - _target_angle, -PI, PI) + wash_window) / (2.0 * wash_window))
 			_wash()
 		else:
 			_register_miss()

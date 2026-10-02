@@ -20,6 +20,8 @@ type = 6
 ingredient = ExtResource("3_acorn")
 count = 9
 speed = 1.15
+secret_start = 0.3
+secret_end = 0.7
 
 [sub_resource type="Resource" id="CookStep_3"]
 script = ExtResource("15_cook_step")
@@ -33,3 +35,7 @@ display_name = "도토리 꿀강정"
 ingredients = Array[ExtResource("2_ingredient")]([ExtResource("3_acorn"), ExtResource("3_acorn"), ExtResource("4_honey")])
 cook_steps = Array[ExtResource("15_cook_step")]([SubResource("CookStep_1"), SubResource("CookStep_2"), SubResource("CookStep_3")])
 mix_coating = ExtResource("5_honey_coating")
+secret_hint = "꿀은 조각 한가운데에"
+secret_teller_id = &"bear"
+secret_reveal_line = "강정 버무릴 땐 꿀이 조각 한가운데에 닿게 해야 한대. 할머니가 늘 그러셨어."
+grandma_taste_line = "바삭하고 달고… 할머니 강정이다. 겨울잠 자기 전에 먹던 맛."

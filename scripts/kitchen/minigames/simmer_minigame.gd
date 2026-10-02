@@ -136,6 +136,8 @@ func _process(delta: float) -> void:
 
 func _on_press() -> void:
 	if absf(_time - _beat_time) <= hit_window + judge_margin:
+		# 박자보다 hit_window 만큼 이르게 = 0, 딱 박자 = 0.5, hit_window 만큼 늦게 = 1
+		_register_hit((_time - (_beat_time - hit_window)) / (2.0 * hit_window))
 		_stir()
 	else:
 		_register_miss()

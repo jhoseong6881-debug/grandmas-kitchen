@@ -18,3 +18,18 @@ extends Resource
 @export var speed: float = 1.0
 ## 그림이 아직 없을 때 재료 대신 쓰는 임시 색 (예: 김밥은 김 색). 투명(알파 0)이면 재료 색을 쓴다.
 @export var placeholder_color: Color = Color(0, 0, 0, 0)
+## 할머니 비법 자리: 금색 칸(맞는 구간) 안에서 비법 자리가 시작하고 끝나는 곳 (0 ~ 1).
+## 이 단계의 모든 동작을 이 자리에서 해내면 "할머니 손맛"이 된다. 끝이 시작보다 크지 않으면 비법이 없는 단계.
+## 0 과 1 이 가리키는 쪽: 썰기 = 하얀 칸 왼쪽 → 오른쪽, 볶기 = 금색 구역 위 → 팬에 닿을 때,
+## 담기 = 금색 띠 아래 → 위, 부치기 = 막 금색이 됐을 때 → 짙은 금색, 말기 = 금색 칸 처음 → 끝,
+## 밥 짓기(씻기) = 금색 자리 앞쪽 → 뒤쪽, 버무리기 = 조각 왼쪽 → 오른쪽, 조리기 = 박자보다 이르게 → 늦게.
+@export_range(0.0, 1.0) var secret_start: float = 0.0
+@export_range(0.0, 1.0) var secret_end: float = 0.0
+
+
+func has_secret() -> bool:
+	return secret_end > secret_start
+
+
+func is_in_secret(position: float) -> bool:
+	return has_secret() and position >= secret_start and position <= secret_end

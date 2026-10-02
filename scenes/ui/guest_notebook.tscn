@@ -126,6 +126,13 @@ theme_override_colors/font_color = Color(0.7, 0.5, 0.1, 1)
 theme_override_font_sizes/font_size = 36
 autowrap_mode = 3
 
+[node name="SecretLabel" type="Label" parent="Book/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.3, 0.15, 1)
+theme_override_font_sizes/font_size = 24
+autowrap_mode = 3
+
 [node name="CloseButton" type="Button" parent="Book"]
 unique_name_in_owner = true
 layout_mode = 0

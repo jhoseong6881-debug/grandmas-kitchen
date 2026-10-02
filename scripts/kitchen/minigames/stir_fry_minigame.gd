@@ -90,6 +90,7 @@ func _on_start(recipe: Recipe) -> void:
 	var catch_height: float = _height_at(1.0 - catch_window)
 	_catch_band.position.y = _food_layer.position.y - catch_height
 	_catch_band.size.y = catch_height
+	_clear_secret_zone(_catch_band)
 	_title_label.text = _step_title(Recipe.MinigameType.STIR_FRY, _default_subject(recipe))
 	_progress_label.text = READY_TEXT
 
@@ -121,6 +122,14 @@ func _on_press() -> void:
 		_progress_label.text = EARLY_FORMAT % [_tosses_done, _tosses_needed]
 
 
+## 금색 구역 안에 비법 자리를 그린다. 위쪽이 금색 구역에 막 들어온 때, 아래쪽이 팬에 닿을 때.
+func _show_secret_zone(start: float, end: float) -> void:
+	var catch_height: float = _catch_band.size.y
+	var top: float = catch_height - _height_at(1.0 - catch_window + start * catch_window)
+	var bottom: float = catch_height - _height_at(1.0 - catch_window + end * catch_window)
+	_make_secret_zone(_catch_band, Rect2(0.0, top, _catch_band.size.x, bottom - top))
+
+
 func is_in_catch_window() -> bool:
 	if _state != TossState.AIRBORNE:
 		return false
@@ -134,6 +143,8 @@ func _launch() -> void:
 
 
 func _catch() -> void:
+	# 금색 구역에 들어온 때 = 0, 팬에 닿을 때 = 1
+	_register_hit((_toss_time / _toss_duration - (1.0 - catch_window)) / catch_window)
 	_tosses_done += 1
 	_progress_label.text = CATCH_FORMAT % [_tosses_done, _tosses_needed]
 	if _tosses_done >= _tosses_needed:

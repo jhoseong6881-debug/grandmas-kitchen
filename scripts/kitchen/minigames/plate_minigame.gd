@@ -122,6 +122,8 @@ func _on_release() -> void:
 		_set_fill_level(0.0)
 		return
 	if is_fill_on_target():
+		# 금색 띠 아래 = 0, 위 = 1
+		_register_hit((_fill_level - (_target_level - target_band_height / 2.0)) / target_band_height)
 		_finish_bowl()
 	elif _fill_level < _target_level:
 		_miss(UNDER_FORMAT)

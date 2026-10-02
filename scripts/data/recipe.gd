@@ -36,6 +36,15 @@ const DEFAULT_ACTION_NAMES: Dictionary[MinigameType, String] = {
 @export var mix_coating: Coating
 ## 버무리기 미니게임에서 양념을 묻힐 재료. 비워 두면 첫 번째 재료를 쓴다.
 @export var mix_piece_ingredient: Ingredient
+## 할머니 비법 (요리 단계 중 하나에 비법 자리를 정해 둔다). 비법이 없는 레시피는 비워 둔다.
+## 수첩과 미니게임에 보이는 비법 한 줄 (예: "김밥은 칼을 꼭 한가운데로")
+@export var secret_hint: String = ""
+## 비법을 알려 주는 손님 id (예: rabbit). 레시피를 되찾은 뒤 이 손님이 저녁에 찾아오면 알려 준다.
+@export var secret_teller_id: StringName = &""
+## 손님이 비법을 알려 줄 때 하는 말
+@export_multiline var secret_reveal_line: String = ""
+## 할머니 손맛으로 대접했을 때 손님이 하는 말 ({name} = 주인공 이름)
+@export_multiline var grandma_taste_line: String = ""
 ## 조리기 미니게임에서 졸이는 조림장 (data/coatings/). 조리기가 없는 레시피는 비워 둔다.
 ## 졸이는 재료 조각은 첫 번째 재료를 쓴다.
 @export var simmer_sauce: Coating

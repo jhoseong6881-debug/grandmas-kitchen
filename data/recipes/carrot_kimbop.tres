@@ -28,6 +28,8 @@ subject_name = "김밥"
 count = 8
 speed = 0.9
 placeholder_color = Color(0.18, 0.26, 0.16, 1)
+secret_start = 0.3
+secret_end = 0.7
 
 [sub_resource type="Resource" id="CookStep_5"]
 script = ExtResource("13_cook_step")
@@ -41,3 +43,7 @@ display_name = "할머니표 당근 김밥"
 ingredients = Array[ExtResource("1_o7sd4")]([ExtResource("2_0ar3d")])
 cook_steps = Array[ExtResource("13_cook_step")]([SubResource("CookStep_1"), SubResource("CookStep_2"), SubResource("CookStep_3"), SubResource("CookStep_4"), SubResource("CookStep_5")])
 metadata/_custom_type_script = "uid://fbx0a77slaix"
+secret_hint = "김밥은 칼을 꼭 한가운데로"
+secret_teller_id = &"rabbit"
+secret_reveal_line = "할머니는 김밥 썰 때 칼을 꼭 한가운데로 내리셨어요. 그래야 속이 안 터진대요."
+grandma_taste_line = "…이 맛이에요. 소풍 가는 날 할머니가 싸 주던 김밥. {name}, 고마워요."

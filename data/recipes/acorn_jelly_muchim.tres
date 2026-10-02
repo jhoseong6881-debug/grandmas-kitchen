@@ -19,6 +19,8 @@ type = 6
 ingredient = ExtResource("3_acorn")
 subject_name = "도토리묵"
 count = 6
+secret_start = 0.3
+secret_end = 0.7
 
 [sub_resource type="Resource" id="CookStep_3"]
 script = ExtResource("13_cook_step")
@@ -33,3 +35,7 @@ ingredients = Array[ExtResource("2_ingredient")]([ExtResource("3_acorn")])
 cook_steps = Array[ExtResource("13_cook_step")]([SubResource("CookStep_1"), SubResource("CookStep_2"), SubResource("CookStep_3")])
 minigame_ingredient_name = "도토리묵"
 mix_coating = ExtResource("14_seasoning")
+secret_hint = "양념은 묵 한가운데에 살살"
+secret_teller_id = &"squirrel"
+secret_reveal_line = "…할머니는 묵에 양념 얹을 때, 주걱을 꼭 한가운데로 살살 지나가셨어요. 묵이 안 부서지게요."
+grandma_taste_line = "…할머니 묵 맛이에요. …다 먹기 아까워요."

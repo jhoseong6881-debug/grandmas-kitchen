@@ -7,6 +7,8 @@ const DAY_TEXT_FORMAT: String = "%d일째"
 const LUNCH_PROGRESS_FORMAT: String = "점심 손님 %d / %d"
 const COOKED_TEXT_FORMAT: String = "%s 완성!"
 const PERFECT_COOKED_TEXT_FORMAT: String = "%s 완성! 한 번도 안 틀렸어요!"
+const GRANDMA_COOKED_TEXT_FORMAT: String = "%s 완성! ♥ 할머니 손맛이 났어요!"
+const GRANDMA_STAMP_TEXT: String = "♥ 레시피 노트에 할머니 손맛 도장!"
 const PAYMENT_PREFIX: String = "밥값으로 "
 const PAYMENT_SUFFIX: String = " 받았어요"
 const PAYMENT_ITEM_FORMAT: String = " %s ×%d"
@@ -38,6 +40,10 @@ const OUT_OF_INGREDIENTS_TEXT: String = "재료가 다 떨어져서 오늘 장�
 @export var show_ingredient_names_with_icons: bool = true
 ## 완벽하게 요리했을 때 아래 안내 글자 색
 @export var perfect_text_color: Color = Color(1, 0.84, 0.25)
+## 처음 할머니 손맛을 냈을 때 손님 위로 떠오르는 도장 글의 높이(픽셀), 시간(초), 글자 크기
+@export var stamp_pop_rise: float = 140.0
+@export var stamp_pop_duration: float = 2.4
+@export var stamp_pop_font_size: int = 48
 
 ## 지금 와 있는 손님과 그 손님의 주문. 손님이 없으면 null.
 var current_guest: AnimalGuest
@@ -56,6 +62,9 @@ var _last_guest: AnimalGuest
 var _remaining_steps: Array[CookStep] = []
 ## 이번 요리의 미니게임을 지금까지 전부 한 번도 안 틀렸는지
 var _is_perfect_cook: bool = true
+## 이번 요리에서 할머니 비법이 있는 단계 수와, 그중 비법대로 해낸 단계 수
+var _secret_step_count: int = 0
+var _grandma_step_count: int = 0
 ## 안내 글자의 원래 색 (완벽 색에서 되돌릴 때 쓴다)
 var _status_default_color: Color
 
@@ -208,20 +217,31 @@ func _on_cook_button_pressed() -> void:
 	GameState.remove_ingredients(current_order.get_ingredient_counts())
 	_is_perfect_cook = true
 	_remaining_steps = current_order.cook_steps.duplicate()
+	_secret_step_count = _remaining_steps.filter(func(step: CookStep) -> bool: return step.has_secret()).size()
+	_grandma_step_count = 0
 	_run_next_step()
 
 
-func _on_minigame_finished(is_perfect: bool) -> void:
+func _on_minigame_finished(is_perfect: bool, is_grandma_taste: bool) -> void:
 	if not is_perfect:
 		_is_perfect_cook = false
+	if is_grandma_taste:
+		_grandma_step_count += 1
 	_run_next_step()
+
+
+## 비법이 있는 단계를 모두 비법대로 해냈는지
+func _is_grandma_cook() -> bool:
+	return _secret_step_count > 0 and _grandma_step_count == _secret_step_count
 
 
 ## 레시피의 요리 단계(cook_steps)를 순서대로 하나씩 진행한다. 다 끝나면 요리 완성.
 func _run_next_step() -> void:
 	if _remaining_steps.is_empty():
 		var format: String = PERFECT_COOKED_TEXT_FORMAT if _is_perfect_cook else COOKED_TEXT_FORMAT
-		_set_status(format % current_order.display_name, _is_perfect_cook)
+		if _is_grandma_cook():
+			format = GRANDMA_COOKED_TEXT_FORMAT
+		_set_status(format % current_order.display_name, _is_perfect_cook or _is_grandma_cook())
 		_show_only_button(_serve_button)
 		return
 	var step: CookStep = _remaining_steps.pop_front()
@@ -246,8 +266,17 @@ func _on_serve_button_pressed() -> void:
 			payment[ingredient_id] += perfect_bonus_amount
 	for ingredient_id: StringName in payment:
 		GameState.add_ingredient(ingredient_id, payment[ingredient_id])
-	_guest_spot.say(current_guest.perfect_line if _is_perfect_cook else current_guest.thanks_line)
-	_set_payment_status(payment, _is_perfect_cook)
+	var line: String = current_guest.perfect_line if _is_perfect_cook else current_guest.thanks_line
+	# 할머니 손맛: 손님이 할머니를 떠올리는 말을 하고, 레시피 노트에 도장이 찍힌다 (처음이면 도장 글이 떠오른다).
+	if _is_grandma_cook():
+		if not current_order.grandma_taste_line.is_empty():
+			line = current_order.grandma_taste_line.format({"name": GameState.player_name})
+		if not GameState.has_grandma_taste(current_order.id):
+			FloatingText.pop(self, GRANDMA_STAMP_TEXT, _guest_spot, stamp_pop_rise, stamp_pop_duration,
+					stamp_pop_font_size, perfect_text_color)
+		GameState.record_grandma_taste(current_order.id)
+	_guest_spot.say(line)
+	_set_payment_status(payment, _is_perfect_cook, _is_grandma_cook())
 	GameState.record_served_guest(current_guest.id, _is_perfect_cook)
 	_guests_served += 1
 	_update_lunch_label()
@@ -272,8 +301,9 @@ func _set_status(text: String, is_perfect: bool) -> void:
 
 
 ## "밥값으로 [아이콘] 당근 ×2, [아이콘] 꿀 ×1 받았어요 (완벽 보너스 +1!)"
-func _set_payment_status(payment: Dictionary[StringName, int], is_perfect: bool) -> void:
-	_begin_status(is_perfect)
+## is_perfect 면 완벽 보너스를 적고, 완벽이나 할머니 손맛이면 금색으로.
+func _set_payment_status(payment: Dictionary[StringName, int], is_perfect: bool, is_grandma_taste: bool = false) -> void:
+	_begin_status(is_perfect or is_grandma_taste)
 	_cook_status_label.add_text(PAYMENT_PREFIX)
 	var is_first: bool = true
 	for ingredient_id: StringName in payment:
