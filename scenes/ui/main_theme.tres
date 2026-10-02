@@ -1,7 +1,25 @@
-[gd_resource type="Theme" format=3]
+[gd_resource type="Theme" load_steps=3 format=3]
 
 [ext_resource type="FontFile" path="res://assets/fonts/MaruMinyaHangul/x12y12pxMaruMinyaHangul.ttf" id="1_maru"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_focus"]
+draw_center = false
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
+border_color = Color(1, 0.84, 0.25, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+expand_margin_left = 6.0
+expand_margin_top = 6.0
+expand_margin_right = 6.0
+expand_margin_bottom = 6.0
 
 [resource]
 default_font = ExtResource("1_maru")
 default_font_size = 36
+Button/colors/font_focus_color = Color(1, 0.97, 0.85, 1)
+Button/styles/focus = SubResource("StyleBoxFlat_button_focus")
