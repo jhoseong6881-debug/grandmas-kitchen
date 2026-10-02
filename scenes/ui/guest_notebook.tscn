@@ -56,7 +56,7 @@ offset_top = 36.0
 offset_right = 700.0
 offset_bottom = 100.0
 theme_override_colors/font_color = Color(0.55, 0.38, 0.2, 1)
-theme_override_font_sizes/font_size = 44
+theme_override_font_sizes/font_size = 48
 text = "손님 수첩"
 
 [node name="GuestList" type="VBoxContainer" parent="Book"]
@@ -88,42 +88,42 @@ theme_override_constants/separation = 26
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.3, 0.2, 0.12, 1)
-theme_override_font_sizes/font_size = 56
+theme_override_font_sizes/font_size = 60
 text = "손님"
 
 [node name="PersonalityLabel" type="Label" parent="Book/Details"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.4, 0.3, 0.2, 1)
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 36
 autowrap_mode = 3
 
 [node name="LikesLabel" type="Label" parent="Book/Details"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.25, 0.45, 0.25, 1)
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 36
 autowrap_mode = 3
 
 [node name="DislikesLabel" type="Label" parent="Book/Details"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.6, 0.28, 0.22, 1)
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 36
 autowrap_mode = 3
 
 [node name="PaymentLabel" type="Label" parent="Book/Details"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.4, 0.3, 0.2, 1)
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 36
 autowrap_mode = 3
 
 [node name="NoteLabel" type="Label" parent="Book/Details"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.5, 0.1, 1)
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 36
 autowrap_mode = 3
 
 [node name="CloseButton" type="Button" parent="Book"]
@@ -133,5 +133,5 @@ offset_left = 1160.0
 offset_top = 720.0
 offset_right = 1380.0
 offset_bottom = 790.0
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 36
 text = "닫기"

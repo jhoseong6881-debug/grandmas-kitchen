@@ -20,7 +20,7 @@ theme_override_constants/separation = 16
 
 [node name="Title" type="Label" parent="Margin/Rows"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 36
 text = "가진 재료"
 
 [node name="ItemRows" type="VBoxContainer" parent="Margin/Rows"]

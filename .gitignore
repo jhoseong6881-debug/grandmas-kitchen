@@ -1,3 +1,6 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+
+# 교보 손글씨 2025 이유빈: 라이선스상 글꼴 파일 재배포 금지라 공개 저장소에 올리지 않는다 (LICENSE.txt는 올림)
+assets/fonts/KyoboHandwriting/*.ttf

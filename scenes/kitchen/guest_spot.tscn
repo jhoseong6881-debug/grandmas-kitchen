@@ -35,7 +35,7 @@ offset_top = 290.0
 offset_right = 240.0
 offset_bottom = 350.0
 theme_override_colors/font_color = Color(0.32, 0.22, 0.14, 1)
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 36
 text = "손님"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -57,6 +57,6 @@ theme_override_constants/margin_bottom = 20
 [node name="BubbleText" type="Label" parent="SpeechBubble/Margin"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 24
 text = "주문"
 autowrap_mode = 3

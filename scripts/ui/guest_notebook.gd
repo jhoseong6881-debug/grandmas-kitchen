@@ -14,7 +14,7 @@ const NO_NOTE_TEXT: String = "가지고 있던 레시피 노트는 다 돌려받
 const LIST_SEPARATOR: String = ", "
 const NONE_TEXT: String = "없음"
 
-@export var guest_button_font_size: int = 34
+@export var guest_button_font_size: int = 36
 @export var guest_button_height: float = 72.0
 
 ## 수첩을 열기 전에 선택돼 있던 버튼. 닫으면 다시 선택한다.

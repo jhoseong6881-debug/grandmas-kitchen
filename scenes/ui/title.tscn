@@ -1,6 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/title.gd" id="1_title"]
+[ext_resource type="FontFile" path="res://assets/fonts/KyoboHandwriting/KyoboHandwriting2025lyb.ttf" id="9_kyobo"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_confirm"]
 bg_color = Color(0.98, 0.94, 0.82, 1)
@@ -33,6 +34,7 @@ grow_vertical = 2
 color = Color(0.93, 0.86, 0.72, 1)
 
 [node name="GameTitle" type="Label" parent="."]
+theme_override_fonts/font = ExtResource("9_kyobo")
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -112,7 +114,7 @@ offset_bottom = -100.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_colors/font_color = Color(0.6, 0.25, 0.2, 1)
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 36
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -185,12 +187,12 @@ alignment = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
-theme_override_font_sizes/font_size = 34
+theme_override_font_sizes/font_size = 36
 text = "네, 새로 시작"
 
 [node name="ConfirmNoButton" type="Button" parent="ConfirmPanel/Box/Buttons"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
-theme_override_font_sizes/font_size = 34
+theme_override_font_sizes/font_size = 36
 text = "아니요"

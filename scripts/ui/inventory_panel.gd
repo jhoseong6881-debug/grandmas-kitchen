@@ -8,7 +8,7 @@ const EMPTY_TEXT: String = "아직 재료가 없어요"
 @export var icon_size: Vector2 = Vector2(48, 48)
 ## 그림이 아직 없는 재료에 쓰는 임시 사각형 색
 @export var placeholder_icon_color: Color = Color(0.85, 0.55, 0.3)
-@export var row_font_size: int = 28
+@export var row_font_size: int = 24
 
 @onready var _item_rows: VBoxContainer = %ItemRows
 

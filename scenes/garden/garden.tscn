@@ -49,7 +49,7 @@ offset_top = 36.0
 offset_right = 548.0
 offset_bottom = 96.0
 theme_override_colors/font_color = Color(0.25, 0.3, 0.4, 1)
-theme_override_font_sizes/font_size = 44
+theme_override_font_sizes/font_size = 48
 text = "1일째 아침"
 
 [node name="InventoryPanel" parent="." unique_id=152544305 instance=ExtResource("2_inventory")]
@@ -75,7 +75,7 @@ offset_right = 700.0
 offset_bottom = 520.0
 grow_horizontal = 2
 theme_override_colors/font_color = Color(0.25, 0.3, 0.4, 1)
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 36
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -86,7 +86,7 @@ offset_left = 160.0
 offset_top = 620.0
 offset_right = 460.0
 offset_bottom = 800.0
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 24
 text = "이웃 바구니"
 
 [node name="PlotRow" type="HBoxContainer" parent="." unique_id=1044653342]
@@ -127,7 +127,7 @@ offset_left = 48.0
 offset_top = 110.0
 offset_right = 288.0
 offset_bottom = 170.0
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 24
 text = "손님 수첩"
 
 [node name="GuestNotebook" parent="." unique_id=410802552 instance=ExtResource("3_notebook")]

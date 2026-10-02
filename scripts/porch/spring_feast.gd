@@ -11,14 +11,14 @@ const RECIPE_ITEM_FORMAT: String = "· %s"
 ## 손님 그림이 아직 없을 때 쓰는 임시 사각형 크기와 색
 @export var figure_size: Vector2 = Vector2(180, 240)
 @export var figure_placeholder_color: Color = Color(0.86, 0.84, 0.8)
-@export var figure_name_font_size: int = 30
+@export var figure_name_font_size: int = 24
 ## 말하지 않는 손님은 이만큼 어둡게 보인다 (1 = 그대로)
 @export var listener_brightness: float = 0.55
 ## 노트 카드와 편지가 뜰 때 커졌다 돌아오는 정도와 시간(초)
 @export var pop_scale: float = 1.08
 @export var pop_duration: float = 0.2
 ## 노트 카드에 적히는 요리 이름 글자
-@export var recipe_font_size: int = 32
+@export var recipe_font_size: int = 36
 @export var recipe_font_color: Color = Color(0.45, 0.33, 0.2)
 
 ## 버튼을 누를 때마다 하나씩 실행할 장면 단계

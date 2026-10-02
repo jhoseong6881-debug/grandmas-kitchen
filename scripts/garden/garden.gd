@@ -20,11 +20,11 @@ const SAVED_NOTICE_TEXT: String = "어젯밤까지의 이야기를 저장했어�
 @export var gift_amount: int = 1
 ## 텃밭 칸 하나의 크기
 @export var plot_size: Vector2 = Vector2(260, 240)
-@export var plot_font_size: int = 34
+@export var plot_font_size: int = 36
 ## 거둘 때 "+1 당근"이 떠오르는 높이(픽셀)와 시간(초)
 @export var harvest_pop_rise: float = 90.0
 @export var harvest_pop_duration: float = 0.8
-@export var harvest_pop_font_size: int = 40
+@export var harvest_pop_font_size: int = 36
 @export var harvest_pop_color: Color = Color(1, 0.84, 0.25)
 
 var _plot_buttons: Array[Button] = []
