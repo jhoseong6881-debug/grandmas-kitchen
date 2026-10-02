@@ -10,6 +10,5 @@ script = ExtResource("1_recipe")
 id = &"mushroom_egg_jeon"
 display_name = "버섯 계란전"
 ingredients = Array[ExtResource("2_ingredient")]([ExtResource("3_mushroom"), ExtResource("4_egg")])
-minigame_steps = Array[int]([0, 1, 2])
+minigame_steps = Array[int]([0, 3, 2])
 minigame_ingredient_name = "버섯"
-stir_fry_action_name = "부치기"
