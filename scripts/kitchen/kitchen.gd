@@ -64,6 +64,8 @@ var current_request: GuestRequest
 var _is_request_assigned: bool = false
 var _is_request_met: bool = false
 
+## 오늘 점심 장사 기록 (장사가 끝나면 장사 결과판에 보여 준다)
+var _report: LunchReport = LunchReport.new()
 ## 오늘 점심에 대접을 마친 손님 수와 받을 손님 수
 var _guests_served: int = 0
 var _guests_today: int = 0
@@ -92,6 +94,7 @@ var _status_default_color: Color
 @onready var _notebook: GuestNotebook = %GuestNotebook
 @onready var _notebook_button: Button = %NotebookButton
 @onready var _garnish_picker: GarnishPicker = %GarnishPicker
+@onready var _result_board: ResultBoard = %ResultBoard
 @onready var _chop_minigame: ChopMinigame = %ChopMinigame
 @onready var _stir_fry_minigame: StirFryMinigame = %StirFryMinigame
 @onready var _plate_minigame: PlateMinigame = %PlateMinigame
@@ -135,6 +138,7 @@ func _ready() -> void:
 # --- 점심 장사 흐름 ---
 
 func _start_lunch() -> void:
+	_report = LunchReport.new()
 	_guests_served = 0
 	_guests_today = _count_guests_today()
 	_guest_queue.clear()
@@ -235,7 +239,11 @@ func _on_next_guest_button_pressed() -> void:
 	_call_next_guest()
 
 
+## 장사 결과판을 보여 준 뒤 저녁으로 간다.
 func _on_evening_button_pressed() -> void:
+	_show_only_button(null)
+	_result_board.open(_report)
+	await _result_board.continued
 	get_tree().change_scene_to_file(feast_scene_path if GameState.is_spring_feast_day() else porch_scene_path)
 
 
@@ -356,6 +364,7 @@ func _serve(garnish: Garnish) -> void:
 		pops.append(TASTE_MATCH_POP_TEXT)
 		points += settings.taste_match_points
 	var new_tier: int = GameState.add_affection(guest.id, points)
+	_record_serve(guest, payment, is_grandma_taste, is_request_met, is_taste_match, points)
 	if new_tier >= 0:
 		pops.append(TIER_UP_FORMAT % [guest.display_name, Korean.with_particle(guest.display_name), settings.get_tier_name(new_tier)])
 
@@ -367,6 +376,31 @@ func _serve(garnish: Garnish) -> void:
 	_update_lunch_label()
 	_show_only_button(_next_guest_button)
 	_pop_one_by_one(pops)
+
+
+## 오늘 장사 기록에 이번 대접을 적고, 쌓인 소문을 센다.
+func _record_serve(guest: AnimalGuest, payment: Dictionary[StringName, int], is_grandma_taste: bool,
+		is_request_met: bool, is_taste_match: bool, affection_points: int) -> void:
+	var rules: ReputationSettings = GameData.get_reputation_settings()
+	var points: int = rules.serve_points
+	_report.guest_names.append(guest.display_name)
+	_report.add_payment(payment)
+	_report.add_affection(guest.display_name, affection_points)
+	if _is_perfect_cook:
+		_report.perfect_count += 1
+		points += rules.perfect_points
+	if is_grandma_taste:
+		_report.grandma_taste_count += 1
+		points += rules.grandma_taste_points
+	if current_request != null:
+		_report.request_count += 1
+	if is_request_met:
+		_report.request_met_count += 1
+		points += rules.request_points
+	if is_taste_match:
+		_report.taste_match_count += 1
+		points += rules.taste_match_points
+	_report.reputation += points
 
 
 ## 기본 밥값: 좋아하는 요리면 밥값 재료 전부, 대신 고른 요리면 첫 번째 재료를 조금만.

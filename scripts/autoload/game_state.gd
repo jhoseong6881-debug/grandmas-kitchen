@@ -20,6 +20,8 @@ const STARTING_DAY: int = 1
 var current_day: int = STARTING_DAY
 ## 프롤로그에서 지은 주인공 이름 (할머니의 손주). 아직 안 지었으면 빈 문자열.
 var player_name: String = ""
+## 지금까지 쌓인 가게 소문. 쌓일수록 가게 단계(이름)가 오른다 (ReputationSettings).
+var reputation: int = 0
 ## 재료 id → 개수
 var inventory: Dictionary[StringName, int] = {}
 var unlocked_recipe_ids: Array[StringName] = []
@@ -263,6 +265,21 @@ func record_grandma_taste(recipe_id: StringName) -> void:
 		grandma_taste_recipe_ids.append(recipe_id)
 
 
+# --- 소문 ---
+
+## 가게 단계 (0 = 첫 단계)
+func get_shop_tier() -> int:
+	return GameData.get_reputation_settings().get_shop_tier(reputation)
+
+
+## 소문을 더한다. 가게 단계가 오르면 새 단계를, 그대로면 -1 을 돌려준다.
+func add_reputation(points: int) -> int:
+	var before: int = get_shop_tier()
+	reputation += points
+	var after: int = get_shop_tier()
+	return after if after > before else -1
+
+
 # --- 단골도와 입맛 ---
 
 func get_affection(guest_id: StringName) -> int:
@@ -330,6 +347,7 @@ func learn_taste(guest_id: StringName) -> void:
 func new_game() -> void:
 	current_day = STARTING_DAY
 	player_name = ""
+	reputation = 0
 	inventory.clear()
 	unlocked_recipe_ids.clear()
 	guest_story_progress.clear()
@@ -417,6 +435,7 @@ func _to_save_data() -> Dictionary:
 		"version": SAVE_VERSION,
 		"current_day": current_day,
 		"player_name": player_name,
+		"reputation": reputation,
 		"inventory": inventory_data,
 		"unlocked_recipe_ids": recipe_data,
 		"guest_story_progress": story_data,
@@ -440,6 +459,7 @@ func _from_save_data(data: Dictionary) -> void:
 	new_game()
 	current_day = int(data.get("current_day", STARTING_DAY))
 	player_name = str(data.get("player_name", ""))
+	reputation = int(data.get("reputation", 0))
 	var inventory_data: Dictionary = data.get("inventory", {})
 	for ingredient_id: String in inventory_data:
 		inventory[StringName(ingredient_id)] = int(inventory_data[ingredient_id])

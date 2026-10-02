@@ -11,6 +11,7 @@ const PLACES_DIR: String = "res://data/places/"
 const GARNISHES_DIR: String = "res://data/garnishes/"
 const REQUESTS_DIR: String = "res://data/requests/"
 const REGULAR_SETTINGS_PATH: String = "res://data/regular_settings.tres"
+const REPUTATION_SETTINGS_PATH: String = "res://data/reputation_settings.tres"
 const STARTING_SETUP_PATH: String = "res://data/starting_setup.tres"
 const SEASON_ENDING_PATH: String = "res://data/seasons/spring_ending.tres"
 const RESOURCE_EXTENSIONS: PackedStringArray = ["tres", "res"]
@@ -23,6 +24,7 @@ var _places: Dictionary[StringName, GardenPlace] = {}
 var _garnishes: Dictionary[StringName, Garnish] = {}
 var _requests: Dictionary[StringName, GuestRequest] = {}
 var _regular_settings: RegularSettings
+var _reputation_settings: ReputationSettings
 var _starting_setup: StartingSetup
 var _season_ending: SeasonEnding
 
@@ -61,6 +63,11 @@ func _ready() -> void:
 	else:
 		push_warning("단골도 설정 파일이 없습니다: %s" % REGULAR_SETTINGS_PATH)
 		_regular_settings = RegularSettings.new()
+	if ResourceLoader.exists(REPUTATION_SETTINGS_PATH):
+		_reputation_settings = load(REPUTATION_SETTINGS_PATH)
+	else:
+		push_warning("소문 설정 파일이 없습니다: %s" % REPUTATION_SETTINGS_PATH)
+		_reputation_settings = ReputationSettings.new()
 	for resource: Resource in _load_folder(GARNISHES_DIR):
 		if resource is Garnish:
 			_register(_garnishes, resource.id, resource)
@@ -107,6 +114,11 @@ func get_garnish(garnish_id: StringName) -> Garnish:
 ## 단골도 규칙 (파일이 없으면 기본값)
 func get_regular_settings() -> RegularSettings:
 	return _regular_settings
+
+
+## 소문 규칙 (파일이 없으면 기본값)
+func get_reputation_settings() -> ReputationSettings:
+	return _reputation_settings
 
 
 ## 새 게임 시작 설정 (없으면 null)

@@ -1,0 +1,171 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/kitchen/result_board.gd" id="1_board"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_board"]
+bg_color = Color(0.36, 0.27, 0.18, 0.97)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(0.55, 0.42, 0.28, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[node name="ResultBoard" type="Control"]
+z_index = 1
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_board")
+
+[node name="Dim" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.5)
+
+[node name="Board" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 300.0
+offset_top = 130.0
+offset_right = 1620.0
+offset_bottom = 950.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_board")
+
+[node name="TitleLabel" type="Label" parent="Board"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 36.0
+offset_bottom = 108.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.96, 0.88, 1)
+theme_override_font_sizes/font_size = 48
+text = "오늘의 장사"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Lines" type="VBoxContainer" parent="Board"]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 140.0
+offset_right = 1248.0
+offset_bottom = 680.0
+mouse_filter = 2
+theme_override_constants/separation = 20
+
+[node name="GuestsLabel" type="Label" parent="Board/Lines"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.96, 0.88, 1)
+theme_override_font_sizes/font_size = 36
+text = "손님 0명"
+
+[node name="PaymentLabel" type="RichTextLabel" parent="Board/Lines"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/default_color = Color(1, 0.96, 0.88, 1)
+theme_override_font_sizes/normal_font_size = 36
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="HighlightLabel" type="Label" parent="Board/Lines"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.96, 0.88, 1)
+theme_override_font_sizes/font_size = 24
+text = "완벽 0"
+
+[node name="AffectionLabel" type="Label" parent="Board/Lines"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98, 0.7, 0.72, 1)
+theme_override_font_sizes/font_size = 24
+text = "단골도"
+autowrap_mode = 3
+
+[node name="ReputationRow" type="HBoxContainer" parent="Board/Lines"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 48
+
+[node name="ReputationLabel" type="Label" parent="Board/Lines/ReputationRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0.25, 1)
+theme_override_font_sizes/font_size = 60
+text = "소문 +0"
+
+[node name="StarsLabel" type="Label" parent="Board/Lines/ReputationRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0.25, 1)
+theme_override_font_sizes/font_size = 60
+text = "☆☆☆"
+
+[node name="GaugeRow" type="VBoxContainer" parent="Board/Lines"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="GaugeLabel" type="Label" parent="Board/Lines/GaugeRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.96, 0.88, 1)
+theme_override_font_sizes/font_size = 24
+text = "작은 밥집"
+
+[node name="GaugeBar" type="ColorRect" parent="Board/Lines/GaugeRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(1176, 28)
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.22, 0.17, 0.12, 1)
+
+[node name="GaugeFill" type="ColorRect" parent="Board/Lines/GaugeRow/GaugeBar"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 0.0
+offset_bottom = 28.0
+mouse_filter = 2
+color = Color(1, 0.84, 0.25, 1)
+
+[node name="ShopUpLabel" type="Label" parent="Board"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 72.0
+offset_top = 680.0
+offset_right = 1248.0
+offset_bottom = 728.0
+theme_override_colors/font_color = Color(1, 0.84, 0.25, 1)
+theme_override_font_sizes/font_size = 36
+text = "가게 이름이 바뀌었어요!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ContinueButton" type="Button" parent="Board"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 460.0
+offset_top = 740.0
+offset_right = 860.0
+offset_bottom = 800.0
+theme_override_font_sizes/font_size = 36
+text = "저녁 평상으로"
