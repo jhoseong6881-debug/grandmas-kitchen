@@ -91,6 +91,7 @@ func _on_start(recipe: Recipe) -> void:
 	_stream.hide()
 	_splash.emitting = false
 	_start_new_bowl()
+	_clear_zones(_target_band)
 	_title_label.text = _step_title(Recipe.MinigameType.PLATE, recipe.display_name)
 	_progress_label.text = READY_FORMAT % _bowl_count
 
@@ -129,6 +130,13 @@ func _on_release() -> void:
 		_miss(UNDER_FORMAT)
 	else:
 		_miss(OVER_FORMAT)
+
+
+## 금색 띠 안에 비법 자리나 부탁 자리를 그린다. 아래쪽이 0, 위쪽이 1. 띠가 옮겨 가면 함께 옮겨 간다.
+func _show_zone(start: float, end: float, color: Color, zone_name: String) -> void:
+	var band_height: float = _target_band.size.y
+	_make_zone(_target_band, Rect2(0.0, band_height * (1.0 - end), _target_band.size.x, band_height * (end - start)),
+			color, zone_name)
 
 
 func is_fill_on_target() -> bool:

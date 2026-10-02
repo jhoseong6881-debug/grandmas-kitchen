@@ -11,12 +11,16 @@ const GRANDMA_COOKED_TEXT_FORMAT: String = "%s 완성! ♥ 할머니 손맛이 �
 const GRANDMA_STAMP_TEXT: String = "♥ 레시피 노트에 할머니 손맛 도장!"
 const TASTE_MATCH_POP_TEXT: String = "♥ 입맛 딱!"
 const TIER_UP_FORMAT: String = "%s%s 더 가까워졌어요 · %s"
+const REQUEST_JOIN: String = " "
+const REQUEST_DONE_POP_TEXT: String = "♪ 부탁을 들어줬어요!"
+const REQUEST_MISSED_LINE: String = "부탁한 대로는 아니지만… 그래도 맛있어요!"
+const REQUEST_BONUS_FORMAT: String = " (부탁 +%d)"
 const PAYMENT_PREFIX: String = "밥값으로 "
 const PAYMENT_SUFFIX: String = " 받았어요"
 const PAYMENT_ITEM_FORMAT: String = " %s ×%d"
 const PAYMENT_ITEM_ICON_ONLY_FORMAT: String = " ×%d"
 const PAYMENT_ITEM_SEPARATOR: String = ", "
-const PERFECT_BONUS_FORMAT: String = " (완벽 보너스 +%d!)"
+const PERFECT_BONUS_FORMAT: String = " (완벽 +%d)"
 const REGULAR_BONUS_FORMAT: String = " (%s 덤 +%d)"
 const LUNCH_DONE_TEXT: String = "오늘 점심 장사 끝! 수고했어요."
 const OUT_OF_INGREDIENTS_TEXT: String = "재료가 다 떨어져서 오늘 장사는 여기까지예요."
@@ -55,6 +59,10 @@ var current_guest: AnimalGuest
 var current_order: Recipe
 ## 지금 주문이 좋아하는 요리 대신 고른 요리인지
 var _is_fallback_order: bool = false
+## 지금 손님의 오늘의 부탁 (없으면 null), 부탁을 미니게임 단계에 이미 걸었는지, 부탁을 들어줬는지
+var current_request: GuestRequest
+var _is_request_assigned: bool = false
+var _is_request_met: bool = false
 
 ## 오늘 점심에 대접을 마친 손님 수와 받을 손님 수
 var _guests_served: int = 0
@@ -92,6 +100,7 @@ var _status_default_color: Color
 @onready var _rice_minigame: RiceMinigame = %RiceMinigame
 @onready var _mix_minigame: MixMinigame = %MixMinigame
 @onready var _simmer_minigame: SimmerMinigame = %SimmerMinigame
+@onready var _mince_minigame: MinceMinigame = %MinceMinigame
 ## 레시피의 미니게임 종류마다 실제로 실행할 미니게임
 @onready var _minigames: Dictionary[Recipe.MinigameType, Minigame] = {
 	Recipe.MinigameType.CHOP: _chop_minigame,
@@ -102,6 +111,7 @@ var _status_default_color: Color
 	Recipe.MinigameType.COOK_RICE: _rice_minigame,
 	Recipe.MinigameType.MIX: _mix_minigame,
 	Recipe.MinigameType.SIMMER: _simmer_minigame,
+	Recipe.MinigameType.MINCE: _mince_minigame,
 }
 @onready var _buttons: Array[Button] = [_cook_button, _serve_button, _next_guest_button, _evening_button]
 
@@ -139,6 +149,7 @@ func _call_next_guest() -> void:
 	_guest_spot.clear()
 	current_guest = null
 	current_order = null
+	current_request = null
 	if _guests_served >= _guests_today:
 		_end_lunch(LUNCH_DONE_TEXT)
 		return
@@ -153,10 +164,13 @@ func _call_next_guest() -> void:
 			current_guest = guest
 			current_order = order
 			_last_guest = guest
+			var order_text: String = guest.order_line.format({"recipe": order.display_name})
 			if _is_fallback_order:
-				_guest_spot.show_guest(guest, guest.fallback_order_line.format({"recipe": order.display_name}))
-			else:
-				_guest_spot.show_order(guest, order)
+				order_text = guest.fallback_order_line.format({"recipe": order.display_name})
+			current_request = _choose_request(order)
+			if current_request != null:
+				order_text += REQUEST_JOIN + current_request.line
+			_guest_spot.show_guest(guest, order_text)
 			_show_only_button(_cook_button)
 			return
 	_end_lunch(OUT_OF_INGREDIENTS_TEXT)
@@ -170,6 +184,15 @@ func _count_guests_today() -> int:
 		menu_count = GameData.get_all_recipes().filter(
 				func(recipe: Recipe) -> bool: return GameState.is_recipe_unlocked(recipe.id)).size()
 	return clampi(menu_count + extra_guests_over_menu, 1, guests_per_lunch)
+
+
+## 가끔(request_chance) 이 요리에 나올 수 있는 오늘의 부탁 하나를 고른다. 없으면 null.
+func _choose_request(order: Recipe) -> GuestRequest:
+	if randf() >= GameData.get_regular_settings().request_chance:
+		return null
+	var possible: Array[GuestRequest] = GameData.get_all_requests().filter(
+			func(request: GuestRequest) -> bool: return request.applies_to(order))
+	return possible.pick_random() if not possible.is_empty() else null
 
 
 ## 손님 차례에서 한 명을 꺼낸다. 차례가 비면 손님 목록을 섞어서 다시 채운다.
@@ -225,14 +248,18 @@ func _on_cook_button_pressed() -> void:
 	_remaining_steps = current_order.cook_steps.duplicate()
 	_secret_step_count = _remaining_steps.filter(func(step: CookStep) -> bool: return step.has_secret()).size()
 	_grandma_step_count = 0
+	_is_request_assigned = false
+	_is_request_met = false
 	_run_next_step()
 
 
-func _on_minigame_finished(is_perfect: bool, is_grandma_taste: bool) -> void:
+func _on_minigame_finished(is_perfect: bool, is_grandma_taste: bool, is_request_met: bool) -> void:
 	if not is_perfect:
 		_is_perfect_cook = false
 	if is_grandma_taste:
 		_grandma_step_count += 1
+	if is_request_met:
+		_is_request_met = true
 	_run_next_step()
 
 
@@ -251,8 +278,15 @@ func _run_next_step() -> void:
 		_show_only_button(_serve_button)
 		return
 	var step: CookStep = _remaining_steps.pop_front()
-	if step != null and _minigames.has(step.type):
-		_minigames[step.type].start(current_order, step)
+	# 오늘의 부탁은 걸 수 있는 첫 번째 단계에만 건다. 부탁에 따라 미니게임이 바뀔 수도 있다 (예: 썰기 → 잘게 다지기).
+	var request: GuestRequest = null
+	var minigame_type: Recipe.MinigameType = step.type if step != null else Recipe.MinigameType.CHOP
+	if step != null and current_request != null and not _is_request_assigned and current_request.applies_to_step(step):
+		request = current_request
+		_is_request_assigned = true
+		minigame_type = request.get_minigame_type(step)
+	if step != null and _minigames.has(minigame_type):
+		_minigames[minigame_type].start(current_order, step, request)
 	else:
 		push_warning("요리 단계에 연결된 미니게임이 없어 건너뜁니다: %s" % current_order.id)
 		_run_next_step()
@@ -268,65 +302,86 @@ func _on_serve_button_pressed() -> void:
 	_serve(garnish)
 
 
-## 대접하면 손님이 고맙다고 말하고, 밥값 재료를 준다. 완벽했으면 재료마다 보너스를 더 준다.
-## 고명이 손님 입맛에 맞거나 할머니 손맛이면 단골도가 더 오르고, 손님 말도 달라진다.
+## 대접하면 손님이 말하고, 밥값 재료를 준다. 완벽하면 재료마다 보너스, 단골이면 덤, 부탁을 들어줬으면 더 준다.
+## 고명이 손님 입맛에 맞거나, 할머니 손맛이거나, 부탁을 들어줬으면 단골도가 더 오르고 손님 말도 달라진다.
 func _serve(garnish: Garnish) -> void:
 	GameState.remove_ingredients(garnish.get_cost())
-	var payment: Dictionary[StringName, int] = {}
-	if _is_fallback_order:
-		if not current_guest.payment_ingredients.is_empty():
-			payment[current_guest.payment_ingredients[0].id] = fallback_payment_amount
-	else:
-		for ingredient: Ingredient in current_guest.payment_ingredients:
-			payment[ingredient.id] = payment.get(ingredient.id, 0) + 1
+	var guest: AnimalGuest = current_guest
+	var settings: RegularSettings = GameData.get_regular_settings()
+	var tier: int = GameState.get_regular_tier(guest.id)
+	var is_grandma_taste: bool = _is_grandma_cook()
+	var is_taste_match: bool = guest.favorite_garnish != null and guest.favorite_garnish.id == garnish.id
+	if current_request != null and current_request.is_garnish_request():
+		_is_request_met = current_request.garnish.id == garnish.id
+	var is_request_met: bool = current_request != null and _is_request_met
+
+	# 밥값
+	var payment: Dictionary[StringName, int] = _base_payment(guest)
+	var bonus_text: String = ""
 	if _is_perfect_cook:
 		for ingredient_id: StringName in payment:
 			payment[ingredient_id] += perfect_bonus_amount
-	# 단골 덤: 단골 단계에 따라 첫 번째 밥값 재료를 더 준다.
-	var settings: RegularSettings = GameData.get_regular_settings()
-	var tier: int = GameState.get_regular_tier(current_guest.id)
 	var regular_bonus: int = settings.get_payment_bonus(tier)
 	if regular_bonus > 0 and not payment.is_empty():
 		payment[payment.keys()[0]] += regular_bonus
+		bonus_text += REGULAR_BONUS_FORMAT % [settings.get_tier_name(tier), regular_bonus]
+	if is_request_met and settings.request_payment_bonus > 0 and not payment.is_empty():
+		payment[payment.keys()[0]] += settings.request_payment_bonus
+		bonus_text += REQUEST_BONUS_FORMAT % settings.request_payment_bonus
 	for ingredient_id: StringName in payment:
 		GameState.add_ingredient(ingredient_id, payment[ingredient_id])
-	var guest: AnimalGuest = current_guest
-	var is_grandma_taste: bool = _is_grandma_cook()
-	var has_taste: bool = guest.favorite_garnish != null
-	var is_taste_match: bool = has_taste and guest.favorite_garnish.id == garnish.id
-	# 손님 말: 할머니 손맛 > 입맛에 맞음 > 입맛에 안 맞음(힌트) > 완벽 / 보통
+
+	# 손님 말: 할머니 손맛 > 부탁 (들어줌 / 못 들어줌) > 입맛 (맞음 / 힌트) > 완벽 / 보통
 	var line: String = guest.perfect_line if _is_perfect_cook else guest.thanks_line
-	if has_taste:
+	if guest.favorite_garnish != null:
 		line = guest.taste_match_line if is_taste_match else guest.taste_miss_line
+	if current_request != null:
+		line = current_request.thanks_line if is_request_met else REQUEST_MISSED_LINE
+	if is_grandma_taste and not current_order.grandma_taste_line.is_empty():
+		line = current_order.grandma_taste_line.format({"name": GameState.player_name})
+
+	# 손님 위로 떠오르는 글과 단골도
 	var pops: Array[String] = []
+	var points: int = settings.serve_points
 	if is_grandma_taste:
-		if not current_order.grandma_taste_line.is_empty():
-			line = current_order.grandma_taste_line.format({"name": GameState.player_name})
 		if not GameState.has_grandma_taste(current_order.id):
 			pops.append(GRANDMA_STAMP_TEXT)
 		GameState.record_grandma_taste(current_order.id)
+		points += settings.grandma_taste_points
+	if is_request_met:
+		pops.append(REQUEST_DONE_POP_TEXT)
+		points += settings.request_points
 	if is_taste_match:
 		GameState.learn_taste(guest.id)
 		pops.append(TASTE_MATCH_POP_TEXT)
-	var points: int = settings.serve_points
-	if is_taste_match:
 		points += settings.taste_match_points
-	if is_grandma_taste:
-		points += settings.grandma_taste_points
 	var new_tier: int = GameState.add_affection(guest.id, points)
 	if new_tier >= 0:
 		pops.append(TIER_UP_FORMAT % [guest.display_name, Korean.with_particle(guest.display_name), settings.get_tier_name(new_tier)])
+
 	_guest_spot.say(line)
-	var bonus_text: String = REGULAR_BONUS_FORMAT % [settings.get_tier_name(tier), regular_bonus] if regular_bonus > 0 and not payment.is_empty() else ""
-	_set_payment_status(payment, _is_perfect_cook, is_grandma_taste, bonus_text)
+	_set_payment_status(payment, _is_perfect_cook, is_grandma_taste or is_request_met, bonus_text)
 	GameState.record_served_guest(guest.id, _is_perfect_cook)
+	current_request = null
 	_guests_served += 1
 	_update_lunch_label()
 	_show_only_button(_next_guest_button)
 	_pop_one_by_one(pops)
 
 
-## 손님 위로 글을 하나씩 띄운다 (도장, 입맛, 단골 단계).
+## 기본 밥값: 좋아하는 요리면 밥값 재료 전부, 대신 고른 요리면 첫 번째 재료를 조금만.
+func _base_payment(guest: AnimalGuest) -> Dictionary[StringName, int]:
+	var payment: Dictionary[StringName, int] = {}
+	if _is_fallback_order:
+		if not guest.payment_ingredients.is_empty():
+			payment[guest.payment_ingredients[0].id] = fallback_payment_amount
+	else:
+		for ingredient: Ingredient in guest.payment_ingredients:
+			payment[ingredient.id] = payment.get(ingredient.id, 0) + 1
+	return payment
+
+
+## 손님 위로 글을 하나씩 띄운다 (도장, 부탁, 입맛, 단골 단계).
 func _pop_one_by_one(texts: Array[String]) -> void:
 	for i: int in texts.size():
 		if i > 0:

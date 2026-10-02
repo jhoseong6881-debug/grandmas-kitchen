@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="GuestRequest" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/guest_request.gd" id="1_request"]
+
+[resource]
+script = ExtResource("1_request")
+id = &"thick_roll"
+line = "도톰하게 말아 주세요."
+guide_text = "도톰하게 (안 틀리고 끝까지)"
+thanks_line = "두툼해서 든든해요!"
+step_type = 4
+count_bonus = 2

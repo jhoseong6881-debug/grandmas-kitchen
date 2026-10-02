@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="GuestRequest" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/guest_request.gd" id="1_request"]
+
+[resource]
+script = ExtResource("1_request")
+id = &"deep_simmer"
+line = "푹 졸여 주세요."
+guide_text = "푹 졸이기 (안 틀리고 끝까지)"
+thanks_line = "속까지 쏙 배었어요!"
+step_type = 7
+count_multiplier = 1.5

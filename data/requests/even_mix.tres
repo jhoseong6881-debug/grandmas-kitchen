@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="GuestRequest" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/guest_request.gd" id="1_request"]
+
+[resource]
+script = ExtResource("1_request")
+id = &"even_mix"
+line = "골고루 듬뿍요!"
+guide_text = "골고루 (조각 정가운데에 묻히기)"
+thanks_line = "구석구석 다 묻었어요!"
+step_type = 6
+zone_start = 0.3
+zone_end = 0.7

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="GuestRequest" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/guest_request.gd" id="1_request"]
+
+[resource]
+script = ExtResource("1_request")
+id = &"soft_pan_fry"
+line = "부드럽게 해 주세요."
+guide_text = "부드럽게 (막 금색이 됐을 때 뒤집기)"
+thanks_line = "폭신폭신 부드러워요."
+step_type = 3
+zone_start = 0.0
+zone_end = 0.4

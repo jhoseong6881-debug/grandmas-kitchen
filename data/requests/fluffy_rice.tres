@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="GuestRequest" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/guest_request.gd" id="1_request"]
+
+[resource]
+script = ExtResource("1_request")
+id = &"fluffy_rice"
+line = "고슬고슬하게요."
+guide_text = "고슬고슬 (손이 자리 정가운데 올 때 씻기)"
+thanks_line = "밥알이 살아 있어요!"
+step_type = 5
+zone_start = 0.3
+zone_end = 0.7

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="GuestRequest" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/guest_request.gd" id="1_request"]
+
+[resource]
+script = ExtResource("1_request")
+id = &"small_portion"
+line = "조금만 담아 주세요."
+guide_text = "조금만 (금색 띠 아래쪽에서 멈추기)"
+thanks_line = "딱 먹을 만큼이에요. 고마워요."
+step_type = 2
+zone_start = 0.0
+zone_end = 0.4

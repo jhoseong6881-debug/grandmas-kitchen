@@ -4,7 +4,7 @@ extends Resource
 
 ## 요리 미니게임 종류
 ## 세이브와 .tres 에는 번호로 저장되니, 새 종류는 맨 뒤에만 붙인다.
-enum MinigameType { CHOP, STIR_FRY, PLATE, PAN_FRY, ROLL, COOK_RICE, MIX, SIMMER }
+enum MinigameType { CHOP, STIR_FRY, PLATE, PAN_FRY, ROLL, COOK_RICE, MIX, SIMMER, MINCE }
 
 ## 미니게임 화면 제목에 쓰는 기본 동작 이름. 요리 단계(CookStep)에 동작 이름이 비어 있으면 이걸 쓴다.
 const DEFAULT_ACTION_NAMES: Dictionary[MinigameType, String] = {
@@ -16,6 +16,7 @@ const DEFAULT_ACTION_NAMES: Dictionary[MinigameType, String] = {
 	MinigameType.COOK_RICE: "밥 짓기",
 	MinigameType.MIX: "버무리기",
 	MinigameType.SIMMER: "조리기",
+	MinigameType.MINCE: "다지기",
 }
 
 ## 세이브 파일에 저장되는 고유 이름표. 영어 소문자로 짓고 한 번 정하면 바꾸지 않는다. (예: spring_bibimbap)

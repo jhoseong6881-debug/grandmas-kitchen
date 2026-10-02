@@ -12,6 +12,11 @@ extends Resource
 @export var taste_match_points: int = 2
 ## 할머니 손맛을 냈을 때 더 오르는 단골도
 @export var grandma_taste_points: int = 1
+## 손님이 주문할 때 오늘의 부탁을 덧붙일 확률 (0 ~ 1)
+@export_range(0.0, 1.0) var request_chance: float = 0.4
+## 부탁을 들어줬을 때 더 오르는 단골도와 더 받는 밥값
+@export var request_points: int = 2
+@export var request_payment_bonus: int = 1
 ## 단계마다 밥값에 더해 주는 덤 (첫 번째 밥값 재료에 더한다). 길이는 tier_names 와 같게.
 @export var tier_payment_bonus: Array[int] = [0, 1, 1, 2]
 

@@ -73,3 +73,5 @@
 | data/story/prologue.tres (각 장 Background Image) | 프롤로그 배경 8장: 밤 지하철, 아침 전화, 여름 평상 회상, 소포와 빈 공책, 편지, 시골 버스, 숲속 밥집, 문틈의 토끼 | 1920x1080 | 할 일 |
 | scenes/story/prologue.tscn (Paper) | 할머니 편지지 | 1000x900 | 선택 |
 | data/keepsakes/*.tres (Icon) | 할머니 기념품 5개: 꽃무늬 손수건, 계란 바구니, 도토리 팽이, 꿀단지, 버섯 바구니 | 128x128 | 할 일 |
+| scenes/kitchen/minigames/mince_minigame.tscn (Board, Knife) | 다지기 도마 / 큰 식칼 | 900x440 / 140x200 | 할 일 |
+| scenes/kitchen/minigames/mince_minigame.tscn (Pile 조각) | 다져지는 재료 (단계마다 작아짐, 재료 색은 코드가 입힘) | 큰 조각 150x110 | 선택 |

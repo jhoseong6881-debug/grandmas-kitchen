@@ -8,10 +8,9 @@
 
 [sub_resource type="Resource" id="CookStep_1"]
 script = ExtResource("14_cook_step")
+type = 8
 ingredient = ExtResource("3_mushroom")
-action_name = "다지기"
-count = 10
-speed = 1.2
+count = 4
 
 [sub_resource type="Resource" id="CookStep_2"]
 script = ExtResource("14_cook_step")

@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/rice_minigame.tscn" id="11_rice"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/mix_minigame.tscn" id="12_mix"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/garnish_picker.tscn" id="14_garnish"]
+[ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/mince_minigame.tscn" id="15_mince"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/simmer_minigame.tscn" id="13_simmer"]
 
 [node name="Kitchen" type="Control"]
@@ -204,6 +205,10 @@ unique_name_in_owner = true
 layout_mode = 1
 
 [node name="SimmerMinigame" parent="." instance=ExtResource("13_simmer")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="MinceMinigame" parent="." instance=ExtResource("15_mince")]
 unique_name_in_owner = true
 layout_mode = 1
 

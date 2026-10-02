@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="GuestRequest" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/guest_request.gd" id="1_request"]
+[ext_resource type="Resource" path="res://data/garnishes/sesame_oil.tres" id="2_garnish"]
+
+[resource]
+script = ExtResource("1_request")
+id = &"nutty_garnish"
+line = "고소하게 부탁해요."
+thanks_line = "고소한 냄새 좋다~"
+garnish = ExtResource("2_garnish")

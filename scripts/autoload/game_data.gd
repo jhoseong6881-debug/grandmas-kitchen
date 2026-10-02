@@ -1,5 +1,5 @@
 extends Node
-## data/ 폴더의 재료, 레시피, 동물 손님, 작물, 밭, 고명 .tres 파일을 게임 시작 때 모두 읽어 id로 찾을 수 있게 하는 오토로드.
+## data/ 폴더의 재료, 레시피, 동물 손님, 작물, 밭, 고명, 오늘의 부탁 .tres 파일을 게임 시작 때 모두 읽어 id로 찾을 수 있게 하는 오토로드.
 ## 프로젝트 설정 > 전역 > 오토로드 에 "GameData" 이름으로 등록해서 쓴다.
 ## 읽기 전용 원본 데이터만 다룬다. 플레이 중 바뀌는 상태는 GameState 가 맡는다.
 
@@ -9,6 +9,7 @@ const GUESTS_DIR: String = "res://data/guests/"
 const CROPS_DIR: String = "res://data/crops/"
 const PLACES_DIR: String = "res://data/places/"
 const GARNISHES_DIR: String = "res://data/garnishes/"
+const REQUESTS_DIR: String = "res://data/requests/"
 const REGULAR_SETTINGS_PATH: String = "res://data/regular_settings.tres"
 const STARTING_SETUP_PATH: String = "res://data/starting_setup.tres"
 const SEASON_ENDING_PATH: String = "res://data/seasons/spring_ending.tres"
@@ -20,6 +21,7 @@ var _guests: Dictionary[StringName, AnimalGuest] = {}
 var _crops: Dictionary[StringName, Crop] = {}
 var _places: Dictionary[StringName, GardenPlace] = {}
 var _garnishes: Dictionary[StringName, Garnish] = {}
+var _requests: Dictionary[StringName, GuestRequest] = {}
 var _regular_settings: RegularSettings
 var _starting_setup: StartingSetup
 var _season_ending: SeasonEnding
@@ -64,6 +66,11 @@ func _ready() -> void:
 			_register(_garnishes, resource.id, resource)
 		else:
 			_warn_wrong_type(resource, "Garnish")
+	for resource: Resource in _load_folder(REQUESTS_DIR):
+		if resource is GuestRequest:
+			_register(_requests, resource.id, resource)
+		else:
+			_warn_wrong_type(resource, "GuestRequest")
 	for resource: Resource in _load_folder(PLACES_DIR):
 		if resource is GardenPlace:
 			_register(_places, resource.id, resource)
@@ -128,6 +135,10 @@ func get_all_guests() -> Array[AnimalGuest]:
 
 func get_all_garden_places() -> Array[GardenPlace]:
 	return _places.values()
+
+
+func get_all_requests() -> Array[GuestRequest]:
+	return _requests.values()
 
 
 ## 고명 전부, 고르는 창에 놓일 순서대로

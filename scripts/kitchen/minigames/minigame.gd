@@ -3,7 +3,8 @@ extends Control
 ## 요리 미니게임들의 공통 틀. 썰기, 담기, 볶기 미니게임이 이 스크립트를 물려받는다(extends Minigame).
 ## 공통으로 맡는 일: 시작 전 "준비~ 시작!" 보여 주기(그동안 입력은 무시), 누르기/손 떼기 입력(클릭, 스페이스/Enter,
 ## 게임패드 A) 감지, 연타 방지, 빗나간 횟수 세기, "완벽 도전 중" 표시, 완벽 도장, 끝나면 finished 시그널 보내기,
-## 할머니 비법(요리 단계의 비법 자리) 확인과 "할머니 손맛" 도장, 비법을 알면 비법 한 줄 보여 주기.
+## 할머니 비법(요리 단계의 비법 자리) 확인과 "할머니 손맛" 도장, 비법을 알면 비법 한 줄 보여 주기,
+## 손님의 오늘의 부탁(GuestRequest) 보여 주기와 들어줬는지 확인하기.
 ## 시간 제한과 실패는 없다. 빗나가도 벌칙 없이 다시 하면 된다.
 ##
 ## 물려받는 미니게임 씬에는 %TitleLabel, %ProgressLabel, %PerfectStreakLabel, %PerfectStamp 노드가 있어야 한다.
@@ -12,18 +13,24 @@ extends Control
 ##   _on_start(recipe)  : 미니게임을 처음 상태로 준비한다.
 ##   _on_press()        : 누를 때마다 불린다. 맞으면 진행하고, 빗나가면 _register_miss() 를 부른다.
 ##   _on_release()      : 손을 뗄 때마다 불린다. 꾹 누르는 미니게임에서 쓴다. (필요 없으면 안 채워도 된다)
-##   _show_secret_zone(start, end) : 비법을 알 때 금색 칸 안에 비법 자리를 그린다. (그릴 수 없으면 안 채워도 된다)
+##   _show_zone(start, end, color, zone_name) : 금색 칸 안에 비법 자리나 부탁 자리를 그린다. (그릴 수 없으면 안 채워도 된다)
 ##   맞힐 때마다 _register_hit(금색 칸 안의 위치 0~1) 을 부르고, 다 끝나면 _complete(완료 문구) 를 부른다.
 
 ## is_perfect: 한 번도 빗나가지 않았으면 true
 ## is_grandma_taste: 이 단계에 할머니 비법이 있고, 모든 동작을 비법 자리에서 해냈으면 true
-signal finished(is_perfect: bool, is_grandma_taste: bool)
+## is_request_met: 이 단계에 오늘의 부탁이 있고, 부탁대로 해냈으면 true
+signal finished(is_perfect: bool, is_grandma_taste: bool, is_request_met: bool)
 
 ## 미니게임 제목: 이름 + 동작 (예: "당근 채썰기")
 const STEP_TITLE_FORMAT: String = "%s %s"
 ## 레시피에 재료가 하나도 없을 때 제목에 쓰는 이름
 const FALLBACK_SUBJECT: String = "재료"
 const SECRET_HINT_FORMAT: String = "★ 할머니 비법: %s"
+const REQUEST_GUIDE_FORMAT: String = "♪ 오늘의 부탁: %s"
+const REQUEST_DONE_TEXT: String = "   ♪ 부탁대로 했어요!"
+## 금색 칸 안에 그리는 표시의 이름 (지울 때 찾는 데 쓴다)
+const SECRET_ZONE_NAME: String = "SecretZone"
+const REQUEST_ZONE_NAME: String = "RequestZone"
 
 ## 한 번 누른 뒤 다음 입력을 받기까지 쉬는 시간(초). 마구 눌러 통과하는 것을 막는다.
 @export var press_cooldown: float = 0.15
@@ -46,6 +53,10 @@ const SECRET_HINT_FORMAT: String = "★ 할머니 비법: %s"
 @export var grandma_stamp_text: String = "♥ 할머니 손맛 ♥"
 ## 비법 자리 표시 색 (금색 칸보다 진하게)
 @export var secret_zone_color: Color = Color(0.95, 0.55, 0.1, 0.9)
+## 부탁 자리 표시 색
+@export var request_zone_color: Color = Color(0.35, 0.78, 0.95, 0.9)
+## 부탁 한 줄이 비법 한 줄 아래로 떨어진 거리(픽셀)
+@export var request_guide_gap: float = 48.0
 ## 비법 한 줄이 보이는 자리와 글자 크기
 @export var secret_hint_rect: Rect2 = Rect2(60, 240, 900, 48)
 @export var secret_hint_font_size: int = 24
@@ -60,6 +71,11 @@ var _cooldown_left: float = 0.0
 ## 이번 단계에서 맞힌 수와, 그중 비법 자리에서 맞힌 수
 var _hit_count: int = 0
 var _secret_hit_count: int = 0
+## 이번 단계에 걸린 오늘의 부탁 (없으면 null)과, 부탁 자리에서 맞힌 수
+var _request: GuestRequest
+var _request_hit_count: int = 0
+## 오늘의 부탁 때문에 원래와 다른 미니게임으로 하는 중이면 true (단계의 횟수, 빠르기, 비법을 쓰지 않는다)
+var _is_converted: bool = false
 ## 처음 보여 줄 완벽 도장 글 (할머니 손맛 도장을 썼다가 되돌릴 때 쓴다)
 var _perfect_stamp_text: String = ""
 
@@ -71,6 +87,8 @@ var _perfect_stamp_text: String = ""
 @onready var _ready_label: Label = _perfect_stamp.duplicate()
 ## "★ 할머니 비법: …" 한 줄. "완벽 도전 중" 글과 같은 모양으로 쓰려고 복사해서 만든다.
 @onready var _secret_hint_label: Label = _perfect_streak_label.duplicate()
+## "♪ 오늘의 부탁: …" 한 줄
+@onready var _request_label: Label = _perfect_streak_label.duplicate()
 
 
 func _ready() -> void:
@@ -85,15 +103,27 @@ func _ready() -> void:
 	_secret_hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	_secret_hint_label.add_theme_font_size_override("font_size", secret_hint_font_size)
 	_secret_hint_label.hide()
+	add_child(_request_label)
+	_request_label.position = secret_hint_rect.position + Vector2(0.0, request_guide_gap)
+	_request_label.size = secret_hint_rect.size
+	_request_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	_request_label.add_theme_font_size_override("font_size", secret_hint_font_size)
+	_request_label.add_theme_color_override("font_color", request_zone_color)
+	_request_label.hide()
 	hide()
 
 
-func start(recipe: Recipe, step: CookStep = null) -> void:
+func start(recipe: Recipe, step: CookStep = null, request: GuestRequest = null) -> void:
 	_step = step
-	_speed = step.speed if step != null and step.speed > 0.0 else 1.0
+	_request = request
+	_is_converted = request != null and request.use_new_minigame
+	_speed = step.speed if step != null and step.speed > 0.0 and not _is_converted else 1.0
+	if request != null:
+		_speed *= request.speed_multiplier
 	_miss_count = 0
 	_hit_count = 0
 	_secret_hit_count = 0
+	_request_hit_count = 0
 	_is_playing = false
 	_cooldown_left = 0.0
 	_perfect_streak_label.modulate.a = 1.0
@@ -102,11 +132,17 @@ func start(recipe: Recipe, step: CookStep = null) -> void:
 	_perfect_stamp.text = _perfect_stamp_text
 	_on_start(recipe)
 	# 비법을 알면 비법 한 줄과 비법 자리를 보여 준다. 몰라도 비법 자리에서 해내면 할머니 손맛이 된다.
-	var is_secret_known: bool = _step != null and _step.has_secret() and GameState.is_secret_learned(recipe.id)
+	var is_secret_known: bool = _step != null and _step.has_secret() and not _is_converted \
+			and GameState.is_secret_learned(recipe.id)
 	_secret_hint_label.visible = is_secret_known and not recipe.secret_hint.is_empty()
 	_secret_hint_label.text = SECRET_HINT_FORMAT % recipe.secret_hint
 	if is_secret_known:
-		_show_secret_zone(_step.secret_start, _step.secret_end)
+		_show_zone(_step.secret_start, _step.secret_end, secret_zone_color, SECRET_ZONE_NAME)
+	_request_label.visible = request != null
+	if request != null:
+		_request_label.text = REQUEST_GUIDE_FORMAT % request.guide_text
+		if request.has_zone():
+			_show_zone(request.zone_start, request.zone_end, request_zone_color, REQUEST_ZONE_NAME)
 	show()
 	# 포커스를 가져와야 키보드와 게임패드 입력이 뒤에 있는 버튼으로 새지 않는다.
 	grab_focus()
@@ -158,7 +194,7 @@ func _on_release() -> void:
 	pass
 
 
-func _show_secret_zone(_start: float, _end: float) -> void:
+func _show_zone(_start: float, _end: float, _color: Color, _zone_name: String) -> void:
 	pass
 
 
@@ -170,14 +206,17 @@ func _default_subject(recipe: Recipe) -> String:
 	return subject if not subject.is_empty() else FALLBACK_SUBJECT
 
 
-## 요리 단계에서 정한 횟수. 정하지 않았으면 default_count.
+## 요리 단계에서 정한 횟수 (정하지 않았으면 default_count). 오늘의 부탁이 있으면 부탁에 맞춰 바꾼다.
 func _step_count(default_count: int) -> int:
-	return _step.count if _step != null and _step.count > 0 else default_count
+	var count: int = _step.count if _step != null and _step.count > 0 and not _is_converted else default_count
+	return _request.adjust_count(count) if _request != null else count
 
 
 ## 요리 단계에서 정한 동작 이름. 정하지 않았으면 미니게임 기본 이름 (썰기, 볶기 …).
 func _step_action(minigame_type: Recipe.MinigameType) -> String:
-	if _step != null and not _step.action_name.is_empty():
+	if _is_converted and not _request.action_name.is_empty():
+		return _request.action_name
+	if _step != null and not _step.action_name.is_empty() and not _is_converted:
 		return _step.action_name
 	return Recipe.get_default_action_name(minigame_type)
 
@@ -204,19 +243,31 @@ func _step_color(default_color: Color) -> Color:
 ## 맞혔을 때 부른다. position: 금색 칸(맞는 구간) 안에서 어디쯤 맞혔는지 (0 ~ 1).
 func _register_hit(position: float) -> void:
 	_hit_count += 1
-	if _step != null and _step.is_in_secret(clampf(position, 0.0, 1.0)):
+	var clamped: float = clampf(position, 0.0, 1.0)
+	if _step != null and not _is_converted and _step.is_in_secret(clamped):
 		_secret_hit_count += 1
+	if _request != null and _request.is_in_zone(clamped):
+		_request_hit_count += 1
+
+
+## 부탁 자리가 있으면 모든 동작을 그 자리에서, 없으면 한 번도 안 틀렸으면 부탁을 들어준 것
+func _is_request_met() -> bool:
+	if _request == null:
+		return false
+	if _request.has_zone():
+		return _hit_count > 0 and _request_hit_count == _hit_count
+	return _miss_count == 0
 
 
 func _is_grandma_taste() -> bool:
-	return _step != null and _step.has_secret() and _hit_count > 0 and _secret_hit_count == _hit_count
+	return _step != null and _step.has_secret() and not _is_converted and _hit_count > 0 and _secret_hit_count == _hit_count
 
 
-## 비법 자리 표시를 하나 만든다. parent 안에서 rect 자리에 놓인다. 물려받는 스크립트가 _show_secret_zone 에서 쓴다.
-func _make_secret_zone(parent: Control, rect: Rect2) -> ColorRect:
+## 비법 자리나 부탁 자리 표시를 하나 만든다. parent 안에서 rect 자리에 놓인다. 물려받는 스크립트가 _show_zone 에서 쓴다.
+func _make_zone(parent: Control, rect: Rect2, color: Color, zone_name: String) -> ColorRect:
 	var zone: ColorRect = ColorRect.new()
-	zone.name = "SecretZone"
-	zone.color = secret_zone_color
+	zone.name = zone_name
+	zone.color = color
 	zone.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	parent.add_child(zone)
 	zone.position = rect.position
@@ -224,12 +275,13 @@ func _make_secret_zone(parent: Control, rect: Rect2) -> ColorRect:
 	return zone
 
 
-## 지난 단계에서 만든 비법 자리 표시를 지운다. 물려받는 스크립트가 _on_start 에서 부른다.
-func _clear_secret_zone(parent: Control) -> void:
-	var old: Node = parent.get_node_or_null("SecretZone")
-	if old != null:
-		parent.remove_child(old)
-		old.queue_free()
+## 지난 단계에서 만든 비법 자리, 부탁 자리 표시를 지운다. 물려받는 스크립트가 _on_start 에서 부른다.
+func _clear_zones(parent: Control) -> void:
+	for zone_name: String in [SECRET_ZONE_NAME, REQUEST_ZONE_NAME]:
+		var old: Node = parent.get_node_or_null(zone_name)
+		if old != null:
+			parent.remove_child(old)
+			old.queue_free()
 
 
 func _register_miss() -> void:
@@ -245,6 +297,9 @@ func _complete(done_text: String) -> void:
 	_progress_label.text = done_text
 	var is_perfect: bool = _miss_count == 0
 	var is_grandma_taste: bool = _is_grandma_taste()
+	var is_request_met: bool = _is_request_met()
+	if is_request_met:
+		_progress_label.text += REQUEST_DONE_TEXT
 	if is_grandma_taste:
 		_perfect_stamp.text = grandma_stamp_text
 	if is_perfect or is_grandma_taste:
@@ -253,7 +308,7 @@ func _complete(done_text: String) -> void:
 	var delay: float = perfect_finish_delay if is_perfect or is_grandma_taste else finish_delay
 	await get_tree().create_timer(delay, false).timeout
 	hide()
-	finished.emit(is_perfect, is_grandma_taste)
+	finished.emit(is_perfect, is_grandma_taste, is_request_met)
 
 
 func _pop_perfect_stamp() -> void:

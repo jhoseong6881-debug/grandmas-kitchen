@@ -59,8 +59,8 @@ var _pour_level: float = 0.0
 ## 말기에서 굴러간 정도 (0 = 출발, 1 = 계란물 끝)
 var _roll_t: float = 0.0
 var _roll_width: float = 36.0
-## 비법을 알 때 금색 칸 안에 그릴 비법 자리 (시작, 끝). 모르면 x 가 음수.
-var _secret_range: Vector2 = Vector2(-1.0, -1.0)
+## 금색 칸 안에 그릴 자리들: 이름 → [시작, 끝, 색]
+var _zones: Dictionary[String, Array] = {}
 
 @onready var _pan_inner: Control = %PanInner
 @onready var _sheet: ColorRect = %Sheet
@@ -76,7 +76,7 @@ func _on_start(recipe: Recipe) -> void:
 	_roll_duration = roll_duration / _speed
 	_layers_done = 0
 	_roll_width = roll_start_width
-	_secret_range = Vector2(-1.0, -1.0)
+	_zones.clear()
 	_title_label.text = _step_title(Recipe.MinigameType.ROLL, _default_subject(recipe))
 	_roll.position.x = 0.0
 	_start_pour()
@@ -130,9 +130,9 @@ func _on_release() -> void:
 		_finish_pour(POUR_OVER_TEXT)
 
 
-## 금색 칸은 겹마다 크기가 바뀌므로, 비법 자리는 말기를 시작할 때마다(_finish_pour) 다시 그린다.
-func _show_secret_zone(start: float, end: float) -> void:
-	_secret_range = Vector2(start, end)
+## 금색 칸은 겹마다 크기가 바뀌므로, 자리는 기억해 두었다가 말기를 시작할 때마다(_finish_pour) 다시 그린다.
+func _show_zone(start: float, end: float, color: Color, zone_name: String) -> void:
+	_zones[zone_name] = [start, end, color]
 
 
 func is_in_roll_window() -> bool:
@@ -169,11 +169,12 @@ func _finish_pour(message: String) -> void:
 	_roll_zone.position.x = zone_start
 	_roll_zone.size.x = _sheet_end() - zone_start
 	_roll_zone.show()
-	_clear_secret_zone(_roll_zone)
-	if _secret_range.x >= 0.0:
-		var width: float = _roll_zone.size.x
-		_make_secret_zone(_roll_zone, Rect2(_secret_range.x * width, 0.0,
-				(_secret_range.y - _secret_range.x) * width, _roll_zone.size.y))
+	_clear_zones(_roll_zone)
+	var width: float = _roll_zone.size.x
+	for zone_name: String in _zones:
+		var zone: Array = _zones[zone_name]
+		_make_zone(_roll_zone, Rect2(zone[0] * width, 0.0, (zone[1] - zone[0]) * width, _roll_zone.size.y),
+				zone[2], zone_name)
 	_update_side_label(ROLL_STEP_TEXT)
 
 

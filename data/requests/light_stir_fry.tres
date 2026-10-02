@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="GuestRequest" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/guest_request.gd" id="1_request"]
+
+[resource]
+script = ExtResource("1_request")
+id = &"light_stir_fry"
+line = "살짝만 볶아 주세요."
+guide_text = "살짝만 (안 틀리고 끝까지)"
+thanks_line = "아삭아삭 딱 좋아요."
+step_type = 1
+count_multiplier = 0.5
