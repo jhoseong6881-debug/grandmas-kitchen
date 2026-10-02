@@ -26,6 +26,8 @@ const NOTE_PAGE_SOUND: StringName = &"note_page"
 
 ## 잠자리에 든 뒤 넘어갈 다음 날 아침 장면
 @export_file("*.tscn") var morning_scene_path: String = "res://scenes/garden/garden.tscn"
+## 잠드는 장면 (할머니 꿈 한 줄, 저장, 아침으로 밝아지기)
+@export var sleep_transition_scene: PackedScene = preload("res://scenes/ui/sleep_transition.tscn")
 ## 노트 카드가 뜰 때 커졌다 돌아오는 정도와 시간(초)
 @export var note_pop_scale: float = 1.1
 @export var note_pop_duration: float = 0.2
@@ -244,7 +246,13 @@ func _receive_note_page(recipe: Recipe) -> void:
 
 
 ## 잠자리에 들면 날짜를 넘기고 자동 저장한다. 이어 하면 다음 날 아침부터 시작한다.
+## 저장은 잠드는 장면(SleepTransition)이 꿈 한 줄을 보여 주는 동안 하고, 끝나면 아침 장면으로 넘어간다.
 func _go_to_sleep() -> void:
+	# 잠드는 동안 버튼이 또 눌려 두 번 잠들지 않게 막는다.
+	_next_button.disabled = true
+	var night: int = GameState.current_day
 	GameState.advance_day()
-	GameState.has_unshown_save_notice = GameState.save_game()
+	var transition: SleepTransition = sleep_transition_scene.instantiate()
+	add_child(transition)
+	await transition.play(night, GameState.current_day, GameState.save_game)
 	get_tree().change_scene_to_file(morning_scene_path)

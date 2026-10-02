@@ -61,8 +61,6 @@ var is_game_started: bool = false
 ## 오늘 대접한 손님 id → 한 번도 안 틀리고 대접했는지. 저녁 평상에 올 손님을 고를 때 쓴다.
 ## 하루가 지나면 비운다. 하루가 끝날 때 저장할 것이라 세이브에는 넣지 않는다.
 var todays_served_guests: Dictionary[StringName, bool] = {}
-## 방금 잠자리에 들며 자동 저장했으면 true. 다음 날 아침 텃밭이 "저장했어요"를 한 번 보여 주고 끈다.
-var has_unshown_save_notice: bool = false
 
 
 # --- 인벤토리 ---

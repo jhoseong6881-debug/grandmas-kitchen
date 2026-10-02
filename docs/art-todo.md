@@ -79,3 +79,6 @@
 | scenes/kitchen/shop_decor.tscn (Lanterns) | 처마 등불 2개 (소문난 할매식당) | 48x60 | 할 일 |
 | scenes/kitchen/shop_decor.gd (평상) | 손님 평상 (단계마다 3~5개) | 110x40 | 할 일 |
 | scenes/kitchen/shop_decor.tscn (Shelf, Plank) | 기념품 선반 | 560x170 | 선택 |
+| scenes/ui/sleep_transition.tscn (Moon) | 잠드는 장면의 달 (지금은 노란 동그라미) | 160x160 | 할 일 |
+| scenes/ui/sleep_transition.tscn (Sky) | 잠드는 장면 밤하늘 배경 (별, 지붕 실루엣 등. 아침으로 밝아지는 건 코드가 함) | 1920x1080 | 선택 |
+| scenes/ui/sleep_transition.tscn (SaveIcon) | 저장 아이콘 (저장 중에 빙글빙글 돈다. 예: 할머니 레시피 공책) | 48x48 | 할 일 |
