@@ -16,8 +16,11 @@ const PERFECT_BONUS_FORMAT: String = " (완벽 보너스 +%d!)"
 const LUNCH_DONE_TEXT: String = "오늘 점심 장사 끝! 수고했어요."
 const OUT_OF_INGREDIENTS_TEXT: String = "재료가 다 떨어져서 오늘 장사는 여기까지예요."
 
-## 점심 한 번에 받는 손님 수
+## 점심 한 번에 받는 손님 수의 최대값
 @export var guests_per_lunch: int = 3
+## 오늘 손님 수 = 오늘 메뉴 수 + 이 값 (최대 guests_per_lunch).
+## 메뉴가 하나뿐인 첫날에 같은 요리만 여러 번 하지 않도록, 메뉴가 늘수록 손님도 는다.
+@export var extra_guests_over_menu: int = 1
 ## 이 화면을 켤 때 게임이 아직 시작 전이면 새 게임을 시작한다 (시작 재료와 레시피를 받는다).
 ## 타이틀 화면과 불러오기가 생기면 그쪽에서 새 게임을 시작하고 이 값은 끈다.
 @export var start_new_game_on_ready: bool = true
@@ -42,8 +45,9 @@ var current_order: Recipe
 ## 지금 주문이 좋아하는 요리 대신 고른 요리인지
 var _is_fallback_order: bool = false
 
-## 오늘 점심에 대접을 마친 손님 수
+## 오늘 점심에 대접을 마친 손님 수와 받을 손님 수
 var _guests_served: int = 0
+var _guests_today: int = 0
 ## 다음에 올 손님 차례. 비면 손님 목록을 섞어서 다시 채운다.
 var _guest_queue: Array[AnimalGuest] = []
 ## 바로 앞에 왔던 손님 (같은 손님이 연달아 오지 않게 할 때 쓴다)
@@ -99,6 +103,7 @@ func _ready() -> void:
 
 func _start_lunch() -> void:
 	_guests_served = 0
+	_guests_today = _count_guests_today()
 	_guest_queue.clear()
 	_update_lunch_label()
 	_call_next_guest()
@@ -111,7 +116,7 @@ func _call_next_guest() -> void:
 	_guest_spot.clear()
 	current_guest = null
 	current_order = null
-	if _guests_served >= guests_per_lunch:
+	if _guests_served >= _guests_today:
 		_end_lunch(LUNCH_DONE_TEXT)
 		return
 	var guest_count: int = GameData.get_all_guests().size()
@@ -132,6 +137,16 @@ func _call_next_guest() -> void:
 			_show_only_button(_cook_button)
 			return
 	_end_lunch(OUT_OF_INGREDIENTS_TEXT)
+
+
+## 오늘 메뉴 수 + extra_guests_over_menu, 최대 guests_per_lunch.
+## 메뉴를 안 정했으면(메뉴가 비어 있으면 되찾은 레시피 전부를 낼 수 있다) 되찾은 레시피 수로 센다.
+func _count_guests_today() -> int:
+	var menu_count: int = GameState.menu_recipe_ids.size()
+	if menu_count == 0:
+		menu_count = GameData.get_all_recipes().filter(
+				func(recipe: Recipe) -> bool: return GameState.is_recipe_unlocked(recipe.id)).size()
+	return clampi(menu_count + extra_guests_over_menu, 1, guests_per_lunch)
 
 
 ## 손님 차례에서 한 명을 꺼낸다. 차례가 비면 손님 목록을 섞어서 다시 채운다.
@@ -282,7 +297,7 @@ func _begin_status(is_perfect: bool) -> void:
 
 
 func _update_lunch_label() -> void:
-	_lunch_label.text = LUNCH_PROGRESS_FORMAT % [_guests_served, guests_per_lunch]
+	_lunch_label.text = LUNCH_PROGRESS_FORMAT % [_guests_served, _guests_today]
 
 
 func _on_day_changed(new_day: int) -> void:
