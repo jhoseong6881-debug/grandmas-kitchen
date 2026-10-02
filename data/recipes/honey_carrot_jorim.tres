@@ -1,11 +1,11 @@
-[gd_resource type="Resource" script_class="Recipe" format=3]
+[gd_resource type="Resource" script_class="Recipe" format=3 uid="uid://cdh0gxe55rs3m"]
 
-[ext_resource type="Script" path="res://scripts/data/recipe.gd" id="1_recipe"]
-[ext_resource type="Script" path="res://scripts/data/ingredient.gd" id="2_ingredient"]
-[ext_resource type="Resource" path="res://data/ingredients/carrot.tres" id="3_carrot"]
+[ext_resource type="Script" uid="uid://fbx0a77slaix" path="res://scripts/data/recipe.gd" id="1_recipe"]
+[ext_resource type="Script" uid="uid://jdo3q781e21o" path="res://scripts/data/ingredient.gd" id="2_ingredient"]
+[ext_resource type="Resource" uid="uid://cbhyfvk1vplmf" path="res://data/ingredients/carrot.tres" id="3_carrot"]
 [ext_resource type="Resource" path="res://data/ingredients/honey.tres" id="4_honey"]
 [ext_resource type="Resource" path="res://data/coatings/honey.tres" id="5_honey_coating"]
-[ext_resource type="Script" path="res://scripts/data/cook_step.gd" id="15_cook_step"]
+[ext_resource type="Script" uid="uid://che4nl0g5vff0" path="res://scripts/data/cook_step.gd" id="15_cook_step"]
 
 [sub_resource type="Resource" id="CookStep_1"]
 script = ExtResource("15_cook_step")
@@ -33,8 +33,8 @@ id = &"honey_carrot_jorim"
 display_name = "꿀 당근 조림"
 ingredients = Array[ExtResource("2_ingredient")]([ExtResource("3_carrot"), ExtResource("4_honey")])
 cook_steps = Array[ExtResource("15_cook_step")]([SubResource("CookStep_1"), SubResource("CookStep_2"), SubResource("CookStep_3")])
-simmer_sauce = ExtResource("5_honey_coating")
 secret_hint = "조림은 박자에 딱 맞춰 젓기"
 secret_teller_id = &"bear"
 secret_reveal_line = "할머니는 조림 저을 때 노래를 흥얼거리셨어. 박자에 딱딱 맞춰서. 그래야 윤기가 고르게 돈대."
 grandma_taste_line = "음~ 이 윤기… 할머니 노랫소리가 들리는 것 같아."
+simmer_sauce = ExtResource("5_honey_coating")
