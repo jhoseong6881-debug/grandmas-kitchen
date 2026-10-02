@@ -13,7 +13,7 @@ type = 5
 script = ExtResource("13_cook_step")
 ingredient = ExtResource("2_0ar3d")
 action_name = "채썰기"
-count = 12
+count = 8
 speed = 1.3
 
 [sub_resource type="Resource" id="CookStep_3"]
