@@ -7,12 +7,14 @@ const INGREDIENTS_DIR: String = "res://data/ingredients/"
 const RECIPES_DIR: String = "res://data/recipes/"
 const GUESTS_DIR: String = "res://data/guests/"
 const STARTING_SETUP_PATH: String = "res://data/starting_setup.tres"
+const SEASON_ENDING_PATH: String = "res://data/seasons/spring_ending.tres"
 const RESOURCE_EXTENSIONS: PackedStringArray = ["tres", "res"]
 
 var _ingredients: Dictionary[StringName, Ingredient] = {}
 var _recipes: Dictionary[StringName, Recipe] = {}
 var _guests: Dictionary[StringName, AnimalGuest] = {}
 var _starting_setup: StartingSetup
+var _season_ending: SeasonEnding
 
 
 func _ready() -> void:
@@ -20,6 +22,10 @@ func _ready() -> void:
 		_starting_setup = load(STARTING_SETUP_PATH)
 	else:
 		push_warning("시작 설정 파일이 없습니다: %s" % STARTING_SETUP_PATH)
+	if ResourceLoader.exists(SEASON_ENDING_PATH):
+		_season_ending = load(SEASON_ENDING_PATH)
+	else:
+		push_warning("계절 마무리 파일이 없습니다: %s" % SEASON_ENDING_PATH)
 	for resource: Resource in _load_folder(INGREDIENTS_DIR):
 		if resource is Ingredient:
 			_register(_ingredients, resource.id, resource)
@@ -54,6 +60,11 @@ func get_guest(guest_id: StringName) -> AnimalGuest:
 ## 새 게임 시작 설정 (없으면 null)
 func get_starting_setup() -> StartingSetup:
 	return _starting_setup
+
+
+## 지금 계절의 마무리 장면 글 (없으면 null)
+func get_season_ending() -> SeasonEnding:
+	return _season_ending
 
 
 # --- 전부 가져오기 ---

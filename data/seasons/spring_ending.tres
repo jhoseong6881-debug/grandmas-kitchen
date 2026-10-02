@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="SeasonEnding" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/season_ending.gd" id="1_ending"]
+
+[resource]
+script = ExtResource("1_ending")
+feast_intro_text = "봄 잔치 날이에요. 할머니 밥집에 신세 진 이웃들이 하나둘 평상에 모였어요."
+notes_complete_text = "할머니 레시피 노트가 열 장 모두 모였어요."
+letter_title = "노트 맨 뒷장에 할머니의 편지가 있었어요"
+letter_text = "우리 강아지에게.\n\n이 노트를 다 모았다면, 숲속 이웃들 밥을 꽤 오래 지어 줬겠구나.\n레시피는 이웃들에게 한 장씩 맡겨 두었단다. 밥집 문을 다시 열어야 돌려받을 수 있게.\n\n밥은 배만 채우는 게 아니라, 마음을 데우는 거란다.\n네가 지은 밥으로 이 숲이 다시 따뜻해졌다면, 할미는 그걸로 됐다.\n\n봄이 가면 또 다른 계절이 온다. 천천히, 맛있게 지내렴.\n\n— 할머니가"
+next_season_teaser = "봄이 지나갑니다…\n숲에 초록이 짙어지고, 여름이 다가와요.\n\n(여름 이야기는 준비 중이에요)"
+finish_button_text = "타이틀로"

@@ -23,4 +23,5 @@ thanks_line = "꼬꼬, 잘 먹었다! 계란은 내일도 갖다줄게."
 perfect_line = "어머머, 이 솜씨 좀 봐! 네 할머니가 보셨으면 좋아하셨겠다. 계란 하나 더!"
 dialogue_lines = Array[String](["오늘 아침엔 해가 일찍 떴지 뭐야.", "네 할머니는 계란말이를 참 잘하셨어."])
 note_recipes = Array[ExtResource("2_recipe")]([ExtResource("4_stir_fry"), ExtResource("7_egg_roll")])
+feast_line = "꼬꼬! 잔치엔 계란이 빠질 수 없지! 오늘은 내가 한턱낸다!"
 note_line = "참, 이거 네 할머니가 나한테 적어 준 레시피야. 「{recipe}」. 이제 네가 가지고 있어야지."

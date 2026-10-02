@@ -24,4 +24,5 @@ thanks_line = "음~ 든든하다. 꿀 두고 갈게."
 perfect_line = "우와… 이 맛이야! 할머니 생각난다. 꿀 듬뿍 줄게."
 dialogue_lines = Array[String](["겨울잠 자는 동안 할머니 꿈을 꿨어.", "할머니는 내가 오면 늘 꿀 넣은 반찬을 해 주셨지.", "봄바람 냄새가 좋다. 낮잠 자기 딱이야."])
 note_recipes = Array[ExtResource("2_recipe")]([ExtResource("5_honey_carrot_jorim"), ExtResource("6_acorn_honey_gangjeong")])
+feast_line = "음~ 겨울잠 깨길 정말 잘했다. 이 밥집 덕분에."
 note_line = "할머니가 겨울잠 자기 전에 주신 쪽지야. 「{recipe}」… 이제 네 거야."

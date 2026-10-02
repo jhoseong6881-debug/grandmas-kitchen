@@ -3,10 +3,14 @@ extends Control
 ## 새 게임을 고를 때 저장된 게임이 있으면 지워도 되는지 한 번 묻는다.
 
 const CONTINUE_FORMAT: String = "이어 하기 (%d일째 아침)"
+const SPRING_COMPLETED_TEXT: String = "봄 완료 (여름은 준비 중)"
 const LOAD_FAILED_TEXT: String = "저장된 게임을 불러오지 못했어요. 새 게임으로 시작해 주세요."
 
 ## 이어 하기나 새 게임으로 시작할 아침 장면
 @export_file("*.tscn") var morning_scene_path: String = "res://scenes/garden/garden.tscn"
+
+## 이어 할 수 있는 세이브가 있는지 (봄을 마친 세이브는 아직 이어 할 수 없다)
+var _can_continue: bool = false
 
 @onready var _continue_button: Button = %ContinueButton
 @onready var _new_game_button: Button = %NewGameButton
@@ -29,7 +33,15 @@ func _ready() -> void:
 	if summary.is_empty():
 		_continue_button.hide()
 		_new_game_button.grab_focus()
+	elif bool(summary.get("is_spring_completed", false)):
+		# 봄을 마친 세이브는 남겨 두고, 다음 계절이 생기면 여기서 이어 하게 한다.
+		_continue_button.text = SPRING_COMPLETED_TEXT
+		_continue_button.disabled = true
+		_continue_button.focus_mode = Control.FOCUS_NONE
+		_continue_button.show()
+		_new_game_button.grab_focus()
 	else:
+		_can_continue = true
 		_continue_button.text = CONTINUE_FORMAT % int(summary.get("current_day", GameState.STARTING_DAY))
 		_continue_button.show()
 		_continue_button.grab_focus()
@@ -69,8 +81,9 @@ func _close_confirm() -> void:
 ## 그래야 방향키로 뒤 버튼에 가지 않는다.
 func _set_menu_enabled(is_enabled: bool) -> void:
 	for button: Button in [_continue_button, _new_game_button, _quit_button]:
-		button.disabled = not is_enabled
-		button.focus_mode = Control.FOCUS_ALL if is_enabled else Control.FOCUS_NONE
+		var can_use: bool = is_enabled and (button != _continue_button or _can_continue)
+		button.disabled = not can_use
+		button.focus_mode = Control.FOCUS_ALL if can_use else Control.FOCUS_NONE
 
 
 func _on_quit_button_pressed() -> void:

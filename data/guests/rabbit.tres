@@ -1,10 +1,10 @@
-[gd_resource type="Resource" script_class="AnimalGuest" format=3]
+[gd_resource type="Resource" script_class="AnimalGuest" format=3 uid="uid://cw014mqcf4aey"]
 
-[ext_resource type="Script" path="res://scripts/data/animal_guest.gd" id="1_guest"]
-[ext_resource type="Script" path="res://scripts/data/recipe.gd" id="2_recipe"]
-[ext_resource type="Script" path="res://scripts/data/ingredient.gd" id="3_ingredient"]
-[ext_resource type="Resource" path="res://data/recipes/carrot_kimbop.tres" id="4_kimbop"]
-[ext_resource type="Resource" path="res://data/ingredients/carrot.tres" id="5_carrot"]
+[ext_resource type="Script" uid="uid://c3bc5udx3r1xj" path="res://scripts/data/animal_guest.gd" id="1_guest"]
+[ext_resource type="Script" uid="uid://fbx0a77slaix" path="res://scripts/data/recipe.gd" id="2_recipe"]
+[ext_resource type="Script" uid="uid://jdo3q781e21o" path="res://scripts/data/ingredient.gd" id="3_ingredient"]
+[ext_resource type="Resource" uid="uid://b580q70jkdeba" path="res://data/recipes/carrot_kimbop.tres" id="4_kimbop"]
+[ext_resource type="Resource" uid="uid://cbhyfvk1vplmf" path="res://data/ingredients/carrot.tres" id="5_carrot"]
 [ext_resource type="Resource" path="res://data/recipes/carrot_acorn_jeon.tres" id="6_jeon"]
 [ext_resource type="Resource" path="res://data/recipes/honey_carrot_jorim.tres" id="7_jorim"]
 [ext_resource type="Resource" path="res://data/recipes/forest_mushroom_stir_fry.tres" id="8_disliked"]
@@ -23,4 +23,5 @@ thanks_line = "정말 맛있었어요... 또 와도 되죠?"
 perfect_line = "와... 칼질 솜씨가 할머니랑 똑같아요! 이거, 당근 더 드릴게요."
 dialogue_lines = Array[String](["비 오는 날이면 할머니가 당근전을 부쳐 주셨어요. 고소한 냄새가 우리 집까지 났어요.", "안녕하세요... 여기 밥집 다시 연 거 맞죠?", "할머니 김밥, 정말 그리웠어요."])
 note_recipes = Array[ExtResource("2_recipe")]([ExtResource("6_jeon")])
+feast_line = "저… 이렇게 다 같이 모이니까, 할머니 계실 때 같아요."
 note_line = "그때 할머니가 적어 주신 레시피예요. 「{recipe}」… 이제 여기 있어야 할 것 같아서요."

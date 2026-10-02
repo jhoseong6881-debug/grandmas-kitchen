@@ -24,6 +24,10 @@ var is_todays_gift_collected: bool = false
 var met_guest_ids: Array[StringName] = []
 ## 손님 id → 저녁 평상에서 지금까지 들려준 이야기 수
 var guest_story_progress: Dictionary[StringName, int] = {}
+## 레시피 노트를 다 모은 날 (0 = 아직). 그다음 날 저녁에 봄 잔치가 열린다.
+var notes_completed_day: int = 0
+## 봄 잔치까지 보고 봄을 마쳤는지
+var is_spring_completed: bool = false
 ## 새 게임을 시작했거나 세이브를 불러왔으면 true. 화면이 바뀌어도 게임을 다시 시작하지 않게 할 때 쓴다.
 var is_game_started: bool = false
 ## 오늘 대접한 손님 id → 한 번도 안 틀리고 대접했는지. 저녁 평상에 올 손님을 고를 때 쓴다.
@@ -130,6 +134,13 @@ func unlock_recipe(recipe_id: StringName) -> void:
 		return
 	unlocked_recipe_ids.append(recipe_id)
 	recipe_unlocked.emit(recipe_id)
+	if notes_completed_day == 0 and unlocked_recipe_ids.size() >= GameData.get_all_recipes().size():
+		notes_completed_day = current_day
+
+
+## 레시피 노트를 다 모은 다음 날부터, 봄을 마치기 전까지는 저녁에 평상 대신 봄 잔치가 열린다.
+func is_spring_feast_day() -> bool:
+	return notes_completed_day > 0 and current_day > notes_completed_day and not is_spring_completed
 
 
 func is_recipe_unlocked(recipe_id: StringName) -> bool:
@@ -146,6 +157,8 @@ func new_game() -> void:
 	todays_served_guests.clear()
 	garden_days_left.clear()
 	met_guest_ids.clear()
+	notes_completed_day = 0
+	is_spring_completed = false
 	is_todays_gift_collected = false
 	is_game_started = false
 
@@ -222,6 +235,8 @@ func _to_save_data() -> Dictionary:
 		"guest_story_progress": story_data,
 		"garden_days_left": garden_days_left,
 		"met_guest_ids": Array(met_guest_ids).map(func(guest_id: StringName) -> String: return String(guest_id)),
+		"notes_completed_day": notes_completed_day,
+		"is_spring_completed": is_spring_completed,
 	}
 
 
@@ -244,3 +259,5 @@ func _from_save_data(data: Dictionary) -> void:
 	var met_data: Array = data.get("met_guest_ids", [])
 	for guest_id: Variant in met_data:
 		met_guest_ids.append(StringName(str(guest_id)))
+	notes_completed_day = int(data.get("notes_completed_day", 0))
+	is_spring_completed = bool(data.get("is_spring_completed", false))

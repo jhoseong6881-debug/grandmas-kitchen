@@ -24,4 +24,5 @@ thanks_line = "…맛있어요. 도토리, 두고 갈게요."
 perfect_line = "…! 진짜 맛있어요! 제일 동글동글한 도토리로 더 드릴게요."
 dialogue_lines = Array[String](["…할머니가 도토리묵 해 주셨었어요.", "…뒷산 도토리나무, 올해 많이 열렸어요."])
 note_recipes = Array[ExtResource("2_recipe")]([ExtResource("4_acorn_jelly"), ExtResource("7_mukbap")])
+feast_line = "…오늘은, 하나도 안 무서워요. 도토리 많이 가져왔어요."
 note_line = "…이거, 할머니가 주신 거예요. 「{recipe}」… 돌려드릴게요."

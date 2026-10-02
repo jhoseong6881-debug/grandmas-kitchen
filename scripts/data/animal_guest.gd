@@ -26,5 +26,7 @@ extends Resource
 @export_multiline var dialogue_lines: Array[String] = []
 ## 저녁 평상에서 돌려주는 할머니 레시피 노트 페이지. 찾아올 때마다 아직 안 돌려준 첫 페이지를 준다.
 @export var note_recipes: Array[Recipe] = []
+## 계절 마무리 잔치에서 하는 인사
+@export var feast_line: String = "잔치, 정말 즐거워요!"
 ## 레시피 노트를 건넬 때 하는 말. {recipe} 자리에 요리 이름이 들어간다.
 @export var note_line: String = "이거, 할머니가 주셨던 레시피예요. 「{recipe}」 돌려드릴게요."

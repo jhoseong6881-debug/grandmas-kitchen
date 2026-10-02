@@ -21,6 +21,8 @@ const OUT_OF_INGREDIENTS_TEXT: String = "재료가 다 떨어져서 오늘 장�
 @export var start_new_game_on_ready: bool = true
 ## 점심 장사가 끝나면 넘어갈 저녁 평상 장면
 @export_file("*.tscn") var porch_scene_path: String = "res://scenes/porch/porch.tscn"
+## 레시피 노트를 다 모은 다음 날, 평상 대신 넘어갈 봄 잔치 장면
+@export_file("*.tscn") var feast_scene_path: String = "res://scenes/porch/spring_feast.tscn"
 ## 좋아하는 요리 대신 다른 요리를 주문한 손님은 첫 번째 밥값 재료를 이만큼만 낸다.
 @export var fallback_payment_amount: int = 1
 ## 미니게임을 한 번도 안 틀리면 밥값 재료마다 이만큼 더 받는다.
@@ -164,7 +166,7 @@ func _on_next_guest_button_pressed() -> void:
 
 
 func _on_evening_button_pressed() -> void:
-	get_tree().change_scene_to_file(porch_scene_path)
+	get_tree().change_scene_to_file(feast_scene_path if GameState.is_spring_feast_day() else porch_scene_path)
 
 
 # --- 요리 ---

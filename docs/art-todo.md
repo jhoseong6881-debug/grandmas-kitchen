@@ -45,3 +45,7 @@
 | data/recipes/honey_egg_roll.tres (finished_image) | 꿀 계란말이 완성 그림 | 미정 | 할 일 |
 | data/recipes/acorn_jelly_mushroom_bap.tres (finished_image) | 버섯 도토리묵밥 완성 그림 | 미정 | 할 일 |
 | scenes/ui/guest_notebook.tscn (Book) | 손님 수첩 종이 (+ 손님 얼굴 작은 그림) | 1440x840 | 할 일 |
+| scenes/porch/spring_feast.tscn (Sky, Lanterns, Ground, Pyeongsang) | 봄 잔치 밤 배경 (등불, 잔칫상 차린 평상) | 1920x1080 | 할 일 |
+| scenes/porch/spring_feast.tscn (손님 그림) | 잔치에 앉은 손님 다섯 (앉은 모습) | 180x240 | 할 일 |
+| scenes/porch/spring_feast.tscn (Letter, NoteCard) | 할머니 편지지 / 완성된 노트 | 1240x820 | 할 일 |
+| scenes/porch/spring_feast.tscn (Teaser) | 여름 예고 그림 | 1920x1080 | 선택 |
