@@ -11,6 +11,9 @@
 [ext_resource type="Resource" path="res://data/recipes/carrot_egg_stir_fry.tres" id="9_disliked"]
 [ext_resource type="Script" path="res://scripts/data/evening_talk.gd" id="10_talk"]
 [ext_resource type="Resource" path="res://data/garnishes/sesame_salt.tres" id="20_garnish"]
+[ext_resource type="Script" path="res://scripts/data/regular_reward.gd" id="30_reward"]
+[ext_resource type="Resource" path="res://data/ingredients/acorn.tres" id="31_gift"]
+[ext_resource type="Resource" path="res://data/keepsakes/acorn_spinning_top.tres" id="32_keepsake"]
 
 [sub_resource type="Resource" id="EveningTalk_1"]
 script = ExtResource("10_talk")
@@ -29,6 +32,44 @@ script = ExtResource("10_talk")
 line = "…사람은 조금 무서웠는데, 당신은 괜찮아요."
 replies = Array[String](["고마워. 천천히 친해지자.", "할머니한테도 그랬어?"])
 reactions = Array[String](["…네. 천천히요.", "…네. 할머니가 처음이었고, 당신이 두 번째예요."])
+
+[sub_resource type="Resource" id="TierTalk_1"]
+script = ExtResource("10_talk")
+line = "…저, 겨울마다 도토리 묻은 데를 까먹어요."
+replies = Array[String](["같이 찾아 줄까?", "그럼 겨울엔 어떡해?"])
+reactions = Array[String](["…네. …할머니도 그렇게 말해 줬어요.", "…할머니가 묵 쒀서 나눠 줬어요. 까먹은 도토리까지 다 찾아서요."])
+
+[sub_resource type="Resource" id="Reward_1"]
+script = ExtResource("30_reward")
+talk = SubResource("TierTalk_1")
+gift_line = "…제일 반질반질한 도토리예요."
+gift_ingredient = ExtResource("31_gift")
+gift_amount = 3
+
+[sub_resource type="Resource" id="TierTalk_2"]
+script = ExtResource("10_talk")
+line = "…할머니 마지막 겨울에, 제가 도토리를 제일 많이 가져다 드렸어요. 묵 많이 쑤시라고."
+replies = Array[String](["할머니가 기뻐하셨겠다", "고마워, 할머니 대신"])
+reactions = Array[String](["…웃으셨어요. 근데 묵은 다 저한테 다시 주셨어요.", "…! …천만에요. …{name}도 많이 먹어요."])
+
+[sub_resource type="Resource" id="Reward_2"]
+script = ExtResource("30_reward")
+talk = SubResource("TierTalk_2")
+gift_line = "…겨울 몫까지 가져왔어요."
+gift_ingredient = ExtResource("31_gift")
+gift_amount = 5
+
+[sub_resource type="Resource" id="TierTalk_3"]
+script = ExtResource("10_talk")
+line = "…이제 숨겨 둔 데 알려 줄게요. 제일 좋은 도토리나무."
+replies = Array[String](["비밀 아니었어?", "고마워, 꼭 지킬게"])
+reactions = Array[String](["…식구한테는 비밀 아니에요.", "…네. 우리 둘만 알아요."])
+
+[sub_resource type="Resource" id="Reward_3"]
+script = ExtResource("30_reward")
+talk = SubResource("TierTalk_3")
+gift_line = "…할머니가 깎아 준 팽이예요. …같이 돌려요."
+keepsake = ExtResource("32_keepsake")
 
 [resource]
 script = ExtResource("1_guest")
@@ -49,3 +90,4 @@ note_line = "…이거, 할머니가 주신 거예요. 「{recipe}」… 돌려�
 favorite_garnish = ExtResource("20_garnish")
 taste_miss_line = "…맛있어요. …톡톡 씹히는 게 있으면 더 좋을 것 같아요."
 taste_match_line = "…! 깨가 톡톡. …제일 좋아하는 맛이에요."
+regular_rewards = Array[ExtResource("30_reward")]([SubResource("Reward_1"), SubResource("Reward_2"), SubResource("Reward_3")])

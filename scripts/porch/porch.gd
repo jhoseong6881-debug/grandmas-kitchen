@@ -1,5 +1,6 @@
 extends Control
 ## 저녁 평상 장면. 오늘 대접한 손님 중 한 명이 찾아와 이야기를 하고, 대답을 골라 주면 손님이 반응한다.
+## 단골 단계가 오른 손님이면 그 단계의 새 이야기를 나누고 단골 선물을 건넨다.
 ## 이미 되찾은 레시피의 할머니 비법을 아는 손님이면 비법을 알려 준다.
 ## 돌려줄 할머니 레시피 노트 페이지가 있으면 건네준다. 다 듣고 나면 잠자리에 들어 다음 날 아침 텃밭으로 간다.
 ## 장면은 "다음" 버튼을 누를 때마다 한 단계씩 진행한다. 대답을 고르는 동안에는 "다음" 버튼이 숨는다.
@@ -8,6 +9,10 @@ const DAY_TEXT_FORMAT: String = "%d일째 저녁"
 const QUIET_EVENING_TEXT: String = "오늘 저녁은 조용하네요. 별이 참 많아요."
 const NOTE_FOUND_TEXT: String = "할머니 레시피 노트 한 장을 되찾았어요!"
 const SECRET_LEARNED_FORMAT: String = "할머니 비법을 알았어요!  ★ %s"
+const GIFT_INGREDIENT_FORMAT: String = "단골 선물을 받았어요!  %s ×%d"
+const GIFT_PLOT_FORMAT: String = "단골 선물!  %s에 칸이 하나 늘었어요"
+const GIFT_KEEPSAKE_FORMAT: String = "할머니의 기념품을 받았어요!  「%s」"
+const GIFT_SEPARATOR: String = "\n"
 const NOTE_INGREDIENTS_FORMAT: String = "재료: %s"
 const NOTE_INGREDIENT_SEPARATOR: String = ", "
 const FALLBACK_STORY_LINE: String = "오늘도 잘 먹었어요."
@@ -52,7 +57,16 @@ func _ready() -> void:
 	if _evening_guest == null:
 		_beats.append(func() -> void: _status_label.text = QUIET_EVENING_TEXT)
 	else:
-		_beats.append(_tell_story)
+		var reward_tier: int = GameState.get_pending_reward_tier(_evening_guest.id)
+		var reward: RegularReward = _evening_guest.get_regular_reward(reward_tier)
+		if reward != null:
+			_beats.append(_tell_talk.bind(reward.talk))
+			_beats.append(func() -> void: _guest_spot.say(reward.gift_line.format({"name": GameState.player_name})))
+			_beats.append(_receive_gift.bind(reward_tier, reward))
+		else:
+			if reward_tier >= 0:
+				GameState.finish_reward_tier(_evening_guest.id, reward_tier)
+			_beats.append(_tell_story)
 		var secret: Recipe = _next_secret(_evening_guest)
 		if secret != null:
 			_beats.append(func() -> void: _guest_spot.say(secret.secret_reveal_line.format({"name": GameState.player_name})))
@@ -80,7 +94,7 @@ func _run_next_beat() -> void:
 
 
 ## 오늘 대접한 손님 중 한 명. 완벽하게 대접한 손님이 있으면 그중에서,
-## 그 안에서도 돌려줄 레시피 노트나 알려 줄 할머니 비법이 남은 손님이 있으면 그중에서 고른다. 아무도 없으면 null.
+## 그 안에서도 단골 보상을 받을 손님 → 돌려줄 레시피 노트나 알려 줄 할머니 비법이 남은 손님 순서로 고른다. 아무도 없으면 null.
 func _choose_evening_guest() -> AnimalGuest:
 	var served: Array[AnimalGuest] = []
 	for guest_id: StringName in GameState.todays_served_guests:
@@ -92,9 +106,13 @@ func _choose_evening_guest() -> AnimalGuest:
 	var perfect: Array[AnimalGuest] = served.filter(
 			func(guest: AnimalGuest) -> bool: return GameState.todays_served_guests[guest.id])
 	var candidates: Array[AnimalGuest] = perfect if not perfect.is_empty() else served
+	var with_reward: Array[AnimalGuest] = candidates.filter(
+			func(guest: AnimalGuest) -> bool: return GameState.get_pending_reward_tier(guest.id) >= 0)
 	var with_page: Array[AnimalGuest] = candidates.filter(
 			func(guest: AnimalGuest) -> bool: return _next_note_page(guest) != null or _next_secret(guest) != null)
-	if not with_page.is_empty():
+	if not with_reward.is_empty():
+		candidates = with_reward
+	elif not with_page.is_empty():
 		candidates = with_page
 	return candidates.pick_random()
 
@@ -124,15 +142,47 @@ func _learn_secret(recipe: Recipe) -> void:
 ## 찾아올 때마다 대화를 하나씩 순서대로 나눈다. 다 나누면 처음부터 다시.
 ## 대답이 있는 대화면 대답 버튼을 띄우고, 고를 때까지 "다음" 버튼을 숨긴다.
 func _tell_story() -> void:
-	var talks: Array[EveningTalk] = _evening_guest.evening_talks
+	var talks: Array[EveningTalk] = _evening_guest.evening_talks.duplicate()
+	# 이미 받은 단골 단계의 이야기도 평소 대화에 섞는다.
+	for i: int in _evening_guest.regular_rewards.size():
+		var reward: RegularReward = _evening_guest.regular_rewards[i]
+		if reward.talk != null and GameState.has_received_reward(_evening_guest.id, i + 1):
+			talks.append(reward.talk)
 	GameState.advance_story(_evening_guest.id)
 	if talks.is_empty():
 		_guest_spot.show_guest(_evening_guest, FALLBACK_STORY_LINE)
 		return
-	_current_talk = talks[(GameState.get_story_progress(_evening_guest.id) - 1) % talks.size()]
-	_guest_spot.show_guest(_evening_guest, _current_talk.line)
-	if not _current_talk.replies.is_empty():
-		_show_replies(_current_talk.replies)
+	_tell_talk(talks[(GameState.get_story_progress(_evening_guest.id) - 1) % talks.size()])
+
+
+## 대화 하나를 보여 준다. 대답이 있으면 대답 버튼을 띄운다.
+func _tell_talk(talk: EveningTalk) -> void:
+	_current_talk = talk
+	_guest_spot.show_guest(_evening_guest, _with_name(talk.line))
+	if not talk.replies.is_empty():
+		_show_replies(talk.replies)
+
+
+## 글 속 {name} 을 주인공 이름으로 바꾼다.
+func _with_name(text: String) -> String:
+	return text.format({"name": GameState.player_name})
+
+
+## 단골 선물을 받는다: 재료, 밭 한 칸, 기념품. 받은 것을 아래 글로 알려 준다.
+func _receive_gift(tier: int, reward: RegularReward) -> void:
+	var lines: PackedStringArray = []
+	if reward.gift_ingredient != null and reward.gift_amount > 0:
+		GameState.add_ingredient(reward.gift_ingredient.id, reward.gift_amount)
+		lines.append(GIFT_INGREDIENT_FORMAT % [reward.gift_ingredient.display_name, reward.gift_amount])
+	if not reward.extra_plot_place_id.is_empty():
+		GameState.add_plot(reward.extra_plot_place_id)
+		var place: GardenPlace = GameData.get_garden_place(reward.extra_plot_place_id)
+		lines.append(GIFT_PLOT_FORMAT % (place.display_name if place != null else String(reward.extra_plot_place_id)))
+	if reward.keepsake != null:
+		GameState.add_keepsake(reward.keepsake.id)
+		lines.append(GIFT_KEEPSAKE_FORMAT % reward.keepsake.display_name)
+	GameState.finish_reward_tier(_evening_guest.id, tier)
+	_status_label.text = GIFT_SEPARATOR.join(lines)
 
 
 func _show_replies(replies: Array[String]) -> void:
@@ -164,7 +214,7 @@ func _show_replies(replies: Array[String]) -> void:
 func _on_reply_chosen(reply_index: int) -> void:
 	var reactions: Array[String] = _current_talk.reactions
 	if not reactions.is_empty():
-		_guest_spot.say(reactions[mini(reply_index, reactions.size() - 1)])
+		_guest_spot.say(_with_name(reactions[mini(reply_index, reactions.size() - 1)]))
 	_current_talk = null
 	_reply_box.hide()
 	_next_button.show()

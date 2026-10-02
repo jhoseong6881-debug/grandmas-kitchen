@@ -17,6 +17,7 @@ const PAYMENT_ITEM_FORMAT: String = " %s ×%d"
 const PAYMENT_ITEM_ICON_ONLY_FORMAT: String = " ×%d"
 const PAYMENT_ITEM_SEPARATOR: String = ", "
 const PERFECT_BONUS_FORMAT: String = " (완벽 보너스 +%d!)"
+const REGULAR_BONUS_FORMAT: String = " (%s 덤 +%d)"
 const LUNCH_DONE_TEXT: String = "오늘 점심 장사 끝! 수고했어요."
 const OUT_OF_INGREDIENTS_TEXT: String = "재료가 다 떨어져서 오늘 장사는 여기까지예요."
 
@@ -281,6 +282,12 @@ func _serve(garnish: Garnish) -> void:
 	if _is_perfect_cook:
 		for ingredient_id: StringName in payment:
 			payment[ingredient_id] += perfect_bonus_amount
+	# 단골 덤: 단골 단계에 따라 첫 번째 밥값 재료를 더 준다.
+	var settings: RegularSettings = GameData.get_regular_settings()
+	var tier: int = GameState.get_regular_tier(current_guest.id)
+	var regular_bonus: int = settings.get_payment_bonus(tier)
+	if regular_bonus > 0 and not payment.is_empty():
+		payment[payment.keys()[0]] += regular_bonus
 	for ingredient_id: StringName in payment:
 		GameState.add_ingredient(ingredient_id, payment[ingredient_id])
 	var guest: AnimalGuest = current_guest
@@ -301,7 +308,6 @@ func _serve(garnish: Garnish) -> void:
 	if is_taste_match:
 		GameState.learn_taste(guest.id)
 		pops.append(TASTE_MATCH_POP_TEXT)
-	var settings: RegularSettings = GameData.get_regular_settings()
 	var points: int = settings.serve_points
 	if is_taste_match:
 		points += settings.taste_match_points
@@ -311,7 +317,8 @@ func _serve(garnish: Garnish) -> void:
 	if new_tier >= 0:
 		pops.append(TIER_UP_FORMAT % [guest.display_name, Korean.with_particle(guest.display_name), settings.get_tier_name(new_tier)])
 	_guest_spot.say(line)
-	_set_payment_status(payment, _is_perfect_cook, is_grandma_taste)
+	var bonus_text: String = REGULAR_BONUS_FORMAT % [settings.get_tier_name(tier), regular_bonus] if regular_bonus > 0 and not payment.is_empty() else ""
+	_set_payment_status(payment, _is_perfect_cook, is_grandma_taste, bonus_text)
 	GameState.record_served_guest(guest.id, _is_perfect_cook)
 	_guests_served += 1
 	_update_lunch_label()
@@ -347,8 +354,9 @@ func _set_status(text: String, is_perfect: bool) -> void:
 
 
 ## "밥값으로 [아이콘] 당근 ×2, [아이콘] 꿀 ×1 받았어요 (완벽 보너스 +1!)"
-## is_perfect 면 완벽 보너스를 적고, 완벽이나 할머니 손맛이면 금색으로.
-func _set_payment_status(payment: Dictionary[StringName, int], is_perfect: bool, is_grandma_taste: bool = false) -> void:
+## is_perfect 면 완벽 보너스를 적고, 완벽이나 할머니 손맛이면 금색으로. extra_text 는 맨 뒤에 덧붙인다 (예: 단골 덤).
+func _set_payment_status(payment: Dictionary[StringName, int], is_perfect: bool, is_grandma_taste: bool = false,
+		extra_text: String = "") -> void:
 	_begin_status(is_perfect or is_grandma_taste)
 	_cook_status_label.add_text(PAYMENT_PREFIX)
 	var is_first: bool = true
@@ -369,6 +377,7 @@ func _set_payment_status(payment: Dictionary[StringName, int], is_perfect: bool,
 	_cook_status_label.add_text(PAYMENT_SUFFIX)
 	if is_perfect:
 		_cook_status_label.add_text(PERFECT_BONUS_FORMAT % perfect_bonus_amount)
+	_cook_status_label.add_text(extra_text)
 	_cook_status_label.pop()
 
 

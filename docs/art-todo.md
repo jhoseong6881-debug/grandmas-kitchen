@@ -72,3 +72,4 @@
 | scenes/garden/plant_picker.tscn (Board) | "무엇을 심을까요?" 나무 판 | 1120x520 | 선택 |
 | data/story/prologue.tres (각 장 Background Image) | 프롤로그 배경 8장: 밤 지하철, 아침 전화, 여름 평상 회상, 소포와 빈 공책, 편지, 시골 버스, 숲속 밥집, 문틈의 토끼 | 1920x1080 | 할 일 |
 | scenes/story/prologue.tscn (Paper) | 할머니 편지지 | 1000x900 | 선택 |
+| data/keepsakes/*.tres (Icon) | 할머니 기념품 5개: 꽃무늬 손수건, 계란 바구니, 도토리 팽이, 꿀단지, 버섯 바구니 | 128x128 | 할 일 |

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="Keepsake" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/keepsake.gd" id="1_keepsake"]
+
+[resource]
+script = ExtResource("1_keepsake")
+id = &"grandma_honey_jar"
+display_name = "할머니의 꿀단지"
+description = "\"꿀 한 병에 반찬 한 접시.\" 곰과 할머니의 약속이 담긴 단지."

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="Keepsake" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/keepsake.gd" id="1_keepsake"]
+
+[resource]
+script = ExtResource("1_keepsake")
+id = &"grandma_egg_basket"
+display_name = "할머니가 쓰던 계란 바구니"
+description = "매일 아침 암탉이 계란을 담아 두던 바구니. 손잡이가 반들반들하다."

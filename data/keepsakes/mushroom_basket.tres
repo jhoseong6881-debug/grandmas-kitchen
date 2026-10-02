@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="Keepsake" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/keepsake.gd" id="1_keepsake"]
+
+[resource]
+script = ExtResource("1_keepsake")
+id = &"mushroom_basket"
+display_name = "할머니와 쓰던 버섯 바구니"
+description = "비 온 다음 날 새벽마다 고슴도치와 할머니가 들고 다니던 바구니."

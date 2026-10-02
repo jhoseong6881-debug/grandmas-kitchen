@@ -12,6 +12,12 @@ extends Resource
 @export var taste_match_points: int = 2
 ## 할머니 손맛을 냈을 때 더 오르는 단골도
 @export var grandma_taste_points: int = 1
+## 단계마다 밥값에 더해 주는 덤 (첫 번째 밥값 재료에 더한다). 길이는 tier_names 와 같게.
+@export var tier_payment_bonus: Array[int] = [0, 1, 1, 2]
+
+
+func get_payment_bonus(tier: int) -> int:
+	return tier_payment_bonus[tier] if tier >= 0 and tier < tier_payment_bonus.size() else 0
 
 
 ## 단골도가 affection 일 때의 단계 (0 = 첫 단계)

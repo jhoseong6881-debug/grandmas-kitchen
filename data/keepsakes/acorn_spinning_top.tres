@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="Keepsake" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/keepsake.gd" id="1_keepsake"]
+
+[resource]
+script = ExtResource("1_keepsake")
+id = &"acorn_spinning_top"
+display_name = "할머니가 깎아 준 도토리 팽이"
+description = "할머니가 다람쥐에게 깎아 준 작은 팽이. 아직도 잘 돈다."

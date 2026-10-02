@@ -44,6 +44,12 @@ var grandma_taste_recipe_ids: Array[StringName] = []
 var guest_affection: Dictionary[StringName, int] = {}
 ## 입맛(좋아하는 고명)을 알아낸 손님 id. 손님 수첩에 입맛을 보여 줄 때 쓴다.
 var known_taste_guest_ids: Array[StringName] = []
+## 손님 id → 단계는 올랐지만 아직 저녁에 보상(새 이야기, 선물)을 받지 않은 단골 단계들
+var pending_reward_tiers: Dictionary[StringName, Array] = {}
+## 손님에게 받은 할머니 기념품 id
+var keepsake_ids: Array[StringName] = []
+## 밭 id → 단골 선물로 늘어난 칸 수
+var extra_plots: Dictionary[StringName, int] = {}
 ## 레시피 노트를 다 모은 날 (0 = 아직). 그다음 날 저녁에 봄 잔치가 열린다.
 var notes_completed_day: int = 0
 ## 봄 잔치까지 보고 봄을 마쳤는지
@@ -174,16 +180,33 @@ func harvest_plot(place_id: StringName, plot_index: int) -> Crop:
 	return crop
 
 
-## data/places/ 의 밭마다 칸을 만든다. 시작 작물이 있으면 다 자란 채로 심어 둔다.
+## 밭의 칸 수 (밭 데이터의 칸 수 + 단골 선물로 늘어난 칸)
+func get_plot_count(place_id: StringName) -> int:
+	return plot_crop_ids.get(place_id, []).size()
+
+
+## 밭에 빈 칸을 하나 늘린다 (단골 선물).
+func add_plot(place_id: StringName) -> void:
+	if not plot_crop_ids.has(place_id):
+		return
+	extra_plots[place_id] = extra_plots.get(place_id, 0) + 1
+	plot_crop_ids[place_id].append(EMPTY_PLOT)
+	plot_days_left[place_id].append(0)
+
+
+## data/places/ 의 밭마다 칸을 만든다. 시작 작물이 있으면 다 자란 채로 심어 두고, 늘어난 칸은 빈 칸으로 둔다.
 func _reset_garden() -> void:
 	plot_crop_ids.clear()
 	plot_days_left.clear()
 	for place: GardenPlace in GameData.get_all_garden_places():
+		var count: int = place.plot_count + extra_plots.get(place.id, 0)
 		var crop_ids: Array = []
-		crop_ids.resize(place.plot_count)
+		crop_ids.resize(count)
 		crop_ids.fill(place.starting_crop.id if place.starting_crop != null else EMPTY_PLOT)
+		for i: int in range(place.plot_count, count):
+			crop_ids[i] = EMPTY_PLOT
 		var days: Array = []
-		days.resize(place.plot_count)
+		days.resize(count)
 		days.fill(0)
 		plot_crop_ids[place.id] = crop_ids
 		plot_days_left[place.id] = days
@@ -252,11 +275,45 @@ func get_regular_tier(guest_id: StringName) -> int:
 
 
 ## 단골도를 올린다. 단골 단계가 오르면 새 단계를, 그대로면 -1 을 돌려준다.
+## 오른 단계들은 저녁에 보상을 받을 때까지 pending_reward_tiers 에 남는다.
 func add_affection(guest_id: StringName, points: int) -> int:
 	var before: int = get_regular_tier(guest_id)
 	guest_affection[guest_id] = get_affection(guest_id) + points
 	var after: int = get_regular_tier(guest_id)
-	return after if after > before else -1
+	if after <= before:
+		return -1
+	var pending: Array = pending_reward_tiers.get(guest_id, [])
+	for tier: int in range(before + 1, after + 1):
+		pending.append(tier)
+	pending_reward_tiers[guest_id] = pending
+	return after
+
+
+## 저녁에 받을 단골 보상 중 가장 낮은 단계. 없으면 -1.
+func get_pending_reward_tier(guest_id: StringName) -> int:
+	var pending: Array = pending_reward_tiers.get(guest_id, [])
+	return pending.min() if not pending.is_empty() else -1
+
+
+func finish_reward_tier(guest_id: StringName, tier: int) -> void:
+	var pending: Array = pending_reward_tiers.get(guest_id, [])
+	pending.erase(tier)
+	if pending.is_empty():
+		pending_reward_tiers.erase(guest_id)
+
+
+## 보상(새 이야기)을 이미 받은 단골 단계인지
+func has_received_reward(guest_id: StringName, tier: int) -> bool:
+	return tier <= get_regular_tier(guest_id) and tier not in pending_reward_tiers.get(guest_id, [])
+
+
+func add_keepsake(keepsake_id: StringName) -> void:
+	if keepsake_id not in keepsake_ids:
+		keepsake_ids.append(keepsake_id)
+
+
+func has_keepsake(keepsake_id: StringName) -> bool:
+	return keepsake_id in keepsake_ids
 
 
 func knows_taste(guest_id: StringName) -> bool:
@@ -285,6 +342,9 @@ func new_game() -> void:
 	grandma_taste_recipe_ids.clear()
 	guest_affection.clear()
 	known_taste_guest_ids.clear()
+	pending_reward_tiers.clear()
+	keepsake_ids.clear()
+	extra_plots.clear()
 	notes_completed_day = 0
 	is_spring_completed = false
 	is_todays_gift_collected = false
@@ -367,6 +427,9 @@ func _to_save_data() -> Dictionary:
 		"grandma_taste_recipe_ids": Array(grandma_taste_recipe_ids).map(func(recipe_id: StringName) -> String: return String(recipe_id)),
 		"guest_affection": _string_keys(guest_affection),
 		"known_taste_guest_ids": Array(known_taste_guest_ids).map(func(guest_id: StringName) -> String: return String(guest_id)),
+		"pending_reward_tiers": _string_keys(pending_reward_tiers),
+		"keepsake_ids": Array(keepsake_ids).map(func(keepsake_id: StringName) -> String: return String(keepsake_id)),
+		"extra_plots": _string_keys(extra_plots),
 		"notes_completed_day": notes_completed_day,
 		"is_spring_completed": is_spring_completed,
 	}
@@ -386,6 +449,9 @@ func _from_save_data(data: Dictionary) -> void:
 	var story_data: Dictionary = data.get("guest_story_progress", {})
 	for guest_id: String in story_data:
 		guest_story_progress[StringName(guest_id)] = int(story_data[guest_id])
+	var extra_plot_data: Dictionary = data.get("extra_plots", {})
+	for place_id: String in extra_plot_data:
+		extra_plots[StringName(place_id)] = int(extra_plot_data[place_id])
 	_load_garden(data)
 	var met_data: Array = data.get("met_guest_ids", [])
 	for guest_id: Variant in met_data:
@@ -402,6 +468,11 @@ func _from_save_data(data: Dictionary) -> void:
 		guest_affection[StringName(guest_id)] = int(affection_data[guest_id])
 	for guest_id: Variant in data.get("known_taste_guest_ids", []):
 		known_taste_guest_ids.append(StringName(str(guest_id)))
+	var pending_data: Dictionary = data.get("pending_reward_tiers", {})
+	for guest_id: String in pending_data:
+		pending_reward_tiers[StringName(guest_id)] = Array(pending_data[guest_id]).map(func(tier: Variant) -> int: return int(tier))
+	for keepsake_id: Variant in data.get("keepsake_ids", []):
+		keepsake_ids.append(StringName(str(keepsake_id)))
 	notes_completed_day = int(data.get("notes_completed_day", 0))
 	is_spring_completed = bool(data.get("is_spring_completed", false))
 

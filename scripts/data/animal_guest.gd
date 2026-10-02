@@ -36,3 +36,11 @@ extends Resource
 @export_multiline var taste_miss_line: String = ""
 ## 입맛에 맞는 고명을 올렸을 때 하는 말
 @export_multiline var taste_match_line: String = ""
+## 단골 단계가 오를 때 받는 보상 (첫 칸 = 이웃, 둘째 = 단골, 셋째 = 식구)
+@export var regular_rewards: Array[RegularReward] = []
+
+
+## 단골 단계 tier(1 = 이웃)의 보상. 없으면 null.
+func get_regular_reward(tier: int) -> RegularReward:
+	var index: int = tier - 1
+	return regular_rewards[index] if index >= 0 and index < regular_rewards.size() else null

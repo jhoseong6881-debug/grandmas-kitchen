@@ -27,7 +27,8 @@ func _ready() -> void:
 	if _place == null:
 		push_warning("밭 '%s' 을(를) data/places/ 에서 찾지 못했습니다" % place_id)
 		return
-	for i: int in _place.plot_count:
+	# 칸 수는 단골 선물로 늘어날 수 있어서 GameState 에서 읽는다.
+	for i: int in GameState.get_plot_count(place_id):
 		var button: Button = Button.new()
 		button.custom_minimum_size = plot_size
 		button.add_theme_font_size_override("font_size", plot_font_size)

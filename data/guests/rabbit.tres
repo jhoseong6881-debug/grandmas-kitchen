@@ -10,6 +10,9 @@
 [ext_resource type="Resource" path="res://data/recipes/forest_mushroom_stir_fry.tres" id="8_disliked"]
 [ext_resource type="Script" path="res://scripts/data/evening_talk.gd" id="9_talk"]
 [ext_resource type="Resource" path="res://data/garnishes/plain.tres" id="20_garnish"]
+[ext_resource type="Script" path="res://scripts/data/regular_reward.gd" id="30_reward"]
+[ext_resource type="Resource" path="res://data/ingredients/carrot.tres" id="31_gift"]
+[ext_resource type="Resource" path="res://data/keepsakes/grandma_handkerchief.tres" id="32_keepsake"]
 
 [sub_resource type="Resource" id="EveningTalk_1"]
 script = ExtResource("9_talk")
@@ -28,6 +31,43 @@ script = ExtResource("9_talk")
 line = "할머니 김밥, 정말 그리웠어요."
 replies = Array[String](["내일도 김밥 싸 줄게.", "할머니 김밥은 뭐가 특별했어?"])
 reactions = Array[String](["와… 내일은 당근 제일 예쁜 걸로 가져올게요.", "음… 당근을 아주 가늘게, 정성껏 썰었어요. 지금 당신처럼요."])
+
+[sub_resource type="Resource" id="TierTalk_1"]
+script = ExtResource("9_talk")
+line = "사실… 저 처음 할머니 만났을 때, 밭에서 당근 훔쳐 먹다 걸렸어요."
+replies = Array[String](["할머니가 화내셨어?", "그래서 당근을 좋아하는구나"])
+reactions = Array[String](["아뇨. 다음 날 제 몫으로 한 줄을 따로 심어 주셨어요. 그게… 지금 그 밭이에요.", "헤헤… 맞아요. 그날부터 당근은 할머니 맛이에요."])
+
+[sub_resource type="Resource" id="Reward_1"]
+script = ExtResource("30_reward")
+talk = SubResource("TierTalk_1")
+gift_line = "이거… 제일 예쁜 당근이에요."
+gift_ingredient = ExtResource("31_gift")
+gift_amount = 3
+
+[sub_resource type="Resource" id="TierTalk_2"]
+script = ExtResource("9_talk")
+line = "할머니 가시던 날… 저 문 앞에서 밤새 기다렸어요. 불이 다시 켜질까 봐."
+replies = Array[String](["이제 매일 켜져 있을 거야", "많이 무서웠겠다"])
+reactions = Array[String](["…네. 그래서 {name} 오던 날, 저 울 뻔했어요.", "조금요. 근데 지금은 괜찮아요. 여기 따뜻하니까."])
+
+[sub_resource type="Resource" id="Reward_2"]
+script = ExtResource("30_reward")
+talk = SubResource("TierTalk_2")
+gift_line = "밭을 한 칸 더 일궜어요. 굴 파는 건 자신 있거든요!"
+extra_plot_place_id = &"carrot_field"
+
+[sub_resource type="Resource" id="TierTalk_3"]
+script = ExtResource("9_talk")
+line = "{name}… 한 달 지나면, 도시로 돌아가요?"
+replies = Array[String](["아직 모르겠어", "여기 있을까 생각 중이야"])
+reactions = Array[String](["…그렇구나. 그래도 오늘은 여기 있으니까 괜찮아요.", "정말요?! …아, 아니에요. 그냥 좋아서요."])
+
+[sub_resource type="Resource" id="Reward_3"]
+script = ExtResource("30_reward")
+talk = SubResource("TierTalk_3")
+gift_line = "이 손수건… 할머니가 저한테 맡기신 거예요. 이제 {name} 거예요."
+keepsake = ExtResource("32_keepsake")
 
 [resource]
 script = ExtResource("1_guest")
@@ -48,3 +88,4 @@ note_line = "그때 할머니가 적어 주신 레시피예요. 「{recipe}」�
 favorite_garnish = ExtResource("20_garnish")
 taste_miss_line = "음… 저는 당근 본맛이 좋은데. 아무것도 안 올려도 돼요."
 taste_match_line = "이거예요! 당근 맛이 그대로 나요."
+regular_rewards = Array[ExtResource("30_reward")]([SubResource("Reward_1"), SubResource("Reward_2"), SubResource("Reward_3")])

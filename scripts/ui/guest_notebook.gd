@@ -17,6 +17,7 @@ const LIST_SEPARATOR: String = ", "
 const NONE_TEXT: String = "없음"
 const REGULAR_FORMAT: String = "%s %s   ·   입맛: %s"
 const TASTE_FORMAT: String = "%s (%s)"
+const KEEPSAKE_FORMAT: String = "\n받은 기념품: %s"
 const HEART_FULL: String = "♥"
 const HEART_EMPTY: String = "♡"
 const SECRET_TITLE_TEXT: String = "할머니 비법"
@@ -137,7 +138,11 @@ func _regular_text(guest: AnimalGuest) -> String:
 	var taste: String = UNKNOWN_TEXT
 	if guest.favorite_garnish != null and GameState.knows_taste(guest.id):
 		taste = TASTE_FORMAT % [guest.favorite_garnish.taste_name, guest.favorite_garnish.display_name]
-	return REGULAR_FORMAT % [hearts, settings.get_tier_name(tier), taste]
+	var text: String = REGULAR_FORMAT % [hearts, settings.get_tier_name(tier), taste]
+	for reward: RegularReward in guest.regular_rewards:
+		if reward.keepsake != null and GameState.has_keepsake(reward.keepsake.id):
+			text += KEEPSAKE_FORMAT % reward.keepsake.display_name
+	return text
 
 
 ## 이 손님이 알려 주는 할머니 비법 목록. 하나도 없으면 빈 문자열.
