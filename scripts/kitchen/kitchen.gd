@@ -53,7 +53,7 @@ var _guest_queue: Array[AnimalGuest] = []
 ## 바로 앞에 왔던 손님 (같은 손님이 연달아 오지 않게 할 때 쓴다)
 var _last_guest: AnimalGuest
 ## 요리 중에 아직 남은 미니게임 단계
-var _remaining_steps: Array[Recipe.MinigameType] = []
+var _remaining_steps: Array[CookStep] = []
 ## 이번 요리의 미니게임을 지금까지 전부 한 번도 안 틀렸는지
 var _is_perfect_cook: bool = true
 ## 안내 글자의 원래 색 (완벽 색에서 되돌릴 때 쓴다)
@@ -207,7 +207,7 @@ func _on_cook_button_pressed() -> void:
 	_show_only_button(null)
 	GameState.remove_ingredients(current_order.get_ingredient_counts())
 	_is_perfect_cook = true
-	_remaining_steps = current_order.minigame_steps.duplicate()
+	_remaining_steps = current_order.cook_steps.duplicate()
 	_run_next_step()
 
 
@@ -217,18 +217,18 @@ func _on_minigame_finished(is_perfect: bool) -> void:
 	_run_next_step()
 
 
-## 레시피의 미니게임 단계를 순서대로 하나씩 진행한다. 다 끝나면 요리 완성.
+## 레시피의 요리 단계(cook_steps)를 순서대로 하나씩 진행한다. 다 끝나면 요리 완성.
 func _run_next_step() -> void:
 	if _remaining_steps.is_empty():
 		var format: String = PERFECT_COOKED_TEXT_FORMAT if _is_perfect_cook else COOKED_TEXT_FORMAT
 		_set_status(format % current_order.display_name, _is_perfect_cook)
 		_show_only_button(_serve_button)
 		return
-	var step: Recipe.MinigameType = _remaining_steps.pop_front()
-	if _minigames.has(step):
-		_minigames[step].start(current_order)
+	var step: CookStep = _remaining_steps.pop_front()
+	if step != null and _minigames.has(step.type):
+		_minigames[step.type].start(current_order, step)
 	else:
-		push_warning("미니게임 종류 %d 에 연결된 미니게임이 없어 건너뜁니다" % step)
+		push_warning("요리 단계에 연결된 미니게임이 없어 건너뜁니다: %s" % current_order.id)
 		_run_next_step()
 
 

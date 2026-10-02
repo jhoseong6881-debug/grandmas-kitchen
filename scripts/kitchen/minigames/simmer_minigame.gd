@@ -3,11 +3,9 @@ extends Minigame
 ## 조리기 미니게임 (보글보글 박자 젓기). 냄비 가운데 금색 원이 있고, 하얀 원이 일정한 박자로 줄어든다.
 ## 하얀 원이 금색 원에 딱 겹칠 때 누르면 숟가락으로 휘~ 젓는다. 저을 때마다 국물이 졸아들고 재료에 윤기가 돈다.
 ## stirs_needed 번 저으면 완성. 너무 빨리 누르거나 박자를 놓치면 빗나감이지만, 다음 박자가 바로 온다.
-## 조림장(Coating)은 레시피의 Simmer Sauce 칸에서 정하고, 졸이는 재료는 첫 번째 재료를 쓴다.
+## 조림장(Coating)은 레시피의 Simmer Sauce 칸에서 정하고, 졸이는 재료는 요리 단계의 재료(없으면 첫 번째 재료)를 쓴다.
 ## 누르기 입력, 연타 방지, 완벽 표시는 공통 틀(Minigame)이 맡는다.
 
-## 재료 이름 + 동작 이름 (예: "당근 조리기")
-const TITLE_FORMAT: String = "%s %s"
 const COUNT_FORMAT: String = "저어 주기 %d / %d"
 const SAUCE_FORMAT: String = "%s 졸이는 중"
 const READY_TEXT: String = "하얀 원이 금색 원에 겹칠 때 눌러요"
@@ -15,7 +13,6 @@ const HIT_FORMAT: String = "휘~ %d / %d"
 const EARLY_TEXT: String = "조금 빨라요. 박자에 맞춰요"
 const MISSED_TEXT: String = "박자를 놓쳤어요. 다음 박자에!"
 const DONE_TEXT: String = "윤기 나게 졸였어요!"
-const FALLBACK_INGREDIENT_NAME: String = "재료"
 
 ## 저어야 하는 횟수
 @export var stirs_needed: int = 8
@@ -54,6 +51,9 @@ const FALLBACK_INGREDIENT_NAME: String = "재료"
 @export var bubble_pulse_duration: float = 0.1
 
 ## 미니게임을 시작한 뒤 흐른 시간과, 지금 하얀 원이 금색 원에 닿는 시각
+## 이번 단계의 젓는 수와 박자 사이 시간 (요리 단계에서 정한 값, 없으면 위의 기본값)
+var _stirs_needed: int = 0
+var _beat_interval: float = 0.9
 var _time: float = 0.0
 var _beat_time: float = 0.0
 var _stirs_done: int = 0
@@ -79,8 +79,10 @@ func _ready() -> void:
 
 
 func _on_start(recipe: Recipe) -> void:
+	_stirs_needed = _step_count(stirs_needed)
+	_beat_interval = beat_interval / _speed
 	_time = 0.0
-	_beat_time = lead_in + beat_interval
+	_beat_time = lead_in + _beat_interval
 	_stirs_done = 0
 	_spoon.rotation = 0.0
 	_sauce_color = fallback_sauce_color
@@ -89,9 +91,11 @@ func _on_start(recipe: Recipe) -> void:
 		_sauce_color = recipe.simmer_sauce.color
 		sauce_name = recipe.simmer_sauce.display_name
 	var ingredient: Ingredient = recipe.ingredients[0] if not recipe.ingredients.is_empty() else null
+	if _step != null and _step.ingredient != null:
+		ingredient = _step.ingredient
 	_place_pieces(ingredient)
-	var ingredient_name: String = ingredient.display_name if ingredient != null else FALLBACK_INGREDIENT_NAME
-	_title_label.text = TITLE_FORMAT % [ingredient_name, recipe.get_action_name(Recipe.MinigameType.SIMMER)]
+	var ingredient_name: String = ingredient.display_name if ingredient != null else FALLBACK_SUBJECT
+	_title_label.text = _step_title(Recipe.MinigameType.SIMMER, ingredient_name)
 	_sauce_label.text = SAUCE_FORMAT % sauce_name
 	_sauce_fill.color = _sauce_color
 	_progress_label.text = READY_TEXT
@@ -140,13 +144,13 @@ func _on_press() -> void:
 
 func _stir() -> void:
 	_stirs_done += 1
-	_side_label.text = COUNT_FORMAT % [_stirs_done, stirs_needed]
-	_progress_label.text = HIT_FORMAT % [_stirs_done, stirs_needed]
+	_side_label.text = COUNT_FORMAT % [_stirs_done, _stirs_needed]
+	_progress_label.text = HIT_FORMAT % [_stirs_done, _stirs_needed]
 	var tween: Tween = create_tween()
 	tween.tween_property(_spoon, "rotation", _spoon.rotation + spoon_turn, spoon_turn_duration) \
 			.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
 	_update_simmer()
-	if _stirs_done >= stirs_needed:
+	if _stirs_done >= _stirs_needed:
 		_beat_ring.hide()
 		_complete(DONE_TEXT)
 		return
@@ -155,7 +159,7 @@ func _stir() -> void:
 
 ## 다음 박자로 넘어간다. 국물이 보글 하고 한 번 커졌다 돌아온다.
 func _next_beat() -> void:
-	_beat_time += beat_interval
+	_beat_time += _beat_interval
 	var base: Vector2 = _sauce.scale
 	var tween: Tween = create_tween()
 	tween.tween_property(_sauce, "scale", base * bubble_pulse_scale, bubble_pulse_duration)
@@ -164,18 +168,18 @@ func _next_beat() -> void:
 
 ## 저은 만큼 국물이 졸아들어 작아지고 진해지며, 재료에 윤기(조림장 색)가 돈다.
 func _update_simmer() -> void:
-	var progress: float = float(_stirs_done) / stirs_needed
+	var progress: float = float(_stirs_done) / _stirs_needed
 	_sauce.scale = Vector2.ONE * lerpf(sauce_start_scale, sauce_end_scale, progress)
 	_sauce.self_modulate = _sauce_color.lerp(Color.WHITE, thin_sauce_whiten * (1.0 - progress))
 	_sauce_fill.size.x = (1.0 - progress) * _sauce_bar.size.x
 	for piece: Control in _pieces:
 		piece.get_node("Gloss").self_modulate = Color(_sauce_color, gloss_max_alpha * progress)
-	_side_label.text = COUNT_FORMAT % [_stirs_done, stirs_needed]
+	_side_label.text = COUNT_FORMAT % [_stirs_done, _stirs_needed]
 
 
 ## 하얀 원: 박자 한 칸 전에 바깥에서 나타나 박자 때 금색 원 크기가 되고, 지나면 더 작아지며 사라진다.
 func _update_ring() -> void:
-	var p: float = 1.0 - (_beat_time - _time) / beat_interval
+	var p: float = 1.0 - (_beat_time - _time) / _beat_interval
 	if p < 0.0 or not _is_playing:
 		_beat_ring.hide()
 		return
@@ -184,6 +188,6 @@ func _update_ring() -> void:
 		_beat_ring.scale = Vector2.ONE * lerpf(ring_start_scale, 1.0, p)
 		_beat_ring.modulate.a = 1.0
 	else:
-		var after: float = (p - 1.0) * beat_interval / (hit_window + judge_margin)
+		var after: float = (p - 1.0) * _beat_interval / (hit_window + judge_margin)
 		_beat_ring.scale = Vector2.ONE * lerpf(1.0, ring_after_scale, after)
 		_beat_ring.modulate.a = 1.0 - after

@@ -5,11 +5,30 @@
 [ext_resource type="Resource" path="res://data/ingredients/carrot.tres" id="3_carrot"]
 [ext_resource type="Resource" path="res://data/ingredients/honey.tres" id="4_honey"]
 [ext_resource type="Resource" path="res://data/coatings/honey.tres" id="5_honey_coating"]
+[ext_resource type="Script" path="res://scripts/data/cook_step.gd" id="15_cook_step"]
+
+[sub_resource type="Resource" id="CookStep_1"]
+script = ExtResource("15_cook_step")
+ingredient = ExtResource("3_carrot")
+action_name = "깍둑썰기"
+count = 6
+
+[sub_resource type="Resource" id="CookStep_2"]
+script = ExtResource("15_cook_step")
+type = 7
+ingredient = ExtResource("3_carrot")
+count = 10
+speed = 0.85
+
+[sub_resource type="Resource" id="CookStep_3"]
+script = ExtResource("15_cook_step")
+type = 2
+count = 2
 
 [resource]
 script = ExtResource("1_recipe")
 id = &"honey_carrot_jorim"
 display_name = "꿀 당근 조림"
 ingredients = Array[ExtResource("2_ingredient")]([ExtResource("3_carrot"), ExtResource("4_honey")])
-minigame_steps = Array[int]([0, 7, 2])
+cook_steps = Array[ExtResource("15_cook_step")]([SubResource("CookStep_1"), SubResource("CookStep_2"), SubResource("CookStep_3")])
 simmer_sauce = ExtResource("5_honey_coating")

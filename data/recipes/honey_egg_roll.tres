@@ -4,11 +4,30 @@
 [ext_resource type="Script" path="res://scripts/data/ingredient.gd" id="2_ingredient"]
 [ext_resource type="Resource" path="res://data/ingredients/egg.tres" id="3_egg"]
 [ext_resource type="Resource" path="res://data/ingredients/honey.tres" id="4_honey"]
+[ext_resource type="Script" path="res://scripts/data/cook_step.gd" id="14_cook_step"]
+
+[sub_resource type="Resource" id="CookStep_1"]
+script = ExtResource("14_cook_step")
+type = 4
+subject_name = "계란"
+count = 4
+
+[sub_resource type="Resource" id="CookStep_2"]
+script = ExtResource("14_cook_step")
+subject_name = "계란말이"
+count = 6
+speed = 0.9
+placeholder_color = Color(0.98, 0.8, 0.36, 1)
+
+[sub_resource type="Resource" id="CookStep_3"]
+script = ExtResource("14_cook_step")
+type = 2
+count = 1
 
 [resource]
 script = ExtResource("1_recipe")
 id = &"honey_egg_roll"
 display_name = "꿀 계란말이"
 ingredients = Array[ExtResource("2_ingredient")]([ExtResource("3_egg"), ExtResource("3_egg"), ExtResource("4_honey")])
-minigame_steps = Array[int]([4, 2])
+cook_steps = Array[ExtResource("14_cook_step")]([SubResource("CookStep_1"), SubResource("CookStep_2"), SubResource("CookStep_3")])
 minigame_ingredient_name = "계란"

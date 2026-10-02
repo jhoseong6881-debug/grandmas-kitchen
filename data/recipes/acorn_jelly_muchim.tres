@@ -3,11 +3,33 @@
 [ext_resource type="Script" path="res://scripts/data/recipe.gd" id="1_recipe"]
 [ext_resource type="Script" path="res://scripts/data/ingredient.gd" id="2_ingredient"]
 [ext_resource type="Resource" path="res://data/ingredients/acorn.tres" id="3_acorn"]
+[ext_resource type="Script" path="res://scripts/data/cook_step.gd" id="13_cook_step"]
+[ext_resource type="Resource" path="res://data/coatings/seasoning.tres" id="14_seasoning"]
+
+[sub_resource type="Resource" id="CookStep_1"]
+script = ExtResource("13_cook_step")
+subject_name = "도토리묵"
+count = 6
+speed = 0.6
+placeholder_color = Color(0.5, 0.34, 0.24, 1)
+
+[sub_resource type="Resource" id="CookStep_2"]
+script = ExtResource("13_cook_step")
+type = 6
+ingredient = ExtResource("3_acorn")
+subject_name = "도토리묵"
+count = 6
+
+[sub_resource type="Resource" id="CookStep_3"]
+script = ExtResource("13_cook_step")
+type = 2
+count = 1
 
 [resource]
 script = ExtResource("1_recipe")
 id = &"acorn_jelly_muchim"
 display_name = "도토리묵 무침"
 ingredients = Array[ExtResource("2_ingredient")]([ExtResource("3_acorn")])
-minigame_steps = Array[int]([0, 2])
+cook_steps = Array[ExtResource("13_cook_step")]([SubResource("CookStep_1"), SubResource("CookStep_2"), SubResource("CookStep_3")])
 minigame_ingredient_name = "도토리묵"
+mix_coating = ExtResource("14_seasoning")

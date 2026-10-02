@@ -6,14 +6,11 @@ extends Minigame
 ## 무엇을 묻힐지(Coating)와 어떤 재료에 묻힐지는 레시피 데이터에서 정한다. 새 양념은 data/coatings/ 에 추가한다.
 ## 누르기 입력, 연타 방지, 완벽 표시는 공통 틀(Minigame)이 맡는다.
 
-## 재료 이름 + 동작 이름 (예: "도토리 버무리기")
-const TITLE_FORMAT: String = "%s %s"
 const COUNT_FORMAT: String = "%s 묻힌 조각 %d / %d"
 const READY_TEXT: String = "주걱이 안 묻은 조각 위를 지날 때 눌러요"
 const HIT_FORMAT: String = "쓱싹! %d / %d"
 const MISS_TEXT: String = "빈 곳을 저었어요. 빛나는 조각을 노려요"
 const DONE_TEXT: String = "골고루 버무렸어요!"
-const FALLBACK_INGREDIENT_NAME: String = "재료"
 
 ## 그릇에 놓이는 조각 수
 @export var piece_count: int = 7
@@ -35,6 +32,9 @@ const FALLBACK_INGREDIENT_NAME: String = "재료"
 @export var coat_pop_duration: float = 0.12
 
 ## 지금 주걱이 오간 정도. 0~1 은 왼쪽→오른쪽, 1~2 는 오른쪽→왼쪽.
+## 이번 단계의 조각 수와 주걱이 한쪽 끝까지 가는 시간 (요리 단계에서 정한 값, 없으면 위의 기본값)
+var _piece_count: int = 0
+var _sweep_duration: float = 2.0
 var _sweep_t: float = 0.0
 var _pieces: Array[Control] = []
 var _is_coated: Array[bool] = []
@@ -53,6 +53,8 @@ func _ready() -> void:
 
 
 func _on_start(recipe: Recipe) -> void:
+	_piece_count = _step_count(piece_count)
+	_sweep_duration = sweep_duration / _speed
 	_sweep_t = 0.0
 	_coated_count = 0
 	var coating_color: Color = fallback_coating_color
@@ -60,10 +62,11 @@ func _on_start(recipe: Recipe) -> void:
 	if recipe.mix_coating != null:
 		coating_color = recipe.mix_coating.color
 		_coating_name = recipe.mix_coating.display_name
-	var piece_ingredient: Ingredient = recipe.get_mix_piece_ingredient()
+	var piece_ingredient: Ingredient = _step.ingredient if _step != null and _step.ingredient != null \
+			else recipe.get_mix_piece_ingredient()
 	_place_pieces(piece_ingredient, Color(coating_color, coat_alpha))
-	var ingredient_name: String = piece_ingredient.display_name if piece_ingredient != null else FALLBACK_INGREDIENT_NAME
-	_title_label.text = TITLE_FORMAT % [ingredient_name, recipe.get_action_name(Recipe.MinigameType.MIX)]
+	var ingredient_name: String = piece_ingredient.display_name if piece_ingredient != null else FALLBACK_SUBJECT
+	_title_label.text = _step_title(Recipe.MinigameType.MIX, ingredient_name)
 	_progress_label.text = READY_TEXT
 	_update_count()
 	_update_spatula()
@@ -76,8 +79,8 @@ func _place_pieces(ingredient: Ingredient, coat_color: Color) -> void:
 			piece.queue_free()
 	_pieces.clear()
 	_is_coated.clear()
-	var slot_width: float = _piece_area.size.x / piece_count
-	for i: int in piece_count:
+	var slot_width: float = _piece_area.size.x / _piece_count
+	for i: int in _piece_count:
 		var piece: Control = _piece_template.duplicate()
 		var center_x: float = slot_width * (i + 0.5 + randf_range(-slot_jitter, slot_jitter))
 		var top: float = randf_range(0.0, _piece_area.size.y - piece.size.y)
@@ -100,7 +103,7 @@ func _process(delta: float) -> void:
 	super(delta)
 	if not visible or not _is_playing:
 		return
-	_sweep_t = fmod(_sweep_t + delta / sweep_duration, 2.0)
+	_sweep_t = fmod(_sweep_t + delta / _sweep_duration, 2.0)
 	_update_spatula()
 
 
@@ -138,8 +141,8 @@ func _coat(index: int) -> void:
 	tween.tween_property(piece, "scale", Vector2.ONE * coat_pop_scale, coat_pop_duration)
 	tween.tween_property(piece, "scale", Vector2.ONE, coat_pop_duration)
 	_update_count()
-	_progress_label.text = HIT_FORMAT % [_coated_count, piece_count]
-	if _coated_count >= piece_count:
+	_progress_label.text = HIT_FORMAT % [_coated_count, _piece_count]
+	if _coated_count >= _piece_count:
 		_complete(DONE_TEXT)
 
 
@@ -159,4 +162,4 @@ func _update_spatula() -> void:
 
 
 func _update_count() -> void:
-	_side_label.text = COUNT_FORMAT % [_coating_name, _coated_count, piece_count]
+	_side_label.text = COUNT_FORMAT % [_coating_name, _coated_count, _piece_count]

@@ -5,8 +5,6 @@ extends Minigame
 ## 모자라거나 많거나 넘치면 그릇을 비우고 다시 담는다. 벌칙은 없다.
 ## 누르기/손 떼기 입력, 연타 방지, 완벽 표시는 공통 틀(Minigame)이 맡는다.
 
-## 요리 이름 + 동작 이름 (예: "할머니표 당근 김밥 담기")
-const TITLE_FORMAT: String = "%s %s"
 const READY_FORMAT: String = "0 / %d"
 const HIT_FORMAT: String = "쏙! %d / %d"
 const UNDER_FORMAT: String = "조금 모자라요… 다시 담아요 %d / %d"
@@ -43,6 +41,9 @@ const DONE_TEXT: String = "예쁘게 완성했어요!"
 ## 튀는 알갱이가 음식 위에서도 보이도록 음식 색보다 이만큼 어둡게 한다 (0 ~ 1)
 @export var splash_darken: float = 0.25
 
+## 이번 단계의 그릇 수와 차오르는 빠르기 (요리 단계에서 정한 값, 없으면 위의 기본값)
+var _bowl_count: int = 0
+var _fill_speed: float = 0.5
 var _bowls_done: int = 0
 ## 지금 그릇에 찬 양 (0 = 빈 그릇, 1 = 가득)
 var _fill_level: float = 0.0
@@ -74,10 +75,12 @@ func _ready() -> void:
 
 
 func _on_start(recipe: Recipe) -> void:
+	_bowl_count = _step_count(bowl_count)
+	_fill_speed = fill_speed * _speed
 	_bowls_done = 0
 	for dot: Node in _bowl_dots.get_children():
 		dot.queue_free()
-	for i: int in bowl_count:
+	for i: int in _bowl_count:
 		var dot: Control = _bowl_dot_template.duplicate()
 		dot.modulate = bowl_pending_color
 		dot.show()
@@ -88,15 +91,15 @@ func _on_start(recipe: Recipe) -> void:
 	_stream.hide()
 	_splash.emitting = false
 	_start_new_bowl()
-	_title_label.text = TITLE_FORMAT % [recipe.display_name, recipe.get_action_name(Recipe.MinigameType.PLATE)]
-	_progress_label.text = READY_FORMAT % bowl_count
+	_title_label.text = _step_title(Recipe.MinigameType.PLATE, recipe.display_name)
+	_progress_label.text = READY_FORMAT % _bowl_count
 
 
 func _process(delta: float) -> void:
 	super(delta)
 	if not _is_playing or not _is_holding:
 		return
-	_set_fill_level(_fill_level + fill_speed * delta)
+	_set_fill_level(_fill_level + _fill_speed * delta)
 	_update_stream()
 	if _fill_level >= 1.0:
 		_is_holding = false
@@ -133,11 +136,11 @@ func is_fill_on_target() -> bool:
 func _finish_bowl() -> void:
 	_bowl_dots.get_child(_bowls_done).modulate = bowl_done_color
 	_bowls_done += 1
-	_progress_label.text = HIT_FORMAT % [_bowls_done, bowl_count]
+	_progress_label.text = HIT_FORMAT % [_bowls_done, _bowl_count]
 	_bowl.scale = Vector2.ONE * bounce_scale
 	var tween: Tween = create_tween()
 	tween.tween_property(_bowl, "scale", Vector2.ONE, bounce_duration)
-	if _bowls_done >= bowl_count:
+	if _bowls_done >= _bowl_count:
 		_complete(DONE_TEXT)
 	else:
 		tween.tween_callback(_start_new_bowl)
@@ -145,7 +148,7 @@ func _finish_bowl() -> void:
 
 func _miss(text_format: String) -> void:
 	_register_miss()
-	_progress_label.text = text_format % [_bowls_done, bowl_count]
+	_progress_label.text = text_format % [_bowls_done, _bowl_count]
 	_is_emptying = true
 	var tween: Tween = create_tween()
 	tween.tween_method(_set_fill_level, _fill_level, 0.0, empty_duration)

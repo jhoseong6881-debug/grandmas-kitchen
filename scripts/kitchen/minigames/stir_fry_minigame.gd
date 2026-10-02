@@ -7,14 +7,11 @@ extends Minigame
 
 enum TossState { RESTING, AIRBORNE }
 
-## 재료 이름 + 동작 이름 (예: "당근 볶기", "당근 부치기")
-const TITLE_FORMAT: String = "%s %s"
 const READY_TEXT: String = "눌러서 재료를 띄워요"
 const CATCH_FORMAT: String = "착! %d / %d"
 const EARLY_FORMAT: String = "아직 높아요! %d / %d"
 const DROP_FORMAT: String = "툭… 다시 띄워요 %d / %d"
 const DONE_TEXT: String = "잘 익었어요!"
-const FALLBACK_INGREDIENT_NAME: String = "재료"
 
 @export var tosses_needed: int = 6
 ## 재료가 튀어 오르는 최고 높이(픽셀)와 한 번 날아갔다 내려오는 시간(초)
@@ -39,6 +36,10 @@ const FALLBACK_INGREDIENT_NAME: String = "재료"
 @export var flame_flicker_speed: float = 9.0
 @export var flame_flicker_amount: float = 0.12
 
+## 이번 단계의 토스 수, 한 번 날아가는 시간, 재료 색 (요리 단계에서 정한 값, 없으면 위의 기본값)
+var _tosses_needed: int = 0
+var _toss_duration: float = 0.9
+var _food_color: Color
 var _state: TossState = TossState.RESTING
 var _toss_time: float = 0.0
 var _tosses_done: int = 0
@@ -63,6 +64,9 @@ func _ready() -> void:
 
 
 func _on_start(recipe: Recipe) -> void:
+	_tosses_needed = _step_count(tosses_needed)
+	_toss_duration = toss_duration / _speed
+	_food_color = _step_color(food_color)
 	_state = TossState.RESTING
 	_toss_time = 0.0
 	_tosses_done = 0
@@ -73,7 +77,7 @@ func _on_start(recipe: Recipe) -> void:
 	_piece_height_factors.clear()
 	for i: int in food_piece_count:
 		var piece: Control = _food_template.duplicate()
-		piece.self_modulate = food_color
+		piece.self_modulate = _food_color
 		piece.pivot_offset = piece.size / 2.0
 		piece.show()
 		_food_layer.add_child(piece)
@@ -86,10 +90,7 @@ func _on_start(recipe: Recipe) -> void:
 	var catch_height: float = _height_at(1.0 - catch_window)
 	_catch_band.position.y = _food_layer.position.y - catch_height
 	_catch_band.size.y = catch_height
-	var ingredient_name: String = recipe.get_minigame_ingredient_name()
-	if ingredient_name.is_empty():
-		ingredient_name = FALLBACK_INGREDIENT_NAME
-	_title_label.text = TITLE_FORMAT % [ingredient_name, recipe.get_action_name(Recipe.MinigameType.STIR_FRY)]
+	_title_label.text = _step_title(Recipe.MinigameType.STIR_FRY, _default_subject(recipe))
 	_progress_label.text = READY_TEXT
 
 
@@ -102,8 +103,8 @@ func _process(delta: float) -> void:
 	if not _is_playing or _state != TossState.AIRBORNE:
 		return
 	_toss_time += delta
-	var t: float = _toss_time / toss_duration
-	if t > 1.0 + landing_grace / toss_duration:
+	var t: float = _toss_time / _toss_duration
+	if t > 1.0 + landing_grace / _toss_duration:
 		_drop()
 	else:
 		_update_food(t)
@@ -117,14 +118,14 @@ func _on_press() -> void:
 		_catch()
 	else:
 		_register_miss()
-		_progress_label.text = EARLY_FORMAT % [_tosses_done, tosses_needed]
+		_progress_label.text = EARLY_FORMAT % [_tosses_done, _tosses_needed]
 
 
 func is_in_catch_window() -> bool:
 	if _state != TossState.AIRBORNE:
 		return false
-	var t: float = _toss_time / toss_duration
-	return t >= 1.0 - catch_window and t <= 1.0 + landing_grace / toss_duration
+	var t: float = _toss_time / _toss_duration
+	return t >= 1.0 - catch_window and t <= 1.0 + landing_grace / _toss_duration
 
 
 func _launch() -> void:
@@ -134,8 +135,8 @@ func _launch() -> void:
 
 func _catch() -> void:
 	_tosses_done += 1
-	_progress_label.text = CATCH_FORMAT % [_tosses_done, tosses_needed]
-	if _tosses_done >= tosses_needed:
+	_progress_label.text = CATCH_FORMAT % [_tosses_done, _tosses_needed]
+	if _tosses_done >= _tosses_needed:
 		_state = TossState.RESTING
 		_update_food(0.0)
 		_complete(DONE_TEXT)
@@ -148,7 +149,7 @@ func _drop() -> void:
 	_register_miss()
 	_state = TossState.RESTING
 	_update_food(0.0)
-	_progress_label.text = DROP_FORMAT % [_tosses_done, tosses_needed]
+	_progress_label.text = DROP_FORMAT % [_tosses_done, _tosses_needed]
 
 
 ## t: 0 = 팬에서 출발, 0.5 = 가장 높은 곳, 1 = 팬에 도착

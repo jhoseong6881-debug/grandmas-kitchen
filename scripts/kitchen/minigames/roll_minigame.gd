@@ -10,8 +10,6 @@ extends Minigame
 
 enum Phase { POUR_READY, POURING, ROLLING, MOVING }
 
-## 재료 이름 + 동작 이름 (예: "계란 말기")
-const TITLE_FORMAT: String = "%s %s"
 const LAYER_FORMAT: String = "%d / %d겹 · %s"
 const POUR_STEP_TEXT: String = "붓기"
 const ROLL_STEP_TEXT: String = "말기"
@@ -23,7 +21,6 @@ const ROLL_EARLY_TEXT: String = "아직이에요. 끝까지 굴러가면 눌러�
 const ROLL_GOOD_TEXT: String = "착! 한 겹 말았어요"
 const ROLL_LATE_TEXT: String = "앗, 조금 늦었어요. 그래도 말았어요"
 const DONE_TEXT: String = "돌돌 예쁘게 말았어요!"
-const FALLBACK_INGREDIENT_NAME: String = "계란"
 
 ## 말아야 하는 겹 수
 @export var layers_needed: int = 3
@@ -51,6 +48,10 @@ const FALLBACK_INGREDIENT_NAME: String = "계란"
 @export var bounce_scale: float = 1.08
 @export var bounce_duration: float = 0.1
 
+## 이번 단계의 겹 수, 붓는 빠르기, 굴러가는 시간 (요리 단계에서 정한 값, 없으면 위의 기본값)
+var _layers_needed: int = 0
+var _pour_speed: float = 0.6
+var _roll_duration: float = 1.2
 var _phase: Phase = Phase.POUR_READY
 var _layers_done: int = 0
 ## 지금 겹에서 부은 양 (0 = 없음, 1 = 팬 빈자리 끝까지)
@@ -68,12 +69,12 @@ var _roll_width: float = 36.0
 
 
 func _on_start(recipe: Recipe) -> void:
+	_layers_needed = _step_count(layers_needed)
+	_pour_speed = pour_speed * _speed
+	_roll_duration = roll_duration / _speed
 	_layers_done = 0
 	_roll_width = roll_start_width
-	var ingredient_name: String = recipe.get_minigame_ingredient_name()
-	if ingredient_name.is_empty():
-		ingredient_name = FALLBACK_INGREDIENT_NAME
-	_title_label.text = TITLE_FORMAT % [ingredient_name, recipe.get_action_name(Recipe.MinigameType.ROLL)]
+	_title_label.text = _step_title(Recipe.MinigameType.ROLL, _default_subject(recipe))
 	_roll.position.x = 0.0
 	_start_pour()
 
@@ -83,15 +84,15 @@ func _process(delta: float) -> void:
 	if not visible or not _is_playing:
 		return
 	if _phase == Phase.POURING:
-		_pour_level = minf(_pour_level + pour_speed * delta, 1.0)
+		_pour_level = minf(_pour_level + _pour_speed * delta, 1.0)
 		_update_sheet()
 		if _pour_level >= 1.0:
 			_register_miss()
 			_finish_pour(POUR_OVER_TEXT)
 	elif _phase == Phase.ROLLING:
-		_roll_t += delta / roll_duration
+		_roll_t += delta / _roll_duration
 		_update_roll()
-		if _roll_t > 1.0 + roll_grace / roll_duration:
+		if _roll_t > 1.0 + roll_grace / _roll_duration:
 			_register_miss()
 			_finish_layer(ROLL_LATE_TEXT)
 
@@ -126,7 +127,7 @@ func _on_release() -> void:
 
 func is_in_roll_window() -> bool:
 	return _phase == Phase.ROLLING and _roll_t >= 1.0 - roll_catch_window - judge_margin \
-			and _roll_t <= 1.0 + roll_grace / roll_duration
+			and _roll_t <= 1.0 + roll_grace / _roll_duration
 
 
 # --- 붓기 ---
@@ -179,7 +180,7 @@ func _finish_layer(message: String) -> void:
 	var tween: Tween = create_tween()
 	tween.tween_property(_roll, "scale", Vector2.ONE * bounce_scale, bounce_duration)
 	tween.tween_property(_roll, "scale", Vector2.ONE, bounce_duration)
-	if _layers_done >= layers_needed:
+	if _layers_done >= _layers_needed:
 		_update_side_label(ROLL_STEP_TEXT)
 		_complete(DONE_TEXT)
 		return
@@ -219,4 +220,4 @@ func _update_roll() -> void:
 
 
 func _update_side_label(step_text: String) -> void:
-	_side_label.text = LAYER_FORMAT % [mini(_layers_done + 1, layers_needed), layers_needed, step_text]
+	_side_label.text = LAYER_FORMAT % [mini(_layers_done + 1, _layers_needed), _layers_needed, step_text]

@@ -3,13 +3,10 @@ extends Minigame
 ## 썰기 미니게임. 칼이 재료 위를 좌우로 오가고, 칼이 썰 자리(하얀 띠)에 왔을 때 누르면 한 번 썬다.
 ## 누르기 입력, 연타 방지, 완벽 표시는 공통 틀(Minigame)이 맡는다.
 
-## 재료 이름 + 동작 이름 (예: "당근 썰기")
-const TITLE_FORMAT: String = "%s %s"
 const READY_FORMAT: String = "0 / %d"
 const HIT_FORMAT: String = "탁! %d / %d"
 const MISS_FORMAT: String = "틱… 다시 한 번! %d / %d"
 const DONE_TEXT: String = "손질 끝!"
-const FALLBACK_INGREDIENT_NAME: String = "재료"
 
 @export var chops_needed: int = 8
 ## 칼이 움직이는 속도(초당 픽셀)
@@ -28,6 +25,10 @@ const FALLBACK_INGREDIENT_NAME: String = "재료"
 ## 그림이 아직 없는 재료와 조각에 쓰는 임시 색
 @export var ingredient_color: Color = Color(0.85, 0.55, 0.3)
 
+## 이번 단계의 써는 수, 칼 빠르기, 재료 색 (요리 단계에서 정한 값, 없으면 위의 기본값)
+var _chops_needed: int = 0
+var _knife_speed: float = 0.0
+var _ingredient_color: Color
 var _chop_count: int = 0
 var _ingredient_left: float = 0.0
 var _ingredient_full_width: float = 0.0
@@ -51,21 +52,21 @@ func _ready() -> void:
 
 
 func _on_start(recipe: Recipe) -> void:
+	_chops_needed = _step_count(chops_needed)
+	_knife_speed = knife_speed * _speed
+	_ingredient_color = _step_color(ingredient_color)
 	_chop_count = 0
 	for slice: Node in _slices.get_children():
 		slice.queue_free()
-	_ingredient.color = ingredient_color
+	_ingredient.color = _ingredient_color
 	_ingredient.size.x = _ingredient_full_width
 	_knife_x = _ingredient_left
 	_knife_direction = 1.0
 	_update_knife()
 	_update_target()
 	_target_zone.show()
-	var ingredient_name: String = recipe.get_minigame_ingredient_name()
-	if ingredient_name.is_empty():
-		ingredient_name = FALLBACK_INGREDIENT_NAME
-	_title_label.text = TITLE_FORMAT % [ingredient_name, recipe.get_action_name(Recipe.MinigameType.CHOP)]
-	_progress_label.text = READY_FORMAT % chops_needed
+	_title_label.text = _step_title(Recipe.MinigameType.CHOP, _default_subject(recipe))
+	_progress_label.text = READY_FORMAT % _chops_needed
 
 
 func _process(delta: float) -> void:
@@ -73,7 +74,7 @@ func _process(delta: float) -> void:
 	if not _is_playing:
 		return
 	# 칼은 재료의 처음 길이 안에서 왔다 갔다 한다.
-	_knife_x += knife_speed * _knife_direction * delta
+	_knife_x += _knife_speed * _knife_direction * delta
 	var track_right: float = _ingredient_left + _ingredient_full_width
 	if _knife_x >= track_right:
 		_knife_x = track_right
@@ -97,14 +98,14 @@ func is_knife_on_target() -> bool:
 
 func _chop() -> void:
 	_chop_count += 1
-	_ingredient.size.x = _ingredient_full_width * (1.0 - float(_chop_count) / chops_needed)
+	_ingredient.size.x = _ingredient_full_width * (1.0 - float(_chop_count) / _chops_needed)
 	var slice: ColorRect = ColorRect.new()
-	slice.color = ingredient_color
+	slice.color = _ingredient_color
 	slice.custom_minimum_size = slice_size
 	_slices.add_child(slice)
 	_bounce_board()
-	_progress_label.text = HIT_FORMAT % [_chop_count, chops_needed]
-	if _chop_count >= chops_needed:
+	_progress_label.text = HIT_FORMAT % [_chop_count, _chops_needed]
+	if _chop_count >= _chops_needed:
 		_target_zone.hide()
 		_complete(DONE_TEXT)
 	else:
@@ -113,7 +114,7 @@ func _chop() -> void:
 
 func _miss() -> void:
 	_register_miss()
-	_progress_label.text = MISS_FORMAT % [_chop_count, chops_needed]
+	_progress_label.text = MISS_FORMAT % [_chop_count, _chops_needed]
 	_knife.rotation = miss_wobble_angle
 	var tween: Tween = create_tween()
 	tween.tween_property(_knife, "rotation", 0.0, miss_wobble_duration)
@@ -121,7 +122,7 @@ func _miss() -> void:
 
 ## 썰 자리는 지금 남은 재료의 오른쪽 끝, 한 조각 두께만큼 안쪽에 둔다.
 func _update_target() -> void:
-	var slice_width: float = _ingredient_full_width / chops_needed
+	var slice_width: float = _ingredient_full_width / _chops_needed
 	_target_center = _ingredient_left + _ingredient.size.x - slice_width / 2.0
 	_target_zone.position.x = _target_center - target_width / 2.0
 	_target_zone.size.x = target_width

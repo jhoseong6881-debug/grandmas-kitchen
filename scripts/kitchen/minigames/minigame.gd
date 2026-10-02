@@ -6,6 +6,7 @@ extends Control
 ## 시간 제한과 실패는 없다. 빗나가도 벌칙 없이 다시 하면 된다.
 ##
 ## 물려받는 미니게임 씬에는 %TitleLabel, %ProgressLabel, %PerfectStreakLabel, %PerfectStamp 노드가 있어야 한다.
+## 요리 단계(CookStep)의 횟수와 빠르기, 제목은 _step_count(), _speed, _step_title() 로 읽는다.
 ## 물려받는 스크립트가 채우는 함수:
 ##   _on_start(recipe)  : 미니게임을 처음 상태로 준비한다.
 ##   _on_press()        : 누를 때마다 불린다. 맞으면 진행하고, 빗나가면 _register_miss() 를 부른다.
@@ -14,6 +15,11 @@ extends Control
 
 ## is_perfect: 한 번도 빗나가지 않았으면 true
 signal finished(is_perfect: bool)
+
+## 미니게임 제목: 이름 + 동작 (예: "당근 채썰기")
+const STEP_TITLE_FORMAT: String = "%s %s"
+## 레시피에 재료가 하나도 없을 때 제목에 쓰는 이름
+const FALLBACK_SUBJECT: String = "재료"
 
 ## 한 번 누른 뒤 다음 입력을 받기까지 쉬는 시간(초). 마구 눌러 통과하는 것을 막는다.
 @export var press_cooldown: float = 0.15
@@ -34,6 +40,10 @@ signal finished(is_perfect: bool)
 @export var go_duration: float = 0.5
 
 var _miss_count: int = 0
+## 지금 하는 요리 단계. 없으면 null (기본값으로 한다).
+var _step: CookStep
+## 요리 단계의 빠르기 배율 (1 = 보통)
+var _speed: float = 1.0
 var _is_playing: bool = false
 var _cooldown_left: float = 0.0
 
@@ -53,7 +63,9 @@ func _ready() -> void:
 	hide()
 
 
-func start(recipe: Recipe) -> void:
+func start(recipe: Recipe, step: CookStep = null) -> void:
+	_step = step
+	_speed = step.speed if step != null and step.speed > 0.0 else 1.0
 	_miss_count = 0
 	_is_playing = false
 	_cooldown_left = 0.0
@@ -113,6 +125,43 @@ func _on_release() -> void:
 
 
 # --- 물려받는 스크립트가 부르는 함수 ---
+
+## 요리 단계에 이름도 재료도 없을 때 쓰는 이름: 레시피에서 정한 이름 → 첫 번째 재료 이름 → "재료"
+func _default_subject(recipe: Recipe) -> String:
+	var subject: String = recipe.get_minigame_ingredient_name()
+	return subject if not subject.is_empty() else FALLBACK_SUBJECT
+
+
+## 요리 단계에서 정한 횟수. 정하지 않았으면 default_count.
+func _step_count(default_count: int) -> int:
+	return _step.count if _step != null and _step.count > 0 else default_count
+
+
+## 요리 단계에서 정한 동작 이름. 정하지 않았으면 미니게임 기본 이름 (썰기, 볶기 …).
+func _step_action(minigame_type: Recipe.MinigameType) -> String:
+	if _step != null and not _step.action_name.is_empty():
+		return _step.action_name
+	return Recipe.get_default_action_name(minigame_type)
+
+
+## "당근 채썰기" 같은 제목. 이름은 단계의 이름 → 단계의 재료 → default_subject 순서로 고른다.
+func _step_title(minigame_type: Recipe.MinigameType, default_subject: String) -> String:
+	var subject: String = default_subject
+	if _step != null and not _step.subject_name.is_empty():
+		subject = _step.subject_name
+	elif _step != null and _step.ingredient != null:
+		subject = _step.ingredient.display_name
+	return STEP_TITLE_FORMAT % [subject, _step_action(minigame_type)]
+
+
+## 그림이 없을 때 쓰는 재료 색. 단계의 임시 색 → 단계 재료의 색 → default_color 순서로 고른다.
+func _step_color(default_color: Color) -> Color:
+	if _step != null and _step.placeholder_color.a > 0.0:
+		return _step.placeholder_color
+	if _step != null and _step.ingredient != null:
+		return _step.ingredient.placeholder_color
+	return default_color
+
 
 func _register_miss() -> void:
 	_miss_count += 1

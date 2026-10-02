@@ -6,7 +6,7 @@ extends Resource
 ## 세이브와 .tres 에는 번호로 저장되니, 새 종류는 맨 뒤에만 붙인다.
 enum MinigameType { CHOP, STIR_FRY, PLATE, PAN_FRY, ROLL, COOK_RICE, MIX, SIMMER }
 
-## 미니게임 화면 제목에 쓰는 기본 동작 이름. 레시피의 ○○ Action Name 칸이 비어 있으면 이걸 쓴다.
+## 미니게임 화면 제목에 쓰는 기본 동작 이름. 요리 단계(CookStep)에 동작 이름이 비어 있으면 이걸 쓴다.
 const DEFAULT_ACTION_NAMES: Dictionary[MinigameType, String] = {
 	MinigameType.CHOP: "썰기",
 	MinigameType.STIR_FRY: "볶기",
@@ -24,20 +24,12 @@ const DEFAULT_ACTION_NAMES: Dictionary[MinigameType, String] = {
 @export var display_name: String = ""
 ## 필요한 재료. 같은 재료가 2개 필요하면 두 번 넣는다.
 @export var ingredients: Array[Ingredient] = []
-## 미니게임을 진행하는 순서 (예: 썰기 → 볶기 → 담기)
-@export var minigame_steps: Array[MinigameType] = []
-## 썰기/볶기/부치기 화면 제목에 쓰는 재료 이름 (예: "도토리묵" → "도토리묵 썰기").
+## 요리 단계를 차례대로. 단계마다 미니게임 종류, 재료, 횟수, 빠르기를 정한다.
+## (예: 밥 짓기 → 당근 채썰기 12번 빠르게 → 당근 볶기 3번 → 김밥 썰기 8번 → 담기 2그릇)
+@export var cook_steps: Array[CookStep] = []
+## 요리 단계에 이름도 재료도 없을 때 미니게임 제목에 쓰는 이름 (예: "도토리묵" → "도토리묵 썰기").
 ## 비워 두면 첫 번째 재료 이름을 쓴다.
 @export var minigame_ingredient_name: String = ""
-## 미니게임 화면 제목에 쓰는 동작 이름 (예: 볶기 대신 "부치기" → "당근 부치기"). 비워 두면 기본 이름을 쓴다.
-@export var chop_action_name: String = ""
-@export var stir_fry_action_name: String = ""
-@export var plate_action_name: String = ""
-@export var pan_fry_action_name: String = ""
-@export var roll_action_name: String = ""
-@export var cook_rice_action_name: String = ""
-@export var mix_action_name: String = ""
-@export var simmer_action_name: String = ""
 ## 완성된 요리 그림. 비워 두면 임시 도형으로 표시한다.
 @export var finished_image: Texture2D
 ## 버무리기 미니게임에서 묻히는 양념 (data/coatings/). 버무리기가 없는 레시피는 비워 둔다.
@@ -58,20 +50,8 @@ func get_minigame_ingredient_name() -> String:
 	return ""
 
 
-## 미니게임 화면 제목에 쓸 동작 이름. 이 레시피에 정해 둔 이름이 없으면 기본 이름(썰기/볶기/담기).
-func get_action_name(minigame_type: MinigameType) -> String:
-	var custom_names: Dictionary[MinigameType, String] = {
-		MinigameType.CHOP: chop_action_name,
-		MinigameType.STIR_FRY: stir_fry_action_name,
-		MinigameType.PLATE: plate_action_name,
-		MinigameType.PAN_FRY: pan_fry_action_name,
-		MinigameType.ROLL: roll_action_name,
-		MinigameType.COOK_RICE: cook_rice_action_name,
-		MinigameType.MIX: mix_action_name,
-		MinigameType.SIMMER: simmer_action_name,
-	}
-	if not custom_names[minigame_type].is_empty():
-		return custom_names[minigame_type]
+## 미니게임 종류의 기본 동작 이름 (썰기, 볶기, 담기 …)
+static func get_default_action_name(minigame_type: MinigameType) -> String:
 	return DEFAULT_ACTION_NAMES[minigame_type]
 
 

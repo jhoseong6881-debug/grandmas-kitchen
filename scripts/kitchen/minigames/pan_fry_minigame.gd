@@ -8,8 +8,6 @@ extends Minigame
 
 enum JeonState { COOKING, MOVING }
 
-## 재료 이름 + 동작 이름 (예: "버섯 부치기")
-const TITLE_FORMAT: String = "%s %s"
 const SIDE_FORMAT: String = "전 %d / %d · %s"
 const READY_TEXT: String = "전이 금색으로 노릇해지면 눌러요"
 const FRONT_SIDE_TEXT: String = "앞면"
@@ -19,7 +17,6 @@ const LIFT_TEXT: String = "노릇노릇! 접시에 담았어요"
 const EARLY_TEXT: String = "아직 덜 익었어요. 조금 더 기다려요"
 const LATE_TEXT: String = "앗, 조금 진하게 익었어요"
 const DONE_TEXT: String = "노릇노릇 다 부쳤어요!"
-const FALLBACK_INGREDIENT_NAME: String = "전"
 ## 한 장을 다 부치려면 앞면, 뒷면 두 번 눌러야 한다.
 const SIDES_PER_JEON: int = 2
 
@@ -48,6 +45,9 @@ const SIDES_PER_JEON: int = 2
 @export var lift_end_scale: float = 0.2
 @export var next_jeon_delay: float = 0.3
 
+## 이번 단계의 전 장수와 한 면 익는 시간 (요리 단계에서 정한 값, 없으면 위의 기본값)
+var _jeon_count: int = 0
+var _cook_duration: float = 2.4
 var _state: JeonState = JeonState.COOKING
 ## 지금 익히는 면의 익은 정도. 0 = 날것, 1 = 완전히 갈색.
 var _doneness: float = 0.0
@@ -77,14 +77,13 @@ func _ready() -> void:
 
 
 func _on_start(recipe: Recipe) -> void:
+	_jeon_count = _step_count(jeon_count)
+	_cook_duration = cook_duration / _speed
 	_jeons_done = 0
 	for child: Node in _done_row.get_children():
 		child.queue_free()
 	_layout_doneness_bar()
-	var ingredient_name: String = recipe.get_minigame_ingredient_name()
-	if ingredient_name.is_empty():
-		ingredient_name = FALLBACK_INGREDIENT_NAME
-	_title_label.text = TITLE_FORMAT % [ingredient_name, recipe.get_action_name(Recipe.MinigameType.PAN_FRY)]
+	_title_label.text = _step_title(Recipe.MinigameType.PAN_FRY, _default_subject(recipe))
 	_progress_label.text = READY_TEXT
 	_place_new_jeon()
 
@@ -131,9 +130,9 @@ func _place_new_jeon() -> void:
 func _start_side() -> void:
 	_state = JeonState.COOKING
 	_doneness = 0.0
-	_side_duration = cook_duration * (1.0 + randf_range(-cook_duration_variance, cook_duration_variance))
+	_side_duration = _cook_duration * (1.0 + randf_range(-cook_duration_variance, cook_duration_variance))
 	_update_jeon_look()
-	_side_label.text = SIDE_FORMAT % [_jeons_done + 1, jeon_count,
+	_side_label.text = SIDE_FORMAT % [_jeons_done + 1, _jeon_count,
 			FRONT_SIDE_TEXT if _sides_done == 0 else BACK_SIDE_TEXT]
 
 
@@ -182,7 +181,7 @@ func _on_jeon_lifted(finished_color: Color) -> void:
 	done_jeon.show()
 	_done_row.add_child(done_jeon)
 	_jeons_done += 1
-	if _jeons_done >= jeon_count:
+	if _jeons_done >= _jeon_count:
 		_complete(DONE_TEXT)
 		return
 	# 두 번째 값 false: 일시 정지 중에는 이 기다림도 멈춘다.

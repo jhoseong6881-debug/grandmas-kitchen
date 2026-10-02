@@ -3,11 +3,41 @@
 [ext_resource type="Script" uid="uid://jdo3q781e21o" path="res://scripts/data/ingredient.gd" id="1_o7sd4"]
 [ext_resource type="Resource" uid="uid://cbhyfvk1vplmf" path="res://data/ingredients/carrot.tres" id="2_0ar3d"]
 [ext_resource type="Script" uid="uid://fbx0a77slaix" path="res://scripts/data/recipe.gd" id="2_ae6f3"]
+[ext_resource type="Script" path="res://scripts/data/cook_step.gd" id="13_cook_step"]
+
+[sub_resource type="Resource" id="CookStep_1"]
+script = ExtResource("13_cook_step")
+type = 5
+
+[sub_resource type="Resource" id="CookStep_2"]
+script = ExtResource("13_cook_step")
+ingredient = ExtResource("2_0ar3d")
+action_name = "채썰기"
+count = 12
+speed = 1.3
+
+[sub_resource type="Resource" id="CookStep_3"]
+script = ExtResource("13_cook_step")
+type = 1
+ingredient = ExtResource("2_0ar3d")
+count = 3
+
+[sub_resource type="Resource" id="CookStep_4"]
+script = ExtResource("13_cook_step")
+subject_name = "김밥"
+count = 8
+speed = 0.9
+placeholder_color = Color(0.18, 0.26, 0.16, 1)
+
+[sub_resource type="Resource" id="CookStep_5"]
+script = ExtResource("13_cook_step")
+type = 2
+count = 2
 
 [resource]
 script = ExtResource("2_ae6f3")
 id = &"carrot_kimbop"
 display_name = "할머니표 당근 김밥"
 ingredients = Array[ExtResource("1_o7sd4")]([ExtResource("2_0ar3d")])
-minigame_steps = Array[int]([5, 0, 1, 2])
+cook_steps = Array[ExtResource("13_cook_step")]([SubResource("CookStep_1"), SubResource("CookStep_2"), SubResource("CookStep_3"), SubResource("CookStep_4"), SubResource("CookStep_5")])
 metadata/_custom_type_script = "uid://fbx0a77slaix"

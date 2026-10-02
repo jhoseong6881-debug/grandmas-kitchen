@@ -5,10 +5,29 @@
 [ext_resource type="Resource" path="res://data/ingredients/carrot.tres" id="3_carrot"]
 [ext_resource type="Resource" path="res://data/ingredients/acorn.tres" id="4_acorn"]
 [ext_resource type="Resource" path="res://data/ingredients/egg.tres" id="5_egg"]
+[ext_resource type="Script" path="res://scripts/data/cook_step.gd" id="15_cook_step"]
+
+[sub_resource type="Resource" id="CookStep_1"]
+script = ExtResource("15_cook_step")
+ingredient = ExtResource("3_carrot")
+action_name = "다지기"
+count = 14
+speed = 1.4
+
+[sub_resource type="Resource" id="CookStep_2"]
+script = ExtResource("15_cook_step")
+type = 3
+subject_name = "당근 도토리전"
+count = 3
+
+[sub_resource type="Resource" id="CookStep_3"]
+script = ExtResource("15_cook_step")
+type = 2
+count = 1
 
 [resource]
 script = ExtResource("1_recipe")
 id = &"carrot_acorn_jeon"
 display_name = "할머니표 당근 도토리전"
 ingredients = Array[ExtResource("2_ingredient")]([ExtResource("3_carrot"), ExtResource("4_acorn"), ExtResource("5_egg")])
-minigame_steps = Array[int]([0, 3, 2])
+cook_steps = Array[ExtResource("15_cook_step")]([SubResource("CookStep_1"), SubResource("CookStep_2"), SubResource("CookStep_3")])

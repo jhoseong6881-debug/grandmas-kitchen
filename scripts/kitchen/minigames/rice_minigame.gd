@@ -69,6 +69,9 @@ const COOK_HINT_TEXT: String = "꾹 누르면 불이 세지고, 떼면 약해져
 @export var lid_rattle_height: float = 8.0
 @export var lid_rattle_speed: float = 40.0
 
+## 이번 단계의 씻는 수와 손이 한 바퀴 도는 시간 (요리 단계에서 정한 값, 없으면 위의 기본값)
+var _washes_needed: int = 0
+var _wash_orbit_duration: float = 1.6
 var _phase: Phase = Phase.WASHING
 var _washes_done: int = 0
 var _hand_angle: float = 0.0
@@ -111,7 +114,9 @@ func _ready() -> void:
 
 
 func _on_start(recipe: Recipe) -> void:
-	_cook_title = recipe.get_action_name(Recipe.MinigameType.COOK_RICE)
+	_washes_needed = _step_count(washes_needed)
+	_wash_orbit_duration = wash_orbit_duration / _speed
+	_cook_title = _step_action(Recipe.MinigameType.COOK_RICE)
 	_start_washing()
 
 
@@ -128,7 +133,7 @@ func _start_washing() -> void:
 	_hand_angle = _target_angle + PI
 	_update_hand()
 	_title_label.text = WASH_TITLE
-	_side_label.text = WASH_STEP_FORMAT % [_washes_done, washes_needed]
+	_side_label.text = WASH_STEP_FORMAT % [_washes_done, _washes_needed]
 	_progress_label.text = WASH_READY_TEXT
 	_hint_label.text = WASH_HINT_TEXT
 
@@ -154,13 +159,13 @@ func is_hand_on_spot() -> bool:
 
 func _wash() -> void:
 	_washes_done += 1
-	_water.self_modulate = murky_color.lerp(clear_color, float(_washes_done) / washes_needed)
-	_side_label.text = WASH_STEP_FORMAT % [_washes_done, washes_needed]
-	_progress_label.text = WASH_HIT_FORMAT % [_washes_done, washes_needed]
+	_water.self_modulate = murky_color.lerp(clear_color, float(_washes_done) / _washes_needed)
+	_side_label.text = WASH_STEP_FORMAT % [_washes_done, _washes_needed]
+	_progress_label.text = WASH_HIT_FORMAT % [_washes_done, _washes_needed]
 	var tween: Tween = create_tween()
 	tween.tween_property(_rice_layer, "rotation", rub_jiggle_angle, rub_duration)
 	tween.tween_property(_rice_layer, "rotation", 0.0, rub_duration)
-	if _washes_done >= washes_needed:
+	if _washes_done >= _washes_needed:
 		_phase = Phase.MOVING
 		_wash_spot.hide()
 		_progress_label.text = WASHED_TEXT
@@ -247,7 +252,7 @@ func _process(delta: float) -> void:
 	if not visible or not _is_playing:
 		return
 	if _phase == Phase.WASHING:
-		_hand_angle = wrapf(_hand_angle + TAU * delta / wash_orbit_duration, 0.0, TAU)
+		_hand_angle = wrapf(_hand_angle + TAU * delta / _wash_orbit_duration, 0.0, TAU)
 		_update_hand()
 	elif _phase == Phase.COOKING:
 		_cook(delta)
@@ -259,7 +264,7 @@ func _on_press() -> void:
 			_wash()
 		else:
 			_register_miss()
-			_progress_label.text = WASH_MISS_FORMAT % [_washes_done, washes_needed]
+			_progress_label.text = WASH_MISS_FORMAT % [_washes_done, _washes_needed]
 	elif _phase == Phase.COOKING:
 		_is_holding = true
 
