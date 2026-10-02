@@ -2,15 +2,16 @@ extends PanelContainer
 ## 가진 재료 목록 패널. GameState 의 inventory_changed 시그널을 듣고 스스로 다시 그린다.
 ## 재료 이름과 그림은 GameData 에서 가져온다.
 
-const ROW_TEXT_FORMAT: String = "%s  × %d"
+const ROW_TEXT_FORMAT: String = "%s ×%d"
 const EMPTY_TEXT: String = "아직 재료가 없어요"
 
-@export var icon_size: Vector2 = Vector2(48, 48)
+@export var icon_size: Vector2 = Vector2(36, 36)
 ## data/ 에 없는 재료(알 수 없는 id)에 쓰는 임시 사각형 색
 @export var unknown_icon_color: Color = Color(0.5, 0.5, 0.5)
 @export var row_font_size: int = 24
 
-@onready var _item_rows: VBoxContainer = %ItemRows
+## 재료를 두 칸씩 나란히 놓는다 (칸 수는 inventory_panel.tscn 의 ItemRows > Columns).
+@onready var _item_rows: GridContainer = %ItemRows
 
 
 func _ready() -> void:
