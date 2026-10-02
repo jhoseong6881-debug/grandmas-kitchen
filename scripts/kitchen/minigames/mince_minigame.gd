@@ -71,10 +71,16 @@ func _ready() -> void:
 	_knife_home_y = _knife.position.y
 
 
+func _get_minigame_type() -> Recipe.MinigameType:
+	return Recipe.MinigameType.MINCE
+
+
 func _on_start(recipe: Recipe) -> void:
 	_stages_needed = _step_count(stages_needed)
-	_target_min = target_rate_min * _speed
-	_target_max = target_rate_max * _speed
+	var center: float = (target_rate_min + target_rate_max) / 2.0 * _speed
+	var half: float = (target_rate_max - target_rate_min) / 2.0 * _speed * _window_scale
+	_target_min = center - half
+	_target_max = center + half
 	_ingredient_color = _step_color(ingredient_color)
 	_press_times.clear()
 	_time = 0.0

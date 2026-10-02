@@ -267,9 +267,23 @@ func record_grandma_taste(recipe_id: StringName) -> void:
 
 # --- 소문 ---
 
-## 가게 단계 (0 = 첫 단계)
+## 가게 단계 번호 (0 = 첫 단계)
 func get_shop_tier() -> int:
 	return GameData.get_reputation_settings().get_shop_tier(reputation)
+
+
+## 지금 가게 단계 (단계 데이터가 없으면 null)
+func get_shop_level() -> ShopLevel:
+	return GameData.get_reputation_settings().get_shop_level(get_shop_tier())
+
+
+## 지금까지 생긴 조리도구 중 이 미니게임에 쓰이는 것들
+func get_shop_tools_for(minigame_type: Recipe.MinigameType) -> Array[ShopTool]:
+	var tools: Array[ShopTool] = []
+	for tool: ShopTool in GameData.get_reputation_settings().get_tools(get_shop_tier()):
+		if minigame_type in tool.minigame_types:
+			tools.append(tool)
+	return tools
 
 
 ## 소문을 더한다. 가게 단계가 오르면 새 단계를, 그대로면 -1 을 돌려준다.

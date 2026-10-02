@@ -78,8 +78,12 @@ func _ready() -> void:
 	_beat_ring.pivot_offset = _beat_ring.size / 2.0
 
 
+func _get_minigame_type() -> Recipe.MinigameType:
+	return Recipe.MinigameType.SIMMER
+
+
 func _on_start(recipe: Recipe) -> void:
-	_stirs_needed = _step_count(stirs_needed)
+	_stirs_needed = maxi(roundi(_step_count(stirs_needed) * _duration_scale), 1)
 	_beat_interval = beat_interval / _speed
 	_time = 0.0
 	_beat_time = lead_in + _beat_interval

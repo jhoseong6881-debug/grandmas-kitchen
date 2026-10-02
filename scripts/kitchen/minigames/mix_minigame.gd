@@ -52,6 +52,10 @@ func _ready() -> void:
 	_piece_template.hide()
 
 
+func _get_minigame_type() -> Recipe.MinigameType:
+	return Recipe.MinigameType.MIX
+
+
 func _on_start(recipe: Recipe) -> void:
 	_piece_count = _step_count(piece_count)
 	_sweep_duration = sweep_duration / _speed

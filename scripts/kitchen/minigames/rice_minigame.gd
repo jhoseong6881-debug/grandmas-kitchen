@@ -71,6 +71,8 @@ const COOK_HINT_TEXT: String = "꾹 누르면 불이 세지고, 떼면 약해져
 
 ## 이번 단계의 씻는 수와 손이 한 바퀴 도는 시간 (요리 단계에서 정한 값, 없으면 위의 기본값)
 var _washes_needed: int = 0
+## 이번에 밥이 다 되기까지 금색 칸에서 보내야 하는 시간 (무쇠솥이 있으면 짧아진다)
+var _cook_time_needed: float = 4.0
 var _wash_orbit_duration: float = 1.6
 var _phase: Phase = Phase.WASHING
 var _washes_done: int = 0
@@ -113,8 +115,13 @@ func _ready() -> void:
 	_flame.pivot_offset = Vector2(_flame.size.x / 2.0, _flame.size.y)
 
 
+func _get_minigame_type() -> Recipe.MinigameType:
+	return Recipe.MinigameType.COOK_RICE
+
+
 func _on_start(recipe: Recipe) -> void:
 	_washes_needed = _step_count(washes_needed)
+	_cook_time_needed = cook_time_needed * _duration_scale
 	_wash_orbit_duration = wash_orbit_duration / _speed
 	_cook_title = _step_action(Recipe.MinigameType.COOK_RICE)
 	_start_washing()
@@ -223,7 +230,7 @@ func _cook(delta: float) -> void:
 			_register_miss()
 		_progress_label.text = [HEAT_LOW_TEXT, HEAT_GOOD_TEXT, HEAT_HIGH_TEXT][new_state]
 	if _heat_state == Heat.GOOD:
-		_cook_progress = minf(_cook_progress + delta / cook_time_needed, 1.0)
+		_cook_progress = minf(_cook_progress + delta / _cook_time_needed, 1.0)
 	_update_fire(delta)
 	if _cook_progress >= 1.0:
 		_phase = Phase.MOVING

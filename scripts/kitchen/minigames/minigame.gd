@@ -4,12 +4,14 @@ extends Control
 ## 공통으로 맡는 일: 시작 전 "준비~ 시작!" 보여 주기(그동안 입력은 무시), 누르기/손 떼기 입력(클릭, 스페이스/Enter,
 ## 게임패드 A) 감지, 연타 방지, 빗나간 횟수 세기, "완벽 도전 중" 표시, 완벽 도장, 끝나면 finished 시그널 보내기,
 ## 할머니 비법(요리 단계의 비법 자리) 확인과 "할머니 손맛" 도장, 비법을 알면 비법 한 줄 보여 주기,
-## 손님의 오늘의 부탁(GuestRequest) 보여 주기와 들어줬는지 확인하기.
+## 손님의 오늘의 부탁(GuestRequest) 보여 주기와 들어줬는지 확인하기,
+## 가게가 커지면 생기는 조리도구(ShopTool) 찾기와 보여 주기 (효과는 _window_scale, _duration_scale 로 각 미니게임이 쓴다).
 ## 시간 제한과 실패는 없다. 빗나가도 벌칙 없이 다시 하면 된다.
 ##
 ## 물려받는 미니게임 씬에는 %TitleLabel, %ProgressLabel, %PerfectStreakLabel, %PerfectStamp 노드가 있어야 한다.
 ## 요리 단계(CookStep)의 횟수와 빠르기, 제목은 _step_count(), _speed, _step_title() 로 읽는다.
 ## 물려받는 스크립트가 채우는 함수:
+##   _get_minigame_type() : 이 미니게임의 종류 (조리도구를 찾을 때 쓴다)
 ##   _on_start(recipe)  : 미니게임을 처음 상태로 준비한다.
 ##   _on_press()        : 누를 때마다 불린다. 맞으면 진행하고, 빗나가면 _register_miss() 를 부른다.
 ##   _on_release()      : 손을 뗄 때마다 불린다. 꾹 누르는 미니게임에서 쓴다. (필요 없으면 안 채워도 된다)
@@ -28,6 +30,8 @@ const FALLBACK_SUBJECT: String = "재료"
 const SECRET_HINT_FORMAT: String = "★ 할머니 비법: %s"
 const REQUEST_GUIDE_FORMAT: String = "♪ 오늘의 부탁: %s"
 const REQUEST_DONE_TEXT: String = "   ♪ 부탁대로 했어요!"
+const TOOL_FORMAT: String = "도구: %s (%s)"
+const TOOL_SEPARATOR: String = " · "
 ## 금색 칸 안에 그리는 표시의 이름 (지울 때 찾는 데 쓴다)
 const SECRET_ZONE_NAME: String = "SecretZone"
 const REQUEST_ZONE_NAME: String = "RequestZone"
@@ -55,8 +59,10 @@ const REQUEST_ZONE_NAME: String = "RequestZone"
 @export var secret_zone_color: Color = Color(0.95, 0.55, 0.1, 0.9)
 ## 부탁 자리 표시 색
 @export var request_zone_color: Color = Color(0.35, 0.78, 0.95, 0.9)
-## 부탁 한 줄이 비법 한 줄 아래로 떨어진 거리(픽셀)
+## 부탁 한 줄이 비법 한 줄 아래로 떨어진 거리(픽셀). 도구 한 줄은 그 아래로 한 번 더.
 @export var request_guide_gap: float = 48.0
+## 도구 한 줄 색
+@export var tool_text_color: Color = Color(0.6, 0.9, 0.55)
 ## 비법 한 줄이 보이는 자리와 글자 크기
 @export var secret_hint_rect: Rect2 = Rect2(60, 240, 900, 48)
 @export var secret_hint_font_size: int = 24
@@ -74,6 +80,9 @@ var _secret_hit_count: int = 0
 ## 이번 단계에 걸린 오늘의 부탁 (없으면 null)과, 부탁 자리에서 맞힌 수
 var _request: GuestRequest
 var _request_hit_count: int = 0
+## 가게 조리도구 효과: 맞는 칸 넓이 배율, 끝나기까지 시간/횟수 배율 (1 = 그대로)
+var _window_scale: float = 1.0
+var _duration_scale: float = 1.0
 ## 오늘의 부탁 때문에 원래와 다른 미니게임으로 하는 중이면 true (단계의 횟수, 빠르기, 비법을 쓰지 않는다)
 var _is_converted: bool = false
 ## 처음 보여 줄 완벽 도장 글 (할머니 손맛 도장을 썼다가 되돌릴 때 쓴다)
@@ -89,6 +98,8 @@ var _perfect_stamp_text: String = ""
 @onready var _secret_hint_label: Label = _perfect_streak_label.duplicate()
 ## "♪ 오늘의 부탁: …" 한 줄
 @onready var _request_label: Label = _perfect_streak_label.duplicate()
+## "도구: 넓은 도마 (…)" 한 줄
+@onready var _tool_label: Label = _perfect_streak_label.duplicate()
 
 
 func _ready() -> void:
@@ -110,6 +121,13 @@ func _ready() -> void:
 	_request_label.add_theme_font_size_override("font_size", secret_hint_font_size)
 	_request_label.add_theme_color_override("font_color", request_zone_color)
 	_request_label.hide()
+	add_child(_tool_label)
+	_tool_label.position = secret_hint_rect.position + Vector2(0.0, request_guide_gap * 2.0)
+	_tool_label.size = secret_hint_rect.size
+	_tool_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	_tool_label.add_theme_font_size_override("font_size", secret_hint_font_size)
+	_tool_label.add_theme_color_override("font_color", tool_text_color)
+	_tool_label.hide()
 	hide()
 
 
@@ -120,6 +138,7 @@ func start(recipe: Recipe, step: CookStep = null, request: GuestRequest = null) 
 	_speed = step.speed if step != null and step.speed > 0.0 and not _is_converted else 1.0
 	if request != null:
 		_speed *= request.speed_multiplier
+	_apply_shop_tools()
 	_miss_count = 0
 	_hit_count = 0
 	_secret_hit_count = 0
@@ -180,7 +199,24 @@ func _gui_input(event: InputEvent) -> void:
 		_on_release()
 
 
+## 가게 조리도구 중 이 미니게임에 쓰이는 것을 찾아 효과를 정하고, 도구 한 줄을 만든다.
+func _apply_shop_tools() -> void:
+	_window_scale = 1.0
+	_duration_scale = 1.0
+	var names: PackedStringArray = []
+	for tool: ShopTool in GameState.get_shop_tools_for(_get_minigame_type()):
+		_window_scale *= tool.window_scale
+		_duration_scale *= tool.duration_scale
+		names.append(TOOL_FORMAT % [tool.display_name, tool.effect_text])
+	_tool_label.text = TOOL_SEPARATOR.join(names)
+	_tool_label.visible = not names.is_empty()
+
+
 # --- 물려받는 스크립트가 채우는 함수 ---
+
+func _get_minigame_type() -> Recipe.MinigameType:
+	return Recipe.MinigameType.CHOP
+
 
 func _on_start(_recipe: Recipe) -> void:
 	pass

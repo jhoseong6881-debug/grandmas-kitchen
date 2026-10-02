@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ShopTool" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/shop_tool.gd" id="1_tool"]
+
+[resource]
+script = ExtResource("1_tool")
+id = &"iron_pot"
+display_name = "할머니의 무쇠솥"
+effect_text = "더 빨리 끝나요"
+minigame_types = Array[int]([5, 7])
+duration_scale = 0.7

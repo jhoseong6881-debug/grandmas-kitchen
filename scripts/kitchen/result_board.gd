@@ -21,6 +21,7 @@ const STAR_EMPTY: String = "☆"
 const GAUGE_FORMAT: String = "%s   %d / %d   다음: %s"
 const GAUGE_MAX_FORMAT: String = "%s   소문 %d"
 const SHOP_UP_FORMAT: String = "가게 이름이 바뀌었어요!  「%s」"
+const SHOP_UNLOCK_FORMAT: String = "\n%s"
 
 ## 줄이 하나씩 나타나는 간격(초)과 나타나는 시간(초)
 @export var line_interval: float = 0.35
@@ -77,7 +78,7 @@ func open(report: LunchReport) -> void:
 	_new_shop_tier = GameState.add_reputation(report.reputation)
 	_final_reputation_points = report.reputation
 	var tier: int = GameState.get_shop_tier()
-	var low: int = settings.shop_thresholds[tier] if tier < settings.shop_thresholds.size() else 0
+	var low: int = maxi(settings.get_threshold(tier), 0)
 	var high: int = settings.get_next_threshold(tier)
 	if high > low:
 		_gauge_from = clampf(float(before - low) / (high - low), 0.0, 1.0)
@@ -90,6 +91,9 @@ func open(report: LunchReport) -> void:
 		_gauge_label.text = GAUGE_MAX_FORMAT % [settings.get_shop_name(tier), GameState.reputation]
 	if _new_shop_tier >= 0:
 		_shop_up_label.text = SHOP_UP_FORMAT % settings.get_shop_name(_new_shop_tier)
+		var level: ShopLevel = settings.get_shop_level(_new_shop_tier)
+		if level != null and not level.unlock_text.is_empty():
+			_shop_up_label.text += SHOP_UNLOCK_FORMAT % level.unlock_text
 	show()
 	_reveal()
 

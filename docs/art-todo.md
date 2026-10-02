@@ -75,3 +75,7 @@
 | data/keepsakes/*.tres (Icon) | 할머니 기념품 5개: 꽃무늬 손수건, 계란 바구니, 도토리 팽이, 꿀단지, 버섯 바구니 | 128x128 | 할 일 |
 | scenes/kitchen/minigames/mince_minigame.tscn (Board, Knife) | 다지기 도마 / 큰 식칼 | 900x440 / 140x200 | 할 일 |
 | scenes/kitchen/minigames/mince_minigame.tscn (Pile 조각) | 다져지는 재료 (단계마다 작아짐, 재료 색은 코드가 입힘) | 큰 조각 150x110 | 선택 |
+| scenes/kitchen/shop_decor.tscn (Sign) | 가게 간판 (동네 밥집부터, 이름 글씨는 코드가 씀) | 400x72 | 할 일 |
+| scenes/kitchen/shop_decor.tscn (Lanterns) | 처마 등불 2개 (소문난 할매식당) | 48x60 | 할 일 |
+| scenes/kitchen/shop_decor.gd (평상) | 손님 평상 (단계마다 3~5개) | 110x40 | 할 일 |
+| scenes/kitchen/shop_decor.tscn (Shelf, Plank) | 기념품 선반 | 560x170 | 선택 |

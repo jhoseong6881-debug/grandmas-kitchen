@@ -27,6 +27,8 @@ const DONE_TEXT: String = "손질 끝!"
 
 ## 이번 단계의 써는 수, 칼 빠르기, 재료 색 (요리 단계에서 정한 값, 없으면 위의 기본값)
 var _chops_needed: int = 0
+## 이번에 쓰는 하얀 칸 넓이 (넓은 도마가 있으면 넓어진다)
+var _target_width: float = 50.0
 var _knife_speed: float = 0.0
 var _ingredient_color: Color
 var _chop_count: int = 0
@@ -51,8 +53,13 @@ func _ready() -> void:
 	_knife.pivot_offset = Vector2(_knife.size.x / 2.0, 0.0)
 
 
+func _get_minigame_type() -> Recipe.MinigameType:
+	return Recipe.MinigameType.CHOP
+
+
 func _on_start(recipe: Recipe) -> void:
 	_chops_needed = _step_count(chops_needed)
+	_target_width = target_width * _window_scale
 	_knife_speed = knife_speed * _speed
 	_ingredient_color = _step_color(ingredient_color)
 	_chop_count = 0
@@ -95,17 +102,17 @@ func _on_press() -> void:
 
 ## 하얀 칸 안에 비법 자리나 부탁 자리를 그린다. 하얀 칸이 옮겨 가면 함께 옮겨 간다.
 func _show_zone(start: float, end: float, color: Color, zone_name: String) -> void:
-	_make_zone(_target_zone, Rect2(start * target_width, 0.0, (end - start) * target_width, _target_zone.size.y),
+	_make_zone(_target_zone, Rect2(start * _target_width, 0.0, (end - start) * _target_width, _target_zone.size.y),
 			color, zone_name)
 
 
 func is_knife_on_target() -> bool:
-	return absf(_knife_x - _target_center) <= target_width / 2.0 + judge_margin
+	return absf(_knife_x - _target_center) <= _target_width / 2.0 + judge_margin
 
 
 func _chop() -> void:
 	# 하얀 칸 왼쪽 끝 = 0, 오른쪽 끝 = 1
-	_register_hit((_knife_x - (_target_center - target_width / 2.0)) / target_width)
+	_register_hit((_knife_x - (_target_center - _target_width / 2.0)) / _target_width)
 	_chop_count += 1
 	_ingredient.size.x = _ingredient_full_width * (1.0 - float(_chop_count) / _chops_needed)
 	var slice: ColorRect = ColorRect.new()
@@ -133,8 +140,8 @@ func _miss() -> void:
 func _update_target() -> void:
 	var slice_width: float = _ingredient_full_width / _chops_needed
 	_target_center = _ingredient_left + _ingredient.size.x - slice_width / 2.0
-	_target_zone.position.x = _target_center - target_width / 2.0
-	_target_zone.size.x = target_width
+	_target_zone.position.x = _target_center - _target_width / 2.0
+	_target_zone.size.x = _target_width
 
 
 func _update_knife() -> void:

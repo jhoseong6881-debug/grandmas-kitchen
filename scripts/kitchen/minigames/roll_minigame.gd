@@ -70,6 +70,10 @@ var _zones: Dictionary[String, Array] = {}
 @onready var _side_label: Label = %SideLabel
 
 
+func _get_minigame_type() -> Recipe.MinigameType:
+	return Recipe.MinigameType.ROLL
+
+
 func _on_start(recipe: Recipe) -> void:
 	_layers_needed = _step_count(layers_needed)
 	_pour_speed = pour_speed * _speed

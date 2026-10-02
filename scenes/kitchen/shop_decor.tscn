@@ -1,0 +1,130 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/kitchen/shop_decor.gd" id="1_decor"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sign"]
+bg_color = Color(0.45, 0.3, 0.17, 1)
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
+border_color = Color(0.3, 0.2, 0.1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lantern"]
+bg_color = Color(1, 0.6, 0.3, 1)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+shadow_color = Color(1, 0.8, 0.4, 0.6)
+shadow_size = 16
+
+[node name="ShopDecor" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_decor")
+
+[node name="Sign" type="Panel" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 760.0
+offset_top = 16.0
+offset_right = 1160.0
+offset_bottom = 88.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_sign")
+
+[node name="SignLabel" type="Label" parent="Sign"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.92, 0.7, 1)
+theme_override_font_sizes/font_size = 36
+text = "동네 밥집"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Lanterns" type="Control" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="LanternLeft" type="Panel" parent="Lanterns"]
+layout_mode = 0
+offset_left = 680.0
+offset_top = 24.0
+offset_right = 728.0
+offset_bottom = 84.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_lantern")
+
+[node name="LanternRight" type="Panel" parent="Lanterns"]
+layout_mode = 0
+offset_left = 1192.0
+offset_top = 24.0
+offset_right = 1240.0
+offset_bottom = 84.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_lantern")
+
+[node name="Shelf" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 0
+offset_left = 48.0
+offset_top = 540.0
+offset_right = 608.0
+offset_bottom = 710.0
+mouse_filter = 2
+
+[node name="ShelfTitle" type="Label" parent="Shelf"]
+layout_mode = 0
+offset_right = 560.0
+offset_bottom = 36.0
+theme_override_colors/font_color = Color(0.45, 0.3, 0.17, 1)
+theme_override_font_sizes/font_size = 24
+text = "기념품 선반"
+
+[node name="SlotRow" type="HBoxContainer" parent="Shelf"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_top = 44.0
+offset_right = 560.0
+offset_bottom = 140.0
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="Plank" type="ColorRect" parent="Shelf"]
+layout_mode = 0
+offset_left = -8.0
+offset_top = 140.0
+offset_right = 528.0
+offset_bottom = 156.0
+mouse_filter = 2
+color = Color(0.45, 0.3, 0.17, 1)
+
+[node name="BenchRow" type="HBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 48.0
+offset_top = 800.0
+offset_right = 700.0
+offset_bottom = 840.0
+mouse_filter = 2
+theme_override_constants/separation = 16

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ShopTool" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/shop_tool.gd" id="1_tool"]
+
+[resource]
+script = ExtResource("1_tool")
+id = &"wide_board"
+display_name = "넓은 도마"
+effect_text = "판정 칸이 넓어졌어요"
+minigame_types = Array[int]([0, 8])
+window_scale = 1.3

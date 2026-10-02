@@ -43,6 +43,8 @@ const DONE_TEXT: String = "예쁘게 완성했어요!"
 
 ## 이번 단계의 그릇 수와 차오르는 빠르기 (요리 단계에서 정한 값, 없으면 위의 기본값)
 var _bowl_count: int = 0
+## 이번에 쓰는 금색 띠 높이 (큰 국자가 있으면 넓어진다)
+var _band_height: float = 0.12
 var _fill_speed: float = 0.5
 var _bowls_done: int = 0
 ## 지금 그릇에 찬 양 (0 = 빈 그릇, 1 = 가득)
@@ -74,8 +76,13 @@ func _ready() -> void:
 	_splash.color = food_color.darkened(splash_darken)
 
 
+func _get_minigame_type() -> Recipe.MinigameType:
+	return Recipe.MinigameType.PLATE
+
+
 func _on_start(recipe: Recipe) -> void:
 	_bowl_count = _step_count(bowl_count)
+	_band_height = target_band_height * _window_scale
 	_fill_speed = fill_speed * _speed
 	_bowls_done = 0
 	for dot: Node in _bowl_dots.get_children():
@@ -124,7 +131,7 @@ func _on_release() -> void:
 		return
 	if is_fill_on_target():
 		# 금색 띠 아래 = 0, 위 = 1
-		_register_hit((_fill_level - (_target_level - target_band_height / 2.0)) / target_band_height)
+		_register_hit((_fill_level - (_target_level - _band_height / 2.0)) / _band_height)
 		_finish_bowl()
 	elif _fill_level < _target_level:
 		_miss(UNDER_FORMAT)
@@ -140,7 +147,7 @@ func _show_zone(start: float, end: float, color: Color, zone_name: String) -> vo
 
 
 func is_fill_on_target() -> bool:
-	return absf(_fill_level - _target_level) <= target_band_height / 2.0 + judge_margin
+	return absf(_fill_level - _target_level) <= _band_height / 2.0 + judge_margin
 
 
 func _finish_bowl() -> void:
@@ -189,8 +196,8 @@ func _start_new_bowl() -> void:
 	_set_fill_level(0.0)
 	_target_level = randf_range(target_level_min, target_level_max)
 	var inner_height: float = _bowl_inner.size.y
-	_target_band.size.y = inner_height * target_band_height
-	_target_band.position.y = inner_height * (1.0 - _target_level - target_band_height / 2.0)
+	_target_band.size.y = inner_height * _band_height
+	_target_band.position.y = inner_height * (1.0 - _target_level - _band_height / 2.0)
 
 
 func _set_fill_level(level: float) -> void:

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ShopLevel" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/shop_level.gd" id="1_level"]
+[ext_resource type="Script" path="res://scripts/data/shop_tool.gd" id="2_tool"]
+[ext_resource type="Resource" path="res://data/shop_tools/wide_board.tres" id="3_wide_board"]
+[ext_resource type="Resource" path="res://data/shop_tools/big_ladle.tres" id="4_big_ladle"]
+
+[resource]
+script = ExtResource("1_level")
+display_name = "숲속 맛집"
+reputation = 50
+extra_guests = 1
+max_guests = 4
+keepsake_slots = 4
+has_sign = true
+tools = Array[ExtResource("2_tool")]([ExtResource("3_wide_board"), ExtResource("4_big_ladle")])
+unlock_text = "넓은 도마 · 큰 국자 · 기념품 선반 +2칸"

@@ -25,7 +25,7 @@ const REGULAR_BONUS_FORMAT: String = " (%s 덤 +%d)"
 const LUNCH_DONE_TEXT: String = "오늘 점심 장사 끝! 수고했어요."
 const OUT_OF_INGREDIENTS_TEXT: String = "재료가 다 떨어져서 오늘 장사는 여기까지예요."
 
-## 점심 한 번에 받는 손님 수의 최대값
+## 점심 한 번에 받는 손님 수의 최대값 (가게 단계 데이터가 없을 때만 쓴다. 보통은 ShopLevel.max_guests)
 @export var guests_per_lunch: int = 3
 ## 오늘 손님 수 = 오늘 메뉴 수 + 이 값 (최대 guests_per_lunch).
 ## 메뉴가 하나뿐인 첫날에 같은 요리만 여러 번 하지 않도록, 메뉴가 늘수록 손님도 는다.
@@ -35,6 +35,8 @@ const OUT_OF_INGREDIENTS_TEXT: String = "재료가 다 떨어져서 오늘 장�
 @export var start_new_game_on_ready: bool = true
 ## 점심 장사가 끝나면 넘어갈 저녁 평상 장면
 @export_file("*.tscn") var porch_scene_path: String = "res://scenes/porch/porch.tscn"
+## 가게 모습(간판, 등불, 평상, 기념품 선반). 부엌이 켜질 때 배경 바로 위에 붙인다.
+@export var shop_decor_scene: PackedScene = preload("res://scenes/kitchen/shop_decor.tscn")
 ## 레시피 노트를 다 모은 다음 날, 평상 대신 넘어갈 봄 잔치 장면
 @export_file("*.tscn") var feast_scene_path: String = "res://scenes/porch/spring_feast.tscn"
 ## 좋아하는 요리 대신 다른 요리를 주문한 손님은 첫 번째 밥값 재료를 이만큼만 낸다.
@@ -129,10 +131,20 @@ func _ready() -> void:
 	for minigame: Minigame in _minigames.values():
 		minigame.finished.connect(_on_minigame_finished)
 	_status_default_color = _cook_status_label.get_theme_color("default_color")
+	_add_shop_decor()
 	if start_new_game_on_ready and not GameState.is_game_started:
 		GameState.start_new_game()
 	_on_day_changed(GameState.current_day)
 	_start_lunch()
+
+
+## 가게 모습을 배경과 조리대 바로 위(손님과 버튼 아래)에 붙인다.
+func _add_shop_decor() -> void:
+	if shop_decor_scene == null:
+		return
+	var decor: Node = shop_decor_scene.instantiate()
+	add_child(decor)
+	move_child(decor, $Counter.get_index() + 1)
 
 
 # --- 점심 장사 흐름 ---
@@ -180,14 +192,18 @@ func _call_next_guest() -> void:
 	_end_lunch(OUT_OF_INGREDIENTS_TEXT)
 
 
-## 오늘 메뉴 수 + extra_guests_over_menu, 최대 guests_per_lunch.
+## 오늘 메뉴 수 + extra_guests_over_menu + 가게 단계의 손님 보너스. 최대는 가게 단계의 max_guests
+## (가게 단계 데이터가 없으면 guests_per_lunch). 소문이 퍼질수록 손님이 는다.
 ## 메뉴를 안 정했으면(메뉴가 비어 있으면 되찾은 레시피 전부를 낼 수 있다) 되찾은 레시피 수로 센다.
 func _count_guests_today() -> int:
 	var menu_count: int = GameState.menu_recipe_ids.size()
 	if menu_count == 0:
 		menu_count = GameData.get_all_recipes().filter(
 				func(recipe: Recipe) -> bool: return GameState.is_recipe_unlocked(recipe.id)).size()
-	return clampi(menu_count + extra_guests_over_menu, 1, guests_per_lunch)
+	var level: ShopLevel = GameState.get_shop_level()
+	var bonus: int = level.extra_guests if level != null else 0
+	var max_guests: int = level.max_guests if level != null else guests_per_lunch
+	return clampi(menu_count + extra_guests_over_menu + bonus, 1, max_guests)
 
 
 ## 가끔(request_chance) 이 요리에 나올 수 있는 오늘의 부탁 하나를 고른다. 없으면 null.

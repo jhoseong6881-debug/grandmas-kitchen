@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ShopLevel" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/shop_level.gd" id="1_level"]
+
+[resource]
+script = ExtResource("1_level")
+display_name = "작은 밥집"
+reputation = 0
+extra_guests = 0
+max_guests = 3
+keepsake_slots = 2

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ShopLevel" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/shop_level.gd" id="1_level"]
+
+[resource]
+script = ExtResource("1_level")
+display_name = "동네 밥집"
+reputation = 20
+extra_guests = 1
+max_guests = 4
+keepsake_slots = 2
+has_sign = true
+unlock_text = "손님 +1 · 간판 · 평상 하나 더"
