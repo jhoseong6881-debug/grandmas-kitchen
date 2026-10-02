@@ -1,9 +1,9 @@
-[gd_resource type="Resource" script_class="Recipe" format=3]
+[gd_resource type="Resource" script_class="Recipe" format=3 uid="uid://bqq7760w4ek0q"]
 
-[ext_resource type="Script" path="res://scripts/data/recipe.gd" id="1_recipe"]
-[ext_resource type="Script" path="res://scripts/data/ingredient.gd" id="2_ingredient"]
+[ext_resource type="Script" uid="uid://fbx0a77slaix" path="res://scripts/data/recipe.gd" id="1_recipe"]
+[ext_resource type="Script" uid="uid://jdo3q781e21o" path="res://scripts/data/ingredient.gd" id="2_ingredient"]
 [ext_resource type="Resource" path="res://data/ingredients/mushroom.tres" id="3_mushroom"]
-[ext_resource type="Script" path="res://scripts/data/cook_step.gd" id="13_cook_step"]
+[ext_resource type="Script" uid="uid://che4nl0g5vff0" path="res://scripts/data/cook_step.gd" id="13_cook_step"]
 
 [sub_resource type="Resource" id="CookStep_1"]
 script = ExtResource("13_cook_step")
@@ -17,7 +17,6 @@ type = 1
 ingredient = ExtResource("3_mushroom")
 count = 8
 speed = 1.1
-secret_start = 0.0
 secret_end = 0.45
 
 [sub_resource type="Resource" id="CookStep_3"]

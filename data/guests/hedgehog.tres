@@ -1,17 +1,16 @@
-[gd_resource type="Resource" script_class="AnimalGuest" format=3]
+[gd_resource type="Resource" script_class="AnimalGuest" format=3 uid="uid://d31jktv1o6y5"]
 
-[ext_resource type="Script" path="res://scripts/data/animal_guest.gd" id="1_guest"]
-[ext_resource type="Script" path="res://scripts/data/recipe.gd" id="2_recipe"]
-[ext_resource type="Script" path="res://scripts/data/ingredient.gd" id="3_ingredient"]
-[ext_resource type="Resource" path="res://data/recipes/carrot_kimbop.tres" id="4_carrot_kimbop"]
-[ext_resource type="Resource" path="res://data/recipes/forest_mushroom_stir_fry.tres" id="5_forest_mushroom_stir_fry"]
-[ext_resource type="Resource" path="res://data/recipes/mushroom_egg_jeon.tres" id="6_mushroom_egg_jeon"]
-[ext_resource type="Resource" path="res://data/recipes/acorn_jelly_mushroom_bap.tres" id="7_acorn_jelly_mushroom_bap"]
-[ext_resource type="Resource" path="res://data/ingredients/mushroom.tres" id="8_mushroom"]
-[ext_resource type="Resource" path="res://data/recipes/honey_egg_roll.tres" id="9_disliked"]
-[ext_resource type="Script" path="res://scripts/data/evening_talk.gd" id="10_talk"]
+[ext_resource type="Script" uid="uid://c3bc5udx3r1xj" path="res://scripts/data/animal_guest.gd" id="1_guest"]
+[ext_resource type="Script" uid="uid://fbx0a77slaix" path="res://scripts/data/recipe.gd" id="2_recipe"]
+[ext_resource type="Script" uid="uid://jdo3q781e21o" path="res://scripts/data/ingredient.gd" id="3_ingredient"]
+[ext_resource type="Resource" uid="uid://b580q70jkdeba" path="res://data/recipes/carrot_kimbop.tres" id="4_carrot_kimbop"]
+[ext_resource type="Resource" uid="uid://bqq7760w4ek0q" path="res://data/recipes/forest_mushroom_stir_fry.tres" id="5_forest_mushroom_stir_fry"]
+[ext_resource type="Resource" uid="uid://cumjc4kjewe0g" path="res://data/recipes/mushroom_egg_jeon.tres" id="6_mushroom_egg_jeon"]
+[ext_resource type="Resource" uid="uid://hf07sdl6gdj3" path="res://data/recipes/acorn_jelly_mushroom_bap.tres" id="7_acorn_jelly_mushroom_bap"]
+[ext_resource type="Resource" uid="uid://qcg5gwa5qmbj" path="res://data/recipes/honey_egg_roll.tres" id="9_disliked"]
+[ext_resource type="Script" uid="uid://c10kg08x5w6l3" path="res://scripts/data/evening_talk.gd" id="10_talk"]
 [ext_resource type="Resource" path="res://data/garnishes/chili.tres" id="20_garnish"]
-[ext_resource type="Script" path="res://scripts/data/regular_reward.gd" id="30_reward"]
+[ext_resource type="Script" uid="uid://dyen15kduraty" path="res://scripts/data/regular_reward.gd" id="30_reward"]
 [ext_resource type="Resource" path="res://data/ingredients/mushroom.tres" id="31_gift"]
 [ext_resource type="Resource" path="res://data/keepsakes/mushroom_basket.tres" id="32_keepsake"]
 
@@ -77,7 +76,7 @@ display_name = "고슴도치"
 personality = "가시가 뾰족해 무뚝뚝해 보이지만 꼼꼼하고 다정하다. 숲 바닥 버섯 자리는 모르는 데가 없다."
 favorite_recipes = Array[ExtResource("2_recipe")]([ExtResource("4_carrot_kimbop"), ExtResource("5_forest_mushroom_stir_fry"), ExtResource("6_mushroom_egg_jeon"), ExtResource("7_acorn_jelly_mushroom_bap")])
 disliked_recipes = Array[ExtResource("2_recipe")]([ExtResource("9_disliked")])
-payment_ingredients = Array[ExtResource("3_ingredient")]([ExtResource("8_mushroom"), ExtResource("8_mushroom")])
+payment_ingredients = Array[ExtResource("3_ingredient")]([ExtResource("31_gift"), ExtResource("31_gift")])
 order_line = "{recipe}. 따뜻하게 부탁해."
 fallback_order_line = "없나. …그럼 {recipe}. 그걸로 하지."
 thanks_line = "…잘 먹었어. 버섯, 두고 간다."
