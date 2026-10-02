@@ -1,0 +1,122 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/garden/menu_board.gd" id="1_menu"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_board"]
+bg_color = Color(0.17, 0.27, 0.22, 1)
+border_width_left = 16
+border_width_top = 16
+border_width_right = 16
+border_width_bottom = 16
+border_color = Color(0.5, 0.34, 0.2, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+shadow_color = Color(0, 0, 0, 0.4)
+shadow_size = 14
+
+[node name="MenuBoard" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_menu")
+
+[node name="Dim" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.45)
+
+[node name="Board" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -780.0
+offset_top = -480.0
+offset_right = 780.0
+offset_bottom = 480.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_board")
+
+[node name="Title" type="Label" parent="Board"]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 48.0
+offset_right = 900.0
+offset_bottom = 108.0
+theme_override_colors/font_color = Color(0.97, 0.95, 0.88, 1)
+theme_override_font_sizes/font_size = 48
+text = "오늘의 메뉴"
+
+[node name="Subtitle" type="Label" parent="Board"]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 114.0
+offset_right = 1200.0
+offset_bottom = 150.0
+theme_override_colors/font_color = Color(0.8, 0.86, 0.8, 1)
+theme_override_font_sizes/font_size = 24
+text = "점심에 낼 요리를 골라요. 손님은 메뉴에 있는 요리만 주문해요."
+
+[node name="CountLabel" type="Label" parent="Board"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 1260.0
+offset_top = 48.0
+offset_right = 1488.0
+offset_bottom = 108.0
+theme_override_colors/font_color = Color(1, 0.84, 0.25, 1)
+theme_override_font_sizes/font_size = 48
+text = "0 / 3"
+horizontal_alignment = 2
+
+[node name="MenuRows" type="VBoxContainer" parent="Board"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 72.0
+offset_top = 180.0
+offset_right = 1488.0
+offset_bottom = 800.0
+theme_override_constants/separation = 2
+
+[node name="MessageLabel" type="Label" parent="Board"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 72.0
+offset_top = 836.0
+offset_right = 900.0
+offset_bottom = 884.0
+theme_override_colors/font_color = Color(1, 0.65, 0.55, 1)
+theme_override_font_sizes/font_size = 24
+vertical_alignment = 1
+
+[node name="BackButton" type="Button" parent="Board"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 924.0
+offset_top = 824.0
+offset_right = 1140.0
+offset_bottom = 896.0
+theme_override_font_sizes/font_size = 36
+text = "텃밭으로"
+
+[node name="StartButton" type="Button" parent="Board"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 1164.0
+offset_top = 824.0
+offset_right = 1488.0
+offset_bottom = 896.0
+theme_override_font_sizes/font_size = 36
+text = "장사 시작"

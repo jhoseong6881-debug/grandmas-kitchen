@@ -20,6 +20,9 @@ var unlocked_recipe_ids: Array[StringName] = []
 var garden_days_left: Array[int] = []
 ## 오늘 아침 이웃 바구니를 이미 열어 봤는지. 하루가 지나면 다시 false.
 var is_todays_gift_collected: bool = false
+## 아침에 고른 오늘의 메뉴 (레시피 id). 점심 손님은 이 안에서만 주문한다.
+## 다음 날 아침 메뉴판에서 미리 골라 두는 데도 쓰고, 세이브에도 넣는다. 비어 있으면 메뉴 제한이 없다.
+var menu_recipe_ids: Array[StringName] = []
 ## 한 번이라도 대접한 손님 id. 손님 수첩에 그 손님 정보를 보여 줄 때 쓴다.
 var met_guest_ids: Array[StringName] = []
 ## 손님 id → 저녁 평상에서 지금까지 들려준 이야기 수
@@ -102,6 +105,11 @@ func has_met_guest(guest_id: StringName) -> bool:
 	return guest_id in met_guest_ids
 
 
+## 오늘의 메뉴에 있는 요리인지. 메뉴를 아직 안 골랐으면(비어 있으면) 모든 요리를 낼 수 있다.
+func is_on_menu(recipe_id: StringName) -> bool:
+	return menu_recipe_ids.is_empty() or recipe_id in menu_recipe_ids
+
+
 # --- 텃밭 ---
 
 func is_plot_ripe(plot_index: int) -> bool:
@@ -157,6 +165,7 @@ func new_game() -> void:
 	todays_served_guests.clear()
 	garden_days_left.clear()
 	met_guest_ids.clear()
+	menu_recipe_ids.clear()
 	notes_completed_day = 0
 	is_spring_completed = false
 	is_todays_gift_collected = false
@@ -235,6 +244,7 @@ func _to_save_data() -> Dictionary:
 		"guest_story_progress": story_data,
 		"garden_days_left": garden_days_left,
 		"met_guest_ids": Array(met_guest_ids).map(func(guest_id: StringName) -> String: return String(guest_id)),
+		"menu_recipe_ids": Array(menu_recipe_ids).map(func(recipe_id: StringName) -> String: return String(recipe_id)),
 		"notes_completed_day": notes_completed_day,
 		"is_spring_completed": is_spring_completed,
 	}
@@ -259,5 +269,8 @@ func _from_save_data(data: Dictionary) -> void:
 	var met_data: Array = data.get("met_guest_ids", [])
 	for guest_id: Variant in met_data:
 		met_guest_ids.append(StringName(str(guest_id)))
+	var menu_data: Array = data.get("menu_recipe_ids", [])
+	for recipe_id: Variant in menu_data:
+		menu_recipe_ids.append(StringName(str(recipe_id)))
 	notes_completed_day = int(data.get("notes_completed_day", 0))
 	is_spring_completed = bool(data.get("is_spring_completed", false))

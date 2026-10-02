@@ -1,5 +1,6 @@
 extends Control
-## 아침 텃밭 장면. 다 자란 텃밭 칸을 눌러 채소를 거두고, 이웃이 두고 간 바구니를 열어 본 뒤 부엌으로 간다.
+## 아침 텃밭 장면. 다 자란 텃밭 칸을 눌러 채소를 거두고, 이웃이 두고 간 바구니를 열어 본 뒤
+## 오늘의 메뉴를 골라 부엌으로 간다.
 ## 씨 뿌리기나 물 주기는 없다 (복잡한 농사는 MVP 범위 밖).
 
 const DAY_TEXT_FORMAT: String = "%d일째 아침"
@@ -36,6 +37,7 @@ var _plot_buttons: Array[Button] = []
 @onready var _status_label: Label = %StatusLabel
 @onready var _notebook: GuestNotebook = %GuestNotebook
 @onready var _notebook_button: Button = %NotebookButton
+@onready var _menu_board: MenuBoard = %MenuBoard
 
 
 func _ready() -> void:
@@ -49,6 +51,7 @@ func _ready() -> void:
 	_basket_button.pressed.connect(_on_basket_button_pressed)
 	_kitchen_button.pressed.connect(_on_kitchen_button_pressed)
 	_notebook_button.pressed.connect(_notebook.open)
+	_menu_board.confirmed.connect(_on_menu_confirmed)
 	_build_plots()
 	_update_basket()
 	_focus_next_thing_to_do()
@@ -114,7 +117,13 @@ func _update_basket() -> void:
 	_basket_button.text = GIFT_EMPTY_TEXT if GameState.is_todays_gift_collected else GIFT_READY_TEXT
 
 
+## 부엌으로 가기 전에 오늘의 메뉴부터 고른다.
 func _on_kitchen_button_pressed() -> void:
+	_menu_board.open()
+
+
+func _on_menu_confirmed(recipe_ids: Array[StringName]) -> void:
+	GameState.menu_recipe_ids = recipe_ids
 	get_tree().change_scene_to_file(kitchen_scene_path)
 
 

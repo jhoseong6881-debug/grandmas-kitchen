@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://kyfx34gygo5a" path="res://scripts/garden/garden.gd" id="1_garden"]
 [ext_resource type="PackedScene" path="res://scenes/ui/inventory_panel.tscn" id="2_inventory"]
 [ext_resource type="PackedScene" path="res://scenes/ui/guest_notebook.tscn" id="3_notebook"]
+[ext_resource type="PackedScene" path="res://scenes/garden/menu_board.tscn" id="4_menu"]
 
 [node name="Garden" type="Control" unique_id=1678010223]
 layout_mode = 3
@@ -131,5 +132,9 @@ theme_override_font_sizes/font_size = 24
 text = "손님 수첩"
 
 [node name="GuestNotebook" parent="." unique_id=410802552 instance=ExtResource("3_notebook")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="MenuBoard" parent="." instance=ExtResource("4_menu")]
 unique_name_in_owner = true
 layout_mode = 1

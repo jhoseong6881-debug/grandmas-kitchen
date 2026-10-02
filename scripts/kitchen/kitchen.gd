@@ -143,22 +143,23 @@ func _pop_next_guest() -> AnimalGuest:
 	return _guest_queue.pop_front()
 
 
-## 손님이 좋아하는 요리 중, 레시피 노트로 되찾았고 지금 재료로 만들 수 있는 것 하나. 없으면 null.
+## 손님이 좋아하는 요리 중, 지금 낼 수 있는(_can_cook) 것 하나. 없으면 null.
 func _choose_order(guest: AnimalGuest) -> Recipe:
 	var possible: Array[Recipe] = guest.favorite_recipes.filter(_can_cook)
 	return possible.pick_random() if not possible.is_empty() else null
 
 
-## 좋아하는 요리를 못 만들 때 대신 주문할 요리: 만들 수 있고, 싫어하지 않는 아무 요리 하나. 없으면 null.
+## 좋아하는 요리를 못 낼 때 대신 주문할 요리: 지금 낼 수 있고 싫어하지 않는 아무 요리 하나. 없으면 null.
 func _choose_fallback_order(guest: AnimalGuest) -> Recipe:
 	var possible: Array[Recipe] = GameData.get_all_recipes().filter(
 			func(recipe: Recipe) -> bool: return _can_cook(recipe) and recipe not in guest.disliked_recipes)
 	return possible.pick_random() if not possible.is_empty() else null
 
 
-## 레시피 노트로 되찾았고 지금 재료로 만들 수 있는지
+## 레시피 노트로 되찾았고, 오늘의 메뉴에 있고, 지금 재료로 만들 수 있는지
 func _can_cook(recipe: Recipe) -> bool:
-	return GameState.is_recipe_unlocked(recipe.id) and GameState.has_ingredients(recipe.get_ingredient_counts())
+	return GameState.is_recipe_unlocked(recipe.id) and GameState.is_on_menu(recipe.id) \
+			and GameState.has_ingredients(recipe.get_ingredient_counts())
 
 
 func _end_lunch(message: String) -> void:

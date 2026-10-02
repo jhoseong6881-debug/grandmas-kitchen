@@ -50,3 +50,4 @@
 | scenes/porch/spring_feast.tscn (Letter, NoteCard) | 할머니 편지지 / 완성된 노트 | 1240x820 | 할 일 |
 | scenes/porch/spring_feast.tscn (Teaser) | 여름 예고 그림 | 1920x1080 | 선택 |
 | scenes/ui/pause_menu.tscn (Box) | 일시 정지 메뉴 판 | 840x660 | 선택 |
+| scenes/garden/menu_board.tscn (Board) | 오늘의 메뉴 칠판 | 1560x960 | 할 일 |
