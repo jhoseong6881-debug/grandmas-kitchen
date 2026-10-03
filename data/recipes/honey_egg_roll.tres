@@ -17,6 +17,7 @@ secret_end = 0.95
 [sub_resource type="Resource" id="CookStep_2"]
 script = ExtResource("14_cook_step")
 subject_name = "계란말이"
+hit_sound = &"chop_omelette"
 count = 6
 speed = 0.9
 placeholder_color = Color(0.98, 0.8, 0.36, 1)

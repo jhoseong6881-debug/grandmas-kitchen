@@ -336,8 +336,17 @@ func _clear_zones(parent: Control) -> void:
 
 
 ## 이 미니게임의 맞히는 소리를 낸다. _register_hit 이 부르고, 맞힘으로 치지 않는 동작에도 소리를 내고 싶을 때 쓴다.
+## 고르는 순서: 요리 단계의 소리(hit_sound) → 썰기면 재료의 썰기 소리(chop_sound) → 미니게임 기본 소리.
+## 오늘의 부탁 때문에 다른 미니게임으로 바뀐 단계는 바뀐 미니게임의 기본 소리를 쓴다.
 func _play_hit_sound() -> void:
-	Sound.play_or(_hit_sound, HIT_SOUND_FALLBACK)
+	var sound: StringName = _hit_sound
+	if _step != null and not _is_converted:
+		if not _step.hit_sound.is_empty():
+			sound = _step.hit_sound
+		elif _get_minigame_type() == Recipe.MinigameType.CHOP and _step.ingredient != null \
+				and not _step.ingredient.chop_sound.is_empty():
+			sound = _step.ingredient.chop_sound
+	Sound.play_or(sound, HIT_SOUND_FALLBACK)
 
 
 func _register_miss() -> void:

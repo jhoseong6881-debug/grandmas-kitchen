@@ -14,6 +14,8 @@ const PLACEHOLDER_ICON_PIXELS: int = 12
 ## 그림이 아직 없을 때 쓰는 임시 색. 재료마다 다르게 정해 두면 그림 없이도 구분된다.
 @export var placeholder_color: Color = Color(0.85, 0.55, 0.3)
 @export_multiline var description: String = ""
+## 썰기 미니게임에서 이 재료를 썰 때 나는 소리 (data/sounds/ 의 id). 비우면 썰기 기본 소리.
+@export var chop_sound: StringName = &""
 
 ## 그림이 없을 때 쓰는 임시 사각형 (처음 쓸 때 한 번 만들어 둔다)
 var _placeholder_texture: Texture2D

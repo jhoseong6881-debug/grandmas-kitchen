@@ -25,6 +25,7 @@ count = 3
 [sub_resource type="Resource" id="CookStep_4"]
 script = ExtResource("13_cook_step")
 subject_name = "김밥"
+hit_sound = &"chop_kimbap"
 count = 8
 speed = 0.9
 placeholder_color = Color(0.18, 0.26, 0.16, 1)

@@ -8,3 +8,4 @@ id = &"mushroom"
 display_name = "버섯"
 placeholder_color = Color(0.74, 0.64, 0.55, 1)
 description = "비 온 다음 날 아침, 숲 바닥에서 딴 버섯."
+chop_sound = &"chop_mushroom"

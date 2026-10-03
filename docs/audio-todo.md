@@ -8,6 +8,18 @@
 지금 소리는 모두 Kenney(kenney.nl)의 무료 소리 묶음(CC0: 출처 표시 없이 상업적으로도 써도 됨)에서 골랐다.
 파일은 `assets/audio/sfx/kenney/`, 이용 조건은 같은 폴더의 `License.txt`.
 
+## 직접 만든 효과음 (출처 기록, 출시 전에 권리를 꼭 다시 확인)
+| 파일 | 쓰는 곳 | 만든 곳 | 요금제 / 권리 | 만든 날 |
+|---|---|---|---|---|
+| sfx/chop_carrot_1~3.mp3 | 당근 썰기 (Ingredient.chop_sound) | ElevenLabs (효과음 AI) | Starter → 상업적 이용 가능 (약관 기준, 출시 전 다시 확인) | 2026-10-04 |
+| sfx/chop_mushroom_1~3.mp3 | 버섯 썰기 | ElevenLabs | Starter | 2026-10-04 |
+| sfx/chop_kimbap_1~3.mp3 | 김밥 썰기 (CookStep.hit_sound) | ElevenLabs | Starter | 2026-10-04 |
+| sfx/chop_jelly_1~3.mp3 | 도토리묵 썰기 | ElevenLabs | Starter | 2026-10-04 |
+| sfx/chop_omelette_1~3.mp3 | 계란말이 썰기 | ElevenLabs | Starter | 2026-10-04 |
+
+- 썰기 소리 고르는 순서: 요리 단계의 Hit Sound → 재료의 Chop Sound → 썰기 기본 소리(hit_chop, Kenney).
+- ElevenLabs 무료 요금제로 만든 소리는 상업적으로 쓸 수 없다.
+
 ## ⚠ 진짜 요리 소리로 바꾸면 좋은 것 (Kenney 에 요리 소리가 없어 비슷한 소리로 채움)
 | id | 언제 | 지금 소리 | 바꾸고 싶은 소리 |
 |---|---|---|---|

@@ -18,6 +18,9 @@ extends Resource
 @export var speed: float = 1.0
 ## 그림이 아직 없을 때 재료 대신 쓰는 임시 색 (예: 김밥은 김 색). 투명(알파 0)이면 재료 색을 쓴다.
 @export var placeholder_color: Color = Color(0, 0, 0, 0)
+## 이 단계에서 맞힐 때 나는 소리 (data/sounds/ 의 id). 재료가 아닌 것(김밥, 도토리묵 등)을 썰 때 쓴다.
+## 비우면 재료의 썰기 소리(Ingredient.chop_sound) → 미니게임 기본 소리 순서로 고른다.
+@export var hit_sound: StringName = &""
 ## 할머니 비법 자리: 금색 칸(맞는 구간) 안에서 비법 자리가 시작하고 끝나는 곳 (0 ~ 1).
 ## 이 단계의 모든 동작을 이 자리에서 해내면 "할머니 손맛"이 된다. 끝이 시작보다 크지 않으면 비법이 없는 단계.
 ## 0 과 1 이 가리키는 쪽: 썰기 = 하얀 칸 왼쪽 → 오른쪽, 볶기 = 금색 구역 위 → 팬에 닿을 때,
