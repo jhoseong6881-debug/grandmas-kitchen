@@ -27,6 +27,9 @@
 
 | sfx/harvest_pull_1~4.wav | 텃밭·원목에서 거둘 때 (harvest) | Freesound "Plants or ferns - Manipulation & Hit" by Vrymaa — https://freesound.org/s/770112/ | **CC0** | 2026-10-04 |
 
+| sfx/plant_soil_1~5.wav | 빈 칸에 심을 때 (plant) | Freesound "Planting Sounds.wav" by wobesound — https://freesound.org/s/488393/ | **CC0** | 2026-10-04 |
+
+- plant_soil 조각은 원본(4.8초, audio_source/planting_seeds.wav)에 1초 간격으로 들어 있는 심기 소리 다섯 개를 0.35초씩 나눈 것.
 - harvest_pull 조각은 원본(24.7초, audio_source/pull_plant.wav)에서 풀이 바스락하는 13.8·17.2·19.6·22.5초부터 0.6초씩 자른 것.
   유난히 크고 둔탁한 11.96초(흙을 터는 쿵 소리)는 뺐다.
 - simmer_bubble 조각은 원본(1분 43초, audio_source/simmering_pot.aiff → .wav)에서 걸쭉한 거품이 터지는 15.4·18.2·84.1·97.2초부터
@@ -44,7 +47,6 @@
 | id | 언제 | 지금 소리 | 바꾸고 싶은 소리 |
 |---|---|---|---|
 | hit_mix | 버무리기 | 풀 스치는 소리 | 양념 버무리는 촉촉한 소리 |
-| plant | 씨앗 심을 때 | 카펫 발소리 | 흙 토닥이는 소리 |
 | receive | 밥값 재료, 이웃 바구니 | 가죽 주머니 소리 | 바구니에 담는 소리 |
 
 ## 그대로 써도 괜찮은 것
