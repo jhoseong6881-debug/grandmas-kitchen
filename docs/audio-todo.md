@@ -29,6 +29,11 @@
 
 | sfx/plant_soil_1~5.wav | 빈 칸에 심을 때 (plant) | Freesound "Planting Sounds.wav" by wobesound — https://freesound.org/s/488393/ | **CC0** | 2026-10-04 |
 
+| sfx/item_pop_1.wav | 재료 받기: 밥값, 이웃 바구니, 장터 거래, 잔치 바구니 (receive) | Freesound "Item or Material Pickup Pop 1 of 3" by el_boss — https://freesound.org/s/665183/ | **CC0** | 2026-10-04 |
+| sfx/item_pop_2.wav | 〃 | Freesound "Item or Material Pickup Pop 2 of 3" by el_boss — https://freesound.org/s/665182/ | **CC0** | 2026-10-04 |
+| sfx/item_pop_3.wav | 〃 | Freesound "Item or Material Pickup Pop 3 of 3" by el_boss — https://freesound.org/s/665181/ | **CC0** | 2026-10-04 |
+
+- item_pop 은 0.07초짜리 게임용 "뽁" 소리 세 가지를 그대로 쓴다 (번갈아 나온다).
 - plant_soil 조각은 원본(4.8초, audio_source/planting_seeds.wav)에 1초 간격으로 들어 있는 심기 소리 다섯 개를 0.35초씩 나눈 것.
 - harvest_pull 조각은 원본(24.7초, audio_source/pull_plant.wav)에서 풀이 바스락하는 13.8·17.2·19.6·22.5초부터 0.6초씩 자른 것.
   유난히 크고 둔탁한 11.96초(흙을 터는 쿵 소리)는 뺐다.
@@ -47,7 +52,6 @@
 | id | 언제 | 지금 소리 | 바꾸고 싶은 소리 |
 |---|---|---|---|
 | hit_mix | 버무리기 | 풀 스치는 소리 | 양념 버무리는 촉촉한 소리 |
-| receive | 밥값 재료, 이웃 바구니 | 가죽 주머니 소리 | 바구니에 담는 소리 |
 
 ## 그대로 써도 괜찮은 것
 | id | 언제 |
