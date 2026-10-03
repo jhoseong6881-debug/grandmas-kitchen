@@ -21,6 +21,10 @@
 
 | sfx/pan_flip_1~3.wav | 전을 뒤집을 때 (hit_pan_fry) | Freesound "Adding Bacon To Frying Pan" by Bon_Vivant_Pictures — https://freesound.org/s/440830/ | **CC0** | 2026-10-04 |
 
+| sfx/rice_wash_1~4.wav | 쌀을 씻을 때 (hit_cook_rice) | Freesound "Water-Swishing-in-Kitchen-Sink.wav" by Joma86 — https://freesound.org/s/595794/ | **CC0** | 2026-10-04 |
+
+- rice_wash 조각은 원본(40.4초, audio_source/rice_washing.wav)에서 물을 휘젓는 4.0·23.2·31.6·34.6초부터 0.6초씩 자른 것.
+  Freesound 에 쌀 씻는 녹음이 거의 없어서 부엌 싱크대 물 휘젓기 소리로 대신했다.
 - pan_flip 조각은 원본(55.5초, audio_source/pancake_flip.wav)에서 뒤집는 "착" 소리가 나는 14.0·27.2·32.6초부터 0.9초씩 자른 것.
 - sizzle 조각은 원본(1분 6초)에서 툭 튀는 소리(주걱이 팬에 부딪힘) 없이 지글지글 고르게 이어지는 14.3·35.0·6.0·10.3초 부분을 잘라
   모노 16비트로 만든 것. 서로 다르게 들리게 1 짧고 바삭한 "칙"(0.45초), 2 보통 "치익"(0.7초), 3 긴 "치이이익"(0.95초), 4 부드러운 "쏴아"(0.8초)로 다듬었다.
@@ -31,7 +35,6 @@
 ## ⚠ 진짜 요리 소리로 바꾸면 좋은 것 (Kenney 에 요리 소리가 없어 비슷한 소리로 채움)
 | id | 언제 | 지금 소리 | 바꾸고 싶은 소리 |
 |---|---|---|---|
-| hit_cook_rice | 쌀 씻기 | 눈 밟는 사각 소리 | 쌀 씻는 물소리 |
 | hit_mix | 버무리기 | 풀 스치는 소리 | 양념 버무리는 촉촉한 소리 |
 | hit_simmer | 조리기에서 저을 때 | 숟가락이 냄비에 닿는 소리 | 보글보글 끓는 소리 |
 | harvest | 텃밭에서 거둘 때 | 묵직한 퍽 | 흙에서 쑥 뽑는 소리 |
