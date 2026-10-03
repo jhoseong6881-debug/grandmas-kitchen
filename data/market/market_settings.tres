@@ -1,0 +1,83 @@
+[gd_resource type="Resource" script_class="MarketSettings" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/market_settings.gd" id="1_market"]
+[ext_resource type="Script" path="res://scripts/data/market_trade.gd" id="2_trade"]
+[ext_resource type="Resource" path="res://data/ingredients/carrot.tres" id="3_carrot"]
+[ext_resource type="Resource" path="res://data/ingredients/egg.tres" id="4_egg"]
+[ext_resource type="Resource" path="res://data/ingredients/honey.tres" id="5_honey"]
+[ext_resource type="Resource" path="res://data/ingredients/acorn.tres" id="6_acorn"]
+[ext_resource type="Resource" path="res://data/ingredients/mushroom.tres" id="7_mushroom"]
+
+[sub_resource type="Resource" id="Trade_1"]
+script = ExtResource("2_trade")
+id = &"mushroom_to_carrot"
+give_ingredient = ExtResource("7_mushroom")
+give_amount = 3
+get_ingredient = ExtResource("3_carrot")
+get_amount = 1
+
+[sub_resource type="Resource" id="Trade_2"]
+script = ExtResource("2_trade")
+id = &"egg_to_carrot"
+give_ingredient = ExtResource("4_egg")
+give_amount = 3
+get_ingredient = ExtResource("3_carrot")
+get_amount = 1
+
+[sub_resource type="Resource" id="Trade_3"]
+script = ExtResource("2_trade")
+id = &"acorn_to_carrot"
+give_ingredient = ExtResource("6_acorn")
+give_amount = 3
+get_ingredient = ExtResource("3_carrot")
+get_amount = 1
+
+[sub_resource type="Resource" id="Trade_4"]
+script = ExtResource("2_trade")
+id = &"honey_to_carrot"
+give_ingredient = ExtResource("5_honey")
+give_amount = 2
+get_ingredient = ExtResource("3_carrot")
+get_amount = 1
+
+[sub_resource type="Resource" id="Trade_5"]
+script = ExtResource("2_trade")
+id = &"mushroom_to_egg"
+give_ingredient = ExtResource("7_mushroom")
+give_amount = 2
+get_ingredient = ExtResource("4_egg")
+get_amount = 1
+
+[sub_resource type="Resource" id="Trade_6"]
+script = ExtResource("2_trade")
+id = &"acorn_to_honey"
+give_ingredient = ExtResource("6_acorn")
+give_amount = 2
+get_ingredient = ExtResource("5_honey")
+get_amount = 1
+
+[sub_resource type="Resource" id="Trade_7"]
+script = ExtResource("2_trade")
+id = &"egg_to_acorn"
+give_ingredient = ExtResource("4_egg")
+give_amount = 2
+get_ingredient = ExtResource("6_acorn")
+get_amount = 1
+
+[sub_resource type="Resource" id="Trade_8"]
+script = ExtResource("2_trade")
+id = &"honey_to_mushroom"
+give_ingredient = ExtResource("5_honey")
+give_amount = 2
+get_ingredient = ExtResource("7_mushroom")
+get_amount = 1
+
+[resource]
+script = ExtResource("1_market")
+first_meeting_lines = Array[String](["어이쿠, 이게 누구야! 할매 손주라며? 소문 다 들었지.", "나는 닷새마다 이 숲에 장을 펴는 너구리 상인이야. 할매랑은 오래 거래했지. 남는 재료 있으면 가져와, 필요한 걸로 바꿔 줄게!"])
+greeting_lines = Array[String](["장날이다, 장날! 오늘은 뭘 바꿔 갈 텐가?", "오늘 물건 좋아! 서두르라고~", "할매도 장날이면 제일 먼저 오셨지. 손주도 닮았구먼!"])
+trade_done_lines = Array[String](["거래 성사! 고맙구먼.", "좋아, 좋아! 서로 남는 장사지~"])
+short_line = "어허, 그건 재료가 모자라는데?"
+sold_out_line = "그건 오늘 다 나갔어. 다음 장날에!"
+farewell_line = "닷새 뒤에 또 보자고!"
+trades = Array[ExtResource("2_trade")]([SubResource("Trade_1"), SubResource("Trade_2"), SubResource("Trade_3"), SubResource("Trade_4"), SubResource("Trade_5"), SubResource("Trade_6"), SubResource("Trade_7"), SubResource("Trade_8")])

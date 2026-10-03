@@ -163,6 +163,18 @@ theme_override_font_sizes/font_size = 24
 text = "버섯 원목으로
 →"
 
+[node name="MarketButton" type="Button" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 160.0
+offset_top = 220.0
+offset_right = 460.0
+offset_bottom = 330.0
+theme_override_font_sizes/font_size = 24
+text = "오늘은 장날!
+숲속 장터로 →"
+
 [node name="GuestNotebook" parent="." unique_id=410802552 instance=ExtResource("3_notebook")]
 unique_name_in_owner = true
 layout_mode = 1

@@ -31,6 +31,12 @@ var plot_crop_ids: Dictionary[StringName, Array] = {}
 var plot_days_left: Dictionary[StringName, Array] = {}
 ## 오늘 아침 이웃 바구니를 이미 열어 봤는지. 하루가 지나면 다시 false.
 var is_todays_gift_collected: bool = false
+## 숲속 장터: 너구리 상인을 만났는지 (첫 인사를 한 번만 하려고 저장한다)
+var has_met_merchant: bool = false
+## 오늘 장터에서 거래마다 바꾼 횟수 (거래 id → 횟수). 하루가 지나면 비운다. 장날 낮의 일이라 저장하지 않는다.
+var todays_market_trades: Dictionary[StringName, int] = {}
+## 오늘 장터에 다녀왔는지. 텃밭이 장터 버튼과 부엌 버튼 중 무엇을 먼저 선택해 둘지 정할 때 쓴다. 저장하지 않는다.
+var has_visited_market_today: bool = false
 ## 아침에 고른 오늘의 메뉴 (레시피 id). 점심 손님은 이 안에서만 주문한다.
 ## 다음 날 아침 메뉴판에서 미리 골라 두는 데도 쓰고, 세이브에도 넣는다. 비어 있으면 메뉴 제한이 없다.
 var menu_recipe_ids: Array[StringName] = []
@@ -112,6 +118,8 @@ func advance_day() -> void:
 	current_day += 1
 	todays_served_guests.clear()
 	is_todays_gift_collected = false
+	todays_market_trades.clear()
+	has_visited_market_today = false
 	for place_id: StringName in plot_days_left:
 		var days: Array = plot_days_left[place_id]
 		for i: int in days.size():
@@ -360,6 +368,22 @@ func learn_taste(guest_id: StringName) -> void:
 		known_taste_guest_ids.append(guest_id)
 
 
+# --- 숲속 장터 ---
+
+func get_market_trade_count(trade_id: StringName) -> int:
+	return todays_market_trades.get(trade_id, 0)
+
+
+## 장터에서 한 번 바꾼다. 재료가 모자라면 아무것도 안 하고 false.
+func trade_at_market(trade: MarketTrade) -> bool:
+	if trade.give_ingredient == null or trade.get_ingredient == null or not has_ingredients(trade.get_cost()):
+		return false
+	remove_ingredients(trade.get_cost())
+	add_ingredient(trade.get_ingredient.id, trade.get_amount)
+	todays_market_trades[trade.id] = get_market_trade_count(trade.id) + 1
+	return true
+
+
 # --- 새 게임 / 세이브 / 로드 ---
 
 func new_game() -> void:
@@ -384,6 +408,9 @@ func new_game() -> void:
 	notes_completed_day = 0
 	is_spring_completed = false
 	is_todays_gift_collected = false
+	has_met_merchant = false
+	todays_market_trades.clear()
+	has_visited_market_today = false
 	is_game_started = false
 
 
@@ -469,6 +496,7 @@ func _to_save_data() -> Dictionary:
 		"extra_plots": _string_keys(extra_plots),
 		"notes_completed_day": notes_completed_day,
 		"is_spring_completed": is_spring_completed,
+		"has_met_merchant": has_met_merchant,
 	}
 
 
@@ -513,6 +541,7 @@ func _from_save_data(data: Dictionary) -> void:
 		keepsake_ids.append(StringName(str(keepsake_id)))
 	notes_completed_day = int(data.get("notes_completed_day", 0))
 	is_spring_completed = bool(data.get("is_spring_completed", false))
+	has_met_merchant = bool(data.get("has_met_merchant", false))
 
 
 ## {밭 id: [{"crop": 작물 id, "days_left": 남은 날}, ...]}

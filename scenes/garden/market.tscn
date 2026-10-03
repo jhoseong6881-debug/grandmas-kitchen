@@ -1,0 +1,150 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/garden/market.gd" id="1_market"]
+[ext_resource type="PackedScene" path="res://scenes/ui/inventory_panel.tscn" id="2_inventory"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_speech"]
+content_margin_left = 32.0
+content_margin_top = 20.0
+content_margin_right = 32.0
+content_margin_bottom = 20.0
+bg_color = Color(0.98, 0.94, 0.82, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.6, 0.42, 0.25, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[node name="Market" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_market")
+
+[node name="Sky" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.78, 0.88, 0.8, 1)
+
+[node name="Ground" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -460.0
+grow_horizontal = 2
+grow_vertical = 0
+color = Color(0.62, 0.5, 0.36, 1)
+
+[node name="StallRoof" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = 120.0
+offset_top = 200.0
+offset_right = 620.0
+offset_bottom = 260.0
+color = Color(0.8, 0.36, 0.28, 1)
+
+[node name="Stall" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = 140.0
+offset_top = 560.0
+offset_right = 600.0
+offset_bottom = 760.0
+color = Color(0.55, 0.38, 0.24, 1)
+
+[node name="Merchant" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = 260.0
+offset_top = 300.0
+offset_right = 480.0
+offset_bottom = 560.0
+color = Color(0.5, 0.45, 0.42, 1)
+
+[node name="MerchantNameLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 140.0
+offset_top = 780.0
+offset_right = 600.0
+offset_bottom = 840.0
+theme_override_colors/font_color = Color(1, 0.96, 0.88, 1)
+theme_override_font_sizes/font_size = 36
+text = "너구리 상인"
+horizontal_alignment = 1
+
+[node name="DayLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 48.0
+offset_top = 36.0
+offset_right = 748.0
+offset_bottom = 96.0
+theme_override_colors/font_color = Color(0.32, 0.22, 0.14, 1)
+theme_override_font_sizes/font_size = 48
+text = "5일째 · 숲속 장터"
+
+[node name="InventoryPanel" parent="." instance=ExtResource("2_inventory")]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -608.0
+offset_top = 36.0
+offset_right = -48.0
+offset_bottom = 136.0
+grow_horizontal = 0
+
+[node name="Speech" type="PanelContainer" parent="."]
+layout_mode = 0
+offset_left = 680.0
+offset_top = 300.0
+offset_right = 1840.0
+offset_bottom = 480.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_speech")
+
+[node name="SpeechLabel" type="Label" parent="Speech"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.2, 0.12, 1)
+theme_override_font_sizes/font_size = 36
+text = "너구리 상인: 장날이다, 장날! 오늘은 뭘 바꿔 갈 텐가?"
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="TradeList" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 680.0
+offset_top = 520.0
+offset_right = 1840.0
+offset_bottom = 940.0
+theme_override_constants/separation = 20
+
+[node name="BackButton" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -110.0
+offset_right = 200.0
+offset_bottom = -30.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 36
+text = "← 텃밭으로"

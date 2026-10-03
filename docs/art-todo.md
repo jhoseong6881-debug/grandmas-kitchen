@@ -82,3 +82,6 @@
 | scenes/ui/sleep_transition.tscn (Moon) | 잠드는 장면의 달 (지금은 노란 동그라미) | 160x160 | 할 일 |
 | scenes/ui/sleep_transition.tscn (Sky) | 잠드는 장면 밤하늘 배경 (별, 지붕 실루엣 등. 아침으로 밝아지는 건 코드가 함) | 1920x1080 | 선택 |
 | scenes/ui/sleep_transition.tscn (SaveIcon) | 저장 아이콘 (저장 중에 빙글빙글 돈다. 예: 할머니 레시피 공책) | 48x48 | 할 일 |
+| scenes/garden/market.tscn (Merchant) | 너구리 상인 (넉살 좋은 떠돌이 장사꾼) | 220x260 | 할 일 |
+| scenes/garden/market.tscn (Stall, StallRoof) | 장터 가판과 차양 | 460x200 / 500x60 | 할 일 |
+| scenes/garden/market.tscn (Sky, Ground) | 숲속 장터 배경 | 1920x1080 | 선택 |
