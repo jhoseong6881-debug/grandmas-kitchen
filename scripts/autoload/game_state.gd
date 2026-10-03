@@ -60,6 +60,10 @@ var pending_reward_tiers: Dictionary[StringName, Array] = {}
 var keepsake_ids: Array[StringName] = []
 ## 밭 id → 단골 선물로 늘어난 칸 수
 var extra_plots: Dictionary[StringName, int] = {}
+## 열린 밭 id (GardenPlace.unlock_ingredient 를 처음 얻으면 열린다). 처음부터 열린 밭은 넣지 않는다.
+var unlocked_place_ids: Array[StringName] = []
+## 방금 열려서 다음 텃밭에서 알려 줄 밭 id. 저장하지 않는다.
+var newly_unlocked_place_ids: Array[StringName] = []
 ## 계절 잔치 준비: 장보기 목록을 받았는지, 잔치 바구니에 모은 재료 (재료 id → 개수). 계절이 끝나면 비운다.
 var is_feast_prep_announced: bool = false
 var feast_prep_delivered: Dictionary[StringName, int] = {}
@@ -81,6 +85,9 @@ var todays_served_guests: Dictionary[StringName, bool] = {}
 func add_ingredient(ingredient_id: StringName, amount: int = 1) -> void:
 	var new_count: int = get_ingredient_count(ingredient_id) + amount
 	inventory[ingredient_id] = new_count
+	# 밭을 먼저 열어야, 재료가 바뀌었다는 신호를 받은 화면이 열린 상태를 본다.
+	if amount > 0:
+		_unlock_places_by_ingredient(ingredient_id)
 	inventory_changed.emit(ingredient_id, new_count)
 
 
@@ -393,6 +400,40 @@ func trade_at_market(trade: MarketTrade) -> bool:
 	return true
 
 
+# --- 잠긴 밭 ---
+
+## 밭에 갈 수 있는지. unlock_ingredient 가 없는 밭은 처음부터 열려 있다.
+func is_place_unlocked(place_id: StringName) -> bool:
+	var place: GardenPlace = GameData.get_garden_place(place_id)
+	return place == null or place.unlock_ingredient == null or place_id in unlocked_place_ids
+
+
+func _unlock_place(place_id: StringName, should_notify: bool) -> void:
+	if place_id in unlocked_place_ids:
+		return
+	unlocked_place_ids.append(place_id)
+	if should_notify:
+		newly_unlocked_place_ids.append(place_id)
+
+
+## 이 재료로 열리는 밭이 있으면 연다 (다음 텃밭에서 알려 준다).
+func _unlock_places_by_ingredient(ingredient_id: StringName) -> void:
+	for place: GardenPlace in GameData.get_all_garden_places():
+		if place.unlock_ingredient != null and place.unlock_ingredient.id == ingredient_id:
+			_unlock_place(place.id, true)
+
+
+## 예전 세이브: 이미 그 재료를 가졌거나 그 밭에 뭔가 심어 두었으면 조용히 연다.
+func _unlock_places_from_state() -> void:
+	for place: GardenPlace in GameData.get_all_garden_places():
+		if place.unlock_ingredient == null or place.id in unlocked_place_ids:
+			continue
+		var has_planted: bool = plot_crop_ids.get(place.id, []).any(
+				func(crop_id: Variant) -> bool: return StringName(crop_id) != EMPTY_PLOT)
+		if get_ingredient_count(place.unlock_ingredient.id) > 0 or has_planted:
+			_unlock_place(place.id, false)
+
+
 # --- 계절 잔치 준비 ---
 
 func get_feast_delivered(ingredient_id: StringName) -> int:
@@ -440,6 +481,8 @@ func new_game() -> void:
 	pending_reward_tiers.clear()
 	keepsake_ids.clear()
 	extra_plots.clear()
+	unlocked_place_ids.clear()
+	newly_unlocked_place_ids.clear()
 	current_season = Season.Id.SPRING
 	is_spring_completed = false
 	is_todays_gift_collected = false
@@ -532,6 +575,7 @@ func _to_save_data() -> Dictionary:
 		"pending_reward_tiers": _string_keys(pending_reward_tiers),
 		"keepsake_ids": Array(keepsake_ids).map(func(keepsake_id: StringName) -> String: return String(keepsake_id)),
 		"extra_plots": _string_keys(extra_plots),
+		"unlocked_place_ids": Array(unlocked_place_ids).map(func(place_id: StringName) -> String: return String(place_id)),
 		"current_season": current_season,
 		"is_spring_completed": is_spring_completed,
 		"has_met_merchant": has_met_merchant,
@@ -559,6 +603,8 @@ func _from_save_data(data: Dictionary) -> void:
 	for place_id: String in extra_plot_data:
 		extra_plots[StringName(place_id)] = int(extra_plot_data[place_id])
 	_load_garden(data)
+	for place_id: Variant in data.get("unlocked_place_ids", []):
+		unlocked_place_ids.append(StringName(str(place_id)))
 	var met_data: Array = data.get("met_guest_ids", [])
 	for guest_id: Variant in met_data:
 		met_guest_ids.append(StringName(str(guest_id)))
@@ -582,6 +628,7 @@ func _from_save_data(data: Dictionary) -> void:
 	current_season = clampi(int(data.get("current_season", Season.Id.SPRING)), 0, Season.Id.size() - 1) as Season.Id
 	is_spring_completed = bool(data.get("is_spring_completed", false))
 	has_met_merchant = bool(data.get("has_met_merchant", false))
+	_unlock_places_from_state()
 	is_feast_prep_announced = bool(data.get("is_feast_prep_announced", false))
 	var feast_data: Dictionary = data.get("feast_prep_delivered", {})
 	for ingredient_id: String in feast_data:

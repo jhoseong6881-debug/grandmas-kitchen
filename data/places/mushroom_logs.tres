@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://scripts/data/garden_place.gd" id="1_place"]
 [ext_resource type="Script" path="res://scripts/data/crop.gd" id="2_crop"]
 [ext_resource type="Resource" path="res://data/crops/mushroom_crop.tres" id="3_mushroom_crop"]
+[ext_resource type="Resource" path="res://data/ingredients/mushroom.tres" id="4_mushroom"]
 
 [resource]
 script = ExtResource("1_place")
@@ -11,3 +12,5 @@ display_name = "버섯 원목"
 plot_name = "원목"
 plot_count = 2
 crops = Array[ExtResource("2_crop")]([ExtResource("3_mushroom_crop")])
+unlock_ingredient = ExtResource("4_mushroom")
+unlocked_text = "버섯을 얻었어요! 이제 버섯 원목에 버섯을 심을 수 있어요."

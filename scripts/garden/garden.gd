@@ -13,6 +13,8 @@ const GIFT_EMPTY_TEXT: String = "이웃 바구니\n(비었어요)"
 const WELCOME_TEXT: String = "좋은 아침이에요. 텃밭을 둘러볼까요?"
 const MARKET_DAY_TEXT: String = "오늘은 장날! 숲속 장터가 열렸어요."
 const FEAST_BUTTON_FORMAT: String = "봄 잔치 바구니\n%d / %d"
+## 버섯 원목으로 가는 버튼이 가리키는 밭 (잠겨 있으면 버튼을 숨긴다)
+const LOGS_PLACE_ID: StringName = &"mushroom_logs"
 ## 이웃 바구니에서 재료를 꺼낼 때 나는 소리 (data/sounds/ 의 id)
 const RECEIVE_SOUND: StringName = &"receive"
 
@@ -50,19 +52,26 @@ const RECEIVE_SOUND: StringName = &"receive"
 @onready var _notebook_button: Button = %NotebookButton
 @onready var _menu_board: MenuBoard = %MenuBoard
 
+## 아래 안내 글 (줄바꿈을 넣기 전 원래 글). 한 줄 더할 때 쓴다.
+var _status_text: String = ""
+
 
 func _ready() -> void:
 	Sound.play_music(music)
 	if start_new_game_on_ready and not GameState.is_game_started:
 		GameState.start_new_game()
 	_day_label.text = DAY_TEXT_FORMAT % GameState.current_day
-	_status_label.text = WELCOME_TEXT
+	_set_status(WELCOME_TEXT)
 	var setup: StartingSetup = GameData.get_starting_setup()
 	if GameState.current_day == GameState.STARTING_DAY and setup != null and not setup.first_morning_text.is_empty():
-		_status_label.text = setup.first_morning_text
+		_set_status(setup.first_morning_text)
+	_update_logs_button()
+	# 이웃 바구니에서 버섯이 나오면 텃밭에 있는 동안에도 바로 열린다.
+	GameState.inventory_changed.connect(_update_logs_button.unbind(2))
 	_market_button.visible = GameData.get_market_settings().is_market_day(GameState.current_day)
 	if _market_button.visible:
-		_status_label.text = WELCOME_TEXT + "\n" + MARKET_DAY_TEXT
+		_set_status(WELCOME_TEXT + "\n" + MARKET_DAY_TEXT)
+	_show_unlock_notice()
 	_market_button.pressed.connect(get_tree().change_scene_to_file.bind(market_scene_path))
 	_feast_button.pressed.connect(_on_feast_button_pressed)
 	_feast_prep_panel.closed.connect(_focus_next_thing_to_do)
@@ -98,7 +107,7 @@ func _on_harvested(crop: Crop, plot_button: Button) -> void:
 
 func _on_planted(crop: Crop, _plot_button: Button) -> void:
 	var crop_name: String = crop.ingredient.display_name
-	_status_label.text = PLANTED_FORMAT % [crop_name, Korean.object_particle(crop_name), crop.grow_days]
+	_set_status(PLANTED_FORMAT % [crop_name, Korean.object_particle(crop_name), crop.grow_days])
 	_focus_next_thing_to_do()
 
 
@@ -116,9 +125,10 @@ func _on_basket_button_pressed() -> void:
 	var gift: Ingredient = neighbor.payment_ingredients.pick_random()
 	GameState.add_ingredient(gift.id, gift_amount)
 	Sound.play(RECEIVE_SOUND)
-	_status_label.text = GIFT_FORMAT % [neighbor.display_name, Korean.subject_particle(neighbor.display_name),
-			gift.display_name, gift_amount]
+	_set_status(GIFT_FORMAT % [neighbor.display_name, Korean.subject_particle(neighbor.display_name),
+			gift.display_name, gift_amount])
 	_pop_text(HARVEST_POP_FORMAT % [gift_amount, gift.display_name], _basket_button)
+	_show_unlock_notice()
 	_focus_next_thing_to_do()
 
 
@@ -138,6 +148,28 @@ func _on_feast_button_pressed() -> void:
 func _get_feast_prep() -> FeastPrep:
 	var ending: SeasonEnding = GameData.get_season_ending()
 	return ending.feast_prep if ending != null else null
+
+
+## 버섯 원목이 잠겨 있으면 가는 버튼을 숨긴다. 뭐가 있는지 미리 알 수 없게 해서, 열릴 때 반가운 발견이 되게.
+func _update_logs_button() -> void:
+	_logs_button.visible = GameState.is_place_unlocked(LOGS_PLACE_ID)
+
+
+## 아래 안내 글을 바꾼다. 한글이 낱말 중간에서 잘리지 않게 띄어쓰기 자리에서 줄을 바꾼다.
+func _set_status(text: String) -> void:
+	_status_text = text
+	var font: Font = _status_label.get_theme_font("font")
+	var font_size: int = _status_label.get_theme_font_size("font_size")
+	_status_label.text = Korean.wrap_by_spaces(text, font, font_size, _status_label.size.x)
+
+
+## 방금 열린 밭이 있으면 아래 글에 한 줄 더해 알려 준다 (한 번만).
+func _show_unlock_notice() -> void:
+	for place_id: StringName in GameState.newly_unlocked_place_ids:
+		var place: GardenPlace = GameData.get_garden_place(place_id)
+		if place != null and not place.unlocked_text.is_empty():
+			_set_status(_status_text + "\n" + place.unlocked_text)
+	GameState.newly_unlocked_place_ids.clear()
 
 
 func _update_basket() -> void:

@@ -15,3 +15,7 @@ extends Resource
 @export var crops: Array[Crop] = []
 ## 새 게임을 시작할 때 칸마다 다 자란 채로 심겨 있는 작물. 비워 두면 빈 칸으로 시작한다.
 @export var starting_crop: Crop
+## 이 재료를 처음 얻으면 갈 수 있게 된다 (그전에는 가는 버튼이 숨어 있다). 비워 두면 처음부터 열려 있다.
+@export var unlock_ingredient: Ingredient
+## 열린 뒤 처음 텃밭에 오면 보여 주는 글
+@export_multiline var unlocked_text: String = ""
