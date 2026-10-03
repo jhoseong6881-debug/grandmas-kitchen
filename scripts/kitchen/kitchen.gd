@@ -33,6 +33,8 @@ const RECEIVE_SOUND: StringName = &"receive"
 const POP_SOUND: StringName = &"pop"
 const TIER_UP_SOUND: StringName = &"tier_up"
 
+## 이 장면의 배경음악. 비워 두면 앞 장면의 음악을 서서히 끈다.
+@export var music: AudioStream
 ## 점심 한 번에 받는 손님 수의 최대값 (가게 단계 데이터가 없을 때만 쓴다. 보통은 ShopLevel.max_guests)
 @export var guests_per_lunch: int = 3
 ## 오늘 손님 수 = 오늘 메뉴 수 + 이 값 (최대 guests_per_lunch).
@@ -135,6 +137,7 @@ var _status_default_color: Color
 
 
 func _ready() -> void:
+	Sound.play_music(music)
 	GameState.day_changed.connect(_on_day_changed)
 	_cook_button.pressed.connect(_on_cook_button_pressed)
 	_serve_button.pressed.connect(_on_serve_button_pressed)

@@ -6,6 +6,8 @@ extends Control
 const NEXT_TEXT: String = "다음"
 const RECIPE_ITEM_FORMAT: String = "· %s"
 
+## 이 장면의 배경음악. 비워 두면 앞 장면의 음악을 서서히 끈다.
+@export var music: AudioStream
 ## 봄을 마친 뒤 돌아갈 타이틀 장면
 @export_file("*.tscn") var title_scene_path: String = "res://scenes/ui/title.tscn"
 ## 손님 그림이 아직 없을 때 쓰는 임시 사각형 크기와 색
@@ -42,6 +44,7 @@ var _ending: SeasonEnding
 
 
 func _ready() -> void:
+	Sound.play_music(music)
 	_ending = GameData.get_season_ending()
 	if _ending == null:
 		_ending = SeasonEnding.new()

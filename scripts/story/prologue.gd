@@ -15,6 +15,8 @@ const MAX_SPEAKER_LENGTH: int = 8
 ## 편지 문단 사이 빈 줄
 const LETTER_PARAGRAPH_GAP: String = "\n\n"
 
+## 이 장면의 배경음악. 비워 두면 앞 장면의 음악을 서서히 끈다.
+@export var music: AudioStream
 @export var story: Story
 ## 다 보면 넘어갈 장면
 @export_file("*.tscn") var next_scene_path: String = "res://scenes/garden/garden.tscn"
@@ -55,6 +57,7 @@ var _blink_time: float = 0.0
 
 
 func _ready() -> void:
+	Sound.play_music(music)
 	_name_box.hide()
 	_name_edit.max_length = name_max_length
 	_name_edit.text_submitted.connect(_confirm_name.unbind(1))

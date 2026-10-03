@@ -15,6 +15,8 @@ const MARKET_DAY_TEXT: String = "오늘은 장날! 숲속 장터가 열렸어요
 ## 이웃 바구니에서 재료를 꺼낼 때 나는 소리 (data/sounds/ 의 id)
 const RECEIVE_SOUND: StringName = &"receive"
 
+## 이 장면의 배경음악. 비워 두면 앞 장면의 음악을 서서히 끈다.
+@export var music: AudioStream
 ## 이 화면을 켤 때 게임이 아직 시작 전이면 새 게임을 시작한다 (시작 재료, 레시피, 텃밭을 받는다).
 @export var start_new_game_on_ready: bool = true
 ## 텃밭을 다 둘러본 뒤 넘어갈 점심 부엌 장면
@@ -47,6 +49,7 @@ const RECEIVE_SOUND: StringName = &"receive"
 
 
 func _ready() -> void:
+	Sound.play_music(music)
 	if start_new_game_on_ready and not GameState.is_game_started:
 		GameState.start_new_game()
 	_day_label.text = DAY_TEXT_FORMAT % GameState.current_day

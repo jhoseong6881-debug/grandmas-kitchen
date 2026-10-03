@@ -7,6 +7,8 @@ const WELCOME_TEXT: String = "숲 그늘의 버섯 원목이에요. 버섯 하�
 const PLANTED_FORMAT: String = "%s%s 심었어요. %d일 뒤에 거둘 수 있어요."
 const HARVEST_POP_FORMAT: String = "+%d %s"
 
+## 이 장면의 배경음악. 비워 두면 앞 장면의 음악을 서서히 끈다.
+@export var music: AudioStream
 ## 돌아갈 당근 텃밭 장면
 @export_file("*.tscn") var garden_scene_path: String = "res://scenes/garden/garden.tscn"
 ## 거둘 때 "+3 버섯"이 떠오르는 높이(픽셀)와 시간(초)
@@ -22,6 +24,7 @@ const HARVEST_POP_FORMAT: String = "+%d %s"
 
 
 func _ready() -> void:
+	Sound.play_music(music)
 	_day_label.text = DAY_TEXT_FORMAT % GameState.current_day
 	_status_label.text = WELCOME_TEXT
 	_back_button.pressed.connect(get_tree().change_scene_to_file.bind(garden_scene_path))

@@ -25,6 +25,8 @@ const SECRET_SOUND: StringName = &"secret"
 const GIFT_SOUND: StringName = &"gift"
 const NOTE_PAGE_SOUND: StringName = &"note_page"
 
+## 이 장면의 배경음악. 비워 두면 앞 장면의 음악을 서서히 끈다.
+@export var music: AudioStream
 ## 잠자리에 든 뒤 넘어갈 다음 날 아침 장면
 @export_file("*.tscn") var morning_scene_path: String = "res://scenes/garden/garden.tscn"
 ## 잠드는 장면 (할머니 꿈 한 줄, 저장, 아침으로 밝아지기)
@@ -56,6 +58,7 @@ var _current_talk: EveningTalk
 
 
 func _ready() -> void:
+	Sound.play_music(music)
 	_day_label.text = DAY_TEXT_FORMAT % GameState.current_day
 	_note_card.hide()
 	_reply_box.hide()

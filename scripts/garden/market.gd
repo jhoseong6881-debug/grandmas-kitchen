@@ -13,6 +13,8 @@ const TRADE_POP_FORMAT: String = "+%d %s"
 const TRADE_SOUND: StringName = &"receive"
 const SHORT_SOUND: StringName = &"miss"
 
+## 이 장면의 배경음악. 비워 두면 앞 장면의 음악을 서서히 끈다.
+@export var music: AudioStream
 ## 돌아갈 당근 텃밭 장면
 @export_file("*.tscn") var garden_scene_path: String = "res://scenes/garden/garden.tscn"
 @export var trade_button_height: float = 84.0
@@ -36,6 +38,7 @@ var _trade_done_count: int = 0
 
 
 func _ready() -> void:
+	Sound.play_music(music)
 	_settings = GameData.get_market_settings()
 	GameState.has_visited_market_today = true
 	_day_label.text = DAY_TEXT_FORMAT % GameState.current_day

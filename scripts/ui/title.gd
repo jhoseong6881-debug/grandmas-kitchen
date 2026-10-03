@@ -6,6 +6,8 @@ const CONTINUE_FORMAT: String = "이어 하기 (%d일째 아침)"
 const SPRING_COMPLETED_TEXT: String = "봄 완료 (여름은 준비 중)"
 const LOAD_FAILED_TEXT: String = "저장된 게임을 불러오지 못했어요. 새 게임으로 시작해 주세요."
 
+## 이 장면의 배경음악. 비워 두면 앞 장면의 음악을 서서히 끈다.
+@export var music: AudioStream = preload("res://assets/audio/music/title_spring.mp3")
 ## 이어 하기로 시작할 아침 장면
 @export_file("*.tscn") var morning_scene_path: String = "res://scenes/garden/garden.tscn"
 ## 새 게임을 시작하면 먼저 보여 주는 프롤로그 장면
@@ -26,6 +28,7 @@ var _can_continue: bool = false
 
 
 func _ready() -> void:
+	Sound.play_music(music)
 	_continue_button.pressed.connect(_on_continue_button_pressed)
 	_new_game_button.pressed.connect(_on_new_game_button_pressed)
 	_settings_button.pressed.connect(_on_settings_button_pressed)
