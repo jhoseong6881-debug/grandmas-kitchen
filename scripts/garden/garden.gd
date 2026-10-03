@@ -23,6 +23,9 @@ const RECEIVE_SOUND: StringName = &"receive"
 @export_file("*.tscn") var logs_scene_path: String = "res://scenes/garden/mushroom_logs.tscn"
 ## 숲속 장터 장면 (장날에만 갈 수 있다)
 @export_file("*.tscn") var market_scene_path: String = "res://scenes/garden/market.tscn"
+## 목표판 (노트, 소문, 장날, 봄 잔치)과 놓을 자리 (손님 수첩 버튼 아래)
+@export var goal_board_scene: PackedScene = preload("res://scenes/ui/goal_board.tscn")
+@export var goal_board_position: Vector2 = Vector2(48, 190)
 ## 이웃이 바구니에 두고 가는 재료 개수
 @export var gift_amount: int = 1
 ## 거둘 때 "+1 당근"이 떠오르는 높이(픽셀)와 시간(초)
@@ -63,7 +66,18 @@ func _ready() -> void:
 	_plot_row.harvested.connect(_on_harvested)
 	_plot_row.planted.connect(_on_planted)
 	_update_basket()
+	_add_goal_board()
 	_focus_next_thing_to_do()
+
+
+func _add_goal_board() -> void:
+	if goal_board_scene == null:
+		return
+	var board: Control = goal_board_scene.instantiate()
+	board.position = goal_board_position
+	add_child(board)
+	# 손님 수첩과 메뉴판 같은 창보다 뒤에 그려지게, 창들보다 앞 순서에 둔다.
+	move_child(board, _notebook.get_index())
 
 
 ## 거두면 "+1 당근", 심으면 상태 글에 알려 준다.

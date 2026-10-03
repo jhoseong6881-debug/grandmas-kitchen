@@ -167,10 +167,10 @@ text = "버섯 원목으로
 unique_name_in_owner = true
 visible = false
 layout_mode = 0
-offset_left = 160.0
-offset_top = 220.0
-offset_right = 460.0
-offset_bottom = 330.0
+offset_left = 1460.0
+offset_top = 280.0
+offset_right = 1760.0
+offset_bottom = 370.0
 theme_override_font_sizes/font_size = 24
 text = "오늘은 장날!
 숲속 장터로 →"

@@ -45,6 +45,9 @@ const TIER_UP_SOUND: StringName = &"tier_up"
 @export_file("*.tscn") var porch_scene_path: String = "res://scenes/porch/porch.tscn"
 ## 가게 모습(간판, 등불, 평상, 기념품 선반). 부엌이 켜질 때 배경 바로 위에 붙인다.
 @export var shop_decor_scene: PackedScene = preload("res://scenes/kitchen/shop_decor.tscn")
+## 목표판 (노트, 소문, 장날, 봄 잔치)과 놓을 자리 (손님 수첩 버튼 아래). kitchen.tscn 을 고치지 않으려고 코드로 붙인다.
+@export var goal_board_scene: PackedScene = preload("res://scenes/ui/goal_board.tscn")
+@export var goal_board_position: Vector2 = Vector2(48, 250)
 ## 레시피 노트를 다 모은 다음 날, 평상 대신 넘어갈 봄 잔치 장면
 @export_file("*.tscn") var feast_scene_path: String = "res://scenes/porch/spring_feast.tscn"
 ## 좋아하는 요리 대신 다른 요리를 주문한 손님은 첫 번째 밥값 재료를 이만큼만 낸다.
@@ -142,6 +145,7 @@ func _ready() -> void:
 		minigame.finished.connect(_on_minigame_finished)
 	_status_default_color = _cook_status_label.get_theme_color("default_color")
 	_add_shop_decor()
+	_add_goal_board()
 	if start_new_game_on_ready and not GameState.is_game_started:
 		GameState.start_new_game()
 	_on_day_changed(GameState.current_day)
@@ -149,6 +153,16 @@ func _ready() -> void:
 
 
 ## 가게 모습을 배경과 조리대 바로 위(손님과 버튼 아래)에 붙인다.
+func _add_goal_board() -> void:
+	if goal_board_scene == null:
+		return
+	var board: Control = goal_board_scene.instantiate()
+	board.position = goal_board_position
+	add_child(board)
+	# 미니게임과 창들보다 뒤에 그려지게, 첫 미니게임보다 앞 순서에 둔다.
+	move_child(board, get_node("%ChopMinigame").get_index())
+
+
 func _add_shop_decor() -> void:
 	if shop_decor_scene == null:
 		return

@@ -6,6 +6,7 @@ extends Node
 signal inventory_changed(ingredient_id: StringName, new_count: int)
 signal day_changed(new_day: int)
 signal recipe_unlocked(recipe_id: StringName)
+signal reputation_changed(new_reputation: int)
 
 const SAVE_PATH: String = "user://save.json"
 ## 세이브 파일 구조가 바뀌면 숫자를 올린다. 옛 세이브를 읽을 때 구분하는 데 쓴다.
@@ -296,6 +297,7 @@ func get_shop_tools_for(minigame_type: Recipe.MinigameType) -> Array[ShopTool]:
 func add_reputation(points: int) -> int:
 	var before: int = get_shop_tier()
 	reputation += points
+	reputation_changed.emit(reputation)
 	var after: int = get_shop_tier()
 	# 새로 오른 단계마다 밭 칸을 늘린다 (한 번에 두 단계가 올라도 둘 다 준다).
 	for tier: int in range(before + 1, after + 1):
