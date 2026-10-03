@@ -14,6 +14,8 @@ extends Resource
 @export var grandma_taste_points: int = 1
 ## 손님이 주문할 때 오늘의 부탁을 덧붙일 확률 (0 ~ 1)
 @export_range(0.0, 1.0) var request_chance: float = 0.4
+## 이 날부터 손님이 부탁을 한다 (첫날은 게임에 익숙해지도록 부탁 없이)
+@export var request_start_day: int = 2
 ## 부탁을 들어줬을 때 더 오르는 단골도와 더 받는 밥값
 @export var request_points: int = 2
 @export var request_payment_bonus: int = 1

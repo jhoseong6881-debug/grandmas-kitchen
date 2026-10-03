@@ -2,6 +2,7 @@ class_name GarnishPicker
 extends ChoicePicker
 ## "어떻게 마무리할까요?" 창. 요리를 다 하고 대접하기 전에 열려서, 올릴 고명(data/garnishes/)을 고른다.
 ## 고명마다 맛과 드는 재료를 보여 주고, 재료가 모자라면 고를 수 없다.
+## 손님의 입맛 힌트를 받으면 제목 아래에 다시 보여 준다 (주문 때 한 말을 잊었어도 고를 수 있게).
 ## 고르면 closed(고명), 그만두면 closed(null).
 
 signal closed(garnish: Garnish)
@@ -19,7 +20,11 @@ func _ready() -> void:
 	chosen.connect(_on_chosen)
 
 
-func open() -> void:
+## hint: 제목 아래에 보여 줄 손님의 입맛 힌트 (없으면 빈 글)
+func open(hint: String = "") -> void:
+	var hint_label: Label = %HintLabel
+	hint_label.text = hint
+	hint_label.visible = not hint.is_empty()
 	_garnishes = GameData.get_all_garnishes()
 	var texts: Array[String] = []
 	var enabled: Array[bool] = []

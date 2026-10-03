@@ -20,6 +20,13 @@ extends Resource
 @export var fallback_order_line: String = "음… 오늘은 그냥 {recipe}, 그거 주세요."
 ## 좋아하는 요리가 오늘 이미 나가서, 메뉴의 다른 요리가 궁금해 시킬 때 하는 말. 비워 두면 부엌의 기본 문장을 쓴다.
 @export var curious_order_line: String = ""
+## ※ 새 손님을 만들 때는 아래 세 줄을 꼭 함께 쓴다 (처음 만남이 갑작스럽지 않게, 고명을 고를 단서가 있게).
+## 처음 점심에 왔을 때의 주문: 할머니 밥집 단골이었다는 걸 자기 방식으로 알리고, 손주를 반가워한 뒤 {recipe} 를 시킨다.
+@export var first_order_line: String = ""
+## 입맛 힌트: 입맛(favorite_garnish)을 알기 전까지 주문 뒤에 붙고, 고명 고르는 창 위에도 다시 보인다.
+@export var taste_hint_line: String = ""
+## 처음 저녁 평상에 왔을 때, 걸어 들어와 앉은 뒤 하는 인사 (그다음 평소 이야기가 이어진다). {name} 은 주인공 이름.
+@export_multiline var porch_greeting_line: String = ""
 ## 대접받고 하는 말
 @export var thanks_line: String = "잘 먹었어요!"
 ## 미니게임을 한 번도 안 틀리고 대접받았을 때 하는 말

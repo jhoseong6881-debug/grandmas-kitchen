@@ -24,13 +24,29 @@ func show_guest(guest: AnimalGuest, text: String) -> void:
 	_portrait.visible = has_portrait
 	_portrait_placeholder.visible = not has_portrait
 	_name_label.text = guest.display_name
-	_bubble_text.text = text
 	show()
+	_set_bubble_text(text)
 
 
 ## 말풍선 내용을 바꾼다.
 func say(text: String) -> void:
-	_bubble_text.text = text
+	_set_bubble_text(text)
+
+
+## 한글이 낱말 중간에서 잘리지 않게 띄어쓰기 자리에서 줄을 바꿔 넣는다.
+## (말풍선 폭을 아직 모르면 그대로 넣고 Godot 자동 줄바꿈에 맡긴다)
+func _set_bubble_text(text: String) -> void:
+	# 말풍선(장면에서 폭을 정해 둔 칸)의 폭에서 안쪽 여백을 뺀다. 숨겨져 있던 안쪽 칸은 폭이 아직 0일 수 있어서.
+	var margin: MarginContainer = _bubble_text.get_parent() as MarginContainer
+	var bubble: Control = margin.get_parent() as Control if margin != null else null
+	var width: float = 0.0
+	if bubble != null:
+		width = bubble.size.x - margin.get_theme_constant("margin_left") - margin.get_theme_constant("margin_right")
+	if width <= 0.0:
+		_bubble_text.text = text
+		return
+	_bubble_text.text = Korean.wrap_by_spaces(text, _bubble_text.get_theme_font("font"),
+			_bubble_text.get_theme_font_size("font_size"), width)
 
 
 func clear() -> void:

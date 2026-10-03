@@ -24,6 +24,9 @@ const PERFECT_BONUS_FORMAT: String = " (완벽 +%d)"
 const REGULAR_BONUS_FORMAT: String = " (%s 덤 +%d)"
 const LUNCH_DONE_TEXT: String = "오늘 점심 장사 끝! 수고했어요."
 const OUT_OF_INGREDIENTS_TEXT: String = "재료가 다 떨어져서 오늘 장사는 여기까지예요."
+## 입맛 힌트를 주문 뒤에 붙일 때 사이에 넣는 글, 고명 창에 다시 보여 줄 때의 모양
+const TASTE_HINT_JOIN: String = " "
+const TASTE_HINT_REMINDER_FORMAT: String = "%s: \"%s\""
 ## 호기심 주문 기본 문장 (손님 데이터의 curious_order_line 이 비어 있을 때)
 const DEFAULT_CURIOUS_ORDER_LINE: String = "아까 그 냄새가 궁금했어요. {recipe} 주세요!"
 ## 효과음 이름 (data/sounds/ 의 id)
@@ -219,6 +222,11 @@ func _call_next_guest() -> void:
 				var curious_line: String = guest.curious_order_line if not guest.curious_order_line.is_empty() \
 						else DEFAULT_CURIOUS_ORDER_LINE
 				order_text = curious_line.format({"recipe": order.display_name})
+			# 처음 온 손님은 할머니 밥집 단골이었다는 인사와 함께 주문한다.
+			if not GameState.has_met_guest(guest.id) and not guest.first_order_line.is_empty():
+				order_text = guest.first_order_line.format({"recipe": order.display_name})
+			if _taste_hint(guest) != "":
+				order_text += TASTE_HINT_JOIN + _taste_hint(guest)
 			current_request = _choose_request(order)
 			if current_request != null:
 				order_text += REQUEST_JOIN + current_request.line
@@ -243,9 +251,10 @@ func _count_guests_today() -> int:
 	return clampi(menu_count + extra_guests_over_menu + bonus, 1, max_guests)
 
 
-## 가끔(request_chance) 이 요리에 나올 수 있는 오늘의 부탁 하나를 고른다. 없으면 null.
+## 가끔(request_chance) 이 요리에 나올 수 있는 오늘의 부탁 하나를 고른다. request_start_day 전에는 부탁하지 않는다. 없으면 null.
 func _choose_request(order: Recipe) -> GuestRequest:
-	if randf() >= GameData.get_regular_settings().request_chance:
+	var settings: RegularSettings = GameData.get_regular_settings()
+	if GameState.current_day < settings.request_start_day or randf() >= settings.request_chance:
 		return null
 	var possible: Array[GuestRequest] = GameData.get_all_requests().filter(
 			func(request: GuestRequest) -> bool: return request.applies_to(order))
@@ -274,6 +283,13 @@ func _choose_order(guest: AnimalGuest) -> Recipe:
 
 
 ## 좋아하는 요리를 못 낼 때 대신 주문할 요리: 지금 낼 수 있고 싫어하지 않는 아무 요리 하나. 없으면 null.
+## 입맛 힌트: 손님의 입맛(고명)을 아직 모를 때만 준다. 알게 되면 빈 글.
+func _taste_hint(guest: AnimalGuest) -> String:
+	if guest == null or guest.favorite_garnish == null or GameState.knows_taste(guest.id):
+		return ""
+	return guest.taste_hint_line
+
+
 ## 호기심 주문: 손님이 시키려던 요리가 오늘 이미 나갔고, 메뉴에 오늘 아직 아무도 안 시킨 요리가 있으면 그걸 시킨다.
 ## (싫어하는 요리는 빼고). 밥값은 좋아하는 요리와 똑같이 받는다. 해당하지 않으면 null.
 func _choose_curious_order(guest: AnimalGuest, planned: Recipe) -> Recipe:
@@ -371,7 +387,8 @@ func _run_next_step() -> void:
 
 ## 대접하기 전에 마무리 고명을 고른다. 그만두면 다시 대접하기 버튼으로 돌아간다.
 func _on_serve_button_pressed() -> void:
-	_garnish_picker.open()
+	var hint: String = _taste_hint(current_guest)
+	_garnish_picker.open(TASTE_HINT_REMINDER_FORMAT % [current_guest.display_name, hint] if hint != "" else "")
 	var garnish: Garnish = await _garnish_picker.closed
 	if garnish == null:
 		_serve_button.grab_focus()
