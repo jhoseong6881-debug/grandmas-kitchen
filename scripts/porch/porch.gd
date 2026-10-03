@@ -2,6 +2,7 @@ extends Control
 ## 저녁 평상 장면. 오늘 대접한 손님 중 한 명이 찾아와 이야기를 하고, 대답을 골라 주면 손님이 반응한다.
 ## 단골 보상을 기다리는 손님이 더 있으면 max_evening_guests 명까지 이어서 찾아와 단골 이야기와 선물을 건넨다.
 ## 계절 잔치 준비를 알려 주는 날(FeastPrep.announce_day)에는 알려 줄 손님이 맨 먼저 와서 장보기 목록을 준다.
+## 손님은 옆에서 걸어 들어와 평상에 앉고, 평상에 처음 온 손님은 인사(porch_greeting_line)부터 한다.
 ## 단골 단계가 오른 손님이면 그 단계의 새 이야기를 나누고 단골 선물을 건넨다.
 ## 이미 되찾은 레시피의 할머니 비법을 아는 손님이면 비법을 알려 준다.
 ## 돌려줄 할머니 레시피 노트 페이지가 있으면 건네준다. 다 듣고 나면 잠자리에 들어 다음 날 아침 텃밭으로 간다.
@@ -96,6 +97,8 @@ func _run_next_beat() -> void:
 ## is_first 가 아니면(이어서 온 손님) 단골 보상만 건넨다. 첫 단계에서 지금 손님을 이 손님으로 바꾼다.
 func _add_guest_beats(guest: AnimalGuest, is_first: bool) -> void:
 	var guest_beats: Array[Callable] = []
+	if _needs_greeting(guest):
+		guest_beats.append(_guest_spot.show_guest.bind(guest, _with_name(guest.porch_greeting_line)))
 	var reward_tier: int = GameState.get_pending_reward_tier(guest.id)
 	var reward: RegularReward = guest.get_regular_reward(reward_tier)
 	if reward != null:
@@ -131,8 +134,13 @@ func _add_feast_announcement_beats() -> void:
 		return
 	var announcer: AnimalGuest = GameData.get_guest(prep.announcer_id)
 	if announcer != null:
-		for i: int in prep.announce_lines.size():
-			var line: String = _with_name(prep.announce_lines[i])
+		var lines: Array[String] = []
+		if _needs_greeting(announcer):
+			lines.append(_with_name(announcer.porch_greeting_line))
+		for line: String in prep.announce_lines:
+			lines.append(_with_name(line))
+		for i: int in lines.size():
+			var line: String = lines[i]
 			if i == 0:
 				_beats.append(func() -> void:
 					_switch_guest(announcer)
@@ -151,6 +159,14 @@ func _switch_guest(guest: AnimalGuest) -> void:
 	_evening_guest = guest
 	_status_label.text = ""
 	_note_card.hide()
+	if guest.id not in GameState.porch_met_guest_ids:
+		GameState.porch_met_guest_ids.append(guest.id)
+	_guest_spot.walk_in()
+
+
+## 평상에 처음 온 손님이면 인사부터 한다 (인사 글이 있을 때).
+func _needs_greeting(guest: AnimalGuest) -> bool:
+	return guest.id not in GameState.porch_met_guest_ids and not guest.porch_greeting_line.is_empty()
 
 
 ## 첫 손님 다음에 이어서 올 손님: 오늘 대접한 손님 중 단골 보상을 기다리는 손님 (max_evening_guests - 1 명까지).

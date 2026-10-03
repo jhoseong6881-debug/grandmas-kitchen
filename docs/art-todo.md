@@ -85,3 +85,5 @@
 | scenes/garden/market.tscn (Merchant) | 너구리 상인 (넉살 좋은 떠돌이 장사꾼) | 220x260 | 할 일 |
 | scenes/garden/market.tscn (Stall, StallRoof) | 장터 가판과 차양 | 460x200 / 500x60 | 할 일 |
 | scenes/garden/market.tscn (Sky, Ground) | 숲속 장터 배경 | 1920x1080 | 선택 |
+| scenes/ui/sunset_transition.tscn (SkyTop, SkyGlow, Sun, Hill) | 해 지는 장면: 노을 하늘, 지는 해, 산 실루엣 (해가 내려가는 건 코드가 함) | 1920x1080 / 해 180x180 | 할 일 |
+| scenes/kitchen/guest_spot.gd (걸어 들어오기) | 손님 걷는 모습 (선택: 걸음마다 바뀌는 2장, 지금은 통통 튀기만 함) | 240x320 | 선택 |

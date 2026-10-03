@@ -53,6 +53,8 @@ const TIER_UP_SOUND: StringName = &"tier_up"
 ## 목표판 (노트, 소문, 장날, 봄 잔치)과 놓을 자리 (손님 수첩 버튼 아래). kitchen.tscn 을 고치지 않으려고 코드로 붙인다.
 @export var goal_board_scene: PackedScene = preload("res://scenes/ui/goal_board.tscn")
 @export var goal_board_position: Vector2 = Vector2(48, 250)
+## 점심 장사가 끝나고 저녁으로 넘어갈 때 보여 주는 해 지는 장면
+@export var sunset_transition_scene: PackedScene = preload("res://scenes/ui/sunset_transition.tscn")
 ## 레시피 노트를 다 모은 다음 날, 평상 대신 넘어갈 봄 잔치 장면
 @export_file("*.tscn") var feast_scene_path: String = "res://scenes/porch/spring_feast.tscn"
 ## 좋아하는 요리 대신 다른 요리를 주문한 손님은 첫 번째 밥값 재료를 이만큼만 낸다.
@@ -329,6 +331,10 @@ func _on_evening_button_pressed() -> void:
 	_show_only_button(null)
 	_result_board.open(_report)
 	await _result_board.continued
+	if sunset_transition_scene != null:
+		var sunset: SunsetTransition = sunset_transition_scene.instantiate()
+		add_child(sunset)
+		await sunset.play(GameState.current_day)
 	get_tree().change_scene_to_file(feast_scene_path if GameState.is_spring_feast_day() else porch_scene_path)
 
 

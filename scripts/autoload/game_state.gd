@@ -60,6 +60,8 @@ var pending_reward_tiers: Dictionary[StringName, Array] = {}
 var keepsake_ids: Array[StringName] = []
 ## 밭 id → 단골 선물로 늘어난 칸 수
 var extra_plots: Dictionary[StringName, int] = {}
+## 저녁 평상에 한 번이라도 온 손님 id (처음 온 손님은 인사부터 한다)
+var porch_met_guest_ids: Array[StringName] = []
 ## 열린 밭 id (GardenPlace.unlock_ingredient 를 처음 얻으면 열린다). 처음부터 열린 밭은 넣지 않는다.
 var unlocked_place_ids: Array[StringName] = []
 ## 방금 열려서 다음 텃밭에서 알려 줄 밭 id. 저장하지 않는다.
@@ -483,6 +485,7 @@ func new_game() -> void:
 	extra_plots.clear()
 	unlocked_place_ids.clear()
 	newly_unlocked_place_ids.clear()
+	porch_met_guest_ids.clear()
 	current_season = Season.Id.SPRING
 	is_spring_completed = false
 	is_todays_gift_collected = false
@@ -576,6 +579,7 @@ func _to_save_data() -> Dictionary:
 		"keepsake_ids": Array(keepsake_ids).map(func(keepsake_id: StringName) -> String: return String(keepsake_id)),
 		"extra_plots": _string_keys(extra_plots),
 		"unlocked_place_ids": Array(unlocked_place_ids).map(func(place_id: StringName) -> String: return String(place_id)),
+		"porch_met_guest_ids": Array(porch_met_guest_ids).map(func(guest_id: StringName) -> String: return String(guest_id)),
 		"current_season": current_season,
 		"is_spring_completed": is_spring_completed,
 		"has_met_merchant": has_met_merchant,
@@ -605,6 +609,13 @@ func _from_save_data(data: Dictionary) -> void:
 	_load_garden(data)
 	for place_id: Variant in data.get("unlocked_place_ids", []):
 		unlocked_place_ids.append(StringName(str(place_id)))
+	for guest_id: Variant in data.get("porch_met_guest_ids", []):
+		porch_met_guest_ids.append(StringName(str(guest_id)))
+	# 예전 세이브: 저녁 이야기를 나눈 적 있는 손님은 평상에 와 본 손님으로 친다 (인사를 또 하지 않게).
+	if not data.has("porch_met_guest_ids"):
+		for guest_id: StringName in guest_story_progress:
+			if guest_story_progress[guest_id] > 0 and guest_id not in porch_met_guest_ids:
+				porch_met_guest_ids.append(guest_id)
 	var met_data: Array = data.get("met_guest_ids", [])
 	for guest_id: Variant in met_data:
 		met_guest_ids.append(StringName(str(guest_id)))
