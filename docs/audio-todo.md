@@ -17,13 +17,17 @@
 | sfx/chop_jelly_1~3.mp3 | 도토리묵 썰기 | ElevenLabs | Starter | 2026-10-04 |
 | sfx/chop_omelette_1~3.mp3 | 계란말이 썰기 | ElevenLabs | Starter | 2026-10-04 |
 
+| sfx/sizzle_1~4.wav | 볶기에서 재료를 받을 때 (hit_stir_fry) | Freesound "Frying vegetables.wav" by BeeProductive — https://freesound.org/s/382287/ | **CC0** (출처 표시 없이 상업적 이용 가능) | 2026-10-04 |
+
+- sizzle 조각은 원본(1분 6초)에서 툭 튀는 소리(주걱이 팬에 부딪힘) 없이 지글지글 고르게 이어지는 14.3·35.0·6.0·10.3초 부분을 잘라
+  모노 16비트로 만든 것. 서로 다르게 들리게 1 짧고 바삭한 "칙"(0.45초), 2 보통 "치익"(0.7초), 3 긴 "치이이익"(0.95초), 4 부드러운 "쏴아"(0.8초)로 다듬었다.
+  원본은 `audio_source/`(Godot 와 Git 에서 빠짐)에 있어서 다른 부분을 다시 잘라 쓸 수 있다.
 - 썰기 소리 고르는 순서: 요리 단계의 Hit Sound → 재료의 Chop Sound → 썰기 기본 소리(hit_chop, Kenney).
 - ElevenLabs 무료 요금제로 만든 소리는 상업적으로 쓸 수 없다.
 
 ## ⚠ 진짜 요리 소리로 바꾸면 좋은 것 (Kenney 에 요리 소리가 없어 비슷한 소리로 채움)
 | id | 언제 | 지금 소리 | 바꾸고 싶은 소리 |
 |---|---|---|---|
-| hit_stir_fry | 볶기에서 재료를 받을 때 | 냄비 부딪히는 소리 | 치익~ 기름에 볶는 소리 |
 | hit_pan_fry | 전을 뒤집을 때 | 부드러운 퍽 | 지글 + 뒤집개 소리 |
 | hit_cook_rice | 쌀 씻기 | 눈 밟는 사각 소리 | 쌀 씻는 물소리 |
 | hit_mix | 버무리기 | 풀 스치는 소리 | 양념 버무리는 촉촉한 소리 |

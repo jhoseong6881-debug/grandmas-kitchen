@@ -10,3 +10,6 @@ assets/fonts/KyoboHandwriting/*.ttf
 
 # 맥 Finder가 만드는 파일
 .DS_Store
+
+# 효과음을 잘라 쓰는 원본 녹음 (용량이 커서 저장소에 올리지 않음, Godot 도 읽지 않음)
+/audio_source/
