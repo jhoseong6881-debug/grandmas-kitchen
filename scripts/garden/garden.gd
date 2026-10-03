@@ -48,6 +48,9 @@ func _ready() -> void:
 		GameState.start_new_game()
 	_day_label.text = DAY_TEXT_FORMAT % GameState.current_day
 	_status_label.text = WELCOME_TEXT
+	var setup: StartingSetup = GameData.get_starting_setup()
+	if GameState.current_day == GameState.STARTING_DAY and setup != null and not setup.first_morning_text.is_empty():
+		_status_label.text = setup.first_morning_text
 	_market_button.visible = GameData.get_market_settings().is_market_day(GameState.current_day)
 	if _market_button.visible:
 		_status_label.text = WELCOME_TEXT + "\n" + MARKET_DAY_TEXT

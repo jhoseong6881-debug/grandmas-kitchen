@@ -24,6 +24,8 @@ const PERFECT_BONUS_FORMAT: String = " (완벽 +%d)"
 const REGULAR_BONUS_FORMAT: String = " (%s 덤 +%d)"
 const LUNCH_DONE_TEXT: String = "오늘 점심 장사 끝! 수고했어요."
 const OUT_OF_INGREDIENTS_TEXT: String = "재료가 다 떨어져서 오늘 장사는 여기까지예요."
+## 호기심 주문 기본 문장 (손님 데이터의 curious_order_line 이 비어 있을 때)
+const DEFAULT_CURIOUS_ORDER_LINE: String = "아까 그 냄새가 궁금했어요. {recipe} 주세요!"
 ## 효과음 이름 (data/sounds/ 의 id)
 const GUEST_ARRIVE_SOUND: StringName = &"guest_arrive"
 const SERVE_SOUND: StringName = &"serve"
@@ -76,6 +78,8 @@ var _is_request_met: bool = false
 var _report: LunchReport = LunchReport.new()
 ## 오늘 점심에 대접을 마친 손님 수와 받을 손님 수
 var _guests_served: int = 0
+## 오늘 주문받은 요리 id → 횟수. 손님이 오늘 덜 나간 요리를 먼저 시키게 할 때 쓴다 (같은 요리만 반복되지 않게).
+var _orders_today: Dictionary[StringName, int] = {}
 var _guests_today: int = 0
 ## 다음에 올 손님 차례. 비면 손님 목록을 섞어서 다시 채운다.
 var _guest_queue: Array[AnimalGuest] = []
@@ -158,6 +162,7 @@ func _add_shop_decor() -> void:
 func _start_lunch() -> void:
 	_report = LunchReport.new()
 	_guests_served = 0
+	_orders_today.clear()
 	_guests_today = _count_guests_today()
 	_guest_queue.clear()
 	_update_lunch_label()
@@ -182,13 +187,21 @@ func _call_next_guest() -> void:
 		_is_fallback_order = order == null
 		if _is_fallback_order:
 			order = _choose_fallback_order(guest)
+		var curious_order: Recipe = _choose_curious_order(guest, order) if not _is_fallback_order else null
+		if curious_order != null:
+			order = curious_order
 		if order != null:
 			current_guest = guest
 			current_order = order
+			_orders_today[order.id] = _orders_today.get(order.id, 0) + 1
 			_last_guest = guest
 			var order_text: String = guest.order_line.format({"recipe": order.display_name})
 			if _is_fallback_order:
 				order_text = guest.fallback_order_line.format({"recipe": order.display_name})
+			elif curious_order != null:
+				var curious_line: String = guest.curious_order_line if not guest.curious_order_line.is_empty() \
+						else DEFAULT_CURIOUS_ORDER_LINE
+				order_text = curious_line.format({"recipe": order.display_name})
 			current_request = _choose_request(order)
 			if current_request != null:
 				order_text += REQUEST_JOIN + current_request.line
@@ -234,12 +247,28 @@ func _pop_next_guest() -> AnimalGuest:
 
 
 ## 손님이 좋아하는 요리 중, 지금 낼 수 있는(_can_cook) 것 하나. 없으면 null.
+## 그중에서도 오늘 덜 나간 요리를 먼저 고른다. 모두가 좋아하는 요리(김밥)만 하루 종일 나오지 않게.
 func _choose_order(guest: AnimalGuest) -> Recipe:
 	var possible: Array[Recipe] = guest.favorite_recipes.filter(_can_cook)
-	return possible.pick_random() if not possible.is_empty() else null
+	if possible.is_empty():
+		return null
+	var fewest: int = possible.map(func(recipe: Recipe) -> int: return _orders_today.get(recipe.id, 0)).min()
+	return possible.filter(func(recipe: Recipe) -> bool: return _orders_today.get(recipe.id, 0) == fewest).pick_random()
 
 
 ## 좋아하는 요리를 못 낼 때 대신 주문할 요리: 지금 낼 수 있고 싫어하지 않는 아무 요리 하나. 없으면 null.
+## 호기심 주문: 손님이 시키려던 요리가 오늘 이미 나갔고, 메뉴에 오늘 아직 아무도 안 시킨 요리가 있으면 그걸 시킨다.
+## (싫어하는 요리는 빼고). 밥값은 좋아하는 요리와 똑같이 받는다. 해당하지 않으면 null.
+func _choose_curious_order(guest: AnimalGuest, planned: Recipe) -> Recipe:
+	if planned == null or _orders_today.get(planned.id, 0) == 0:
+		return null
+	var untried: Array[Recipe] = GameData.get_all_recipes().filter(
+			func(recipe: Recipe) -> bool:
+				return _can_cook(recipe) and recipe not in guest.disliked_recipes \
+						and _orders_today.get(recipe.id, 0) == 0)
+	return untried.pick_random() if not untried.is_empty() else null
+
+
 func _choose_fallback_order(guest: AnimalGuest) -> Recipe:
 	var possible: Array[Recipe] = GameData.get_all_recipes().filter(
 			func(recipe: Recipe) -> bool: return _can_cook(recipe) and recipe not in guest.disliked_recipes)
