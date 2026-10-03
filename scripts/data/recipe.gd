@@ -37,6 +37,8 @@ const DEFAULT_ACTION_NAMES: Dictionary[MinigameType, String] = {
 @export var mix_coating: Coating
 ## 버무리기 미니게임에서 양념을 묻힐 재료. 비워 두면 첫 번째 재료를 쓴다.
 @export var mix_piece_ingredient: Ingredient
+## 이 레시피 노트를 손님에게서 돌려받을 수 있는 계절. 그 계절에만 평상에서 받을 수 있고, 못 받으면 돌아오는 같은 계절에 이어서 받는다.
+@export var note_season: Season.Id = Season.Id.SPRING
 ## 할머니 비법 (요리 단계 중 하나에 비법 자리를 정해 둔다). 비법이 없는 레시피는 비워 둔다.
 ## 수첩과 미니게임에 보이는 비법 한 줄 (예: "김밥은 칼을 꼭 한가운데로")
 @export var secret_hint: String = ""

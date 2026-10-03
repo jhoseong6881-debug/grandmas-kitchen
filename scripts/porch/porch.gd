@@ -168,7 +168,7 @@ func _choose_evening_guest() -> AnimalGuest:
 ## 손님이 아직 돌려주지 않은 첫 번째 레시피 노트 페이지. 없으면 null.
 func _next_note_page(guest: AnimalGuest) -> Recipe:
 	for recipe: Recipe in guest.note_recipes:
-		if not GameState.is_recipe_unlocked(recipe.id):
+		if recipe.note_season == GameState.current_season and not GameState.is_recipe_unlocked(recipe.id):
 			return recipe
 	return null
 

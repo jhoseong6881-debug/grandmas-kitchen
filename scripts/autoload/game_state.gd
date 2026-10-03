@@ -58,8 +58,8 @@ var pending_reward_tiers: Dictionary[StringName, Array] = {}
 var keepsake_ids: Array[StringName] = []
 ## 밭 id → 단골 선물로 늘어난 칸 수
 var extra_plots: Dictionary[StringName, int] = {}
-## 레시피 노트를 다 모은 날 (0 = 아직). 그다음 날 저녁에 봄 잔치가 열린다.
-var notes_completed_day: int = 0
+## 지금 계절. 평상에서는 이 계절의 레시피 노트만 돌려받는다.
+var current_season: Season.Id = Season.Id.SPRING
 ## 봄 잔치까지 보고 봄을 마쳤는지
 var is_spring_completed: bool = false
 ## 새 게임을 시작했거나 세이브를 불러왔으면 true. 화면이 바뀌어도 게임을 다시 시작하지 않게 할 때 쓴다.
@@ -237,13 +237,13 @@ func unlock_recipe(recipe_id: StringName) -> void:
 		return
 	unlocked_recipe_ids.append(recipe_id)
 	recipe_unlocked.emit(recipe_id)
-	if notes_completed_day == 0 and unlocked_recipe_ids.size() >= GameData.get_all_recipes().size():
-		notes_completed_day = current_day
 
 
-## 레시피 노트를 다 모은 다음 날부터, 봄을 마치기 전까지는 저녁에 평상 대신 봄 잔치가 열린다.
+## 봄 마무리 날(SeasonEnding.last_day)부터, 봄을 마치기 전까지는 저녁에 평상 대신 봄 잔치가 열린다.
+## 노트를 다 모았는지와는 상관없다.
 func is_spring_feast_day() -> bool:
-	return notes_completed_day > 0 and current_day > notes_completed_day and not is_spring_completed
+	var ending: SeasonEnding = GameData.get_season_ending()
+	return ending != null and current_day >= ending.last_day and not is_spring_completed
 
 
 func is_recipe_unlocked(recipe_id: StringName) -> bool:
@@ -405,7 +405,7 @@ func new_game() -> void:
 	pending_reward_tiers.clear()
 	keepsake_ids.clear()
 	extra_plots.clear()
-	notes_completed_day = 0
+	current_season = Season.Id.SPRING
 	is_spring_completed = false
 	is_todays_gift_collected = false
 	has_met_merchant = false
@@ -494,7 +494,7 @@ func _to_save_data() -> Dictionary:
 		"pending_reward_tiers": _string_keys(pending_reward_tiers),
 		"keepsake_ids": Array(keepsake_ids).map(func(keepsake_id: StringName) -> String: return String(keepsake_id)),
 		"extra_plots": _string_keys(extra_plots),
-		"notes_completed_day": notes_completed_day,
+		"current_season": current_season,
 		"is_spring_completed": is_spring_completed,
 		"has_met_merchant": has_met_merchant,
 	}
@@ -539,7 +539,7 @@ func _from_save_data(data: Dictionary) -> void:
 		pending_reward_tiers[StringName(guest_id)] = Array(pending_data[guest_id]).map(func(tier: Variant) -> int: return int(tier))
 	for keepsake_id: Variant in data.get("keepsake_ids", []):
 		keepsake_ids.append(StringName(str(keepsake_id)))
-	notes_completed_day = int(data.get("notes_completed_day", 0))
+	current_season = clampi(int(data.get("current_season", Season.Id.SPRING)), 0, Season.Id.size() - 1) as Season.Id
 	is_spring_completed = bool(data.get("is_spring_completed", false))
 	has_met_merchant = bool(data.get("has_met_merchant", false))
 

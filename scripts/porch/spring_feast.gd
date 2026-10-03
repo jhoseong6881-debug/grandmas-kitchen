@@ -58,7 +58,8 @@ func _ready() -> void:
 	for guest: AnimalGuest in guests:
 		_beats.append(func() -> void: _say(guest.display_name, guest.feast_line, guest.id))
 	_beats.append(_show_notes)
-	_beats.append(_show_letter)
+	if _ending.show_letter:
+		_beats.append(_show_letter)
 	_beats.append(_show_teaser)
 	_run_next_beat()
 	_next_button.grab_focus()
@@ -90,14 +91,27 @@ func _say(speaker_name: String, text: String, speaker_id: StringName) -> void:
 func _show_notes() -> void:
 	_dialogue_box.hide()
 	_say("", "", &"")
-	_notes_title_label.text = _ending.notes_complete_text
+	_notes_title_label.text = _ending.notes_title_text
+	var hidden_count: int = 0
 	for recipe: Recipe in GameData.get_all_recipes():
-		var label: Label = Label.new()
-		label.text = RECIPE_ITEM_FORMAT % recipe.display_name
-		label.add_theme_font_size_override("font_size", recipe_font_size)
-		label.add_theme_color_override("font_color", recipe_font_color)
-		_notes_grid.add_child(label)
+		if recipe.note_season != _ending.season:
+			continue
+		if not GameState.is_recipe_unlocked(recipe.id):
+			hidden_count += 1
+			continue
+		_notes_grid.add_child(_make_note_label(RECIPE_ITEM_FORMAT % recipe.display_name))
+	# 노트 카드 맨 아래: 아직 숨어 있는 노트 수, 또는 다 모았다는 글
+	var hidden_text: String = _ending.notes_hidden_format % hidden_count if hidden_count > 0 else _ending.notes_all_found_text
+	_notes_grid.get_parent().add_child(_make_note_label(hidden_text))
 	_pop_in(_note_card)
+
+
+func _make_note_label(text: String) -> Label:
+	var label: Label = Label.new()
+	label.text = text
+	label.add_theme_font_size_override("font_size", recipe_font_size)
+	label.add_theme_color_override("font_color", recipe_font_color)
+	return label
 
 
 func _show_letter() -> void:
@@ -108,6 +122,7 @@ func _show_letter() -> void:
 
 
 func _show_teaser() -> void:
+	_note_card.hide()
 	_letter.hide()
 	_teaser_label.text = _ending.next_season_teaser
 	_teaser.modulate.a = 0.0
