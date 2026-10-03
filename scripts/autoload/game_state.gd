@@ -60,6 +60,8 @@ var pending_reward_tiers: Dictionary[StringName, Array] = {}
 var keepsake_ids: Array[StringName] = []
 ## 밭 id → 단골 선물로 늘어난 칸 수
 var extra_plots: Dictionary[StringName, int] = {}
+## 밭 id → 하룻밤 사이 자란 모습을 마지막으로 보여 준 날 (그날 처음 밭에 왔을 때만 쑥 자라게). 저장하지 않는다.
+var growth_shown_day: Dictionary[StringName, int] = {}
 ## 저녁 평상에 한 번이라도 온 손님 id (처음 온 손님은 인사부터 한다)
 var porch_met_guest_ids: Array[StringName] = []
 ## 열린 밭 id (GardenPlace.unlock_ingredient 를 처음 얻으면 열린다). 처음부터 열린 밭은 넣지 않는다.
@@ -486,6 +488,7 @@ func new_game() -> void:
 	unlocked_place_ids.clear()
 	newly_unlocked_place_ids.clear()
 	porch_met_guest_ids.clear()
+	growth_shown_day.clear()
 	current_season = Season.Id.SPRING
 	is_spring_completed = false
 	is_todays_gift_collected = false

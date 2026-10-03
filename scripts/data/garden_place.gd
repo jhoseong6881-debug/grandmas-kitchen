@@ -9,6 +9,8 @@ extends Resource
 @export var display_name: String = ""
 ## 칸 하나를 부르는 이름 (예: 밭, 원목). 빈 칸에 "빈 밭"처럼 쓴다.
 @export var plot_name: String = "밭"
+## 칸 아래쪽에 그리는 땅 색 (흙, 원목). 그림이 생기기 전 임시.
+@export var ground_color: Color = Color(0.42, 0.28, 0.17)
 ## 칸 수
 @export var plot_count: int = 2
 ## 이곳에 심을 수 있는 작물

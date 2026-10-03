@@ -15,8 +15,9 @@ const MARKET_DAY_TEXT: String = "오늘은 장날! 숲속 장터가 열렸어요
 const FEAST_BUTTON_FORMAT: String = "봄 잔치 바구니\n%d / %d"
 ## 버섯 원목으로 가는 버튼이 가리키는 밭 (잠겨 있으면 버튼을 숨긴다)
 const LOGS_PLACE_ID: StringName = &"mushroom_logs"
-## 이웃 바구니에서 재료를 꺼낼 때 나는 소리 (data/sounds/ 의 id)
+## 이웃 바구니에서 재료를 꺼낼 때 나는 소리, 바구니를 건드릴 때 부시럭 소리 (data/sounds/ 의 id)
 const RECEIVE_SOUND: StringName = &"receive"
+const RUSTLE_SOUND: StringName = &"rustle"
 
 ## 이 장면의 배경음악. 비워 두면 앞 장면의 음악을 서서히 끈다.
 @export var music: AudioStream
@@ -78,6 +79,8 @@ func _ready() -> void:
 	GameState.feast_prep_changed.connect(_update_feast_button)
 	_update_feast_button()
 	_basket_button.pressed.connect(_on_basket_button_pressed)
+	# 바구니는 비어 있어도 누르면 부시럭 흔들린다 (막힌 버튼도 입력은 받는다).
+	_basket_button.gui_input.connect(_on_basket_gui_input)
 	_kitchen_button.pressed.connect(_on_kitchen_button_pressed)
 	_notebook_button.pressed.connect(_notebook.open)
 	_menu_board.confirmed.connect(_on_menu_confirmed)
@@ -170,6 +173,14 @@ func _show_unlock_notice() -> void:
 		if place != null and not place.unlocked_text.is_empty():
 			_set_status(_status_text + "\n" + place.unlocked_text)
 	GameState.newly_unlocked_place_ids.clear()
+
+
+func _on_basket_gui_input(event: InputEvent) -> void:
+	var is_click: bool = event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT
+	if is_click or event.is_action_pressed("ui_accept"):
+		Wiggle.shake(_basket_button)
+		if _basket_button.disabled:
+			Sound.play(RUSTLE_SOUND)
 
 
 func _update_basket() -> void:

@@ -11,3 +11,4 @@ harvest_amount = 3
 grow_days = 3
 seed_ingredient = ExtResource("2_mushroom")
 seed_amount = 1
+placeholder_shape = 1

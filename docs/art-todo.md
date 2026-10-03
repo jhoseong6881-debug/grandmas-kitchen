@@ -87,3 +87,6 @@
 | scenes/garden/market.tscn (Sky, Ground) | 숲속 장터 배경 | 1920x1080 | 선택 |
 | scenes/ui/sunset_transition.tscn (SkyTop, SkyGlow, Sun, Hill) | 해 지는 장면: 노을 하늘, 지는 해, 산 실루엣 (해가 내려가는 건 코드가 함) | 1920x1080 / 해 180x180 | 할 일 |
 | scenes/kitchen/guest_spot.gd (걸어 들어오기) | 손님 걷는 모습 (선택: 걸음마다 바뀌는 2장, 지금은 통통 튀기만 함) | 240x320 | 선택 |
+| data/crops/carrot_crop.tres (Growth Textures) | 당근이 자라는 단계 그림 (막 심음 → 새싹 → 자람 → 다 자람, 3~4장. 마지막 장 = 거둘 때) | 칸 폭 x 칸 높이-90 (지금 260x150) | 할 일 |
+| data/crops/mushroom_crop.tres (Growth Textures) | 원목 버섯이 자라는 단계 그림 (작은 버섯 1개 → 2개 → 3개 다 자람) | 260x150 | 할 일 |
+| data/places/*.tres (Ground Color) | 칸 아래 땅 그림 (흙 / 원목). 지금은 단색 띠 | 260x34 | 선택 |

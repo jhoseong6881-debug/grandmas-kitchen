@@ -10,6 +10,7 @@ script = ExtResource("1_place")
 id = &"mushroom_logs"
 display_name = "버섯 원목"
 plot_name = "원목"
+ground_color = Color(0.55, 0.4, 0.26, 1)
 plot_count = 2
 crops = Array[ExtResource("2_crop")]([ExtResource("3_mushroom_crop")])
 unlock_ingredient = ExtResource("4_mushroom")
