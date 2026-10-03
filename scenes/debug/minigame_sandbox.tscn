@@ -1,9 +1,9 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bqxg865whu213"]
 
-[ext_resource type="Script" path="res://scripts/debug/minigame_sandbox.gd" id="1_sandbox"]
-[ext_resource type="Resource" path="res://data/recipes/carrot_egg_stir_fry.tres" id="2_recipe"]
+[ext_resource type="Script" uid="uid://4i50nkjp22rb" path="res://scripts/debug/minigame_sandbox.gd" id="1_sandbox"]
+[ext_resource type="Resource" uid="uid://bonr2x1lflbvm" path="res://data/recipes/carrot_egg_stir_fry.tres" id="2_recipe"]
 [ext_resource type="Resource" path="res://data/requests/fine_chop.tres" id="3_request"]
-[ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/chop_minigame.tscn" id="10_chop"]
+[ext_resource type="PackedScene" uid="uid://x3ef510qot4e" path="res://scenes/kitchen/minigames/chop_minigame.tscn" id="10_chop"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/stir_fry_minigame.tscn" id="11_stir_fry"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/plate_minigame.tscn" id="12_plate"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/pan_fry_minigame.tscn" id="13_pan_fry"]
@@ -13,7 +13,7 @@
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/simmer_minigame.tscn" id="17_simmer"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/mince_minigame.tscn" id="18_mince"]
 
-[node name="MinigameSandbox" type="Control"]
+[node name="MinigameSandbox" type="Control" unique_id=464169966]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -35,7 +35,7 @@ minigame_scenes = Dictionary[int, PackedScene]({
 8: ExtResource("18_mince")
 })
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." unique_id=1592842492]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -46,7 +46,7 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0.5, 0.45, 0.4, 1)
 
-[node name="InfoLabel" type="Label" parent="."]
+[node name="InfoLabel" type="Label" parent="." unique_id=620404545]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 24.0
@@ -56,7 +56,7 @@ offset_bottom = 48.0
 theme_override_font_sizes/font_size = 24
 text = "연습장"
 
-[node name="ResultLabel" type="Label" parent="."]
+[node name="ResultLabel" type="Label" parent="." unique_id=249757776]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 12
