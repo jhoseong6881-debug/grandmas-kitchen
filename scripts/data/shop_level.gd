@@ -14,6 +14,9 @@ extends Resource
 ## 가게 앞 간판과 처마 등불을 다는지
 @export var has_sign: bool = false
 @export var has_lantern: bool = false
+## 이 단계가 되면 칸이 늘어나는 밭 (data/places/ 의 id, 비워 두면 안 늘어남)과 늘어나는 칸 수
+@export var bonus_plot_place_id: StringName = &""
+@export var bonus_plot_count: int = 0
 ## 이 단계에서 새로 생기는 조리도구 (앞 단계의 도구도 계속 쓴다)
 @export var tools: Array[ShopTool] = []
 ## 단계가 오를 때 장사 결과판에 보여 주는, 새로 생긴 것 (예: "손님 +1 · 간판 · 평상 하나 더")

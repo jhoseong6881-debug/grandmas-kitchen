@@ -185,7 +185,7 @@ func get_plot_count(place_id: StringName) -> int:
 	return plot_crop_ids.get(place_id, []).size()
 
 
-## 밭에 빈 칸을 하나 늘린다 (단골 선물).
+## 밭에 빈 칸을 하나 늘린다 (단골 선물, 가게 단계 업).
 func add_plot(place_id: StringName) -> void:
 	if not plot_crop_ids.has(place_id):
 		return
@@ -289,6 +289,12 @@ func add_reputation(points: int) -> int:
 	var before: int = get_shop_tier()
 	reputation += points
 	var after: int = get_shop_tier()
+	# 새로 오른 단계마다 밭 칸을 늘린다 (한 번에 두 단계가 올라도 둘 다 준다).
+	for tier: int in range(before + 1, after + 1):
+		var level: ShopLevel = GameData.get_reputation_settings().get_shop_level(tier)
+		if level != null and not level.bonus_plot_place_id.is_empty():
+			for i: int in level.bonus_plot_count:
+				add_plot(level.bonus_plot_place_id)
 	return after if after > before else -1
 
 

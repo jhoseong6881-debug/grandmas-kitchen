@@ -14,4 +14,6 @@ keepsake_slots = 5
 has_sign = true
 has_lantern = true
 tools = Array[ExtResource("2_tool")]([ExtResource("3_iron_pot")])
-unlock_text = "손님 +1 · 할머니의 무쇠솥 · 등불 · 기념품 선반 +1칸"
+unlock_text = "손님 +1 · 할머니의 무쇠솥 · 등불 · 기념품 선반 +1칸 · 당근 텃밭 +1칸"
+bonus_plot_place_id = &"carrot_field"
+bonus_plot_count = 1

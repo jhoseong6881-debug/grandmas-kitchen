@@ -1,5 +1,6 @@
 extends Control
 ## 저녁 평상 장면. 오늘 대접한 손님 중 한 명이 찾아와 이야기를 하고, 대답을 골라 주면 손님이 반응한다.
+## 단골 보상을 기다리는 손님이 더 있으면 max_evening_guests 명까지 이어서 찾아와 단골 이야기와 선물을 건넨다.
 ## 단골 단계가 오른 손님이면 그 단계의 새 이야기를 나누고 단골 선물을 건넨다.
 ## 이미 되찾은 레시피의 할머니 비법을 아는 손님이면 비법을 알려 준다.
 ## 돌려줄 할머니 레시피 노트 페이지가 있으면 건네준다. 다 듣고 나면 잠자리에 들어 다음 날 아침 텃밭으로 간다.
@@ -33,6 +34,8 @@ const NOTE_PAGE_SOUND: StringName = &"note_page"
 @export var note_pop_duration: float = 0.2
 @export var reply_font_size: int = 36
 @export var reply_button_height: float = 72.0
+## 저녁에 찾아오는 손님 수의 최대. 첫 손님 다음 손님들은 단골 보상을 기다리는 손님만 온다.
+@export var max_evening_guests: int = 2
 
 ## 버튼을 누를 때마다 하나씩 실행할 장면 단계
 var _beats: Array[Callable] = []
@@ -59,28 +62,13 @@ func _ready() -> void:
 	_status_label.text = ""
 	_next_button.pressed.connect(_on_next_button_pressed)
 	_notebook_button.pressed.connect(_notebook.open)
-	_evening_guest = _choose_evening_guest()
-	if _evening_guest == null:
+	var first_guest: AnimalGuest = _choose_evening_guest()
+	if first_guest == null:
 		_beats.append(func() -> void: _status_label.text = QUIET_EVENING_TEXT)
 	else:
-		var reward_tier: int = GameState.get_pending_reward_tier(_evening_guest.id)
-		var reward: RegularReward = _evening_guest.get_regular_reward(reward_tier)
-		if reward != null:
-			_beats.append(_tell_talk.bind(reward.talk))
-			_beats.append(func() -> void: _guest_spot.say(reward.gift_line.format({"name": GameState.player_name})))
-			_beats.append(_receive_gift.bind(reward_tier, reward))
-		else:
-			if reward_tier >= 0:
-				GameState.finish_reward_tier(_evening_guest.id, reward_tier)
-			_beats.append(_tell_story)
-		var secret: Recipe = _next_secret(_evening_guest)
-		if secret != null:
-			_beats.append(func() -> void: _guest_spot.say(secret.secret_reveal_line.format({"name": GameState.player_name})))
-			_beats.append(func() -> void: _learn_secret(secret))
-		var page: Recipe = _next_note_page(_evening_guest)
-		if page != null:
-			_beats.append(func() -> void: _guest_spot.say(_evening_guest.note_line.format({"recipe": page.display_name})))
-			_beats.append(func() -> void: _receive_note_page(page))
+		_add_guest_beats(first_guest, true)
+		for guest: AnimalGuest in _choose_extra_reward_guests(first_guest):
+			_add_guest_beats(guest, false)
 	_run_next_beat()
 	if _next_button.visible:
 		_next_button.grab_focus()
@@ -99,27 +87,81 @@ func _run_next_beat() -> void:
 	_next_button.text = SLEEP_TEXT if _beats.is_empty() else NEXT_TEXT
 
 
-## 오늘 대접한 손님 중 한 명. 완벽하게 대접한 손님이 있으면 그중에서,
-## 그 안에서도 단골 보상을 받을 손님 → 돌려줄 레시피 노트나 알려 줄 할머니 비법이 남은 손님 순서로 고른다. 아무도 없으면 null.
-func _choose_evening_guest() -> AnimalGuest:
+## 손님 한 명이 평상에서 할 일을 단계(beat)로 쌓는다: 단골 보상(없으면 평소 이야기) → 할머니 비법 → 레시피 노트.
+## is_first 가 아니면(이어서 온 손님) 단골 보상만 건넨다. 첫 단계에서 지금 손님을 이 손님으로 바꾼다.
+func _add_guest_beats(guest: AnimalGuest, is_first: bool) -> void:
+	var guest_beats: Array[Callable] = []
+	var reward_tier: int = GameState.get_pending_reward_tier(guest.id)
+	var reward: RegularReward = guest.get_regular_reward(reward_tier)
+	if reward != null:
+		guest_beats.append(_tell_talk.bind(reward.talk))
+		guest_beats.append(func() -> void: _guest_spot.say(reward.gift_line.format({"name": GameState.player_name})))
+		guest_beats.append(_receive_gift.bind(reward_tier, reward))
+	else:
+		if reward_tier >= 0:
+			GameState.finish_reward_tier(guest.id, reward_tier)
+		guest_beats.append(_tell_story)
+	if is_first:
+		var secret: Recipe = _next_secret(guest)
+		if secret != null:
+			guest_beats.append(func() -> void: _guest_spot.say(secret.secret_reveal_line.format({"name": GameState.player_name})))
+			guest_beats.append(func() -> void: _learn_secret(secret))
+		var page: Recipe = _next_note_page(guest)
+		if page != null:
+			guest_beats.append(func() -> void: _guest_spot.say(guest.note_line.format({"recipe": page.display_name})))
+			guest_beats.append(func() -> void: _receive_note_page(page))
+	var first_beat: Callable = guest_beats[0]
+	guest_beats[0] = func() -> void:
+		_switch_guest(guest)
+		first_beat.call()
+	_beats.append_array(guest_beats)
+
+
+## 다음 손님으로 바꾼다. 앞 손님이 남긴 아래 글과 노트 카드는 치운다.
+func _switch_guest(guest: AnimalGuest) -> void:
+	_evening_guest = guest
+	_status_label.text = ""
+	_note_card.hide()
+
+
+## 첫 손님 다음에 이어서 올 손님: 오늘 대접한 손님 중 단골 보상을 기다리는 손님 (max_evening_guests - 1 명까지).
+func _choose_extra_reward_guests(first_guest: AnimalGuest) -> Array[AnimalGuest]:
+	var waiting: Array[AnimalGuest] = _todays_served_guests().filter(
+			func(guest: AnimalGuest) -> bool:
+				return guest != first_guest and GameState.get_pending_reward_tier(guest.id) >= 0)
+	waiting.shuffle()
+	return waiting.slice(0, maxi(max_evening_guests - 1, 0))
+
+
+func _todays_served_guests() -> Array[AnimalGuest]:
 	var served: Array[AnimalGuest] = []
 	for guest_id: StringName in GameState.todays_served_guests:
 		var guest: AnimalGuest = GameData.get_guest(guest_id)
 		if guest != null:
 			served.append(guest)
+	return served
+
+
+## 첫 손님: 오늘 대접한 손님 중 한 명. 완벽하게 대접한 손님 중에서 돌려줄 레시피 노트나 알려 줄 할머니 비법이 남은 손님을
+## 먼저 고르고 (그중에서도 단골 보상을 기다리는 손님 먼저), 그런 손님이 없으면 단골 보상을 기다리는 손님을 고른다.
+## 단골 보상을 기다리는 다른 손님은 _choose_extra_reward_guests 가 두 번째 손님으로 부른다. 아무도 없으면 null.
+func _choose_evening_guest() -> AnimalGuest:
+	var served: Array[AnimalGuest] = _todays_served_guests()
 	if served.is_empty():
 		return null
+	var is_waiting_reward: Callable = func(guest: AnimalGuest) -> bool:
+		return GameState.get_pending_reward_tier(guest.id) >= 0
 	var perfect: Array[AnimalGuest] = served.filter(
 			func(guest: AnimalGuest) -> bool: return GameState.todays_served_guests[guest.id])
 	var candidates: Array[AnimalGuest] = perfect if not perfect.is_empty() else served
-	var with_reward: Array[AnimalGuest] = candidates.filter(
-			func(guest: AnimalGuest) -> bool: return GameState.get_pending_reward_tier(guest.id) >= 0)
 	var with_page: Array[AnimalGuest] = candidates.filter(
 			func(guest: AnimalGuest) -> bool: return _next_note_page(guest) != null or _next_secret(guest) != null)
+	if not with_page.is_empty():
+		var with_page_and_reward: Array[AnimalGuest] = with_page.filter(is_waiting_reward)
+		return (with_page_and_reward if not with_page_and_reward.is_empty() else with_page).pick_random()
+	var with_reward: Array[AnimalGuest] = served.filter(is_waiting_reward)
 	if not with_reward.is_empty():
-		candidates = with_reward
-	elif not with_page.is_empty():
-		candidates = with_page
+		return with_reward.pick_random()
 	return candidates.pick_random()
 
 

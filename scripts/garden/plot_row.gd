@@ -20,6 +20,8 @@ const PLANT_SOUND: StringName = &"plant"
 @export var plant_picker: PlantPicker
 @export var plot_size: Vector2 = Vector2(260, 240)
 @export var plot_font_size: int = 36
+## 칸이 많아 줄 폭(이 노드의 크기)에 다 안 들어가면, 칸 사이를 이만큼으로 줄이고 칸 폭도 줄여서 맞춘다.
+@export var crowded_separation: int = 16
 
 var _place: GardenPlace
 var _buttons: Array[Button] = []
@@ -30,7 +32,9 @@ func _ready() -> void:
 	if _place == null:
 		push_warning("밭 '%s' 을(를) data/places/ 에서 찾지 못했습니다" % place_id)
 		return
-	# 칸 수는 단골 선물로 늘어날 수 있어서 GameState 에서 읽는다.
+	# 칸을 넣으면 줄이 칸에 맞춰 넓어지므로, 장면에서 정한 줄 폭은 칸을 넣기 전에 잰다.
+	var row_width: float = size.x
+	# 칸 수는 단골 선물, 가게 단계 업으로 늘어날 수 있어서 GameState 에서 읽는다.
 	for i: int in GameState.get_plot_count(place_id):
 		var button: Button = Button.new()
 		button.custom_minimum_size = plot_size
@@ -38,7 +42,22 @@ func _ready() -> void:
 		button.pressed.connect(_on_plot_pressed.bind(i))
 		add_child(button)
 		_buttons.append(button)
+	_fit_to_width(row_width)
 	refresh()
+
+
+## 칸이 늘어 (가게 단계 업, 단골 선물) 줄에 다 안 들어가면 칸 사이와 칸 폭을 줄인다. 양옆 버튼을 덮지 않게.
+func _fit_to_width(row_width: float) -> void:
+	var count: int = _buttons.size()
+	var separation: int = get_theme_constant("separation")
+	if count <= 1 or count * plot_size.x + (count - 1) * separation <= row_width:
+		return
+	separation = mini(separation, crowded_separation)
+	add_theme_constant_override("separation", separation)
+	# 양옆 버튼과 붙지 않게 양쪽에 칸 사이만큼 여백을 남긴다 (줄은 가운데 정렬).
+	var width: float = (row_width - (count + 1) * separation) / count
+	for button: Button in _buttons:
+		button.custom_minimum_size.x = width
 
 
 func get_place() -> GardenPlace:

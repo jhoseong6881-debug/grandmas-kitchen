@@ -10,4 +10,6 @@ extra_guests = 1
 max_guests = 4
 keepsake_slots = 2
 has_sign = true
-unlock_text = "손님 +1 · 간판 · 평상 하나 더"
+unlock_text = "손님 +1 · 간판 · 평상 하나 더 · 당근 텃밭 +1칸"
+bonus_plot_place_id = &"carrot_field"
+bonus_plot_count = 1

@@ -14,4 +14,6 @@ max_guests = 4
 keepsake_slots = 4
 has_sign = true
 tools = Array[ExtResource("2_tool")]([ExtResource("3_wide_board"), ExtResource("4_big_ladle")])
-unlock_text = "넓은 도마 · 큰 국자 · 기념품 선반 +2칸"
+unlock_text = "넓은 도마 · 큰 국자 · 기념품 선반 +2칸 · 당근 텃밭 +1칸"
+bonus_plot_place_id = &"carrot_field"
+bonus_plot_count = 1

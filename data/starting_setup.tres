@@ -8,5 +8,5 @@
 
 [resource]
 script = ExtResource("1_setup")
-starting_ingredients = Array[ExtResource("2_ingredient")]([ExtResource("3_carrot"), ExtResource("3_carrot"), ExtResource("3_carrot")])
+starting_ingredients = Array[ExtResource("2_ingredient")]([ExtResource("3_carrot"), ExtResource("3_carrot"), ExtResource("3_carrot"), ExtResource("3_carrot"), ExtResource("3_carrot"), ExtResource("3_carrot")])
 starting_recipes = Array[ExtResource("6_recipe")]([ExtResource("7_kimbop")])

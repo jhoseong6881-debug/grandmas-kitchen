@@ -5,7 +5,7 @@ extends Resource
 
 ## 단골 단계 이름과 그 단계가 되는 단골도. 두 목록의 길이를 같게, 점수는 작은 것부터 쓴다.
 @export var tier_names: Array[String] = ["낯선 손님", "이웃", "단골", "식구"]
-@export var tier_thresholds: Array[int] = [0, 5, 15, 30]
+@export var tier_thresholds: Array[int] = [0, 4, 10, 20]
 ## 대접할 때마다 오르는 단골도
 @export var serve_points: int = 1
 ## 입맛에 맞는 고명을 올렸을 때 더 오르는 단골도
