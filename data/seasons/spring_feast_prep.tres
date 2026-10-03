@@ -1,0 +1,67 @@
+[gd_resource type="Resource" script_class="FeastPrep" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/feast_prep.gd" id="1_prep"]
+[ext_resource type="Script" path="res://scripts/data/feast_item.gd" id="2_item"]
+[ext_resource type="Script" path="res://scripts/data/feast_tier.gd" id="8_tier"]
+[ext_resource type="Resource" path="res://data/ingredients/egg.tres" id="4_egg"]
+[ext_resource type="Resource" path="res://data/ingredients/honey.tres" id="5_honey"]
+[ext_resource type="Resource" path="res://data/ingredients/acorn.tres" id="6_acorn"]
+[ext_resource type="Resource" path="res://data/ingredients/mushroom.tres" id="7_mushroom"]
+[ext_resource type="Resource" path="res://data/ingredients/carrot.tres" id="3_carrot"]
+
+[sub_resource type="Resource" id="Item_1"]
+script = ExtResource("2_item")
+ingredient = ExtResource("4_egg")
+amount = 12
+
+[sub_resource type="Resource" id="Item_2"]
+script = ExtResource("2_item")
+ingredient = ExtResource("5_honey")
+amount = 10
+
+[sub_resource type="Resource" id="Item_3"]
+script = ExtResource("2_item")
+ingredient = ExtResource("6_acorn")
+amount = 10
+
+[sub_resource type="Resource" id="Item_4"]
+script = ExtResource("2_item")
+ingredient = ExtResource("7_mushroom")
+amount = 12
+
+[sub_resource type="Resource" id="Item_5"]
+script = ExtResource("2_item")
+ingredient = ExtResource("3_carrot")
+amount = 6
+
+[sub_resource type="Resource" id="Tier_1"]
+script = ExtResource("8_tier")
+display_name = "소박한 잔칫상"
+min_ratio = 0.0
+intro_text = "봄 잔치 날이에요. 소박하지만 정성껏 차린 상에 이웃들이 하나둘 모였어요."
+announcer_line = "꼬꼬, 조촐해도 다 같이 먹으니 꿀맛이네!"
+
+[sub_resource type="Resource" id="Tier_2"]
+script = ExtResource("8_tier")
+display_name = "푸짐한 잔칫상"
+min_ratio = 0.5
+intro_text = "봄 잔치 날이에요. 푸짐하게 차린 상에 이웃들이 하나둘 모였어요."
+announcer_line = "어머머, 이렇게 푸짐하다니! 다들 배 터지겠다, 꼬꼬!"
+
+[sub_resource type="Resource" id="Tier_3"]
+script = ExtResource("8_tier")
+display_name = "상다리 휘어지는 잔칫상"
+min_ratio = 1.0
+intro_text = "봄 잔치 날이에요. 상다리가 휘어지게 차린 잔칫상에 이웃들이 모두 모였어요."
+announcer_line = "꼬꼬…! 이 상, 네 할머니 잔치랑 꼭 같구나."
+
+[resource]
+script = ExtResource("1_prep")
+announce_day = 10
+announcer_id = &"hen"
+announce_lines = Array[String](["꼬꼬! 다들 들었니? 닷새 뒤면 봄 잔치 날이야!", "네 할머니 계실 땐 해마다 이 평상에서 잔치를 했단다. 상다리가 휘어지게!", "올해는 네가 준비해 보렴. 우리가 장보기 목록을 적어 왔어. 재료를 모아 두면 다 같이 차리자!"])
+announced_status_text = "봄 잔치 장보기 목록을 받았어요! 내일 아침부터 텃밭의 잔치 바구니에 재료를 모아요."
+items = Array[ExtResource("2_item")]([SubResource("Item_1"), SubResource("Item_2"), SubResource("Item_3"), SubResource("Item_4"), SubResource("Item_5")])
+give_step = 5
+tiers = Array[ExtResource("8_tier")]([SubResource("Tier_1"), SubResource("Tier_2"), SubResource("Tier_3")])
+full_special_text = "다 같이 둘러앉은 평상 위로 꽃잎이 날렸어요. 할머니 자리에 놓인 빈 그릇에도, 누군가 밥을 소복이 담아 두었어요."

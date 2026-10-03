@@ -52,6 +52,13 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "장날까지 2일"
 
+[node name="FeastPrepLabel" type="Label" parent="Margin/Rows"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "잔치 준비  32 / 50"
+
 [node name="FeastLabel" type="Label" parent="Margin/Rows"]
 unique_name_in_owner = true
 layout_mode = 2

@@ -7,6 +7,8 @@ extends Resource
 @export var season: Season.Id = Season.Id.SPRING
 ## 이 날 저녁(점심 장사가 끝난 뒤)에 평상 대신 잔치가 열리고 계절이 끝난다
 @export var last_day: int = 15
+## 잔치 준비 (장보기 목록, 잔칫상 단계). 비워 두면 준비 없이 feast_intro_text 로 잔치를 연다.
+@export var feast_prep: FeastPrep
 
 ## 잔치를 시작할 때 나오는 설명
 @export_multiline var feast_intro_text: String = ""

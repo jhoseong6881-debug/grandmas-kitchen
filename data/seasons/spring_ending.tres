@@ -1,11 +1,13 @@
 [gd_resource type="Resource" script_class="SeasonEnding" format=3]
 
 [ext_resource type="Script" path="res://scripts/data/season_ending.gd" id="1_ending"]
+[ext_resource type="Resource" path="res://data/seasons/spring_feast_prep.tres" id="2_prep"]
 
 [resource]
 script = ExtResource("1_ending")
 feast_intro_text = "봄 잔치 날이에요. 할머니 밥집에 신세 진 이웃들이 하나둘 평상에 모였어요."
 last_day = 15
+feast_prep = ExtResource("2_prep")
 notes_title_text = "올봄에 되찾은 할머니 레시피"
 notes_hidden_format = "아직 %d장이 숨어 있어요. 돌아오는 봄에 다시 찾아봐요."
 notes_all_found_text = "올봄 노트를 모두 되찾았어요!"

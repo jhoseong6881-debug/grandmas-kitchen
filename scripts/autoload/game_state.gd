@@ -7,6 +7,7 @@ signal inventory_changed(ingredient_id: StringName, new_count: int)
 signal day_changed(new_day: int)
 signal recipe_unlocked(recipe_id: StringName)
 signal reputation_changed(new_reputation: int)
+signal feast_prep_changed
 
 const SAVE_PATH: String = "user://save.json"
 ## 세이브 파일 구조가 바뀌면 숫자를 올린다. 옛 세이브를 읽을 때 구분하는 데 쓴다.
@@ -59,6 +60,11 @@ var pending_reward_tiers: Dictionary[StringName, Array] = {}
 var keepsake_ids: Array[StringName] = []
 ## 밭 id → 단골 선물로 늘어난 칸 수
 var extra_plots: Dictionary[StringName, int] = {}
+## 계절 잔치 준비: 장보기 목록을 받았는지, 잔치 바구니에 모은 재료 (재료 id → 개수). 계절이 끝나면 비운다.
+var is_feast_prep_announced: bool = false
+var feast_prep_delivered: Dictionary[StringName, int] = {}
+## 오늘 텃밭에서 잔치 바구니를 열어 봤는지 (텃밭이 무엇을 먼저 선택해 둘지 정할 때). 저장하지 않는다.
+var has_opened_feast_prep_today: bool = false
 ## 지금 계절. 평상에서는 이 계절의 레시피 노트만 돌려받는다.
 var current_season: Season.Id = Season.Id.SPRING
 ## 봄 잔치까지 보고 봄을 마쳤는지
@@ -121,6 +127,7 @@ func advance_day() -> void:
 	is_todays_gift_collected = false
 	todays_market_trades.clear()
 	has_visited_market_today = false
+	has_opened_feast_prep_today = false
 	for place_id: StringName in plot_days_left:
 		var days: Array = plot_days_left[place_id]
 		for i: int in days.size():
@@ -386,6 +393,32 @@ func trade_at_market(trade: MarketTrade) -> bool:
 	return true
 
 
+# --- 계절 잔치 준비 ---
+
+func get_feast_delivered(ingredient_id: StringName) -> int:
+	return feast_prep_delivered.get(ingredient_id, 0)
+
+
+func get_feast_delivered_total() -> int:
+	var total: int = 0
+	for ingredient_id: StringName in feast_prep_delivered:
+		total += feast_prep_delivered[ingredient_id]
+	return total
+
+
+## 잔치 바구니에 재료를 낸다. 가진 만큼, 목록에 남은 만큼만 낸다. 실제로 낸 개수를 돌려준다.
+func deliver_to_feast(item: FeastItem, max_amount: int) -> int:
+	var remaining: int = item.amount - get_feast_delivered(item.ingredient.id)
+	var amount: int = mini(mini(max_amount, remaining), get_ingredient_count(item.ingredient.id))
+	if amount <= 0:
+		return 0
+	var cost: Dictionary[StringName, int] = {item.ingredient.id: amount}
+	remove_ingredients(cost)
+	feast_prep_delivered[item.ingredient.id] = get_feast_delivered(item.ingredient.id) + amount
+	feast_prep_changed.emit()
+	return amount
+
+
 # --- 새 게임 / 세이브 / 로드 ---
 
 func new_game() -> void:
@@ -413,6 +446,9 @@ func new_game() -> void:
 	has_met_merchant = false
 	todays_market_trades.clear()
 	has_visited_market_today = false
+	is_feast_prep_announced = false
+	feast_prep_delivered.clear()
+	has_opened_feast_prep_today = false
 	is_game_started = false
 
 
@@ -499,6 +535,8 @@ func _to_save_data() -> Dictionary:
 		"current_season": current_season,
 		"is_spring_completed": is_spring_completed,
 		"has_met_merchant": has_met_merchant,
+		"is_feast_prep_announced": is_feast_prep_announced,
+		"feast_prep_delivered": _string_keys(feast_prep_delivered),
 	}
 
 
@@ -544,6 +582,10 @@ func _from_save_data(data: Dictionary) -> void:
 	current_season = clampi(int(data.get("current_season", Season.Id.SPRING)), 0, Season.Id.size() - 1) as Season.Id
 	is_spring_completed = bool(data.get("is_spring_completed", false))
 	has_met_merchant = bool(data.get("has_met_merchant", false))
+	is_feast_prep_announced = bool(data.get("is_feast_prep_announced", false))
+	var feast_data: Dictionary = data.get("feast_prep_delivered", {})
+	for ingredient_id: String in feast_data:
+		feast_prep_delivered[StringName(ingredient_id)] = int(feast_data[ingredient_id])
 
 
 ## {밭 id: [{"crop": 작물 id, "days_left": 남은 날}, ...]}

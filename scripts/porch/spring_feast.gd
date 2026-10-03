@@ -57,9 +57,20 @@ func _ready() -> void:
 		var figure: Control = _make_figure(guest)
 		_guest_row.add_child(figure)
 		_figures[guest.id] = figure
-	_beats.append(func() -> void: _say("", _ending.feast_intro_text, &""))
+	# 잔치 준비를 했으면 모은 만큼의 잔칫상 단계로 시작 글과 알려 준 손님의 한마디가 달라진다.
+	var prep: FeastPrep = _ending.feast_prep
+	var tier: FeastTier = prep.get_tier(GameState.get_feast_delivered_total()) \
+			if prep != null and GameState.is_feast_prep_announced else null
+	var intro: String = tier.intro_text if tier != null and not tier.intro_text.is_empty() else _ending.feast_intro_text
+	_beats.append(func() -> void: _say("", intro, &""))
 	for guest: AnimalGuest in guests:
 		_beats.append(func() -> void: _say(guest.display_name, guest.feast_line, guest.id))
+	if tier != null and not tier.announcer_line.is_empty():
+		var announcer: AnimalGuest = GameData.get_guest(prep.announcer_id)
+		if announcer != null:
+			_beats.append(func() -> void: _say(announcer.display_name, tier.announcer_line, announcer.id))
+	if tier != null and GameState.get_feast_delivered_total() >= prep.get_total() and not prep.full_special_text.is_empty():
+		_beats.append(func() -> void: _say("", prep.full_special_text, &""))
 	_beats.append(_show_notes)
 	if _ending.show_letter:
 		_beats.append(_show_letter)

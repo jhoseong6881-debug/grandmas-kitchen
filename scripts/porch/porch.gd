@@ -1,6 +1,7 @@
 extends Control
 ## 저녁 평상 장면. 오늘 대접한 손님 중 한 명이 찾아와 이야기를 하고, 대답을 골라 주면 손님이 반응한다.
 ## 단골 보상을 기다리는 손님이 더 있으면 max_evening_guests 명까지 이어서 찾아와 단골 이야기와 선물을 건넨다.
+## 계절 잔치 준비를 알려 주는 날(FeastPrep.announce_day)에는 알려 줄 손님이 맨 먼저 와서 장보기 목록을 준다.
 ## 단골 단계가 오른 손님이면 그 단계의 새 이야기를 나누고 단골 선물을 건넨다.
 ## 이미 되찾은 레시피의 할머니 비법을 아는 손님이면 비법을 알려 준다.
 ## 돌려줄 할머니 레시피 노트 페이지가 있으면 건네준다. 다 듣고 나면 잠자리에 들어 다음 날 아침 텃밭으로 간다.
@@ -65,6 +66,7 @@ func _ready() -> void:
 	_status_label.text = ""
 	_next_button.pressed.connect(_on_next_button_pressed)
 	_notebook_button.pressed.connect(_notebook.open)
+	_add_feast_announcement_beats()
 	var first_guest: AnimalGuest = _choose_evening_guest()
 	if first_guest == null:
 		_beats.append(func() -> void: _status_label.text = QUIET_EVENING_TEXT)
@@ -118,6 +120,30 @@ func _add_guest_beats(guest: AnimalGuest, is_first: bool) -> void:
 		_switch_guest(guest)
 		first_beat.call()
 	_beats.append_array(guest_beats)
+
+
+## 잔치 준비를 알려 주는 날이면 (그날 대접하지 않았어도) 알려 줄 손님이 먼저 와서 장보기 목록을 준다.
+## 마지막 단계에서 목록을 받은 것으로 기록한다.
+func _add_feast_announcement_beats() -> void:
+	var ending: SeasonEnding = GameData.get_season_ending()
+	var prep: FeastPrep = ending.feast_prep if ending != null else null
+	if prep == null or GameState.is_feast_prep_announced or GameState.current_day < prep.announce_day:
+		return
+	var announcer: AnimalGuest = GameData.get_guest(prep.announcer_id)
+	if announcer != null:
+		for i: int in prep.announce_lines.size():
+			var line: String = _with_name(prep.announce_lines[i])
+			if i == 0:
+				_beats.append(func() -> void:
+					_switch_guest(announcer)
+					_guest_spot.show_guest(announcer, line))
+			else:
+				_beats.append(_guest_spot.say.bind(line))
+	_beats.append(func() -> void:
+		GameState.is_feast_prep_announced = true
+		GameState.feast_prep_changed.emit()
+		Sound.play(GIFT_SOUND)
+		_status_label.text = prep.announced_status_text)
 
 
 ## 다음 손님으로 바꾼다. 앞 손님이 남긴 아래 글과 노트 카드는 치운다.

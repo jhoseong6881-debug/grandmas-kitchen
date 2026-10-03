@@ -1,8 +1,9 @@
 class_name GoalBoard
 extends PanelContainer
 ## 목표판. 아침 텃밭과 점심 부엌 왼쪽에 늘 떠 있으면서 "다음에 무엇이 있는지"를 보여 준다:
-## 이번 계절 할머니 노트 수와 노트를 가진 손님, 다음 가게 단계까지 남은 소문, 다음 장날, 계절 잔치까지 남은 날.
-## GameState 의 시그널(노트, 소문, 날짜)을 듣고 스스로 다시 쓴다. 누를 수 없는 판이라 입력은 지나간다.
+## 이번 계절 할머니 노트 수와 노트를 가진 손님, 다음 가게 단계까지 남은 소문, 다음 장날,
+## 잔치 준비 (장보기 목록을 받은 뒤), 계절 잔치까지 남은 날.
+## GameState 의 시그널(노트, 소문, 날짜, 잔치 준비)을 듣고 스스로 다시 쓴다. 누를 수 없는 판이라 입력은 지나간다.
 
 const TITLE_TEXT: String = "봄 목표"
 const NOTES_FORMAT: String = "할머니 노트  %d / %d"
@@ -17,6 +18,8 @@ const MARKET_TODAY_TEXT: String = "오늘은 장날!"
 const MARKET_FORMAT: String = "장날까지 %d일"
 const FEAST_TODAY_TEXT: String = "오늘 저녁 봄 잔치!"
 const FEAST_FORMAT: String = "봄 잔치까지 %d일"
+const FEAST_PREP_FORMAT: String = "잔치 준비  %d / %d"
+const FEAST_PREP_DONE_TEXT: String = "잔치 준비 끝! 상다리가 휘어지겠어요"
 
 @onready var _title_label: Label = %Title
 @onready var _notes_label: Label = %NotesLabel
@@ -24,12 +27,14 @@ const FEAST_FORMAT: String = "봄 잔치까지 %d일"
 @onready var _shop_label: Label = %ShopLabel
 @onready var _market_label: Label = %MarketLabel
 @onready var _feast_label: Label = %FeastLabel
+@onready var _feast_prep_label: Label = %FeastPrepLabel
 
 
 func _ready() -> void:
 	GameState.recipe_unlocked.connect(_refresh.unbind(1))
 	GameState.reputation_changed.connect(_refresh.unbind(1))
 	GameState.day_changed.connect(_refresh.unbind(1))
+	GameState.feast_prep_changed.connect(_refresh)
 	_title_label.text = TITLE_TEXT
 	_refresh()
 
@@ -95,5 +100,11 @@ func _refresh_market_and_feast() -> void:
 	_market_label.visible = next_market_day >= 0
 	if next_market_day >= 0:
 		_market_label.text = MARKET_TODAY_TEXT if next_market_day == day else MARKET_FORMAT % (next_market_day - day)
+	var prep: FeastPrep = ending.feast_prep if ending != null else null
+	_feast_prep_label.visible = prep != null and GameState.is_feast_prep_announced
+	if _feast_prep_label.visible:
+		var delivered: int = GameState.get_feast_delivered_total()
+		_feast_prep_label.text = FEAST_PREP_DONE_TEXT if delivered >= prep.get_total() \
+				else FEAST_PREP_FORMAT % [delivered, prep.get_total()]
 	_feast_label.visible = ending != null
 	_feast_label.text = FEAST_TODAY_TEXT if day >= last_day else FEAST_FORMAT % (last_day - day)

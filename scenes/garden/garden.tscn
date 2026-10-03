@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" path="res://scenes/garden/menu_board.tscn" id="4_menu"]
 [ext_resource type="Script" path="res://scripts/garden/plot_row.gd" id="5_plot_row"]
 [ext_resource type="PackedScene" path="res://scenes/garden/plant_picker.tscn" id="6_picker"]
+[ext_resource type="PackedScene" path="res://scenes/garden/feast_prep_panel.tscn" id="7_feast"]
 
 [node name="Garden" type="Control" unique_id=1678010223]
 layout_mode = 3
@@ -72,9 +73,9 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -700.0
+offset_left = -500.0
 offset_top = 380.0
-offset_right = 700.0
+offset_right = 500.0
 offset_bottom = 520.0
 grow_horizontal = 2
 theme_override_colors/font_color = Color(0.25, 0.3, 0.4, 1)
@@ -175,6 +176,18 @@ theme_override_font_sizes/font_size = 24
 text = "오늘은 장날!
 숲속 장터로 →"
 
+[node name="FeastButton" type="Button" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 1460.0
+offset_top = 390.0
+offset_right = 1760.0
+offset_bottom = 480.0
+theme_override_font_sizes/font_size = 24
+text = "봄 잔치 바구니
+0 / 50"
+
 [node name="GuestNotebook" parent="." unique_id=410802552 instance=ExtResource("3_notebook")]
 unique_name_in_owner = true
 layout_mode = 1
@@ -185,4 +198,9 @@ layout_mode = 1
 
 [node name="PlantPicker" parent="." instance=ExtResource("6_picker")]
 unique_name_in_owner = true
+layout_mode = 1
+
+[node name="FeastPrepPanel" parent="." instance=ExtResource("7_feast")]
+unique_name_in_owner = true
+visible = false
 layout_mode = 1

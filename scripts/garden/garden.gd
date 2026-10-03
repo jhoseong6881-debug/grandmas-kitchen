@@ -12,6 +12,7 @@ const GIFT_READY_TEXT: String = "이웃 바구니\n(뭔가 들어 있어요)"
 const GIFT_EMPTY_TEXT: String = "이웃 바구니\n(비었어요)"
 const WELCOME_TEXT: String = "좋은 아침이에요. 텃밭을 둘러볼까요?"
 const MARKET_DAY_TEXT: String = "오늘은 장날! 숲속 장터가 열렸어요."
+const FEAST_BUTTON_FORMAT: String = "봄 잔치 바구니\n%d / %d"
 ## 이웃 바구니에서 재료를 꺼낼 때 나는 소리 (data/sounds/ 의 id)
 const RECEIVE_SOUND: StringName = &"receive"
 
@@ -40,6 +41,8 @@ const RECEIVE_SOUND: StringName = &"receive"
 @onready var _plot_row: PlotRow = %PlotRow
 @onready var _logs_button: Button = %LogsButton
 @onready var _market_button: Button = %MarketButton
+@onready var _feast_button: Button = %FeastButton
+@onready var _feast_prep_panel: FeastPrepPanel = %FeastPrepPanel
 @onready var _basket_button: Button = %BasketButton
 @onready var _kitchen_button: Button = %KitchenButton
 @onready var _status_label: Label = %StatusLabel
@@ -61,6 +64,10 @@ func _ready() -> void:
 	if _market_button.visible:
 		_status_label.text = WELCOME_TEXT + "\n" + MARKET_DAY_TEXT
 	_market_button.pressed.connect(get_tree().change_scene_to_file.bind(market_scene_path))
+	_feast_button.pressed.connect(_on_feast_button_pressed)
+	_feast_prep_panel.closed.connect(_focus_next_thing_to_do)
+	GameState.feast_prep_changed.connect(_update_feast_button)
+	_update_feast_button()
 	_basket_button.pressed.connect(_on_basket_button_pressed)
 	_kitchen_button.pressed.connect(_on_kitchen_button_pressed)
 	_notebook_button.pressed.connect(_notebook.open)
@@ -115,6 +122,24 @@ func _on_basket_button_pressed() -> void:
 	_focus_next_thing_to_do()
 
 
+## 잔치 준비 목록을 받았으면 (계절을 마치기 전까지) 봄 잔치 바구니 버튼을 보여 준다.
+func _update_feast_button() -> void:
+	var prep: FeastPrep = _get_feast_prep()
+	_feast_button.visible = prep != null and GameState.is_feast_prep_announced and not GameState.is_spring_completed
+	if prep != null:
+		_feast_button.text = FEAST_BUTTON_FORMAT % [GameState.get_feast_delivered_total(), prep.get_total()]
+
+
+func _on_feast_button_pressed() -> void:
+	GameState.has_opened_feast_prep_today = true
+	_feast_prep_panel.open(_get_feast_prep())
+
+
+func _get_feast_prep() -> FeastPrep:
+	var ending: SeasonEnding = GameData.get_season_ending()
+	return ending.feast_prep if ending != null else null
+
+
 func _update_basket() -> void:
 	_basket_button.disabled = GameState.is_todays_gift_collected
 	_basket_button.text = GIFT_EMPTY_TEXT if GameState.is_todays_gift_collected else GIFT_READY_TEXT
@@ -130,7 +155,7 @@ func _on_menu_confirmed(recipe_ids: Array[StringName]) -> void:
 	get_tree().change_scene_to_file(kitchen_scene_path)
 
 
-## 아직 할 일(거둘 칸, 심을 수 있는 빈 칸, 안 연 바구니, 장날에 안 가 본 장터)이 있으면 그걸, 없으면 부엌으로 가기 버튼을 선택해 둔다.
+## 아직 할 일(거둘 칸, 심을 수 있는 빈 칸, 안 연 바구니, 장날에 안 가 본 장터, 오늘 안 열어 본 잔치 바구니)이 있으면 그걸, 없으면 부엌으로 가기 버튼을 선택해 둔다.
 ## 그래야 게임패드 A 버튼만으로도 아침을 진행할 수 있다.
 func _focus_next_thing_to_do() -> void:
 	var plot_button: Button = _plot_row.get_next_action_button()
@@ -142,6 +167,9 @@ func _focus_next_thing_to_do() -> void:
 		return
 	if _market_button.visible and not GameState.has_visited_market_today:
 		_market_button.grab_focus()
+		return
+	if _feast_button.visible and not GameState.has_opened_feast_prep_today:
+		_feast_button.grab_focus()
 		return
 	_kitchen_button.grab_focus()
 
