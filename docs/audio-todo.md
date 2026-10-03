@@ -33,6 +33,10 @@
 | sfx/item_pop_2.wav | 〃 | Freesound "Item or Material Pickup Pop 2 of 3" by el_boss — https://freesound.org/s/665182/ | **CC0** | 2026-10-04 |
 | sfx/item_pop_3.wav | 〃 | Freesound "Item or Material Pickup Pop 3 of 3" by el_boss — https://freesound.org/s/665181/ | **CC0** | 2026-10-04 |
 
+| sfx/mix_toss_1~5.wav | 버무리기에서 맞힐 때 (hit_mix) | Freesound "Potato salad" by 14G_Panska_Kaminkova_A — https://freesound.org/s/419992/ | **CC0** | 2026-10-04 |
+
+- mix_toss 조각은 원본(8.5초, audio_source/potato_salad.wav)에서 촉촉하게 섞는 0.53·2.75·3.40·4.78·5.32초 부분을 0.35~0.55초씩 자른 것.
+  숟가락이 그릇에 부딪힌 듯한 큰 소리(2.50·4.40초)는 뺐다.
 - item_pop 은 0.07초짜리 게임용 "뽁" 소리 세 가지를 그대로 쓴다 (번갈아 나온다).
 - plant_soil 조각은 원본(4.8초, audio_source/planting_seeds.wav)에 1초 간격으로 들어 있는 심기 소리 다섯 개를 0.35초씩 나눈 것.
 - harvest_pull 조각은 원본(24.7초, audio_source/pull_plant.wav)에서 풀이 바스락하는 13.8·17.2·19.6·22.5초부터 0.6초씩 자른 것.
@@ -47,11 +51,6 @@
   원본은 `audio_source/`(Godot 와 Git 에서 빠짐)에 있어서 다른 부분을 다시 잘라 쓸 수 있다.
 - 썰기 소리 고르는 순서: 요리 단계의 Hit Sound → 재료의 Chop Sound → 썰기 기본 소리(hit_chop, Kenney).
 - ElevenLabs 무료 요금제로 만든 소리는 상업적으로 쓸 수 없다.
-
-## ⚠ 진짜 요리 소리로 바꾸면 좋은 것 (Kenney 에 요리 소리가 없어 비슷한 소리로 채움)
-| id | 언제 | 지금 소리 | 바꾸고 싶은 소리 |
-|---|---|---|---|
-| hit_mix | 버무리기 | 풀 스치는 소리 | 양념 버무리는 촉촉한 소리 |
 
 ## 그대로 써도 괜찮은 것
 | id | 언제 |
