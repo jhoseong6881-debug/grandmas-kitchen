@@ -8,7 +8,8 @@ const PLANTED_FORMAT: String = "%s%s 심었어요. %d일 뒤에 거둘 수 있�
 const HARVEST_POP_FORMAT: String = "+%d %s"
 
 ## 이 장면의 배경음악. 비워 두면 앞 장면의 음악을 서서히 끈다.
-@export var music: AudioStream
+## 봄 동안 깔리는 곡을 넣어 둔다 (텃밭·원목·장터·부엌·평상·잔치가 같은 곡이라 장면이 바뀌어도 끊기지 않는다).
+@export var music: AudioStream = preload("res://assets/audio/music/spring_theme.mp3")
 ## 돌아갈 당근 텃밭 장면
 @export_file("*.tscn") var garden_scene_path: String = "res://scenes/garden/garden.tscn"
 ## 거둘 때 "+3 버섯"이 떠오르는 높이(픽셀)와 시간(초)
