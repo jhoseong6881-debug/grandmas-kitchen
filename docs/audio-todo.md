@@ -25,6 +25,10 @@
 
 | sfx/simmer_bubble_1~4.wav | 조리기에서 저을 때 (hit_simmer) | Freesound "simmering-sauce.aif" by alienistcog — https://freesound.org/s/124584/ | **CC0** | 2026-10-04 |
 
+| sfx/harvest_pull_1~4.wav | 텃밭·원목에서 거둘 때 (harvest) | Freesound "Plants or ferns - Manipulation & Hit" by Vrymaa — https://freesound.org/s/770112/ | **CC0** | 2026-10-04 |
+
+- harvest_pull 조각은 원본(24.7초, audio_source/pull_plant.wav)에서 풀이 바스락하는 13.8·17.2·19.6·22.5초부터 0.6초씩 자른 것.
+  유난히 크고 둔탁한 11.96초(흙을 터는 쿵 소리)는 뺐다.
 - simmer_bubble 조각은 원본(1분 43초, audio_source/simmering_pot.aiff → .wav)에서 걸쭉한 거품이 터지는 15.4·18.2·84.1·97.2초부터
   0.5초씩 자른 것. 소리가 날카로운 78.6·89.3초(숟가락이 냄비에 부딪힌 듯한 소리)는 뺐다.
 - rice_wash 조각은 원본(40.4초, audio_source/rice_washing.wav)에서 물을 휘젓는 4.0·18.5·31.6·33.1초부터 0.6초씩 자른 것.
@@ -40,7 +44,6 @@
 | id | 언제 | 지금 소리 | 바꾸고 싶은 소리 |
 |---|---|---|---|
 | hit_mix | 버무리기 | 풀 스치는 소리 | 양념 버무리는 촉촉한 소리 |
-| harvest | 텃밭에서 거둘 때 | 묵직한 퍽 | 흙에서 쑥 뽑는 소리 |
 | plant | 씨앗 심을 때 | 카펫 발소리 | 흙 토닥이는 소리 |
 | receive | 밥값 재료, 이웃 바구니 | 가죽 주머니 소리 | 바구니에 담는 소리 |
 
