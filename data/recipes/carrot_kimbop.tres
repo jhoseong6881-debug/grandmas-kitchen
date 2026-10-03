@@ -25,10 +25,10 @@ count = 3
 [sub_resource type="Resource" id="CookStep_4"]
 script = ExtResource("13_cook_step")
 subject_name = "김밥"
-hit_sound = &"chop_kimbap"
 count = 8
 speed = 0.9
 placeholder_color = Color(0.18, 0.26, 0.16, 1)
+hit_sound = &"chop_kimbap"
 secret_start = 0.3
 secret_end = 0.7
 
@@ -41,7 +41,7 @@ count = 2
 script = ExtResource("2_ae6f3")
 id = &"carrot_kimbop"
 display_name = "할머니표 당근 김밥"
-ingredients = Array[ExtResource("1_o7sd4")]([ExtResource("2_0ar3d")])
+ingredients = Array[ExtResource("1_o7sd4")]([ExtResource("2_0ar3d"), ExtResource("2_0ar3d")])
 cook_steps = Array[ExtResource("13_cook_step")]([SubResource("CookStep_1"), SubResource("CookStep_2"), SubResource("CookStep_3"), SubResource("CookStep_4"), SubResource("CookStep_5")])
 secret_hint = "김밥은 칼을 꼭 한가운데로"
 secret_teller_id = &"rabbit"

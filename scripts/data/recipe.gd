@@ -78,5 +78,9 @@ func get_mix_piece_ingredient() -> Ingredient:
 func get_ingredient_counts() -> Dictionary[StringName, int]:
 	var counts: Dictionary[StringName, int] = {}
 	for ingredient: Ingredient in ingredients:
+		# 인스펙터에서 칸만 늘리고 재료를 안 넣은 빈 칸은 건너뛴다 (게임이 멈추지 않게).
+		if ingredient == null:
+			push_warning("레시피 '%s' 의 재료 목록에 빈 칸이 있습니다: %s" % [display_name, resource_path])
+			continue
 		counts[ingredient.id] = counts.get(ingredient.id, 0) + 1
 	return counts

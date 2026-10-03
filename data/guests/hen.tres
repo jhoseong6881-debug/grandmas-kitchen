@@ -1,16 +1,15 @@
-[gd_resource type="Resource" script_class="AnimalGuest" format=3]
+[gd_resource type="Resource" script_class="AnimalGuest" format=3 uid="uid://c5n6qo0wfdidm"]
 
-[ext_resource type="Script" path="res://scripts/data/animal_guest.gd" id="1_guest"]
-[ext_resource type="Script" path="res://scripts/data/recipe.gd" id="2_recipe"]
-[ext_resource type="Script" path="res://scripts/data/ingredient.gd" id="3_ingredient"]
-[ext_resource type="Resource" path="res://data/recipes/carrot_egg_stir_fry.tres" id="4_stir_fry"]
-[ext_resource type="Resource" path="res://data/recipes/carrot_kimbop.tres" id="5_kimbop"]
-[ext_resource type="Resource" path="res://data/ingredients/egg.tres" id="6_egg"]
-[ext_resource type="Resource" path="res://data/recipes/honey_egg_roll.tres" id="7_egg_roll"]
-[ext_resource type="Resource" path="res://data/recipes/acorn_honey_gangjeong.tres" id="8_disliked"]
-[ext_resource type="Script" path="res://scripts/data/evening_talk.gd" id="9_talk"]
+[ext_resource type="Script" uid="uid://c3bc5udx3r1xj" path="res://scripts/data/animal_guest.gd" id="1_guest"]
+[ext_resource type="Script" uid="uid://fbx0a77slaix" path="res://scripts/data/recipe.gd" id="2_recipe"]
+[ext_resource type="Script" uid="uid://jdo3q781e21o" path="res://scripts/data/ingredient.gd" id="3_ingredient"]
+[ext_resource type="Resource" uid="uid://bonr2x1lflbvm" path="res://data/recipes/carrot_egg_stir_fry.tres" id="4_stir_fry"]
+[ext_resource type="Resource" uid="uid://b580q70jkdeba" path="res://data/recipes/carrot_kimbop.tres" id="5_kimbop"]
+[ext_resource type="Resource" uid="uid://qcg5gwa5qmbj" path="res://data/recipes/honey_egg_roll.tres" id="7_egg_roll"]
+[ext_resource type="Resource" uid="uid://bkwilv0h65gjm" path="res://data/recipes/acorn_honey_gangjeong.tres" id="8_disliked"]
+[ext_resource type="Script" uid="uid://c10kg08x5w6l3" path="res://scripts/data/evening_talk.gd" id="9_talk"]
 [ext_resource type="Resource" path="res://data/garnishes/sesame_oil.tres" id="20_garnish"]
-[ext_resource type="Script" path="res://scripts/data/regular_reward.gd" id="30_reward"]
+[ext_resource type="Script" uid="uid://dyen15kduraty" path="res://scripts/data/regular_reward.gd" id="30_reward"]
 [ext_resource type="Resource" path="res://data/ingredients/egg.tres" id="31_gift"]
 [ext_resource type="Resource" path="res://data/keepsakes/grandma_egg_basket.tres" id="32_keepsake"]
 
@@ -77,10 +76,10 @@ display_name = "암탉"
 personality = "새벽마다 마을을 깨우는 부지런한 수다쟁이. 할머니와 아침마다 수다를 떨던 사이."
 favorite_recipes = Array[ExtResource("2_recipe")]([ExtResource("4_stir_fry"), ExtResource("5_kimbop"), ExtResource("7_egg_roll")])
 disliked_recipes = Array[ExtResource("2_recipe")]([ExtResource("8_disliked")])
-payment_ingredients = Array[ExtResource("3_ingredient")]([ExtResource("6_egg"), ExtResource("6_egg")])
+payment_ingredients = Array[ExtResource("3_ingredient")]([ExtResource("31_gift"), ExtResource("31_gift")])
 order_line = "어머, 밥집 다시 열었구나! {recipe} 하나 줄래?"
 fallback_order_line = "어머, 오늘은 그게 없니? 그럼 {recipe}, 그거 줘!"
-first_order_line = "어머머, 밥집에 불이 켜졌길래 와 봤지! 네가 그 손주구나? 네 할머니 밥집 아침 단골이 바로 나란다. {recipe} 하나 줄래?"
+first_order_line = "어머머, 밥집에 불이 켜졌길래 와 봤지! 네가 그 손주구나? 네 할머니네 아침 단골이 바로 나란다. {recipe} 하나 줄래?"
 taste_hint_line = "참기름 고소한 냄새 나면 더 좋고!"
 porch_greeting_line = "꼬꼬! 저녁 평상이 다시 열렸네! 네 할머니랑 여기서 하루 얘기 나누는 게 낙이었단다."
 thanks_line = "꼬꼬, 잘 먹었다! 계란은 내일도 갖다줄게."

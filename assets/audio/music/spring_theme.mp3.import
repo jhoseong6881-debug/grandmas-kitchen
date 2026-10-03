@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://iwxci0t78m5x"
-path="res://.godot/imported/spring_theme.mp3-39e1998affb9cd9eb8fe3e04091b50d9.mp3str"
+path="res://.godot/imported/spring_theme.mp3-67af2bdd139df1994e8fb5896be1ca6d.mp3str"
 
 [deps]
 
 source_file="res://assets/audio/music/spring_theme.mp3"
-dest_files=["res://.godot/imported/spring_theme.mp3-39e1998affb9cd9eb8fe3e04091b50d9.mp3str"]
+dest_files=["res://.godot/imported/spring_theme.mp3-67af2bdd139df1994e8fb5896be1ca6d.mp3str"]
 
 [params]
 

@@ -9,10 +9,10 @@
 [sub_resource type="Resource" id="CookStep_1"]
 script = ExtResource("13_cook_step")
 subject_name = "도토리묵"
-hit_sound = &"chop_jelly"
 count = 6
 speed = 0.6
 placeholder_color = Color(0.5, 0.34, 0.24, 1)
+hit_sound = &"chop_jelly"
 
 [sub_resource type="Resource" id="CookStep_2"]
 script = ExtResource("13_cook_step")
