@@ -2,7 +2,7 @@ class_name SettingsPanel
 extends Control
 ## 설정 창. 타이틀 화면과 일시 정지 메뉴가 함께 쓴다. open() 으로 열고, 닫히면 closed 시그널을 보낸다.
 ## 효과음 크기, 음악 크기, 전체 화면을 바꾸면 바로 적용되고, 닫을 때 저장한다 (GameSettings).
-## 게임패드: 위아래로 줄 고르기, 좌우로 크기 조절, B 버튼(ui_cancel)으로 닫기.
+## 게임패드: 위아래로 줄 고르기, 좌우로 크기 조절(1%씩, 꾹 누르면 계속), B 버튼(ui_cancel)으로 닫기.
 
 signal closed
 
@@ -12,8 +12,22 @@ const FULLSCREEN_OFF_TEXT: String = "전체 화면: 꺼짐"
 ## 효과음 크기를 바꿀 때 들려 주는 소리 (data/sounds/ 의 id)
 const PREVIEW_SOUND: StringName = &"click"
 
+## 미리 듣기 소리 사이 최소 간격(초). 막대를 1%씩 끌 때 소리가 수십 번 겹치지 않게.
+@export var preview_interval: float = 0.1
+## 게임패드 십자키·스틱을 꾹 누르고 있을 때: 이만큼 기다린 뒤(초) 이 간격(초)으로 계속 1%씩 움직인다.
+## (키보드는 운영체제가 알아서 반복 입력을 보내지만, 게임패드는 꾹 눌러도 한 번만 들어온다)
+@export var hold_delay: float = 0.35
+@export var hold_repeat_interval: float = 0.03
+## 스틱을 이만큼 넘게 기울이면 누른 것으로 친다
+@export var stick_deadzone: float = 0.6
+
 ## 열기 전에 선택돼 있던 것. 닫으면 다시 선택한다.
 var _previous_focus: Control
+## 마지막으로 미리 듣기 소리를 낸 때 (밀리초)
+var _last_preview_ms: int = -100000
+## 게임패드로 꾹 누른 시간과 다음 반복까지 남은 시간
+var _hold_time: float = 0.0
+var _repeat_left: float = 0.0
 
 @onready var _sfx_row: PanelContainer = %SfxRow
 @onready var _music_row: PanelContainer = %MusicRow
@@ -64,6 +78,36 @@ func close() -> void:
 	closed.emit()
 
 
+## 게임패드로 막대에서 좌우를 꾹 누르고 있으면 계속 움직인다.
+func _process(delta: float) -> void:
+	var slider: HSlider = get_viewport().gui_get_focus_owner() as HSlider if visible else null
+	var direction: int = _held_joy_direction()
+	if slider == null or direction == 0:
+		_hold_time = 0.0
+		return
+	_hold_time += delta
+	if _hold_time < hold_delay:
+		return
+	_repeat_left -= delta
+	if _repeat_left <= 0.0:
+		_repeat_left = hold_repeat_interval
+		slider.value += direction * slider.step
+
+
+## 게임패드 십자키나 왼쪽 스틱의 좌우 (-1 왼쪽, 1 오른쪽, 0 안 누름). 연결된 첫 게임패드만 본다.
+func _held_joy_direction() -> int:
+	var pads: Array[int] = Input.get_connected_joypads()
+	if pads.is_empty():
+		return 0
+	var pad: int = pads[0]
+	var axis: float = Input.get_joy_axis(pad, JOY_AXIS_LEFT_X)
+	if Input.is_joy_button_pressed(pad, JOY_BUTTON_DPAD_LEFT) or axis < -stick_deadzone:
+		return -1
+	if Input.is_joy_button_pressed(pad, JOY_BUTTON_DPAD_RIGHT) or axis > stick_deadzone:
+		return 1
+	return 0
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if visible and event.is_action_pressed("ui_cancel"):
 		close()
@@ -74,7 +118,10 @@ func _on_sfx_changed(value: float) -> void:
 	GameSettings.sfx_volume = value / _sfx_slider.max_value
 	GameSettings.apply()
 	_update_value_labels()
-	Sound.play(PREVIEW_SOUND)
+	var now: int = Time.get_ticks_msec()
+	if now - _last_preview_ms >= int(preview_interval * 1000.0):
+		_last_preview_ms = now
+		Sound.play(PREVIEW_SOUND)
 
 
 func _on_music_changed(value: float) -> void:

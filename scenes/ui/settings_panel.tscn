@@ -99,7 +99,7 @@ custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
-step = 10.0
+step = 1.0
 value = 80.0
 
 [node name="SfxValueLabel" type="Label" parent="Box/Rows/SfxRow/Row"]
@@ -133,7 +133,7 @@ custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
-step = 10.0
+step = 1.0
 value = 70.0
 
 [node name="MusicValueLabel" type="Label" parent="Box/Rows/MusicRow/Row"]
