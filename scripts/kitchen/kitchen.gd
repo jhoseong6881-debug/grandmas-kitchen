@@ -36,9 +36,9 @@ const RECEIVE_SOUND: StringName = &"receive"
 const POP_SOUND: StringName = &"pop"
 const TIER_UP_SOUND: StringName = &"tier_up"
 
-## 이 장면의 배경음악. 비워 두면 앞 장면의 음악을 서서히 끈다.
-## 봄 동안 깔리는 곡을 넣어 둔다 (텃밭·원목·부엌·평상이 같은 곡이라 장면이 바뀌어도 끊기지 않는다. 장터와 봄 잔치는 따로 곡이 있다).
-@export var music: AudioStream = preload("res://assets/audio/music/spring_theme.mp3")
+## 날마다 바뀌는 배경음악 (하루 동안은 한 곡. 텃밭·원목·부엌·평상이 같은 곡이라 장면이 바뀌어도 끊기지 않는다).
+## 장터와 봄 잔치는 따로 곡이 있다.
+@export var daily_music: DailyMusic = preload("res://data/music/spring_daily_music.tres")
 ## 점심 한 번에 받는 손님 수의 최대값 (가게 단계 데이터가 없을 때만 쓴다. 보통은 ShopLevel.max_guests)
 @export var guests_per_lunch: int = 3
 ## 오늘 손님 수 = 오늘 메뉴 수 + 이 값 (최대 guests_per_lunch).
@@ -143,7 +143,7 @@ var _status_default_color: Color
 
 
 func _ready() -> void:
-	Sound.play_music(music)
+	Sound.play_music(daily_music.get_today_track(true) if daily_music != null else null)
 	GameState.day_changed.connect(_on_day_changed)
 	_cook_button.pressed.connect(_on_cook_button_pressed)
 	_serve_button.pressed.connect(_on_serve_button_pressed)

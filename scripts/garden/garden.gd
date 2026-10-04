@@ -22,9 +22,9 @@ const LOGS_PLACE_ID: StringName = &"mushroom_logs"
 const RECEIVE_SOUND: StringName = &"receive"
 const RUSTLE_SOUND: StringName = &"rustle"
 
-## 이 장면의 배경음악. 비워 두면 앞 장면의 음악을 서서히 끈다.
-## 봄 동안 깔리는 곡을 넣어 둔다 (텃밭·원목·부엌·평상이 같은 곡이라 장면이 바뀌어도 끊기지 않는다. 장터와 봄 잔치는 따로 곡이 있다).
-@export var music: AudioStream = preload("res://assets/audio/music/spring_theme.mp3")
+## 날마다 바뀌는 배경음악 (하루 동안은 한 곡. 텃밭·원목·부엌·평상이 같은 곡이라 장면이 바뀌어도 끊기지 않는다).
+## 장터와 봄 잔치는 따로 곡이 있다.
+@export var daily_music: DailyMusic = preload("res://data/music/spring_daily_music.tres")
 ## 이 화면을 켤 때 게임이 아직 시작 전이면 새 게임을 시작한다 (시작 재료, 레시피, 텃밭을 받는다).
 @export var start_new_game_on_ready: bool = true
 ## 텃밭을 다 둘러본 뒤 넘어갈 점심 부엌 장면
@@ -63,7 +63,7 @@ var _status_text: String = ""
 
 
 func _ready() -> void:
-	Sound.play_music(music)
+	Sound.play_music(daily_music.get_today_track(true) if daily_music != null else null)
 	if start_new_game_on_ready and not GameState.is_game_started:
 		GameState.start_new_game()
 	_day_label.text = DAY_TEXT_FORMAT % GameState.current_day

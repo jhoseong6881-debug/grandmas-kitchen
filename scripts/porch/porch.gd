@@ -27,9 +27,9 @@ const SECRET_SOUND: StringName = &"secret"
 const GIFT_SOUND: StringName = &"gift"
 const NOTE_PAGE_SOUND: StringName = &"note_page"
 
-## 이 장면의 배경음악. 비워 두면 앞 장면의 음악을 서서히 끈다.
-## 봄 동안 깔리는 곡을 넣어 둔다 (텃밭·원목·부엌·평상이 같은 곡이라 장면이 바뀌어도 끊기지 않는다. 장터와 봄 잔치는 따로 곡이 있다).
-@export var music: AudioStream = preload("res://assets/audio/music/spring_theme.mp3")
+## 날마다 바뀌는 배경음악 (하루 동안은 한 곡. 텃밭·원목·부엌·평상이 같은 곡이라 장면이 바뀌어도 끊기지 않는다).
+## 장터와 봄 잔치는 따로 곡이 있다.
+@export var daily_music: DailyMusic = preload("res://data/music/spring_daily_music.tres")
 ## 잠자리에 든 뒤 넘어갈 다음 날 아침 장면
 @export_file("*.tscn") var morning_scene_path: String = "res://scenes/garden/garden.tscn"
 ## 잠드는 장면 (할머니 꿈 한 줄, 저장, 아침으로 밝아지기)
@@ -65,7 +65,7 @@ var _current_talk: EveningTalk
 
 
 func _ready() -> void:
-	Sound.play_music(music)
+	Sound.play_music(daily_music.get_today_track(false) if daily_music != null else null)
 	# 낮에 깔리던 빗소리가 남아 있으면 끈다 (봄비는 해 질 녘에 그친다).
 	Sound.stop_loop(GameData.get_rain_settings().rain_sound)
 	_day_label.text = DAY_TEXT_FORMAT % GameState.current_day
