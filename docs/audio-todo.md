@@ -11,11 +11,11 @@
 ## 직접 만든 효과음 (출처 기록, 출시 전에 권리를 꼭 다시 확인)
 | 파일 | 쓰는 곳 | 만든 곳 | 요금제 / 권리 | 만든 날 |
 |---|---|---|---|---|
-| sfx/chop_carrot_1~3.mp3 | 당근 썰기 (Ingredient.chop_sound) | ElevenLabs (효과음 AI) | Starter → 상업적 이용 가능 (약관 기준, 출시 전 다시 확인) | 2026-10-04 |
-| sfx/chop_mushroom_1~3.mp3 | 버섯 썰기 | ElevenLabs | Starter | 2026-10-04 |
-| sfx/chop_kimbap_1~3.mp3 | 김밥 썰기 (CookStep.hit_sound) | ElevenLabs | Starter | 2026-10-04 |
-| sfx/chop_jelly_1~3.mp3 | 도토리묵 썰기 | ElevenLabs | Starter | 2026-10-04 |
-| sfx/chop_omelette_1~3.mp3 | 계란말이 썰기 | ElevenLabs | Starter | 2026-10-04 |
+| sfx/chop_carrot_1~3.wav | 당근 썰기 (Ingredient.chop_sound) | ElevenLabs (효과음 AI) | Starter → 상업적 이용 가능 (약관 기준, 출시 전 다시 확인) | 2026-10-04 |
+| sfx/chop_mushroom_1~3.wav | 버섯 썰기 | ElevenLabs | Starter | 2026-10-04 |
+| sfx/chop_kimbap_1~3.wav | 김밥 썰기 (CookStep.hit_sound) | ElevenLabs | Starter | 2026-10-04 |
+| sfx/chop_jelly_1~3.wav | 도토리묵 썰기 | ElevenLabs | Starter | 2026-10-04 |
+| sfx/chop_omelette_1~3.wav | 계란말이 썰기 | ElevenLabs | Starter | 2026-10-04 |
 
 | sfx/sizzle_1~4.wav | 볶기에서 재료를 받을 때 (hit_stir_fry) | Freesound "Frying vegetables.wav" by BeeProductive — https://freesound.org/s/382287/ | **CC0** (출처 표시 없이 상업적 이용 가능) | 2026-10-04 |
 
@@ -58,6 +58,7 @@
 - sizzle 조각은 원본(1분 6초)에서 툭 튀는 소리(주걱이 팬에 부딪힘) 없이 지글지글 고르게 이어지는 14.3·35.0·6.0·10.3초 부분을 잘라
   모노 16비트로 만든 것. 서로 다르게 들리게 1 짧고 바삭한 "칙"(0.45초), 2 보통 "치익"(0.7초), 3 긴 "치이이익"(0.95초), 4 부드러운 "쏴아"(0.8초)로 다듬었다.
   원본은 `audio_source/`(Godot 와 Git 에서 빠짐)에 있어서 다른 부분을 다시 잘라 쓸 수 있다.
+- 썰기 소리(chop_*)는 ElevenLabs mp3 의 크기가 조각마다 20dB 넘게 달라서, 모두 같은 크기(가장 큰 부분 -16dB, 최고점 -1dB 이하)로 맞춘 wav 로 바꿨다. 원본 mp3 는 audio_source/chop_mp3/ 에 있다.
 - 썰기 소리 고르는 순서: 요리 단계의 Hit Sound → 재료의 Chop Sound → 썰기 기본 소리(hit_chop, Kenney).
 - ElevenLabs 무료 요금제로 만든 소리는 상업적으로 쓸 수 없다.
 
