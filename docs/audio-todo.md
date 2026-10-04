@@ -94,6 +94,8 @@
 소리 크기는 `data/sounds/rain.tres` 의 Volume Db (지금 -8).
 
 ## 배경음악
+봄 낮·저녁 장면(텃밭, 버섯 원목, 부엌, 평상)은 날마다 곡이 바뀐다: data/music/spring_daily_music.tres 의 Tracks 를 1일째부터 차례로, 하루 동안은 한 곡. 곡을 더하려면 Tracks 칸에 넣기만 하면 된다.
+봄비 오는 날 낮 장면은 봄비 곡(spring_rain.mp3), 비가 그친 저녁 평상은 그날 곡. 장터와 봄 잔치는 언제나 각자 곡.
 장면마다 인스펙터의 **Music** 칸에 곡을 넣는다 (타이틀, 프롤로그, 텃밭, 버섯 원목, 장터, 부엌, 평상, 봄 잔치).
 비어 있으면 앞 장면 음악이 서서히 꺼진다. 같은 곡이면 끊기지 않고 이어진다. 곡은 끝나면 처음부터 다시 튼다.
 파일은 `assets/audio/music/` 에 영어 이름으로 넣는다.
@@ -101,7 +103,10 @@
 ### 음악 출처 기록 (출시 전에 권리를 꼭 다시 확인)
 | 파일 | 쓰는 곳 | 만든 곳 | 요금제 / 권리 | 만든 날 | 프롬프트 |
 |---|---|---|---|---|---|
-| spring_theme.mp3 | 봄 동안 깔리는 곡: 텃밭, 버섯 원목, 부엌, 평상 | Suno AI | Pro 구독 중 생성 → 상업적 이용 가능 (Suno 약관 기준, 출시 전 다시 확인) | 2026-10-03 | (직접 적기) |
+| spring_theme.mp3 | 봄 곡 1 (1·4·7·10·13일째) | Suno AI | Pro 구독 중 생성 → 상업적 이용 가능 (Suno 약관 기준, 출시 전 다시 확인) | 2026-10-03 | (직접 적기) |
+| spring_theme2.mp3 | 봄 곡 2 (2·5·8·11·14일째). 원래 이름 Lunchtime Kitchen | Suno AI (v6) | Pro | 2026-10-04 | japanese anime slice of life soundtrack, bright spring lunchtime in a cozy little countryside kitchen, busy but relaxed cooking, bouncy ukulele and light piano, playful clarinet and bassoon melody, soft pizzicato strings, gentle shaker and light hand percussion, fresh warm and cheerful, bright major key, 108 BPM, loopable video game background music / 제외: vocals, singing, EDM, rock, heavy drums, sad, melancholic, minor key, dramatic |
+| spring_theme3.mp3 | 봄 곡 3 (3·6·9·12·15일째). 원래 이름 Morning Garden | Suno AI (v6) | Pro | 2026-10-04 | japanese anime slice of life soundtrack, fresh breezy spring morning in a countryside vegetable garden, sunlight and gentle wind, light acoustic guitar and bright piano, airy flute-like recorder melody, soft pizzicato strings, birdsong mood, clean and refreshing, hopeful and cheerful, bright major key, 100 BPM, loopable video game background music / 제외: vocals, singing, drums, EDM, rock, sad, melancholic, minor key, dramatic |
+| spring_rain.mp3 | 봄비 오는 날 낮 (텃밭, 버섯 원목, 부엌). data/weather/rain_settings.tres 의 Rain Music. 원래 이름 Spring Rain Day | Suno AI (v6) | Pro | 2026-10-04 | japanese anime slice of life soundtrack, cozy rainy spring day inside a warm countryside kitchen, soft gentle piano and warm nylon guitar, light pizzicato strings like raindrops, soft clarinet melody, calm comforting and peaceful, quietly happy, warm and snug, gentle dynamics, bright major key, 84 BPM, loopable video game background music / 제외: vocals, singing, rain sound effects, thunder, drums, EDM, rock, sad, melancholic, minor key, dramatic, dark |
 | forest_market.mp3 | 숲속 장터 (장날) | Suno AI (v6) | Pro | 2026-10-04 | cozy acoustic folk instrumental, cheerful bustling village market, bouncy ukulele and pizzicato strings, playful clarinet melody, light woodblock and shaker, warm accordion, lighthearted and friendly, diatonic major key, 110 BPM, loopable video game background music / 제외: vocals, singing, EDM, heavy drums, electric guitar, sad, dark |
 | spring_feast_night.mp3 | 봄 잔치 (15일째 저녁) | Suno AI (v6) | Pro | 2026-10-04 | japanese anime slice of life soundtrack, warm and joyful evening celebration, friends smiling around a table in a cozy countryside garden as warm lights come on, light acoustic guitar strumming and bright piano, playful pizzicato strings, cheerful clarinet melody, soft shaker and gentle hand percussion, relaxed and happy, calm but festive, bright major key, 88 BPM, loopable video game background music / 제외: vocals, singing, sad, melancholic, wistful, nostalgic, minor key, dramatic, loud drums, EDM, rock |
 

@@ -22,6 +22,8 @@ extends Resource
 @export var warm_recipes: Array[Recipe] = []
 ## 손님이 따뜻한 요리를 찾을 확률 (낼 수 있고 싫어하지 않는 따뜻한 요리가 있을 때)
 @export_range(0.0, 1.0) var warm_order_chance: float = 0.7
+## 비 오는 날 낮 장면(텃밭, 버섯 원목, 부엌)에 트는 배경음악. 비워 두면 그날의 봄 곡을 튼다. 평상(저녁)은 비가 그쳐서 그날 곡.
+@export var rain_music: AudioStream
 ## 낮 동안 깔리는 빗소리 (data/sounds/ 의 id). 해 지는 장면에서 서서히 꺼진다.
 @export var rain_sound: StringName = &"rain"
 ## 빗소리가 꺼지는 시간(초)

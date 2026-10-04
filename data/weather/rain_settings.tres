@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="RainSettings" format=3]
 
 [ext_resource type="Script" path="res://scripts/data/rain_settings.gd" id="1_rain"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/spring_rain.mp3" id="9_music"]
 [ext_resource type="Script" path="res://scripts/data/recipe.gd" id="2_recipe"]
 [ext_resource type="Resource" path="res://data/recipes/carrot_acorn_jeon.tres" id="3_carrot_acorn_jeon"]
 [ext_resource type="Resource" path="res://data/recipes/mushroom_egg_jeon.tres" id="4_mushroom_egg_jeon"]
@@ -20,3 +21,4 @@ sunset_text = "비가 그치고, 해가 뉘엿뉘엿 지고 있어요…"
 warm_recipes = Array[ExtResource("2_recipe")]([ExtResource("3_carrot_acorn_jeon"), ExtResource("4_mushroom_egg_jeon"), ExtResource("5_honey_carrot_jorim"), ExtResource("6_carrot_egg_stir_fry"), ExtResource("7_forest_mushroom_stir_fry"), ExtResource("8_acorn_jelly_mushroom_bap")])
 warm_order_chance = 0.7
 rain_sound = &"rain"
+rain_music = ExtResource("9_music")
