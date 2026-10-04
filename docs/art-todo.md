@@ -71,6 +71,7 @@
 | scenes/garden/mushroom_logs.tscn (PlotRow 버튼) | 버섯 원목 (빈 원목 / 자라는 중 / 다 자람) | 260x240 | 할 일 |
 | scenes/garden/plant_picker.tscn (Board) | "무엇을 심을까요?" 나무 판 | 1120x520 | 선택 |
 | data/story/prologue.tres (각 장 Background Image) | 프롤로그 배경 8장: 밤 지하철, 아침 전화, 여름 평상 회상, 소포와 빈 공책, 편지, 시골 버스, 숲속 밥집, 문틈의 토끼 | 1920x1080 | 할 일 |
+| data/story/memories.tres (각 회상의 Background Image) | 할머니 회상 배경 3장: 여름 부엌 도마 앞의 할머니와 어린 나, 초겨울 밤 도시락 싸는 할머니 (+ 봄날 문 앞 꿀단지), 추석 시골 정류장의 은박지 김밥 | 1920x1080 | 할 일 |
 | scenes/story/prologue.tscn (Paper) | 할머니 편지지 | 1000x900 | 선택 |
 | data/keepsakes/*.tres (Icon) | 할머니 기념품 5개: 꽃무늬 손수건, 계란 바구니, 도토리 팽이, 꿀단지, 버섯 바구니 | 128x128 | 할 일 |
 | scenes/kitchen/minigames/mince_minigame.tscn (Board, Knife) | 다지기 도마 / 큰 식칼 | 900x440 / 140x200 | 할 일 |

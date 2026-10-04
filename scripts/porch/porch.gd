@@ -34,6 +34,8 @@ const NOTE_PAGE_SOUND: StringName = &"note_page"
 @export_file("*.tscn") var morning_scene_path: String = "res://scenes/garden/garden.tscn"
 ## 잠드는 장면 (할머니 꿈 한 줄, 저장, 아침으로 밝아지기)
 @export var sleep_transition_scene: PackedScene = preload("res://scenes/ui/sleep_transition.tscn")
+## 할머니 회상 장면 목록 (노트를 3·6·9장 되찾은 날 밤에 하나씩)
+@export var memory_book: MemoryBook = preload("res://data/story/memories.tres")
 ## 노트 카드가 뜰 때 커졌다 돌아오는 정도와 시간(초)
 @export var note_pop_scale: float = 1.1
 @export var note_pop_duration: float = 0.2
@@ -342,7 +344,16 @@ func _go_to_sleep() -> void:
 	_next_button.disabled = true
 	var night: int = GameState.current_day
 	GameState.advance_day()
+	# 노트를 3·6·9장 되찾은 날 밤에는 꿈 한 줄 대신 할머니 회상 장면을 본다 (본 것으로 적고 저장한다).
+	var memory: GrandmaMemory = memory_book.get_next(GameState.current_season, GameState.count_found_notes(),
+			GameState.seen_memory_ids) if memory_book != null else null
+	if memory != null:
+		GameState.seen_memory_ids.append(memory.id)
 	var transition: SleepTransition = sleep_transition_scene.instantiate()
 	add_child(transition)
-	await transition.play(night, GameState.current_day, GameState.save_game)
-	get_tree().change_scene_to_file(morning_scene_path)
+	await transition.play(night, GameState.current_day, GameState.save_game,
+			memory_book.dream_text if memory != null else "", memory == null)
+	if memory != null:
+		StoryScene.play_story(get_tree(), memory.story, morning_scene_path)
+	else:
+		get_tree().change_scene_to_file(morning_scene_path)

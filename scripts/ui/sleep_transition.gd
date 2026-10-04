@@ -49,10 +49,14 @@ func _ready() -> void:
 
 ## night: 몇째 날 밤인지 (꿈 문구를 고르는 데 쓴다). next_day: 아침에 보여 줄 날짜.
 ## save: 저장하는 함수. 성공하면 true 를 돌려준다 (예: GameState.save_game).
-func play(night: int, next_day: int, save: Callable) -> void:
+## dream_text: 꿈 한 줄 대신 보여 줄 글 (할머니 회상이 있는 밤). show_morning: false 면 아침으로 밝아지기 전에 끝낸다.
+func play(night: int, next_day: int, save: Callable, dream_text: String = "", show_morning: bool = true) -> void:
 	_is_skipping = false
 	_sky.color = night_color
-	_dream_label.text = dream_book.get_line(night).format({"name": GameState.player_name}) if dream_book != null else ""
+	if not dream_text.is_empty():
+		_dream_label.text = dream_text
+	else:
+		_dream_label.text = dream_book.get_line(night).format({"name": GameState.player_name}) if dream_book != null else ""
 	_dream_label.modulate.a = 0.0
 	_night_content.modulate.a = 1.0
 	_save_icon.hide()
@@ -80,6 +84,8 @@ func play(night: int, next_day: int, save: Callable) -> void:
 	_save_label.text = SAVED_TEXT if is_saved else SAVE_FAILED_TEXT
 
 	await _wait(dream_hold)
+	if not show_morning:
+		return
 
 	tween = create_tween().set_parallel()
 	tween.tween_property(_night_content, "modulate:a", 0.0, morning_fade_duration)

@@ -35,6 +35,8 @@ var plot_days_left: Dictionary[StringName, Array] = {}
 var is_todays_gift_collected: bool = false
 ## 숲속 장터: 너구리 상인을 만났는지 (첫 인사를 한 번만 하려고 저장한다)
 var has_met_merchant: bool = false
+## 이미 본 할머니 회상 장면 id (MemoryBook)
+var seen_memory_ids: Array[StringName] = []
 ## 오늘 봄비가 오는지 (RainSettings). 아침에 정해서 저장해 둔다 (불러오기로 다시 뽑지 않게).
 var is_raining_today: bool = false
 ## 오늘 장터에서 거래마다 바꾼 횟수 (거래 id → 횟수). 하루가 지나면 비운다. 장날 낮의 일이라 저장하지 않는다.
@@ -154,6 +156,12 @@ func record_served_guest(guest_id: StringName, is_perfect: bool) -> void:
 	todays_served_guests[guest_id] = todays_served_guests.get(guest_id, false) or is_perfect
 	if guest_id not in met_guest_ids:
 		met_guest_ids.append(guest_id)
+
+
+## 이번 계절 레시피 노트 중 되찾은 장 수 (처음부터 가진 레시피도 센다)
+func count_found_notes() -> int:
+	return GameData.get_all_recipes().filter(func(recipe: Recipe) -> bool:
+			return recipe.note_season == current_season and is_recipe_unlocked(recipe.id)).size()
 
 
 func has_met_guest(guest_id: StringName) -> bool:
@@ -497,6 +505,7 @@ func new_game() -> void:
 	is_todays_gift_collected = false
 	has_met_merchant = false
 	is_raining_today = false
+	seen_memory_ids.clear()
 	todays_market_trades.clear()
 	has_visited_market_today = false
 	is_feast_prep_announced = false
@@ -592,6 +601,7 @@ func _to_save_data() -> Dictionary:
 		"is_spring_completed": is_spring_completed,
 		"has_met_merchant": has_met_merchant,
 		"is_raining_today": is_raining_today,
+		"seen_memory_ids": Array(seen_memory_ids).map(func(memory_id: StringName) -> String: return String(memory_id)),
 		"is_feast_prep_announced": is_feast_prep_announced,
 		"feast_prep_delivered": _string_keys(feast_prep_delivered),
 	}
@@ -649,6 +659,8 @@ func _from_save_data(data: Dictionary) -> void:
 	is_spring_completed = bool(data.get("is_spring_completed", false))
 	has_met_merchant = bool(data.get("has_met_merchant", false))
 	is_raining_today = bool(data.get("is_raining_today", false))
+	for memory_id: Variant in data.get("seen_memory_ids", []):
+		seen_memory_ids.append(StringName(str(memory_id)))
 	_unlock_places_from_state()
 	is_feast_prep_announced = bool(data.get("is_feast_prep_announced", false))
 	var feast_data: Dictionary = data.get("feast_prep_delivered", {})

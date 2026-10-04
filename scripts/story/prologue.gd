@@ -1,9 +1,11 @@
+class_name StoryScene
 extends Control
 ## 프롤로그 장면. story(data/story/prologue.tres)의 장들을 차례로 보여 준다.
+## 할머니 회상처럼 다른 이야기도 이 화면으로 보여 줄 수 있다: StoryScene.play_story(...)
 ## 클릭, 스페이스/Enter, 게임패드 A 로 한 줄씩 넘긴다. 글자가 다 나오기 전에 누르면 그 줄을 바로 다 보여 준다.
 ## "#이름" 줄에서 이름 입력 칸이 나오고, 지은 이름은 GameState.player_name 에 저장된다.
 ## Esc 나 게임패드 B 로 건너뛸 수 있다. 이름을 아직 안 지었으면 이름부터 짓고 넘어간다.
-## 다 보면 1일째 아침 텃밭으로 간다.
+## 다 보면 1일째 아침 텃밭으로 간다 (회상은 play_story 에 준 장면으로 간다).
 
 ## 이 줄에서 이름 입력 칸을 연다
 const NAME_INPUT_LINE: String = "#이름"
@@ -14,6 +16,9 @@ const SPEAKER_SEPARATOR: String = ": "
 const MAX_SPEAKER_LENGTH: int = 8
 ## 편지 문단 사이 빈 줄
 const LETTER_PARAGRAPH_GAP: String = "\n\n"
+
+## 이 화면의 장면 파일 (play_story 가 연다)
+const PROLOGUE_SCENE_PATH: String = "res://scenes/story/prologue.tscn"
 
 ## 이 장면의 배경음악. 비워 두면 앞 장면의 음악을 서서히 끈다.
 @export var music: AudioStream
@@ -40,6 +45,10 @@ var _name_box_open_time: float = 0.0
 var _is_skipping: bool = false
 var _blink_time: float = 0.0
 
+## play_story 로 맡겨 둔 이야기와 다음 장면. 이 장면이 열릴 때 한 번 쓰고 비운다.
+static var _queued_story: Story
+static var _queued_next_scene: String = ""
+
 @onready var _background: ColorRect = %Background
 @onready var _background_image: TextureRect = %BackgroundImage
 @onready var _chapter_label: Label = %ChapterLabel
@@ -56,7 +65,18 @@ var _blink_time: float = 0.0
 @onready var _skip_button: Button = %SkipButton
 
 
+## 이 화면(프롤로그 장면)을 열어 queued_story 를 보여 주고, 다 보면 next_scene 으로 간다.
+static func play_story(tree: SceneTree, queued_story: Story, next_scene: String) -> void:
+	_queued_story = queued_story
+	_queued_next_scene = next_scene
+	tree.change_scene_to_file(PROLOGUE_SCENE_PATH)
+
+
 func _ready() -> void:
+	if _queued_story != null:
+		story = _queued_story
+		next_scene_path = _queued_next_scene
+		_queued_story = null
 	Sound.play_music(music)
 	# 낮에 깔리던 빗소리가 남아 있으면 끈다 (봄비는 해 질 녘에 그친다).
 	Sound.stop_loop(GameData.get_rain_settings().rain_sound)

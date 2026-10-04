@@ -1,0 +1,59 @@
+[gd_resource type="Resource" script_class="MemoryBook" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/memory_book.gd" id="1_book"]
+[ext_resource type="Script" path="res://scripts/data/grandma_memory.gd" id="2_memory"]
+[ext_resource type="Script" path="res://scripts/data/story.gd" id="3_story"]
+[ext_resource type="Script" path="res://scripts/data/story_chapter.gd" id="4_chapter"]
+
+[sub_resource type="Resource" id="Chapter_1"]
+script = ExtResource("4_chapter")
+title = "기억 하나. 처음 잡은 칼"
+background_color = Color(0.36, 0.28, 0.2, 1)
+lines = Array[String](["일곱 살 여름, 할머니 부엌.", "할머니가 내 손 위에 손을 겹쳐 칼을 쥐여 주셨다.", "할머니: \"칼은 힘으로 쓰는 게 아니여. 박자로 쓰는 거지. 탁, 탁, 탁.\"", "내가 썬 당근은 굵었다 가늘었다 제멋대로였다.", "할머니는 그걸 그대로 김밥에 말아 넣으셨다.", "할머니: \"모양이 제각각이니 씹는 맛이 있구먼.\"", "…도마 앞에 서면 손이 먼저 그 박자를 기억한다. 탁, 탁, 탁."])
+
+[sub_resource type="Resource" id="Story_1"]
+script = ExtResource("3_story")
+chapters = Array[ExtResource("4_chapter")]([SubResource("Chapter_1")])
+
+[sub_resource type="Resource" id="Memory_1"]
+script = ExtResource("2_memory")
+id = &"first_knife"
+notes_needed = 3
+story = SubResource("Story_1")
+
+[sub_resource type="Resource" id="Chapter_2"]
+script = ExtResource("4_chapter")
+title = "기억 둘. 돈통 없는 밥집"
+background_color = Color(0.15, 0.18, 0.28, 1)
+lines = Array[String](["초겨울 밤, 부엌에서 달그락 소리에 깼다.", "할머니가 커다란 도시락을 싸고 계셨다.", "할머니: \"곰 아재 겨울잠 들기 전에 마지막으로 든든히 먹여야지.\"", "다음 해 봄, 밥집 문 앞에 꿀단지 하나가 놓여 있었다.", "할머니: \"받은 건 꼭 갚는 게 숲 법이여. 그래서 우리 밥집엔 돈통이 없는 거여.\"", "할머니: \"밥 한 그릇 주고, 마음 한 그릇 받고. 그럼 됐지.\"", "오늘 손님들이 두고 간 재료를 정리하다가, 그 꿀단지가 생각났다."])
+
+[sub_resource type="Resource" id="Story_2"]
+script = ExtResource("3_story")
+chapters = Array[ExtResource("4_chapter")]([SubResource("Chapter_2")])
+
+[sub_resource type="Resource" id="Memory_2"]
+script = ExtResource("2_memory")
+id = &"no_cashbox"
+notes_needed = 6
+story = SubResource("Story_2")
+
+[sub_resource type="Resource" id="Chapter_3"]
+script = ExtResource("4_chapter")
+title = "기억 셋. 다음에"
+background_color = Color(0.3, 0.22, 0.25, 1)
+lines = Array[String](["몇 해 전 추석. 하룻밤만 자고 서둘러 올라가던 날.", "할머니는 정류장까지 따라 나와 은박지 뭉치를 쥐여 주셨다.", "할머니: \"가다 배고프면 먹어.\"", "할머니: \"다음엔 좀 오래 있다 가.\"", "나: \"응, 할머니. 다음에.\"", "그 김밥은 결국 회사 책상에서, 식은 채로 먹었다.", "꽁다리만 한쪽에 따로 모여 있었다. 어릴 적 내가 제일 좋아하던 거.", "…이번엔 오래 있을게요, 할머니."])
+
+[sub_resource type="Resource" id="Story_3"]
+script = ExtResource("3_story")
+chapters = Array[ExtResource("4_chapter")]([SubResource("Chapter_3")])
+
+[sub_resource type="Resource" id="Memory_3"]
+script = ExtResource("2_memory")
+id = &"next_time"
+notes_needed = 9
+story = SubResource("Story_3")
+
+[resource]
+script = ExtResource("1_book")
+memories = Array[ExtResource("2_memory")]([SubResource("Memory_1"), SubResource("Memory_2"), SubResource("Memory_3")])
+dream_text = "…잠결에, 오래된 기억 하나가 떠올랐다."
