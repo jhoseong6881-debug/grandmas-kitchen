@@ -11,7 +11,7 @@
 | data/recipes/carrot_kimbop.tres (finished_image) | 할머니표 당근 김밥 완성 그림 | 미정 | 할 일 |
 | scenes/kitchen/kitchen.tscn (Background) | 부엌 배경 | 1920x1080 | 할 일 |
 | scenes/kitchen/kitchen.tscn (Counter) | 조리대 | 1920x300 | 할 일 |
-| data/guests/rabbit.tres (portrait) | 토끼 손님 | 240x320 | 할 일 |
+| data/guests/rabbit.tres (portrait) | 토끼 손님 (기본 표정) | 360x480 (원본 120x160) | 할 일 |
 | scenes/kitchen/guest_spot.tscn (SpeechBubble) | 말풍선 | 가변 (늘어나는 9칸 그림) | 할 일 |
 | scenes/kitchen/minigames/chop_minigame.tscn (Board) | 도마 | 900x500 | 할 일 |
 | scenes/kitchen/minigames/chop_minigame.tscn (Ingredient, Slices) | 썰기 전 재료 / 썬 조각 (재료마다) | 420x160 / 24x120 | 할 일 |
@@ -43,8 +43,8 @@
 | data/ingredients/acorn.tres (icon) | 도토리 아이콘 | 미정 | 할 일 |
 | data/recipes/acorn_jelly_muchim.tres (finished_image) | 도토리묵 무침 완성 그림 | 미정 | 할 일 |
 | data/recipes/carrot_egg_stir_fry.tres (finished_image) | 당근 계란 볶음 완성 그림 | 미정 | 할 일 |
-| data/guests/hen.tres (portrait) | 암탉 손님 | 240x320 | 할 일 |
-| data/guests/squirrel.tres (portrait) | 다람쥐 손님 | 240x320 | 할 일 |
+| data/guests/hen.tres (portrait) | 암탉 손님 (기본 표정) | 360x480 (원본 120x160) | 할 일 |
+| data/guests/squirrel.tres (portrait) | 다람쥐 손님 (기본 표정) | 360x480 (원본 120x160) | 할 일 |
 | scenes/porch/porch.tscn (Sky, Sunset, Ground) | 저녁 마당 배경 (노을, 마당) | 1920x1080 | 할 일 |
 | scenes/porch/porch.tscn (Pyeongsang) | 평상 | 1200x120 | 할 일 |
 | scenes/porch/porch.tscn (NoteCard) | 할머니 레시피 노트 종이 | 720x360 | 할 일 |
@@ -55,8 +55,8 @@
 | scenes/ui/title.tscn (Background, GameTitle) | 타이틀 배경 / 제목 로고 | 1920x1080 | 할 일 |
 | data/ingredients/honey.tres (icon) | 꿀 아이콘 | 미정 | 할 일 |
 | data/ingredients/mushroom.tres (icon) | 버섯 아이콘 | 미정 | 할 일 |
-| data/guests/bear.tres (portrait) | 곰 손님 | 240x320 | 할 일 |
-| data/guests/hedgehog.tres (portrait) | 고슴도치 손님 | 240x320 | 할 일 |
+| data/guests/bear.tres (portrait) | 곰 손님 (기본 표정) | 360x480 (원본 120x160) | 할 일 |
+| data/guests/hedgehog.tres (portrait) | 고슴도치 손님 (기본 표정) | 360x480 (원본 120x160) | 할 일 |
 | data/recipes/forest_mushroom_stir_fry.tres (finished_image) | 숲속 버섯 볶음 완성 그림 | 미정 | 할 일 |
 | data/recipes/honey_carrot_jorim.tres (finished_image) | 꿀 당근 조림 완성 그림 | 미정 | 할 일 |
 | data/recipes/acorn_honey_gangjeong.tres (finished_image) | 도토리 꿀강정 완성 그림 | 미정 | 할 일 |
@@ -90,8 +90,9 @@
 | scenes/garden/market.tscn (Stall, StallRoof) | 장터 가판과 차양 | 460x200 / 500x60 | 할 일 |
 | scenes/garden/market.tscn (Sky, Ground) | 숲속 장터 배경 | 1920x1080 | 선택 |
 | scenes/ui/sunset_transition.tscn (SkyTop, SkyGlow, Sun, Hill) | 해 지는 장면: 노을 하늘, 지는 해, 산 실루엣 (해가 내려가는 건 코드가 함) | 1920x1080 / 해 180x180 | 할 일 |
-| scenes/kitchen/guest_spot.gd (걸어 들어오기) | 손님 걷는 모습 (선택: 걸음마다 바뀌는 2장, 지금은 통통 튀기만 함) | 240x320 | 선택 |
-| data/guests/*.tres (raincoat_portrait) | 봄비 오는 날 우비 입은 손님 다섯 (암탉, 곰, 토끼, 다람쥐, 고슴도치). 지금은 노란 우비 도형(raincoat_shape.gd)을 씌움 | 240x320 | 할 일 |
+| scenes/kitchen/guest_spot.gd (걸어 들어오기) | 손님 걷는 모습 (선택: 걸음마다 바뀌는 2장, 지금은 통통 튀기만 함) | 360x480 | 선택 |
+| data/guests/*.tres (raincoat_portrait) | 봄비 오는 날 우비 입은 손님 다섯 (암탉, 곰, 토끼, 다람쥐, 고슴도치). 지금은 노란 우비 도형(raincoat_shape.gd)을 씌움 | 360x480 (원본 120x160) | 할 일 |
+| data/guests/*.tres (expression_portraits) | 손님 표정 그림: happy(웃음), surprised(놀람), sad(시무룩). 다섯 손님 × 3장. 없으면 기본 그림 (임시 도형일 땐 "(웃음)" 같은 글자) | 360x480 (원본 120x160) | 할 일 |
 | scripts/ui/rain_overlay.gd | 빗줄기 (지금은 선으로 그림. 그림으로 바꾸려면 빗방울 한 줄 그림) | 4x40 | 선택 |
 | scenes/garden/garden.tscn (Sky) | 비 오는 날 흐린 하늘 (지금은 맑은 하늘에 푸른빛만 덮음) | 1920x560 | 선택 |
 | data/crops/carrot_crop.tres (Growth Textures) | 당근이 자라는 단계 그림 (막 심음 → 새싹 → 자람 → 다 자람, 3~4장. 마지막 장 = 거둘 때) | 칸 폭 x 칸 높이-90 (지금 260x150) | 할 일 |
