@@ -13,8 +13,7 @@ script = ExtResource("1_spot")
 [node name="PortraitPlaceholder" type="ColorRect" parent="."]
 unique_name_in_owner = true
 layout_mode = 0
-offset_top = 160.0
-offset_right = 240.0
+offset_right = 360.0
 offset_bottom = 480.0
 color = Color(0.86, 0.84, 0.8, 1)
 
@@ -22,8 +21,7 @@ color = Color(0.86, 0.84, 0.8, 1)
 unique_name_in_owner = true
 visible = false
 layout_mode = 0
-offset_top = 160.0
-offset_right = 240.0
+offset_right = 360.0
 offset_bottom = 480.0
 expand_mode = 1
 stretch_mode = 5
@@ -31,21 +29,35 @@ stretch_mode = 5
 [node name="NameLabel" type="Label" parent="."]
 unique_name_in_owner = true
 layout_mode = 0
-offset_top = 290.0
-offset_right = 240.0
-offset_bottom = 350.0
-theme_override_colors/font_color = Color(0.32, 0.22, 0.14, 1)
+offset_left = 392.0
+offset_right = 1030.0
+offset_bottom = 48.0
+theme_override_colors/font_color = Color(1, 0.96, 0.86, 1)
+theme_override_colors/font_outline_color = Color(0.32, 0.22, 0.14, 1)
+theme_override_constants/outline_size = 12
 theme_override_font_sizes/font_size = 36
 text = "손님"
+vertical_alignment = 1
+
+[node name="ExpressionLabel" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_top = 200.0
+offset_right = 360.0
+offset_bottom = 248.0
+theme_override_colors/font_color = Color(0.45, 0.35, 0.28, 1)
+theme_override_font_sizes/font_size = 36
+text = "(웃음)"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="SpeechBubble" type="PanelContainer" parent="."]
 layout_mode = 0
-offset_left = 270.0
-offset_top = 40.0
+offset_left = 392.0
+offset_top = 56.0
 offset_right = 1030.0
-offset_bottom = 160.0
+offset_bottom = 176.0
 
 [node name="Margin" type="MarginContainer" parent="SpeechBubble"]
 layout_mode = 2

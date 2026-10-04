@@ -227,23 +227,28 @@ func _call_next_guest() -> void:
 			_orders_today[order.id] = _orders_today.get(order.id, 0) + 1
 			_last_guest = guest
 			var order_text: String = guest.order_line.format({"recipe": order.display_name})
+			# 주문할 때 표정: 좋아하는 걸 못 시키면 시무룩, 궁금한 요리는 놀람, 처음 만나면 반가움(웃음)
+			var order_expression: StringName = AnimalGuest.EXPRESSION_DEFAULT
 			if _is_fallback_order:
 				order_text = guest.fallback_order_line.format({"recipe": order.display_name})
+				order_expression = AnimalGuest.EXPRESSION_SAD
 			elif warm_order != null and not guest.rain_order_line.is_empty():
 				order_text = guest.rain_order_line.format({"recipe": order.display_name})
 			elif curious_order != null:
 				var curious_line: String = guest.curious_order_line if not guest.curious_order_line.is_empty() \
 						else DEFAULT_CURIOUS_ORDER_LINE
 				order_text = curious_line.format({"recipe": order.display_name})
+				order_expression = AnimalGuest.EXPRESSION_SURPRISED
 			# 처음 온 손님은 할머니 밥집 단골이었다는 인사와 함께 주문한다.
 			if not GameState.has_met_guest(guest.id) and not guest.first_order_line.is_empty():
 				order_text = guest.first_order_line.format({"recipe": order.display_name})
+				order_expression = AnimalGuest.EXPRESSION_HAPPY
 			if _taste_hint(guest) != "":
 				order_text += TASTE_HINT_JOIN + _taste_hint(guest)
 			current_request = _choose_request(guest, order)
 			if current_request != null:
 				order_text += REQUEST_JOIN + current_request.get_line(guest)
-			_guest_spot.show_guest(guest, order_text, GameState.is_raining_today)
+			_guest_spot.show_guest(guest, order_text, GameState.is_raining_today, order_expression)
 			Sound.play(GUEST_ARRIVE_SOUND)
 			_show_only_button(_cook_button)
 			return
@@ -465,13 +470,16 @@ func _serve(garnish: Garnish) -> void:
 	for ingredient_id: StringName in payment:
 		GameState.add_ingredient(ingredient_id, payment[ingredient_id])
 
-	# 손님 말: 할머니 손맛 > 부탁 (들어줌 / 못 들어줌) > 입맛 (맞음 / 힌트) > 완벽 / 보통
+	# 손님 말과 표정: 할머니 손맛 > 부탁 (들어줌 / 못 들어줌) > 입맛 (맞음 / 힌트) > 완벽 / 보통
 	var line: String = guest.perfect_line if _is_perfect_cook else guest.thanks_line
+	var expression: StringName = AnimalGuest.EXPRESSION_HAPPY if _is_perfect_cook else AnimalGuest.EXPRESSION_DEFAULT
 	if guest.favorite_garnish != null:
 		line = guest.taste_match_line if is_taste_match else guest.taste_miss_line
+		expression = AnimalGuest.EXPRESSION_HAPPY if is_taste_match else AnimalGuest.EXPRESSION_DEFAULT
 	if current_request != null:
 		var missed_line: String = guest.request_missed_line if not guest.request_missed_line.is_empty() else REQUEST_MISSED_LINE
 		line = current_request.get_thanks_line(guest) if is_request_met else missed_line
+		expression = AnimalGuest.EXPRESSION_HAPPY if is_request_met else AnimalGuest.EXPRESSION_SAD
 	if is_grandma_taste:
 		# 비법을 알려 준 손님은 그 요리만의 말을, 다른 손님은 자기 말투의 말을 한다.
 		var taste_line: String = current_order.grandma_taste_line
@@ -479,6 +487,7 @@ func _serve(garnish: Garnish) -> void:
 			taste_line = guest.grandma_taste_line
 		if not taste_line.is_empty():
 			line = taste_line.format({"name": GameState.player_name})
+			expression = AnimalGuest.EXPRESSION_HAPPY
 
 	# 손님 위로 떠오르는 글(과 그때 나는 소리)과 단골도
 	var pops: Array[String] = []
@@ -505,7 +514,7 @@ func _serve(garnish: Garnish) -> void:
 		pops.append(TIER_UP_FORMAT % [guest.display_name, Korean.with_particle(guest.display_name), settings.get_tier_name(new_tier)])
 		pop_sounds.append(TIER_UP_SOUND)
 
-	_guest_spot.say(line)
+	_guest_spot.say(line, expression)
 	Sound.play(SERVE_SOUND)
 	Sound.play(RECEIVE_SOUND)
 	_set_payment_status(payment, _is_perfect_cook, is_grandma_taste or is_request_met, bonus_text)

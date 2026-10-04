@@ -106,12 +106,12 @@ func _run_next_beat() -> void:
 func _add_guest_beats(guest: AnimalGuest, is_first: bool) -> void:
 	var guest_beats: Array[Callable] = []
 	if _needs_greeting(guest):
-		guest_beats.append(_guest_spot.show_guest.bind(guest, _with_name(guest.porch_greeting_line)))
+		guest_beats.append(_guest_spot.show_guest.bind(guest, _with_name(guest.porch_greeting_line), false, AnimalGuest.EXPRESSION_HAPPY))
 	var reward_tier: int = GameState.get_pending_reward_tier(guest.id)
 	var reward: RegularReward = guest.get_regular_reward(reward_tier)
 	if reward != null:
 		guest_beats.append(_tell_talk.bind(reward.talk))
-		guest_beats.append(func() -> void: _guest_spot.say(reward.gift_line.format({"name": GameState.player_name})))
+		guest_beats.append(func() -> void: _guest_spot.say(reward.gift_line.format({"name": GameState.player_name}), AnimalGuest.EXPRESSION_HAPPY))
 		guest_beats.append(_receive_gift.bind(reward_tier, reward))
 	else:
 		if reward_tier >= 0:
@@ -124,7 +124,7 @@ func _add_guest_beats(guest: AnimalGuest, is_first: bool) -> void:
 			guest_beats.append(func() -> void: _learn_secret(secret))
 		var page: Recipe = _next_note_page(guest)
 		if page != null:
-			guest_beats.append(func() -> void: _guest_spot.say(guest.note_line.format({"recipe": page.display_name})))
+			guest_beats.append(func() -> void: _guest_spot.say(guest.note_line.format({"recipe": page.display_name}), AnimalGuest.EXPRESSION_HAPPY))
 			guest_beats.append(func() -> void: _receive_note_page(page))
 	var first_beat: Callable = guest_beats[0]
 	guest_beats[0] = func() -> void:
@@ -262,7 +262,7 @@ func _tell_story() -> void:
 ## 대화 하나를 보여 준다. 대답이 있으면 대답 버튼을 띄운다.
 func _tell_talk(talk: EveningTalk) -> void:
 	_current_talk = talk
-	_guest_spot.show_guest(_evening_guest, _with_name(talk.line))
+	_guest_spot.show_guest(_evening_guest, _with_name(talk.line), false, talk.expression)
 	if not talk.replies.is_empty():
 		_show_replies(talk.replies)
 
@@ -319,7 +319,10 @@ func _show_replies(replies: Array[String]) -> void:
 func _on_reply_chosen(reply_index: int) -> void:
 	var reactions: Array[String] = _current_talk.reactions
 	if not reactions.is_empty():
-		_guest_spot.say(_with_name(reactions[mini(reply_index, reactions.size() - 1)]))
+		var index: int = mini(reply_index, reactions.size() - 1)
+		var expression: StringName = _current_talk.reaction_expressions[index] \
+				if index < _current_talk.reaction_expressions.size() else AnimalGuest.EXPRESSION_DEFAULT
+		_guest_spot.say(_with_name(reactions[index]), expression)
 	_current_talk = null
 	_reply_box.hide()
 	_next_button.show()

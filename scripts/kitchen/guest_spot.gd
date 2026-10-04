@@ -4,6 +4,14 @@ extends Control
 ## 누가 무엇을 말할지는 정하지 않는다. 부엌이나 평상이 정해서 show_order / show_guest 로 알려 준다.
 ## walk_in() 을 부르면 옆에서 통통 걸어 들어와 앉은 뒤에 말풍선이 보인다 (저녁 평상).
 ## 봄비 오는 날에는 우비를 입은 모습으로 보여 준다 (우비 그림이 없으면 임시 우비 도형을 씌운다).
+## 대사마다 표정(AnimalGuest.EXPRESSION_*)을 바꿀 수 있다. 그림이 없으면 임시 도형 위에 표정 이름을 작게 보여 준다.
+
+## 그림이 없을 때 임시 도형 위에 보여 줄 표정 이름
+const EXPRESSION_NAMES: Dictionary[StringName, String] = {
+	AnimalGuest.EXPRESSION_HAPPY: "(웃음)",
+	AnimalGuest.EXPRESSION_SURPRISED: "(놀람)",
+	AnimalGuest.EXPRESSION_SAD: "(시무룩)",
+}
 
 const WALK_SOUND: StringName = &"walk"
 
@@ -18,10 +26,14 @@ const WALK_SOUND: StringName = &"walk"
 @onready var _portrait: TextureRect = %Portrait
 @onready var _portrait_placeholder: ColorRect = %PortraitPlaceholder
 @onready var _name_label: Label = %NameLabel
+@onready var _expression_label: Label = %ExpressionLabel
 @onready var _bubble_text: Label = %BubbleText
 ## 말풍선 (걸어 들어오는 동안 숨긴다)
 @onready var _bubble: Control = _bubble_text.get_parent().get_parent()
 var _home_position: Vector2
+## 지금 보여 주는 손님과 우비 여부 (say 로 표정만 바꿀 때 쓴다)
+var _guest: AnimalGuest
+var _in_raincoat: bool = false
 var _walk_tween: Tween
 ## 임시 우비 (손님 모습 위, 이름 아래에 겹친다)
 var _raincoat: RaincoatShape = RaincoatShape.new()
@@ -62,23 +74,36 @@ func show_order(guest: AnimalGuest, recipe: Recipe) -> void:
 
 
 ## 손님 모습을 보여 주고 말풍선에 text 를 띄운다. in_raincoat: 우비를 입은 모습으로 (봄비 오는 날)
-func show_guest(guest: AnimalGuest, text: String, in_raincoat: bool = false) -> void:
-	var texture: Texture2D = guest.raincoat_portrait if in_raincoat and guest.raincoat_portrait != null else guest.portrait
-	var has_portrait: bool = texture != null
-	_portrait.texture = texture
-	_portrait.visible = has_portrait
-	_portrait_placeholder.visible = not has_portrait
+## expression: 표정 (AnimalGuest.EXPRESSION_*). 비워 두면 기본 표정.
+func show_guest(guest: AnimalGuest, text: String, in_raincoat: bool = false,
+		expression: StringName = AnimalGuest.EXPRESSION_DEFAULT) -> void:
+	_guest = guest
+	_in_raincoat = in_raincoat
 	_raincoat.visible = in_raincoat and guest.raincoat_portrait == null
 	if _raincoat.visible:
 		_raincoat.color = GameData.get_rain_settings().raincoat_color
 	_name_label.text = guest.display_name
+	_set_expression(expression)
 	show()
 	_set_bubble_text(text)
 
 
-## 말풍선 내용을 바꾼다.
-func say(text: String) -> void:
+## 말풍선 내용을 바꾼다. expression: 이 말을 할 때의 표정 (비워 두면 기본 표정).
+func say(text: String, expression: StringName = AnimalGuest.EXPRESSION_DEFAULT) -> void:
+	_set_expression(expression)
 	_set_bubble_text(text)
+
+
+func _set_expression(expression: StringName) -> void:
+	if _guest == null:
+		return
+	var texture: Texture2D = _guest.get_portrait(expression, _in_raincoat)
+	var has_portrait: bool = texture != null
+	_portrait.texture = texture
+	_portrait.visible = has_portrait
+	_portrait_placeholder.visible = not has_portrait
+	_expression_label.text = EXPRESSION_NAMES.get(expression, "")
+	_expression_label.visible = not has_portrait and not _expression_label.text.is_empty()
 
 
 ## 한글이 낱말 중간에서 잘리지 않게 띄어쓰기 자리에서 줄을 바꿔 넣는다.

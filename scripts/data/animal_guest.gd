@@ -6,8 +6,16 @@ extends Resource
 @export var id: StringName = &""
 ## 화면에 보이는 이름 (예: 토끼 할멈)
 @export var display_name: String = ""
-## 손님 그림. 비워 두면 임시 도형으로 표시한다.
+## 표정 이름. 대사에 맞춰 손님 자리(GuestSpot)가 이 표정 그림으로 바꿔 보여 준다.
+const EXPRESSION_DEFAULT: StringName = &""
+const EXPRESSION_HAPPY: StringName = &"happy"
+const EXPRESSION_SURPRISED: StringName = &"surprised"
+const EXPRESSION_SAD: StringName = &"sad"
+
+## 손님 그림 (기본 표정, 원본 120×160 · 화면 360×480). 비워 두면 임시 도형으로 표시한다.
 @export var portrait: Texture2D
+## 표정 그림: happy(웃음), surprised(놀람), sad(시무룩) 를 이름으로 넣는다. 없는 표정은 기본 그림을 쓴다.
+@export var expression_portraits: Dictionary[StringName, Texture2D] = {}
 ## 봄비 오는 날 우비를 입은 그림. 비워 두면 손님 그림 위에 임시 우비 도형을 씌운다.
 @export var raincoat_portrait: Texture2D
 @export_multiline var personality: String = ""
@@ -64,3 +72,10 @@ extends Resource
 func get_regular_reward(tier: int) -> RegularReward:
 	var index: int = tier - 1
 	return regular_rewards[index] if index >= 0 and index < regular_rewards.size() else null
+
+
+## 이 표정의 그림. 우비를 입었으면 우비 그림, 그 표정 그림이 없으면 기본 그림. 둘 다 없으면 null (임시 도형).
+func get_portrait(expression: StringName = EXPRESSION_DEFAULT, in_raincoat: bool = false) -> Texture2D:
+	if in_raincoat and raincoat_portrait != null:
+		return raincoat_portrait
+	return expression_portraits.get(expression, portrait)

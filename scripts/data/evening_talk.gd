@@ -5,7 +5,11 @@ extends Resource
 
 ## 손님이 먼저 하는 이야기
 @export_multiline var line: String = ""
+## 이야기할 때의 표정 (happy, surprised, sad. 비워 두면 기본). 대답 뒤 반응에는 reaction_expressions.
+@export var expression: StringName = &""
 ## 고를 수 있는 대답 (2~3개). 비워 두면 대답 없이 이야기만 한다.
 @export var replies: Array[String] = []
 ## 대답마다 손님의 반응. replies 와 같은 순서로 하나씩 넣는다.
 @export_multiline var reactions: Array[String] = []
+## 반응마다 표정 (reactions 와 같은 순서). 비워 두면 기본 표정.
+@export var reaction_expressions: Array[StringName] = []
