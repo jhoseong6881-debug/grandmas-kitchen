@@ -5,3 +5,4 @@
 [resource]
 script = ExtResource("1_settings")
 tier_thresholds = Array[int]([0, 4, 10, 20])
+tier_payment_bonus = Array[int]([0, 0, 1, 1])
