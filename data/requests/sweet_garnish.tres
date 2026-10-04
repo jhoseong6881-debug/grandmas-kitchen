@@ -8,4 +8,6 @@ script = ExtResource("1_request")
 id = &"sweet_garnish"
 line = "오늘은 달게 해 주세요."
 thanks_line = "달콤해서 기분 좋아요!"
+casual_line = "오늘은 달게 해 줄래?"
+casual_thanks_line = "달콤해서 기분 좋다~"
 garnish = ExtResource("2_garnish")

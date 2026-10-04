@@ -24,6 +24,13 @@ extends Resource
 @export var curious_order_line: String = ""
 ## 봄비 오는 날 따뜻한 요리(RainSettings.warm_recipes)를 시킬 때 하는 말. 비워 두면 평소 주문 말을 쓴다.
 @export var rain_order_line: String = ""
+## 반말하는 손님인지. 켜면 오늘의 부탁을 반말 문장(GuestRequest.casual_line)으로 말한다.
+@export var speaks_casually: bool = false
+## 오늘의 부탁대로 못 해 줬을 때 하는 말. 비워 두면 부엌의 기본 문장을 쓴다.
+@export var request_missed_line: String = ""
+## 할머니 손맛으로 대접받았을 때 하는 말. 그 요리의 비법을 알려 준 손님은 레시피의 grandma_taste_line 을 쓰고,
+## 다른 손님은 이 말을 쓴다 ({name} 은 주인공 이름). 비워 두면 레시피의 말을 쓴다.
+@export var grandma_taste_line: String = ""
 ## ※ 새 손님을 만들 때는 아래 세 줄을 꼭 함께 쓴다 (처음 만남이 갑작스럽지 않게, 고명을 고를 단서가 있게).
 ## 처음 점심에 왔을 때의 주문: 할머니 밥집 단골이었다는 걸 자기 방식으로 알리고, 손주를 반가워한 뒤 {recipe} 를 시킨다.
 @export var first_order_line: String = ""

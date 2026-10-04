@@ -8,5 +8,7 @@ id = &"deep_simmer"
 line = "푹 졸여 주세요."
 guide_text = "푹 졸이기 (안 틀리고 끝까지)"
 thanks_line = "속까지 쏙 배었어요!"
+casual_line = "푹 졸여 줘."
+casual_thanks_line = "속까지 쏙 배었네!"
 step_type = 7
 count_multiplier = 1.5

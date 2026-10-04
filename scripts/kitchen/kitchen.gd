@@ -241,7 +241,7 @@ func _call_next_guest() -> void:
 				order_text += TASTE_HINT_JOIN + _taste_hint(guest)
 			current_request = _choose_request(guest, order)
 			if current_request != null:
-				order_text += REQUEST_JOIN + current_request.line
+				order_text += REQUEST_JOIN + current_request.get_line(guest)
 			_guest_spot.show_guest(guest, order_text, GameState.is_raining_today)
 			Sound.play(GUEST_ARRIVE_SOUND)
 			_show_only_button(_cook_button)
@@ -469,9 +469,15 @@ func _serve(garnish: Garnish) -> void:
 	if guest.favorite_garnish != null:
 		line = guest.taste_match_line if is_taste_match else guest.taste_miss_line
 	if current_request != null:
-		line = current_request.thanks_line if is_request_met else REQUEST_MISSED_LINE
-	if is_grandma_taste and not current_order.grandma_taste_line.is_empty():
-		line = current_order.grandma_taste_line.format({"name": GameState.player_name})
+		var missed_line: String = guest.request_missed_line if not guest.request_missed_line.is_empty() else REQUEST_MISSED_LINE
+		line = current_request.get_thanks_line(guest) if is_request_met else missed_line
+	if is_grandma_taste:
+		# 비법을 알려 준 손님은 그 요리만의 말을, 다른 손님은 자기 말투의 말을 한다.
+		var taste_line: String = current_order.grandma_taste_line
+		if guest.id != current_order.secret_teller_id and not guest.grandma_taste_line.is_empty():
+			taste_line = guest.grandma_taste_line
+		if not taste_line.is_empty():
+			line = taste_line.format({"name": GameState.player_name})
 
 	# 손님 위로 떠오르는 글(과 그때 나는 소리)과 단골도
 	var pops: Array[String] = []

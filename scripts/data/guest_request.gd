@@ -17,6 +17,9 @@ extends Resource
 @export var guide_text: String = ""
 ## 들어줬을 때 손님이 하는 말
 @export var thanks_line: String = ""
+## 반말하는 손님(AnimalGuest.speaks_casually)이 쓰는 부탁과 고마운 말. 비워 두면 위의 말을 쓴다.
+@export var casual_line: String = ""
+@export var casual_thanks_line: String = ""
 ## 고명 부탁이면 올려야 할 고명. 비워 두면 요리 단계 부탁.
 @export var garnish: Garnish
 ## 요리 단계 부탁이 걸리는 미니게임 종류. 그 레시피에 이 단계가 있어야 부탁이 나온다.
@@ -33,6 +36,15 @@ extends Resource
 @export var count_multiplier: float = 1.0
 @export var count_bonus: int = 0
 @export var speed_multiplier: float = 1.0
+
+
+## 이 손님이 말하는 부탁 (반말 손님은 반말 문장)
+func get_line(guest: AnimalGuest) -> String:
+	return casual_line if guest != null and guest.speaks_casually and not casual_line.is_empty() else line
+
+
+func get_thanks_line(guest: AnimalGuest) -> String:
+	return casual_thanks_line if guest != null and guest.speaks_casually and not casual_thanks_line.is_empty() else thanks_line
 
 
 func is_garnish_request() -> bool:

@@ -8,5 +8,7 @@ id = &"light_stir_fry"
 line = "살짝만 볶아 주세요."
 guide_text = "살짝만 (안 틀리고 끝까지)"
 thanks_line = "아삭아삭 딱 좋아요."
+casual_line = "살짝만 볶아 줘."
+casual_thanks_line = "아삭아삭 딱 좋다."
 step_type = 1
 count_multiplier = 0.5
