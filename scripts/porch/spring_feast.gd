@@ -46,6 +46,8 @@ var _ending: SeasonEnding
 
 func _ready() -> void:
 	Sound.play_music(music)
+	# 낮에 깔리던 빗소리가 남아 있으면 끈다 (봄비는 해 질 녘에 그친다).
+	Sound.stop_loop(GameData.get_rain_settings().rain_sound)
 	_ending = GameData.get_season_ending()
 	if _ending == null:
 		_ending = SeasonEnding.new()

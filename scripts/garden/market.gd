@@ -40,6 +40,7 @@ var _trade_done_count: int = 0
 
 func _ready() -> void:
 	Sound.play_music(music)
+	RainOverlay.apply_daytime(self, true)
 	_settings = GameData.get_market_settings()
 	GameState.has_visited_market_today = true
 	_day_label.text = DAY_TEXT_FORMAT % GameState.current_day

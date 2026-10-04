@@ -62,6 +62,8 @@ var _current_talk: EveningTalk
 
 func _ready() -> void:
 	Sound.play_music(music)
+	# 낮에 깔리던 빗소리가 남아 있으면 끈다 (봄비는 해 질 녘에 그친다).
+	Sound.stop_loop(GameData.get_rain_settings().rain_sound)
 	_day_label.text = DAY_TEXT_FORMAT % GameState.current_day
 	_note_card.hide()
 	_reply_box.hide()

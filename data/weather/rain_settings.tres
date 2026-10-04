@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="RainSettings" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/rain_settings.gd" id="1_rain"]
+[ext_resource type="Script" path="res://scripts/data/recipe.gd" id="2_recipe"]
+[ext_resource type="Resource" path="res://data/recipes/carrot_acorn_jeon.tres" id="3_carrot_acorn_jeon"]
+[ext_resource type="Resource" path="res://data/recipes/mushroom_egg_jeon.tres" id="4_mushroom_egg_jeon"]
+[ext_resource type="Resource" path="res://data/recipes/honey_carrot_jorim.tres" id="5_honey_carrot_jorim"]
+[ext_resource type="Resource" path="res://data/recipes/carrot_egg_stir_fry.tres" id="6_carrot_egg_stir_fry"]
+[ext_resource type="Resource" path="res://data/recipes/forest_mushroom_stir_fry.tres" id="7_forest_mushroom_stir_fry"]
+[ext_resource type="Resource" path="res://data/recipes/acorn_jelly_mushroom_bap.tres" id="8_acorn_jelly_mushroom_bap"]
+
+[resource]
+script = ExtResource("1_rain")
+rain_days = Array[int]([3])
+random_from_day = 4
+rain_chance = 0.2
+dry_days = Array[int]([15])
+morning_text = "밤새 봄비가 내렸어요. 오늘은 하루 종일 보슬보슬 비가 와요."
+sunset_text = "비가 그치고, 해가 뉘엿뉘엿 지고 있어요…"
+warm_recipes = Array[ExtResource("2_recipe")]([ExtResource("3_carrot_acorn_jeon"), ExtResource("4_mushroom_egg_jeon"), ExtResource("5_honey_carrot_jorim"), ExtResource("6_carrot_egg_stir_fry"), ExtResource("7_forest_mushroom_stir_fry"), ExtResource("8_acorn_jelly_mushroom_bap")])
+warm_order_chance = 0.7
+rain_sound = &"rain"

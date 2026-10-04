@@ -35,6 +35,8 @@ var plot_days_left: Dictionary[StringName, Array] = {}
 var is_todays_gift_collected: bool = false
 ## 숲속 장터: 너구리 상인을 만났는지 (첫 인사를 한 번만 하려고 저장한다)
 var has_met_merchant: bool = false
+## 오늘 봄비가 오는지 (RainSettings). 아침에 정해서 저장해 둔다 (불러오기로 다시 뽑지 않게).
+var is_raining_today: bool = false
 ## 오늘 장터에서 거래마다 바꾼 횟수 (거래 id → 횟수). 하루가 지나면 비운다. 장날 낮의 일이라 저장하지 않는다.
 var todays_market_trades: Dictionary[StringName, int] = {}
 ## 오늘 장터에 다녀왔는지. 텃밭이 장터 버튼과 부엌 버튼 중 무엇을 먼저 선택해 둘지 정할 때 쓴다. 저장하지 않는다.
@@ -143,6 +145,7 @@ func advance_day() -> void:
 		var days: Array = plot_days_left[place_id]
 		for i: int in days.size():
 			days[i] = maxi(days[i] - 1, 0)
+	is_raining_today = GameData.get_rain_settings().will_rain(current_day, is_raining_today)
 	day_changed.emit(current_day)
 
 
@@ -493,6 +496,7 @@ func new_game() -> void:
 	is_spring_completed = false
 	is_todays_gift_collected = false
 	has_met_merchant = false
+	is_raining_today = false
 	todays_market_trades.clear()
 	has_visited_market_today = false
 	is_feast_prep_announced = false
@@ -506,6 +510,7 @@ func start_new_game() -> void:
 	new_game()
 	is_game_started = true
 	_reset_garden()
+	is_raining_today = GameData.get_rain_settings().will_rain(current_day, false)
 	var setup: StartingSetup = GameData.get_starting_setup()
 	if setup == null:
 		return
@@ -586,6 +591,7 @@ func _to_save_data() -> Dictionary:
 		"current_season": current_season,
 		"is_spring_completed": is_spring_completed,
 		"has_met_merchant": has_met_merchant,
+		"is_raining_today": is_raining_today,
 		"is_feast_prep_announced": is_feast_prep_announced,
 		"feast_prep_delivered": _string_keys(feast_prep_delivered),
 	}
@@ -642,6 +648,7 @@ func _from_save_data(data: Dictionary) -> void:
 	current_season = clampi(int(data.get("current_season", Season.Id.SPRING)), 0, Season.Id.size() - 1) as Season.Id
 	is_spring_completed = bool(data.get("is_spring_completed", false))
 	has_met_merchant = bool(data.get("has_met_merchant", false))
+	is_raining_today = bool(data.get("is_raining_today", false))
 	_unlock_places_from_state()
 	is_feast_prep_announced = bool(data.get("is_feast_prep_announced", false))
 	var feast_data: Dictionary = data.get("feast_prep_delivered", {})

@@ -80,6 +80,7 @@ favorite_recipes = Array[ExtResource("2_recipe")]([ExtResource("4_acorn_jelly"),
 disliked_recipes = Array[ExtResource("2_recipe")]([ExtResource("9_disliked")])
 payment_ingredients = Array[ExtResource("3_ingredient")]([ExtResource("6_acorn"), ExtResource("6_acorn")])
 order_line = "…{recipe}. 주, 주세요."
+rain_order_line = "…비, 싫어요. 꼬리 다 젖었어요. …따뜻한 {recipe}, 주세요."
 fallback_order_line = "…{recipe}. 그, 그거라도요."
 first_order_line = "…할머니 밥집 냄새가 나서… 와 봤어요. 할머니 손주…예요? …반가워요. {recipe}, 주, 주세요."
 taste_hint_line = "…깨, 톡톡 뿌려 주면… 좋아요."

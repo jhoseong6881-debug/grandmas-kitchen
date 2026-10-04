@@ -87,6 +87,9 @@
 | scenes/garden/market.tscn (Sky, Ground) | 숲속 장터 배경 | 1920x1080 | 선택 |
 | scenes/ui/sunset_transition.tscn (SkyTop, SkyGlow, Sun, Hill) | 해 지는 장면: 노을 하늘, 지는 해, 산 실루엣 (해가 내려가는 건 코드가 함) | 1920x1080 / 해 180x180 | 할 일 |
 | scenes/kitchen/guest_spot.gd (걸어 들어오기) | 손님 걷는 모습 (선택: 걸음마다 바뀌는 2장, 지금은 통통 튀기만 함) | 240x320 | 선택 |
+| data/guests/*.tres (raincoat_portrait) | 봄비 오는 날 우비 입은 손님 다섯 (암탉, 곰, 토끼, 다람쥐, 고슴도치). 지금은 노란 우비 도형(raincoat_shape.gd)을 씌움 | 240x320 | 할 일 |
+| scripts/ui/rain_overlay.gd | 빗줄기 (지금은 선으로 그림. 그림으로 바꾸려면 빗방울 한 줄 그림) | 4x40 | 선택 |
+| scenes/garden/garden.tscn (Sky) | 비 오는 날 흐린 하늘 (지금은 맑은 하늘에 푸른빛만 덮음) | 1920x560 | 선택 |
 | data/crops/carrot_crop.tres (Growth Textures) | 당근이 자라는 단계 그림 (막 심음 → 새싹 → 자람 → 다 자람, 3~4장. 마지막 장 = 거둘 때) | 칸 폭 x 칸 높이-90 (지금 260x150) | 할 일 |
 | data/crops/mushroom_crop.tres (Growth Textures) | 원목 버섯이 자라는 단계 그림 (작은 버섯 1개 → 2개 → 3개 다 자람) | 260x150 | 할 일 |
 | data/places/*.tres (Ground Color) | 칸 아래 땅 그림 (흙 / 원목). 지금은 단색 띠 | 260x34 | 선택 |

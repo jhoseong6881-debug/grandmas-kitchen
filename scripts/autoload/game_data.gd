@@ -13,6 +13,7 @@ const REQUESTS_DIR: String = "res://data/requests/"
 const REGULAR_SETTINGS_PATH: String = "res://data/regular_settings.tres"
 const REPUTATION_SETTINGS_PATH: String = "res://data/reputation_settings.tres"
 const MARKET_SETTINGS_PATH: String = "res://data/market/market_settings.tres"
+const RAIN_SETTINGS_PATH: String = "res://data/weather/rain_settings.tres"
 const STARTING_SETUP_PATH: String = "res://data/starting_setup.tres"
 const SEASON_ENDING_PATH: String = "res://data/seasons/spring_ending.tres"
 const RESOURCE_EXTENSIONS: PackedStringArray = ["tres", "res"]
@@ -27,6 +28,7 @@ var _requests: Dictionary[StringName, GuestRequest] = {}
 var _regular_settings: RegularSettings
 var _reputation_settings: ReputationSettings
 var _market_settings: MarketSettings
+var _rain_settings: RainSettings
 var _starting_setup: StartingSetup
 var _season_ending: SeasonEnding
 
@@ -75,6 +77,11 @@ func _ready() -> void:
 	else:
 		push_warning("장터 설정 파일이 없습니다: %s" % MARKET_SETTINGS_PATH)
 		_market_settings = MarketSettings.new()
+	if ResourceLoader.exists(RAIN_SETTINGS_PATH):
+		_rain_settings = load(RAIN_SETTINGS_PATH)
+	else:
+		push_warning("봄비 설정 파일이 없습니다: %s" % RAIN_SETTINGS_PATH)
+		_rain_settings = RainSettings.new()
 	for resource: Resource in _load_folder(GARNISHES_DIR):
 		if resource is Garnish:
 			_register(_garnishes, resource.id, resource)
@@ -130,6 +137,10 @@ func get_reputation_settings() -> ReputationSettings:
 
 func get_market_settings() -> MarketSettings:
 	return _market_settings
+
+
+func get_rain_settings() -> RainSettings:
+	return _rain_settings
 
 
 ## 새 게임 시작 설정 (없으면 null)

@@ -29,6 +29,8 @@ var _can_continue: bool = false
 
 func _ready() -> void:
 	Sound.play_music(music)
+	# 낮에 깔리던 빗소리가 남아 있으면 끈다 (봄비는 해 질 녘에 그친다).
+	Sound.stop_loop(GameData.get_rain_settings().rain_sound)
 	_continue_button.pressed.connect(_on_continue_button_pressed)
 	_new_game_button.pressed.connect(_on_new_game_button_pressed)
 	_settings_button.pressed.connect(_on_settings_button_pressed)

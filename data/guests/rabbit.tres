@@ -78,6 +78,7 @@ favorite_recipes = Array[ExtResource("2_recipe")]([ExtResource("4_kimbop"), ExtR
 disliked_recipes = Array[ExtResource("2_recipe")]([ExtResource("8_disliked")])
 payment_ingredients = Array[ExtResource("3_ingredient")]([ExtResource("5_carrot")])
 order_line = "저, 저기... {recipe} 하나 주실 수 있나요?"
+rain_order_line = "비, 비 맞고 왔더니 으슬으슬해요… 따뜻한 {recipe} 주실 수 있나요?"
 fallback_order_line = "저, 저기… 오늘은 {recipe}… 그거라도 괜찮아요."
 first_order_line = "와, 진짜 밥집 문이 열렸네요! 할머니 계실 때도 제가 첫 손님이었어요. …{recipe} 하나 주실 수 있나요?"
 taste_hint_line = "아, 저는 양념 없이 담백한 게 좋아요."

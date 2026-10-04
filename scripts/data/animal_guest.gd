@@ -8,6 +8,8 @@ extends Resource
 @export var display_name: String = ""
 ## 손님 그림. 비워 두면 임시 도형으로 표시한다.
 @export var portrait: Texture2D
+## 봄비 오는 날 우비를 입은 그림. 비워 두면 손님 그림 위에 임시 우비 도형을 씌운다.
+@export var raincoat_portrait: Texture2D
 @export_multiline var personality: String = ""
 @export var favorite_recipes: Array[Recipe] = []
 ## 싫어하는 요리. 좋아하는 요리를 못 만드는 날 대신 주문할 때도 이 요리는 절대 주문하지 않는다.
@@ -20,6 +22,8 @@ extends Resource
 @export var fallback_order_line: String = "음… 오늘은 그냥 {recipe}, 그거 주세요."
 ## 좋아하는 요리가 오늘 이미 나가서, 메뉴의 다른 요리가 궁금해 시킬 때 하는 말. 비워 두면 부엌의 기본 문장을 쓴다.
 @export var curious_order_line: String = ""
+## 봄비 오는 날 따뜻한 요리(RainSettings.warm_recipes)를 시킬 때 하는 말. 비워 두면 평소 주문 말을 쓴다.
+@export var rain_order_line: String = ""
 ## ※ 새 손님을 만들 때는 아래 세 줄을 꼭 함께 쓴다 (처음 만남이 갑작스럽지 않게, 고명을 고를 단서가 있게).
 ## 처음 점심에 왔을 때의 주문: 할머니 밥집 단골이었다는 걸 자기 방식으로 알리고, 손주를 반가워한 뒤 {recipe} 를 시킨다.
 @export var first_order_line: String = ""

@@ -155,6 +155,7 @@ func _ready() -> void:
 	_status_default_color = _cook_status_label.get_theme_color("default_color")
 	_add_shop_decor()
 	_add_goal_board()
+	RainOverlay.apply_daytime(self, false)
 	if start_new_game_on_ready and not GameState.is_game_started:
 		GameState.start_new_game()
 	_on_day_changed(GameState.current_day)
@@ -210,7 +211,13 @@ func _call_next_guest() -> void:
 		_is_fallback_order = order == null
 		if _is_fallback_order:
 			order = _choose_fallback_order(guest)
-		var curious_order: Recipe = _choose_curious_order(guest, order) if not _is_fallback_order else null
+		# 봄비 오는 날에는 따뜻한 요리를 먼저 찾는다. 밥값은 좋아하는 요리와 똑같이 받는다.
+		var warm_order: Recipe = _choose_warm_order(guest)
+		if warm_order != null:
+			order = warm_order
+			_is_fallback_order = false
+		var curious_order: Recipe = _choose_curious_order(guest, order) \
+				if not _is_fallback_order and warm_order == null else null
 		if curious_order != null:
 			order = curious_order
 		if order != null:
@@ -221,6 +228,8 @@ func _call_next_guest() -> void:
 			var order_text: String = guest.order_line.format({"recipe": order.display_name})
 			if _is_fallback_order:
 				order_text = guest.fallback_order_line.format({"recipe": order.display_name})
+			elif warm_order != null and not guest.rain_order_line.is_empty():
+				order_text = guest.rain_order_line.format({"recipe": order.display_name})
 			elif curious_order != null:
 				var curious_line: String = guest.curious_order_line if not guest.curious_order_line.is_empty() \
 						else DEFAULT_CURIOUS_ORDER_LINE
@@ -233,7 +242,7 @@ func _call_next_guest() -> void:
 			current_request = _choose_request(order)
 			if current_request != null:
 				order_text += REQUEST_JOIN + current_request.line
-			_guest_spot.show_guest(guest, order_text)
+			_guest_spot.show_guest(guest, order_text, GameState.is_raining_today)
 			Sound.play(GUEST_ARRIVE_SOUND)
 			_show_only_button(_cook_button)
 			return
@@ -305,6 +314,20 @@ func _choose_curious_order(guest: AnimalGuest, planned: Recipe) -> Recipe:
 	return untried.pick_random() if not untried.is_empty() else null
 
 
+## 봄비 오는 날, warm_order_chance 확률로 따뜻한 요리 중 지금 낼 수 있고 싫어하지 않는 것 하나 (오늘 덜 나간 요리 먼저).
+## 비가 안 오거나 해당하는 요리가 없으면 null.
+func _choose_warm_order(guest: AnimalGuest) -> Recipe:
+	var rain: RainSettings = GameData.get_rain_settings()
+	if not GameState.is_raining_today or randf() >= rain.warm_order_chance:
+		return null
+	var possible: Array[Recipe] = rain.warm_recipes.filter(
+			func(recipe: Recipe) -> bool: return recipe != null and _can_cook(recipe) and recipe not in guest.disliked_recipes)
+	if possible.is_empty():
+		return null
+	var fewest: int = possible.map(func(recipe: Recipe) -> int: return _orders_today.get(recipe.id, 0)).min()
+	return possible.filter(func(recipe: Recipe) -> bool: return _orders_today.get(recipe.id, 0) == fewest).pick_random()
+
+
 func _choose_fallback_order(guest: AnimalGuest) -> Recipe:
 	var possible: Array[Recipe] = GameData.get_all_recipes().filter(
 			func(recipe: Recipe) -> bool: return _can_cook(recipe) and recipe not in guest.disliked_recipes)
@@ -335,7 +358,13 @@ func _on_evening_button_pressed() -> void:
 	if sunset_transition_scene != null:
 		var sunset: SunsetTransition = sunset_transition_scene.instantiate()
 		add_child(sunset)
-		await sunset.play(GameState.current_day)
+		var sunset_text: String = ""
+		if GameState.is_raining_today:
+			# 해 질 녘에 비가 그친다.
+			var rain: RainSettings = GameData.get_rain_settings()
+			Sound.stop_loop(rain.rain_sound, rain.rain_sound_fade)
+			sunset_text = rain.sunset_text
+		await sunset.play(GameState.current_day, sunset_text)
 	get_tree().change_scene_to_file(feast_scene_path if GameState.is_spring_feast_day() else porch_scene_path)
 
 

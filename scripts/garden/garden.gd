@@ -42,6 +42,7 @@ const RUSTLE_SOUND: StringName = &"rustle"
 @export var harvest_pop_color: Color = Color(1, 0.84, 0.25)
 
 @onready var _day_label: Label = %DayLabel
+@onready var _sun: ColorRect = $Sun
 @onready var _plot_row: PlotRow = %PlotRow
 @onready var _logs_button: Button = %LogsButton
 @onready var _market_button: Button = %MarketButton
@@ -70,9 +71,17 @@ func _ready() -> void:
 	_update_logs_button()
 	# 이웃 바구니에서 버섯이 나오면 텃밭에 있는 동안에도 바로 열린다.
 	GameState.inventory_changed.connect(_update_logs_button.unbind(2))
+	var morning_text: String = WELCOME_TEXT
+	var rain: RainSettings = GameData.get_rain_settings()
+	if GameState.is_raining_today:
+		# 비 오는 날은 해가 구름에 가려 안 보인다.
+		_sun.hide()
+		if not rain.morning_text.is_empty():
+			morning_text = rain.morning_text
+			_set_status(morning_text)
 	_market_button.visible = GameData.get_market_settings().is_market_day(GameState.current_day)
 	if _market_button.visible:
-		_set_status(WELCOME_TEXT + "\n" + MARKET_DAY_TEXT)
+		_set_status(morning_text + "\n" + MARKET_DAY_TEXT)
 	_show_unlock_notice()
 	_market_button.pressed.connect(get_tree().change_scene_to_file.bind(market_scene_path))
 	_feast_button.pressed.connect(_on_feast_button_pressed)
@@ -90,6 +99,7 @@ func _ready() -> void:
 	_plot_row.planted.connect(_on_planted)
 	_update_basket()
 	_add_goal_board()
+	RainOverlay.apply_daytime(self, true)
 	_focus_next_thing_to_do()
 
 

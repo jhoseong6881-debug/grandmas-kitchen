@@ -144,14 +144,14 @@ func set_loop_volume(id: StringName, offset_db: float) -> void:
 		player.volume_db = _effects[id].volume_db + offset_db
 
 
-## 깔리는 소리를 서서히 끈다. 켜져 있지 않으면 아무것도 안 한다.
-func stop_loop(id: StringName) -> void:
+## 깔리는 소리를 서서히 끈다. 켜져 있지 않으면 아무것도 안 한다. fade_duration: 꺼지는 시간(초), 0보다 작으면 loop_fade_duration.
+func stop_loop(id: StringName, fade_duration: float = -1.0) -> void:
 	var player: AudioStreamPlayer = _loop_players.get(id)
 	if player == null:
 		return
 	_loop_players.erase(id)
 	var tween: Tween = create_tween()
-	tween.tween_property(player, "volume_db", SILENT_DB, loop_fade_duration)
+	tween.tween_property(player, "volume_db", SILENT_DB, fade_duration if fade_duration >= 0.0 else loop_fade_duration)
 	tween.tween_callback(player.queue_free)
 
 

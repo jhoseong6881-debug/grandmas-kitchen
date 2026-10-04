@@ -78,6 +78,7 @@ favorite_recipes = Array[ExtResource("2_recipe")]([ExtResource("4_stir_fry"), Ex
 disliked_recipes = Array[ExtResource("2_recipe")]([ExtResource("8_disliked")])
 payment_ingredients = Array[ExtResource("3_ingredient")]([ExtResource("31_gift"), ExtResource("31_gift")])
 order_line = "어머, 밥집 다시 열었구나! {recipe} 하나 줄래?"
+rain_order_line = "꼬꼬, 비 오는 날엔 역시 따끈한 게 최고지! {recipe} 하나 줄래?"
 fallback_order_line = "어머, 오늘은 그게 없니? 그럼 {recipe}, 그거 줘!"
 first_order_line = "어머머, 밥집에 불이 켜졌길래 와 봤지! 네가 그 손주구나? 네 할머니네 아침 단골이 바로 나란다. {recipe} 하나 줄래?"
 taste_hint_line = "참기름 고소한 냄새 나면 더 좋고!"

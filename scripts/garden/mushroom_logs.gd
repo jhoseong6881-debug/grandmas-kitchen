@@ -26,6 +26,7 @@ const HARVEST_POP_FORMAT: String = "+%d %s"
 
 func _ready() -> void:
 	Sound.play_music(music)
+	RainOverlay.apply_daytime(self, true)
 	_day_label.text = DAY_TEXT_FORMAT % GameState.current_day
 	_status_label.text = WELCOME_TEXT
 	_back_button.pressed.connect(get_tree().change_scene_to_file.bind(garden_scene_path))

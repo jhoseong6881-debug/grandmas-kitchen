@@ -3,6 +3,7 @@ extends Control
 ## 손님 자리. 손님 모습과 말풍선을 보여 준다. 부엌 조리대 앞과 저녁 평상에서 쓴다.
 ## 누가 무엇을 말할지는 정하지 않는다. 부엌이나 평상이 정해서 show_order / show_guest 로 알려 준다.
 ## walk_in() 을 부르면 옆에서 통통 걸어 들어와 앉은 뒤에 말풍선이 보인다 (저녁 평상).
+## 봄비 오는 날에는 우비를 입은 모습으로 보여 준다 (우비 그림이 없으면 임시 우비 도형을 씌운다).
 
 const WALK_SOUND: StringName = &"walk"
 
@@ -22,6 +23,8 @@ const WALK_SOUND: StringName = &"walk"
 @onready var _bubble: Control = _bubble_text.get_parent().get_parent()
 var _home_position: Vector2
 var _walk_tween: Tween
+## 임시 우비 (손님 모습 위, 이름 아래에 겹친다)
+var _raincoat: RaincoatShape = RaincoatShape.new()
 
 
 func walk_in() -> void:
@@ -47,18 +50,27 @@ func walk_in() -> void:
 
 func _ready() -> void:
 	hide()
+	_raincoat.position = _portrait_placeholder.position
+	_raincoat.size = _portrait_placeholder.size
+	_raincoat.hide()
+	add_child(_raincoat)
+	move_child(_raincoat, _portrait.get_index() + 1)
 
 
 func show_order(guest: AnimalGuest, recipe: Recipe) -> void:
 	show_guest(guest, guest.order_line.format({"recipe": recipe.display_name}))
 
 
-## 손님 모습을 보여 주고 말풍선에 text 를 띄운다.
-func show_guest(guest: AnimalGuest, text: String) -> void:
-	var has_portrait: bool = guest.portrait != null
-	_portrait.texture = guest.portrait
+## 손님 모습을 보여 주고 말풍선에 text 를 띄운다. in_raincoat: 우비를 입은 모습으로 (봄비 오는 날)
+func show_guest(guest: AnimalGuest, text: String, in_raincoat: bool = false) -> void:
+	var texture: Texture2D = guest.raincoat_portrait if in_raincoat and guest.raincoat_portrait != null else guest.portrait
+	var has_portrait: bool = texture != null
+	_portrait.texture = texture
 	_portrait.visible = has_portrait
 	_portrait_placeholder.visible = not has_portrait
+	_raincoat.visible = in_raincoat and guest.raincoat_portrait == null
+	if _raincoat.visible:
+		_raincoat.color = GameData.get_rain_settings().raincoat_color
 	_name_label.text = guest.display_name
 	show()
 	_set_bubble_text(text)

@@ -24,10 +24,11 @@ func _ready() -> void:
 	hide()
 
 
-func play(day: int) -> void:
+## setting_text: "해가 뉘엿뉘엿…" 대신 보여 줄 글 (봄비가 그친 날 등). 비워 두면 기본 글.
+func play(day: int, setting_text: String = "") -> void:
 	_is_skipping = false
 	var sun_home_y: float = _sun.position.y
-	_text_label.text = SETTING_TEXT
+	_text_label.text = setting_text if not setting_text.is_empty() else SETTING_TEXT
 	modulate.a = 0.0
 	show()
 	# 포커스를 가져와야 A 버튼이 뒤에 있는 부엌 버튼으로 새지 않는다.

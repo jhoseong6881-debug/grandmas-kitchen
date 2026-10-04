@@ -37,6 +37,7 @@
 | sfx/loop_rice_boil.wav | 밥 짓기 불 조절 동안 깔리는 보글보글 (loop_cook_rice) | Freesound 124584 (위 simmer_bubble 과 같은 원본) | **CC0** | 2026-10-04 |
 | sfx/kalimba_ready.wav, kalimba_go.wav | 미니게임 "준비~" / "시작!" (ready, go) | Freesound "Kalimba (C-note)" by foochie_foochie — https://freesound.org/s/331047/ | **CC0** | 2026-10-04 |
 | sfx/happy_beeps_perfect.wav | 미니게임 "완벽!" (perfect) | Freesound "Achievement Happy Beeps Jingle" by CogFireStudios — https://freesound.org/s/619838/ | **CC0** | 2026-10-04 |
+| sfx/rain_light_loop.wav | 봄비 오는 날 낮 내내 깔리는 빗소리 (rain) | Freesound "Rain light 2 (rural)" by jmbphilmes — https://freesound.org/s/200273/ | **CC0** | 2026-10-04 |
 | sfx/mix_toss_1~5.wav | 버무리기에서 맞힐 때 (hit_mix) | Freesound "Potato salad" by 14G_Panska_Kaminkova_A — https://freesound.org/s/419992/ | **CC0** | 2026-10-04 |
 
 - mix_toss 조각은 원본(8.5초, audio_source/potato_salad.wav)에서 촉촉하게 섞는 0.53·2.75·3.40·4.78·5.32초 부분을 0.35~0.55초씩 자른 것.
@@ -44,6 +45,7 @@
 - loop_sizzle 은 원본 0.5~7.5초, loop_rice_boil 은 원본 53~60초를 6초 길이로 자르고, 끝 1초를 처음과 겹쳐 되풀이해도 이음매가 안 들리게 한 것.
 - kalimba_ready 는 칼림바 "도" 한 음을 1초로 줄인 것, kalimba_go 는 같은 음을 다섯 음 올린 "솔"(0.9초).
 - happy_beeps_perfect 는 징글(3.5초) 중 소리가 나는 앞 2.5초만 쓰고 끝을 부드럽게 줄인 것. (나무 실로폰 가락은 들어 보고 뺐다)
+- rain_light_loop 는 원본(95초, audio_source/rain_light.wav, 아주 작게 녹음됨)의 34~66초를 30초로 자르고 끝 2초를 처음과 겹쳐 되풀이해도 이음매가 안 들리게 한 것. 소리를 36배 키웠다.
 - item_pop 은 0.07초짜리 게임용 "뽁" 소리 세 가지를 그대로 쓴다 (번갈아 나온다).
 - plant_soil 조각은 원본(4.8초, audio_source/planting_seeds.wav)에 1초 간격으로 들어 있는 심기 소리 다섯 개를 0.35초씩 나눈 것.
 - harvest_pull 조각은 원본(24.7초, audio_source/pull_plant.wav)에서 풀이 바스락하는 13.8·17.2·19.6·22.5초부터 0.6초씩 자른 것.
@@ -86,6 +88,9 @@
 - loop_stir_fry: 볶기 "시작!"부터 완성까지 지글지글
 - loop_cook_rice: 밥 짓기 ② 불 조절 동안 보글보글. 불이 셀수록 커진다 (rice_minigame 의 Boil Quiet Db / Boil Loud Db)
 새로 깔고 싶으면 `data/sounds/loop_<종류>.tres` 만 추가하면 된다. 일시 정지하면 같이 멈춘다.
+
+봄비 오는 날에는 낮 장면(텃밭, 버섯 원목, 장터, 부엌) 내내 빗소리 `rain` 이 배경음악 아래에 깔리고, 해 지는 장면에서 서서히 꺼진다.
+소리 크기는 `data/sounds/rain.tres` 의 Volume Db (지금 -8).
 
 ## 배경음악
 장면마다 인스펙터의 **Music** 칸에 곡을 넣는다 (타이틀, 프롤로그, 텃밭, 버섯 원목, 장터, 부엌, 평상, 봄 잔치).

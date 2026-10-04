@@ -58,6 +58,8 @@ var _blink_time: float = 0.0
 
 func _ready() -> void:
 	Sound.play_music(music)
+	# 낮에 깔리던 빗소리가 남아 있으면 끈다 (봄비는 해 질 녘에 그친다).
+	Sound.stop_loop(GameData.get_rain_settings().rain_sound)
 	_name_box.hide()
 	_name_edit.max_length = name_max_length
 	_name_edit.text_submitted.connect(_confirm_name.unbind(1))
