@@ -68,6 +68,9 @@ const COOK_HINT_TEXT: String = "꾹 누르면 불이 세지고, 떼면 약해져
 ## 불이 너무 셀 때 솥뚜껑이 들썩이는 높이(픽셀)와 빠르기
 @export var lid_rattle_height: float = 8.0
 @export var lid_rattle_speed: float = 40.0
+## 솥 끓는 보글보글 소리(loop_cook_rice) 크기: 불이 꺼져 갈 때와 가장 셀 때 (데시벨, 소리 파일 크기에서 더하는 값)
+@export var boil_quiet_db: float = -16.0
+@export var boil_loud_db: float = 3.0
 
 ## 이번 단계의 씻는 수와 손이 한 바퀴 도는 시간 (요리 단계에서 정한 값, 없으면 위의 기본값)
 var _washes_needed: int = 0
@@ -113,6 +116,11 @@ func _ready() -> void:
 	_rice_template.hide()
 	_lid_home_y = _lid.position.y
 	_flame.pivot_offset = Vector2(_flame.size.x / 2.0, _flame.size.y)
+
+
+## 보글보글 소리는 쌀을 다 씻고 불 조절을 시작할 때 켠다.
+func _loop_from_start() -> bool:
+	return false
 
 
 func _get_minigame_type() -> Recipe.MinigameType:
@@ -214,6 +222,7 @@ func _start_cooking() -> void:
 	_progress_label.text = HEAT_LOW_TEXT
 	_hint_label.text = COOK_HINT_TEXT
 	_update_fire(0.0)
+	Sound.start_loop(_loop_sound, boil_quiet_db)
 
 
 func _cook(delta: float) -> void:
@@ -232,6 +241,7 @@ func _cook(delta: float) -> void:
 	if _heat_state == Heat.GOOD:
 		_cook_progress = minf(_cook_progress + delta / _cook_time_needed, 1.0)
 	_update_fire(delta)
+	Sound.set_loop_volume(_loop_sound, lerpf(boil_quiet_db, boil_loud_db, _heat))
 	if _cook_progress >= 1.0:
 		_phase = Phase.MOVING
 		_heat = 0.0

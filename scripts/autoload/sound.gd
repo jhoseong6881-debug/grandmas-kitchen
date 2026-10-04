@@ -7,6 +7,8 @@ extends Node
 ## 소리 파일이 없거나 id가 없으면 조용히 넘어간다 (경고는 한 번만 띄운다).
 ## 배경음악: 장면마다 Sound.play_music(곡) 을 부른다. 곡이 바뀌면 서서히 바뀌고(크로스페이드), 끝나면 처음부터 다시 튼다.
 ## null 을 주면 음악을 서서히 끈다. 같은 곡을 다시 주면 끊지 않고 이어서 튼다.
+## 계속 깔리는 소리(볶을 때 지글지글, 밥 지을 때 보글보글): Sound.start_loop(&"id") 로 켜고 stop_loop(&"id") 로 끈다.
+## 효과음과 같은 SoundEffect(.tres)를 쓰고, 소리 파일을 처음부터 끝까지 되풀이한다. 게임이 일시 정지되면 같이 멈춘다.
 
 const SOUNDS_DIR: String = "res://data/sounds/"
 const RESOURCE_EXTENSIONS: PackedStringArray = ["tres", "res"]
@@ -21,6 +23,8 @@ const BUTTON_CLICK_ID: StringName = &"click"
 @export var max_voices: int = 12
 ## 배경음악이 서서히 커지고 작아지는 시간(초)
 @export var music_fade_duration: float = 1.2
+## 깔리는 소리가 켜지고 꺼질 때 서서히 커지고 작아지는 시간(초)
+@export var loop_fade_duration: float = 0.3
 
 var _effects: Dictionary[StringName, SoundEffect] = {}
 var _players: Array[AudioStreamPlayer] = []
@@ -31,6 +35,8 @@ var _warned_ids: Dictionary[StringName, bool] = {}
 var _music_players: Array[AudioStreamPlayer] = []
 var _current_music_player: int = 0
 var _current_music: AudioStream
+## 지금 깔리고 있는 소리 (id → 플레이어)
+var _loop_players: Dictionary[StringName, AudioStreamPlayer] = {}
 
 
 func _ready() -> void:
@@ -107,6 +113,59 @@ func _fade(player: AudioStreamPlayer, to_db: float, stop_after: bool) -> void:
 func _on_music_finished(player: AudioStreamPlayer) -> void:
 	if player == _music_players[_current_music_player] and player.stream == _current_music:
 		player.play()
+
+
+## 깔리는 소리를 켠다 (서서히 커진다). 이미 켜져 있으면 그대로 둔다. 없는 id면 조용히 넘어간다 (깔리는 소리가 없는 미니게임이 더 많다).
+## offset_db: 소리 파일에 정한 크기(Volume Db)에서 더하거나 뺄 크기 (0 = 그대로)
+func start_loop(id: StringName, offset_db: float = 0.0) -> void:
+	if _loop_players.has(id):
+		return
+	var effect: SoundEffect = _effects.get(id)
+	if effect == null or effect.pick_stream() == null:
+		return
+	var player: AudioStreamPlayer = AudioStreamPlayer.new()
+	player.bus = SFX_BUS
+	# 이 오토로드는 일시 정지에도 돌지만, 깔리는 소리는 게임과 같이 멈춰야 한다.
+	player.process_mode = Node.PROCESS_MODE_PAUSABLE
+	player.stream = _make_looping(effect.pick_stream())
+	player.pitch_scale = effect.pick_pitch()
+	player.volume_db = SILENT_DB
+	add_child(player)
+	player.play()
+	_loop_players[id] = player
+	var tween: Tween = create_tween()
+	tween.tween_property(player, "volume_db", effect.volume_db + offset_db, loop_fade_duration)
+
+
+## 깔리는 소리 크기를 바로 바꾼다 (매 프레임 불러도 된다). offset_db 는 start_loop 와 같다.
+func set_loop_volume(id: StringName, offset_db: float) -> void:
+	var player: AudioStreamPlayer = _loop_players.get(id)
+	if player != null:
+		player.volume_db = _effects[id].volume_db + offset_db
+
+
+## 깔리는 소리를 서서히 끈다. 켜져 있지 않으면 아무것도 안 한다.
+func stop_loop(id: StringName) -> void:
+	var player: AudioStreamPlayer = _loop_players.get(id)
+	if player == null:
+		return
+	_loop_players.erase(id)
+	var tween: Tween = create_tween()
+	tween.tween_property(player, "volume_db", SILENT_DB, loop_fade_duration)
+	tween.tween_callback(player.queue_free)
+
+
+## 소리 파일이 끝까지 가면 처음으로 돌아가게 만든 복사본 (원본 파일 설정은 그대로 둔다)
+func _make_looping(stream: AudioStream) -> AudioStream:
+	var looped: AudioStream = stream.duplicate()
+	if looped is AudioStreamWAV:
+		var wav: AudioStreamWAV = looped as AudioStreamWAV
+		wav.loop_mode = AudioStreamWAV.LOOP_FORWARD
+		wav.loop_begin = 0
+		wav.loop_end = roundi(wav.get_length() * wav.mix_rate)
+	elif "loop" in looped:
+		looped.set("loop", true)
+	return looped
 
 
 func play_or(id: StringName, fallback_id: StringName) -> void:

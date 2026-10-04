@@ -39,6 +39,8 @@ const REQUEST_ZONE_NAME: String = "RequestZone"
 ## 효과음 이름 (data/sounds/ 의 id). 맞히는 소리는 HIT_SOUND_PREFIX + 미니게임 종류 (예: hit_chop)
 const HIT_SOUND_PREFIX: String = "hit_"
 const HIT_SOUND_FALLBACK: StringName = &"hit"
+## 하는 동안 계속 깔리는 소리: "loop_" + 미니게임 종류 (예: loop_stir_fry). data/sounds/ 에 없으면 아무 소리도 안 깔린다.
+const LOOP_SOUND_PREFIX: String = "loop_"
 const MISS_SOUND: StringName = &"miss"
 const READY_SOUND: StringName = &"ready"
 const GO_SOUND: StringName = &"go"
@@ -99,6 +101,7 @@ var _is_converted: bool = false
 var _perfect_stamp_text: String = ""
 ## 이 미니게임의 맞히는 소리 이름 (예: &"hit_chop")
 var _hit_sound: StringName
+var _loop_sound: StringName
 
 @onready var _title_label: Label = %TitleLabel
 @onready var _progress_label: Label = %ProgressLabel
@@ -117,7 +120,9 @@ var _hit_sound: StringName
 func _ready() -> void:
 	_perfect_stamp.pivot_offset = _perfect_stamp.size / 2.0
 	_perfect_stamp_text = _perfect_stamp.text
-	_hit_sound = StringName(HIT_SOUND_PREFIX + String(Recipe.MinigameType.find_key(_get_minigame_type())).to_lower())
+	var type_name: String = String(Recipe.MinigameType.find_key(_get_minigame_type())).to_lower()
+	_hit_sound = StringName(HIT_SOUND_PREFIX + type_name)
+	_loop_sound = StringName(LOOP_SOUND_PREFIX + type_name)
 	add_child(_ready_label)
 	_ready_label.pivot_offset = _ready_label.size / 2.0
 	_ready_label.hide()
@@ -142,6 +147,11 @@ func _ready() -> void:
 	_tool_label.add_theme_color_override("font_color", tool_text_color)
 	_tool_label.hide()
 	hide()
+
+
+## 하는 도중에 장면을 떠나도 (일시 정지 메뉴에서 타이틀로) 깔리는 소리가 남지 않게 끈다.
+func _exit_tree() -> void:
+	Sound.stop_loop(_loop_sound)
 
 
 func start(recipe: Recipe, step: CookStep = null, request: GuestRequest = null) -> void:
@@ -180,6 +190,8 @@ func start(recipe: Recipe, step: CookStep = null, request: GuestRequest = null) 
 	grab_focus()
 	await _show_ready()
 	_is_playing = true
+	if _loop_from_start():
+		Sound.start_loop(_loop_sound)
 
 
 ## "준비~"와 "시작!"을 차례로 톡 튀어나오게 보여 준다. 끝날 때까지 _is_playing 이 false 라 입력과 움직임이 멈춰 있다.
@@ -234,6 +246,11 @@ func _get_minigame_type() -> Recipe.MinigameType:
 
 func _on_start(_recipe: Recipe) -> void:
 	pass
+
+
+## 깔리는 소리를 "시작!"부터 끝까지 낼지. 한 단계에서만 내는 미니게임(밥 짓기)은 false 로 하고 직접 켠다.
+func _loop_from_start() -> bool:
+	return true
 
 
 func _on_press() -> void:
@@ -360,6 +377,7 @@ func _register_miss() -> void:
 
 func _complete(done_text: String) -> void:
 	_is_playing = false
+	Sound.stop_loop(_loop_sound)
 	_progress_label.text = done_text
 	var is_perfect: bool = _miss_count == 0
 	var is_grandma_taste: bool = _is_grandma_taste()
