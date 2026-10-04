@@ -6,7 +6,7 @@ extends Control
 
 signal continued
 
-const TITLE_FORMAT: String = "오늘의 장사 · %d일째"
+const TITLE_FORMAT: String = "오늘의 장사 · %s %d일째"
 const GUESTS_FORMAT: String = "손님 %d명   %s"
 const GUEST_SEPARATOR: String = " · "
 const PAYMENT_PREFIX: String = "받은 밥값   "
@@ -64,7 +64,7 @@ func _ready() -> void:
 
 func open(report: LunchReport) -> void:
 	var settings: ReputationSettings = GameData.get_reputation_settings()
-	_title_label.text = TITLE_FORMAT % GameState.current_day
+	_title_label.text = TITLE_FORMAT % [GameData.get_season_name(), GameState.current_day]
 	_guests_label.text = GUESTS_FORMAT % [report.guest_names.size(),
 			GUEST_SEPARATOR.join(report.guest_names) if not report.guest_names.is_empty() else NONE_TEXT]
 	_fill_payment(report.payment)

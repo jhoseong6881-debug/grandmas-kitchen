@@ -2,7 +2,7 @@ extends Control
 ## 타이틀 화면. 저장된 게임이 있으면 이어 하기, 없으면 새 게임으로 시작한다. 설정 창도 여기서 연다.
 ## 새 게임을 고를 때 저장된 게임이 있으면 지워도 되는지 한 번 묻는다. 새 게임은 프롤로그부터 시작한다.
 
-const CONTINUE_FORMAT: String = "이어 하기 (%d일째 아침)"
+const CONTINUE_FORMAT: String = "이어 하기 (%s %d일째 아침)"
 const SPRING_COMPLETED_TEXT: String = "봄 완료 (여름은 준비 중)"
 const LOAD_FAILED_TEXT: String = "저장된 게임을 불러오지 못했어요. 새 게임으로 시작해 주세요."
 
@@ -43,16 +43,26 @@ func _ready() -> void:
 	if summary.is_empty():
 		_continue_button.hide()
 		_new_game_button.grab_focus()
-	elif bool(summary.get("is_spring_completed", false)):
-		# 봄을 마친 세이브는 남겨 두고, 다음 계절이 생기면 여기서 이어 하게 한다.
-		_continue_button.text = SPRING_COMPLETED_TEXT
-		_continue_button.disabled = true
-		_continue_button.focus_mode = Control.FOCUS_NONE
-		_continue_button.show()
-		_new_game_button.grab_focus()
 	else:
+		var season_id: Season.Id = clampi(int(summary.get("current_season", Season.Id.SPRING)), 0, Season.Id.size() - 1) as Season.Id
+		var day: int = int(summary.get("current_day", GameState.STARTING_DAY))
+		# 예전 세이브: 봄을 마치고 타이틀로 돌아갔던 세이브는 불러올 때 다음 계절 1일째로 넘어간다.
+		if bool(summary.get("is_spring_completed", false)) and season_id == Season.Id.SPRING:
+			var spring: SeasonData = GameData.get_season(Season.Id.SPRING)
+			var next: SeasonData = GameData.get_season(spring.next_season) if spring != null else null
+			if next == null:
+				# 다음 계절이 아직 없으면 봄 완료 세이브는 남겨 두기만 한다.
+				_continue_button.text = SPRING_COMPLETED_TEXT
+				_continue_button.disabled = true
+				_continue_button.focus_mode = Control.FOCUS_NONE
+				_continue_button.show()
+				_new_game_button.grab_focus()
+				return
+			season_id = next.id
+			day = GameState.STARTING_DAY
+		var season: SeasonData = GameData.get_season(season_id)
 		_can_continue = true
-		_continue_button.text = CONTINUE_FORMAT % int(summary.get("current_day", GameState.STARTING_DAY))
+		_continue_button.text = CONTINUE_FORMAT % [season.display_name if season != null else "", day]
 		_continue_button.show()
 		_continue_button.grab_focus()
 

@@ -8,7 +8,7 @@ extends Control
 ## 돌려줄 할머니 레시피 노트 페이지가 있으면 건네준다. 다 듣고 나면 잠자리에 들어 다음 날 아침 텃밭으로 간다.
 ## 장면은 "다음" 버튼을 누를 때마다 한 단계씩 진행한다. 대답을 고르는 동안에는 "다음" 버튼이 숨는다.
 
-const DAY_TEXT_FORMAT: String = "%d일째 저녁"
+const DAY_TEXT_FORMAT: String = "%s %d일째 저녁"
 const QUIET_EVENING_TEXT: String = "오늘 저녁은 조용하네요. 별이 참 많아요."
 const NOTE_FOUND_TEXT: String = "할머니 레시피 노트 한 장을 되찾았어요!"
 const SECRET_LEARNED_FORMAT: String = "할머니 비법을 알았어요!  ★ %s"
@@ -28,8 +28,8 @@ const GIFT_SOUND: StringName = &"gift"
 const NOTE_PAGE_SOUND: StringName = &"note_page"
 
 ## 날마다 바뀌는 배경음악 (하루 동안은 한 곡. 텃밭·원목·부엌·평상이 같은 곡이라 장면이 바뀌어도 끊기지 않는다).
-## 장터와 봄 잔치는 따로 곡이 있다.
-@export var daily_music: DailyMusic = preload("res://data/music/spring_daily_music.tres")
+## 비워 두면 지금 계절의 곡 목록(SeasonData.daily_music)을 쓴다. 장터와 계절 마무리는 따로 곡이 있다.
+@export var daily_music: DailyMusic
 ## 잠자리에 든 뒤 넘어갈 다음 날 아침 장면
 @export_file("*.tscn") var morning_scene_path: String = "res://scenes/garden/garden.tscn"
 ## 잠드는 장면 (할머니 꿈 한 줄, 저장, 아침으로 밝아지기)
@@ -65,10 +65,11 @@ var _current_talk: EveningTalk
 
 
 func _ready() -> void:
-	Sound.play_music(daily_music.get_today_track(false) if daily_music != null else null)
+	var music: DailyMusic = daily_music if daily_music != null else GameData.get_daily_music()
+	Sound.play_music(music.get_today_track(false) if music != null else null)
 	# 낮에 깔리던 빗소리가 남아 있으면 끈다 (봄비는 해 질 녘에 그친다).
 	Sound.stop_loop(GameData.get_rain_settings().rain_sound)
-	_day_label.text = DAY_TEXT_FORMAT % GameState.current_day
+	_day_label.text = DAY_TEXT_FORMAT % [GameData.get_season_name(), GameState.current_day]
 	_note_card.hide()
 	_reply_box.hide()
 	_status_label.text = ""

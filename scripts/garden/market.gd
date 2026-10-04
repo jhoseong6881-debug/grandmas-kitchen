@@ -3,7 +3,7 @@ extends Control
 ## 너구리 상인이 그날의 거래 몇 가지를 보여 주고, 거래를 누르면 남는 재료를 다른 재료로 바꾼다.
 ## 같은 거래는 하루에 daily_limit_per_trade 번까지. 재료가 모자라면 상인이 알려 준다. 다 보면 텃밭으로 돌아간다.
 
-const DAY_TEXT_FORMAT: String = "%d일째 · 숲속 장터"
+const DAY_TEXT_FORMAT: String = "%s %d일째 · 숲속 장터"
 const TRADE_FORMAT: String = "%s ×%d   →   %s ×%d      (오늘 %d번 남음)"
 const SOLD_OUT_FORMAT: String = "%s ×%d   →   %s ×%d      (오늘은 다 나갔어요)"
 const SPEECH_FORMAT: String = "%s: %s"
@@ -43,7 +43,7 @@ func _ready() -> void:
 	RainOverlay.apply_daytime(self, true)
 	_settings = GameData.get_market_settings()
 	GameState.has_visited_market_today = true
-	_day_label.text = DAY_TEXT_FORMAT % GameState.current_day
+	_day_label.text = DAY_TEXT_FORMAT % [GameData.get_season_name(), GameState.current_day]
 	_merchant_name_label.text = _settings.merchant_name
 	_back_button.pressed.connect(_on_back_button_pressed)
 	if not GameState.has_met_merchant:

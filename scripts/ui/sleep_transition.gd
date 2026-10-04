@@ -8,7 +8,7 @@ extends Control
 const SAVING_TEXT: String = "저장 중…"
 const SAVED_TEXT: String = "저장했어요"
 const SAVE_FAILED_TEXT: String = "저장하지 못했어요. 다음 밤에 다시 저장해요."
-const MORNING_FORMAT: String = "%d일째 아침"
+const MORNING_FORMAT: String = "%s %d일째 아침"
 
 ## 꿈 문구 모음
 @export var dream_book: DreamBook = preload("res://data/story/dreams.tres")
@@ -61,7 +61,7 @@ func play(night: int, next_day: int, save: Callable, dream_text: String = "", sh
 	_night_content.modulate.a = 1.0
 	_save_icon.hide()
 	_save_label.text = ""
-	_morning_label.text = MORNING_FORMAT % next_day
+	_morning_label.text = MORNING_FORMAT % [GameData.get_season_name(), next_day]
 	_morning_label.modulate.a = 0.0
 	modulate.a = 0.0
 	show()

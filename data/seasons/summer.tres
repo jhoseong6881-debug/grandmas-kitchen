@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="SeasonData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/season_data.gd" id="1_season"]
+[ext_resource type="Script" path="res://scripts/data/animal_guest.gd" id="2_guest"]
+[ext_resource type="Resource" path="res://data/guests/rabbit.tres" id="3_rabbit"]
+[ext_resource type="Resource" path="res://data/guests/hen.tres" id="4_hen"]
+[ext_resource type="Resource" path="res://data/guests/squirrel.tres" id="5_squirrel"]
+[ext_resource type="Resource" path="res://data/guests/bear.tres" id="6_bear"]
+[ext_resource type="Resource" path="res://data/guests/hedgehog.tres" id="7_hedgehog"]
+[ext_resource type="Resource" path="res://data/music/spring_daily_music.tres" id="8_music"]
+[ext_resource type="Resource" path="res://data/market/market_settings.tres" id="10_market"]
+[ext_resource type="Script" path="res://scripts/data/story.gd" id="12_story"]
+[ext_resource type="Script" path="res://scripts/data/story_chapter.gd" id="13_chapter"]
+
+[sub_resource type="Resource" id="Chapter_summer"]
+script = ExtResource("13_chapter")
+title = "여름"
+background_color = Color(0.24, 0.42, 0.36, 1)
+lines = Array[String](["봄 잔치가 끝나고, 숲에 여름이 왔다.", "매미 소리가 들리고, 텃밭 흙이 뜨끈뜨끈하다.", "할머니 노트 뒤쪽에는 여름 레시피 자리가 비어 있었다.", "…여름 이웃들도 할머니 레시피를 한 장씩 맡아 두었을까?"])
+
+[sub_resource type="Resource" id="Story_summer"]
+script = ExtResource("12_story")
+chapters = Array[ExtResource("13_chapter")]([SubResource("Chapter_summer")])
+
+[resource]
+script = ExtResource("1_season")
+id = 1
+display_name = "여름"
+ending_name = "낚시 대회"
+guests = Array[ExtResource("2_guest")]([ExtResource("3_rabbit"), ExtResource("4_hen"), ExtResource("5_squirrel"), ExtResource("6_bear"), ExtResource("7_hedgehog")])
+daily_music = ExtResource("8_music")
+market = ExtResource("10_market")
+intro_story = SubResource("Story_summer")
+next_season = 2

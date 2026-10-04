@@ -3,7 +3,7 @@ extends Control
 ## 손님이 한 명씩 와서 주문하면 요리(미니게임)를 하고, 대접한 뒤 밥값으로 재료를 받는다.
 ## 정해진 수만큼 대접하거나, 재료가 떨어져 아무도 주문할 수 없으면 점심 장사가 끝나고 저녁 평상으로 간다.
 
-const DAY_TEXT_FORMAT: String = "%d일째"
+const DAY_TEXT_FORMAT: String = "%s %d일째"
 const LUNCH_PROGRESS_FORMAT: String = "점심 손님 %d / %d"
 const COOKED_TEXT_FORMAT: String = "%s 완성!"
 const PERFECT_COOKED_TEXT_FORMAT: String = "%s 완성! 한 번도 안 틀렸어요!"
@@ -37,8 +37,8 @@ const POP_SOUND: StringName = &"pop"
 const TIER_UP_SOUND: StringName = &"tier_up"
 
 ## 날마다 바뀌는 배경음악 (하루 동안은 한 곡. 텃밭·원목·부엌·평상이 같은 곡이라 장면이 바뀌어도 끊기지 않는다).
-## 장터와 봄 잔치는 따로 곡이 있다.
-@export var daily_music: DailyMusic = preload("res://data/music/spring_daily_music.tres")
+## 비워 두면 지금 계절의 곡 목록(SeasonData.daily_music)을 쓴다. 장터와 계절 마무리는 따로 곡이 있다.
+@export var daily_music: DailyMusic
 ## 점심 한 번에 받는 손님 수의 최대값 (가게 단계 데이터가 없을 때만 쓴다. 보통은 ShopLevel.max_guests)
 @export var guests_per_lunch: int = 3
 ## 오늘 손님 수 = 오늘 메뉴 수 + 이 값 (최대 guests_per_lunch).
@@ -143,7 +143,8 @@ var _status_default_color: Color
 
 
 func _ready() -> void:
-	Sound.play_music(daily_music.get_today_track(true) if daily_music != null else null)
+	var music: DailyMusic = daily_music if daily_music != null else GameData.get_daily_music()
+	Sound.play_music(music.get_today_track(true) if music != null else null)
 	GameState.day_changed.connect(_on_day_changed)
 	_cook_button.pressed.connect(_on_cook_button_pressed)
 	_serve_button.pressed.connect(_on_serve_button_pressed)
@@ -204,7 +205,7 @@ func _call_next_guest() -> void:
 	if _guests_served >= _guests_today:
 		_end_lunch(LUNCH_DONE_TEXT)
 		return
-	var guest_count: int = GameData.get_all_guests().size()
+	var guest_count: int = GameData.get_season_guests().size()
 	for i: int in guest_count:
 		var guest: AnimalGuest = _pop_next_guest()
 		var order: Recipe = _choose_order(guest)
@@ -280,7 +281,7 @@ func _choose_request(guest: AnimalGuest, order: Recipe) -> GuestRequest:
 ## 같은 손님이 연달아 오지 않도록, 새로 섞은 차례의 첫 손님이 방금 손님이면 뒤로 보낸다.
 func _pop_next_guest() -> AnimalGuest:
 	if _guest_queue.is_empty():
-		_guest_queue = GameData.get_all_guests()
+		_guest_queue = GameData.get_season_guests()
 		_guest_queue.shuffle()
 		if _guest_queue.size() > 1 and _guest_queue[0] == _last_guest:
 			_guest_queue.push_back(_guest_queue.pop_front())
@@ -368,7 +369,7 @@ func _on_evening_button_pressed() -> void:
 			Sound.stop_loop(rain.rain_sound, rain.rain_sound_fade)
 			sunset_text = rain.sunset_text
 		await sunset.play(GameState.current_day, sunset_text)
-	get_tree().change_scene_to_file(feast_scene_path if GameState.is_spring_feast_day() else porch_scene_path)
+	get_tree().change_scene_to_file(feast_scene_path if GameState.is_season_end_day() else porch_scene_path)
 
 
 # --- 요리 ---
@@ -622,4 +623,4 @@ func _update_lunch_label() -> void:
 
 
 func _on_day_changed(new_day: int) -> void:
-	_day_label.text = DAY_TEXT_FORMAT % new_day
+	_day_label.text = DAY_TEXT_FORMAT % [GameData.get_season_name(), new_day]

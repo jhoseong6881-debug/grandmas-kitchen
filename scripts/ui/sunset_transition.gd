@@ -5,7 +5,7 @@ extends Control
 ## play() 를 await 하면 끝난 뒤 돌아온다. 클릭, 스페이스/Enter, 게임패드 A 로 기다리는 시간을 건너뛴다.
 
 const SETTING_TEXT: String = "해가 뉘엿뉘엿 지고 있어요…"
-const EVENING_FORMAT: String = "%d일째 저녁"
+const EVENING_FORMAT: String = "%s %d일째 저녁"
 
 ## 노을이 물드는 시간, 해가 내려가는 시간, 글을 보여 주는 시간(초)
 @export var fade_in_duration: float = 0.7
@@ -42,7 +42,7 @@ func play(day: int, setting_text: String = "") -> void:
 		tween.kill()
 		modulate.a = 1.0
 		_sun.position.y = sun_home_y + sun_drop
-	_text_label.text = EVENING_FORMAT % day
+	_text_label.text = EVENING_FORMAT % [GameData.get_season_name(), day]
 	_is_skipping = false
 	var waited: float = 0.0
 	while waited < evening_hold and not _is_skipping:

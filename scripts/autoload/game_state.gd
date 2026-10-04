@@ -77,9 +77,9 @@ var is_feast_prep_announced: bool = false
 var feast_prep_delivered: Dictionary[StringName, int] = {}
 ## 오늘 텃밭에서 잔치 바구니를 열어 봤는지 (텃밭이 무엇을 먼저 선택해 둘지 정할 때). 저장하지 않는다.
 var has_opened_feast_prep_today: bool = false
-## 지금 계절. 평상에서는 이 계절의 레시피 노트만 돌려받는다.
+## 지금 계절. 평상에서는 이 계절의 레시피 노트만 돌려받는다. 계절마다 다른 것은 GameData.get_current_season() 에서.
 var current_season: Season.Id = Season.Id.SPRING
-## 봄 잔치까지 보고 봄을 마쳤는지
+## 봄 잔치까지 보고 봄을 마쳤는지 (예전 세이브: 봄을 마치고 타이틀로 돌아간 세이브는 불러올 때 여름 1일째로 넘긴다)
 var is_spring_completed: bool = false
 ## 새 게임을 시작했거나 세이브를 불러왔으면 true. 화면이 바뀌어도 게임을 다시 시작하지 않게 할 때 쓴다.
 var is_game_started: bool = false
@@ -268,11 +268,33 @@ func unlock_recipe(recipe_id: StringName) -> void:
 	recipe_unlocked.emit(recipe_id)
 
 
-## 봄 마무리 날(SeasonEnding.last_day)부터, 봄을 마치기 전까지는 저녁에 평상 대신 봄 잔치가 열린다.
-## 노트를 다 모았는지와는 상관없다.
-func is_spring_feast_day() -> bool:
+## 계절 마무리 날(SeasonEnding.last_day)부터는 저녁에 평상 대신 계절 마무리(봄 잔치 등)가 열린다.
+## 노트를 다 모았는지와는 상관없다. 마무리가 없는 계절(만드는 중)은 끝나지 않는다.
+func is_season_end_day() -> bool:
 	var ending: SeasonEnding = GameData.get_season_ending()
-	return ending != null and current_day >= ending.last_day and not is_spring_completed
+	return ending != null and current_day >= ending.last_day
+
+
+## 지금 계절을 마치고 다음 계절 1일째로 넘어간다. 재료·레시피·단골·가게 단계·기념품·텃밭은 그대로 이어진다.
+## 다음 계절 데이터가 없으면 아무것도 안 하고 false.
+func start_next_season() -> bool:
+	var season: SeasonData = GameData.get_current_season()
+	var next: SeasonData = GameData.get_season(season.next_season) if season != null else null
+	if next == null or next.id == current_season:
+		return false
+	if current_season == Season.Id.SPRING:
+		is_spring_completed = true
+	current_season = next.id
+	current_day = STARTING_DAY
+	todays_served_guests.clear()
+	todays_market_trades.clear()
+	has_visited_market_today = false
+	is_feast_prep_announced = false
+	feast_prep_delivered.clear()
+	has_opened_feast_prep_today = false
+	is_raining_today = GameData.get_rain_settings().will_rain(current_day, false)
+	day_changed.emit(current_day)
+	return true
 
 
 func is_recipe_unlocked(recipe_id: StringName) -> bool:
@@ -563,6 +585,9 @@ func load_game() -> bool:
 		return false
 	_from_save_data(data)
 	is_game_started = true
+	# 예전 세이브: 봄을 마치고 타이틀로 돌아갔던 세이브는 여름이 생겼으니 여름 1일째부터 이어 간다.
+	if is_spring_completed and current_season == Season.Id.SPRING:
+		start_next_season()
 	return true
 
 

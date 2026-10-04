@@ -1,7 +1,8 @@
 extends Control
 ## 봄 잔치 (봄 마무리 장면). 레시피 노트를 다 모은 다음 날 저녁, 평상 대신 열린다.
 ## 손님들이 모두 모여 한마디씩 하고, 완성된 노트 맨 뒷장의 할머니 편지를 읽은 뒤 다음 계절 예고를 보여 준다.
-## 마지막 버튼을 누르면 "봄 완료"로 저장하고 타이틀로 돌아간다. 글은 data/seasons/ 의 SeasonEnding 에서 가져온다.
+## 마지막 버튼을 누르면 다음 계절(여름) 1일째로 넘어가 저장하고, 계절 시작 장면을 보여 준 뒤 아침 텃밭으로 간다.
+## 다음 계절 데이터가 없으면 "봄 완료"로 저장하고 타이틀로 돌아간다. 글은 data/seasons/ 의 SeasonEnding 에서 가져온다.
 
 const NEXT_TEXT: String = "다음"
 const RECIPE_ITEM_FORMAT: String = "· %s"
@@ -9,8 +10,10 @@ const RECIPE_ITEM_FORMAT: String = "· %s"
 ## 이 장면의 배경음악. 비워 두면 앞 장면의 음악을 서서히 끈다.
 ## 봄 잔치 날 저녁의 잔잔한 잔치 곡을 넣어 둔다.
 @export var music: AudioStream = preload("res://assets/audio/music/spring_feast_night.mp3")
-## 봄을 마친 뒤 돌아갈 타이틀 장면
+## 다음 계절이 없을 때 돌아갈 타이틀 장면
 @export_file("*.tscn") var title_scene_path: String = "res://scenes/ui/title.tscn"
+## 다음 계절 1일째 아침 장면
+@export_file("*.tscn") var morning_scene_path: String = "res://scenes/garden/garden.tscn"
 ## 손님 그림이 아직 없을 때 쓰는 임시 사각형 크기와 색
 @export var figure_size: Vector2 = Vector2(180, 240)
 @export var figure_placeholder_color: Color = Color(0.86, 0.84, 0.8)
@@ -148,11 +151,19 @@ func _show_teaser() -> void:
 	tween.tween_property(_teaser, "modulate:a", 1.0, pop_duration * 4.0)
 
 
-## 봄을 마쳤다고 저장하고 타이틀로 돌아간다.
+## 다음 계절 1일째로 넘어가 저장하고, 계절 시작 장면(있으면) 뒤 아침 텃밭으로 간다. 다음 계절이 없으면 봄 완료로 저장하고 타이틀로.
 func _finish_spring() -> void:
-	GameState.is_spring_completed = true
+	if not GameState.start_next_season():
+		GameState.is_spring_completed = true
+		GameState.save_game()
+		get_tree().change_scene_to_file(title_scene_path)
+		return
 	GameState.save_game()
-	get_tree().change_scene_to_file(title_scene_path)
+	var season: SeasonData = GameData.get_current_season()
+	if season.intro_story != null:
+		StoryScene.play_story(get_tree(), season.intro_story, morning_scene_path)
+	else:
+		get_tree().change_scene_to_file(morning_scene_path)
 
 
 func _pop_in(panel: Control) -> void:

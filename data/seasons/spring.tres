@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="SeasonData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/season_data.gd" id="1_season"]
+[ext_resource type="Script" path="res://scripts/data/animal_guest.gd" id="2_guest"]
+[ext_resource type="Resource" path="res://data/guests/rabbit.tres" id="3_rabbit"]
+[ext_resource type="Resource" path="res://data/guests/hen.tres" id="4_hen"]
+[ext_resource type="Resource" path="res://data/guests/squirrel.tres" id="5_squirrel"]
+[ext_resource type="Resource" path="res://data/guests/bear.tres" id="6_bear"]
+[ext_resource type="Resource" path="res://data/guests/hedgehog.tres" id="7_hedgehog"]
+[ext_resource type="Resource" path="res://data/music/spring_daily_music.tres" id="8_music"]
+[ext_resource type="Resource" path="res://data/weather/rain_settings.tres" id="9_rain"]
+[ext_resource type="Resource" path="res://data/market/market_settings.tres" id="10_market"]
+[ext_resource type="Resource" path="res://data/seasons/spring_ending.tres" id="11_ending"]
+
+[resource]
+script = ExtResource("1_season")
+id = 0
+display_name = "봄"
+ending_name = "봄 잔치"
+guests = Array[ExtResource("2_guest")]([ExtResource("3_rabbit"), ExtResource("4_hen"), ExtResource("5_squirrel"), ExtResource("6_bear"), ExtResource("7_hedgehog")])
+daily_music = ExtResource("8_music")
+rain = ExtResource("9_rain")
+market = ExtResource("10_market")
+ending = ExtResource("11_ending")
+next_season = 1

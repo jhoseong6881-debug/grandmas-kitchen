@@ -5,19 +5,21 @@ extends PanelContainer
 ## 잔치 준비 (장보기 목록을 받은 뒤), 계절 잔치까지 남은 날.
 ## GameState 의 시그널(노트, 소문, 날짜, 잔치 준비)을 듣고 스스로 다시 쓴다. 누를 수 없는 판이라 입력은 지나간다.
 
-const TITLE_TEXT: String = "봄 목표"
+const TITLE_FORMAT: String = "%s 목표"
 const NOTES_FORMAT: String = "할머니 노트  %d / %d"
 const HOLDER_FORMAT: String = "  노트를 가진 손님: %s"
 const HOLDER_SEPARATOR: String = " · "
 ## 아직 만나지 않은 손님은 이름 대신 이렇게 묶어서 보여 준다 (예: "??? 3")
 const UNKNOWN_HOLDER_FORMAT: String = "??? %d"
-const NOTES_DONE_TEXT: String = "올봄 노트를 다 모았어요!"
+const NOTES_DONE_FORMAT: String = "올%s 노트를 다 모았어요!"
 const SHOP_FORMAT: String = "%s까지 소문 %d"
 const SHOP_MAX_FORMAT: String = "%s!"
 const MARKET_TODAY_TEXT: String = "오늘은 장날!"
 const MARKET_FORMAT: String = "장날까지 %d일"
-const FEAST_TODAY_TEXT: String = "오늘 저녁 봄 잔치!"
-const FEAST_FORMAT: String = "봄 잔치까지 %d일"
+const FEAST_TODAY_FORMAT: String = "오늘 저녁 %s!"
+const FEAST_FORMAT: String = "%s까지 %d일"
+## 계절 마무리가 아직 없는 계절에서 다음 장날을 찾아볼 날 수
+const MARKET_LOOKAHEAD_DAYS: int = 15
 const FEAST_PREP_FORMAT: String = "잔치 준비  %d / %d"
 const FEAST_PREP_DONE_TEXT: String = "잔치 준비 끝! 상다리가 휘어지겠어요"
 
@@ -35,7 +37,8 @@ func _ready() -> void:
 	GameState.reputation_changed.connect(_refresh.unbind(1))
 	GameState.day_changed.connect(_refresh.unbind(1))
 	GameState.feast_prep_changed.connect(_refresh)
-	_title_label.text = TITLE_TEXT
+	var season: SeasonData = GameData.get_current_season()
+	_title_label.text = TITLE_FORMAT % (season.display_name if season != null else "")
 	_refresh()
 
 
@@ -56,6 +59,8 @@ func _refresh_notes() -> void:
 		if GameState.is_recipe_unlocked(recipe.id):
 			found += 1
 	_notes_label.text = NOTES_FORMAT % [found, total]
+	# 노트가 없는 계절(만드는 중)에는 노트 줄을 숨긴다.
+	_notes_label.visible = total > 0
 	var holders: PackedStringArray = []
 	var unknown_count: int = 0
 	for guest: AnimalGuest in GameData.get_all_guests():
@@ -70,10 +75,11 @@ func _refresh_notes() -> void:
 	if unknown_count > 0:
 		holders.append(UNKNOWN_HOLDER_FORMAT % unknown_count)
 	if found >= total:
-		_holder_label.text = NOTES_DONE_TEXT
+		var season: SeasonData = GameData.get_current_season()
+		_holder_label.text = NOTES_DONE_FORMAT % (season.display_name if season != null else "")
 	else:
 		_holder_label.text = HOLDER_FORMAT % HOLDER_SEPARATOR.join(holders)
-	_holder_label.visible = found >= total or not holders.is_empty()
+	_holder_label.visible = total > 0 and (found >= total or not holders.is_empty())
 
 
 func _refresh_shop() -> void:
@@ -90,7 +96,7 @@ func _refresh_shop() -> void:
 func _refresh_market_and_feast() -> void:
 	var day: int = GameState.current_day
 	var ending: SeasonEnding = GameData.get_season_ending()
-	var last_day: int = ending.last_day if ending != null else day
+	var last_day: int = ending.last_day if ending != null else day + MARKET_LOOKAHEAD_DAYS
 	var market: MarketSettings = GameData.get_market_settings()
 	var next_market_day: int = -1
 	for d: int in range(day, last_day + 1):
@@ -107,4 +113,5 @@ func _refresh_market_and_feast() -> void:
 		_feast_prep_label.text = FEAST_PREP_DONE_TEXT if delivered >= prep.get_total() \
 				else FEAST_PREP_FORMAT % [delivered, prep.get_total()]
 	_feast_label.visible = ending != null
-	_feast_label.text = FEAST_TODAY_TEXT if day >= last_day else FEAST_FORMAT % (last_day - day)
+	var ending_name: String = GameData.get_current_season().ending_name if GameData.get_current_season() != null else ""
+	_feast_label.text = FEAST_TODAY_FORMAT % ending_name if day >= last_day else FEAST_FORMAT % [ending_name, last_day - day]

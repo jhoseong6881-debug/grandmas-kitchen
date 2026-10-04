@@ -5,7 +5,7 @@ extends Control
 ## 버섯 원목으로 가는 길도 여기서 간다. 장날(MarketSettings)에는 숲속 장터로 가는 버튼도 생긴다. 칸을 다루는 일은 PlotRow 가 맡는다.
 ## 물 주기나 비료 같은 복잡한 농사는 없다.
 
-const DAY_TEXT_FORMAT: String = "%d일째 아침"
+const DAY_TEXT_FORMAT: String = "%s %d일째 아침"
 const PLANTED_FORMAT: String = "%s%s 심었어요. %d일 뒤에 거둘 수 있어요."
 const HARVEST_POP_FORMAT: String = "+%d %s"
 const GIFT_FORMAT: String = "%s%s %s %d개를 두고 갔어요."
@@ -23,8 +23,8 @@ const RECEIVE_SOUND: StringName = &"receive"
 const RUSTLE_SOUND: StringName = &"rustle"
 
 ## 날마다 바뀌는 배경음악 (하루 동안은 한 곡. 텃밭·원목·부엌·평상이 같은 곡이라 장면이 바뀌어도 끊기지 않는다).
-## 장터와 봄 잔치는 따로 곡이 있다.
-@export var daily_music: DailyMusic = preload("res://data/music/spring_daily_music.tres")
+## 비워 두면 지금 계절의 곡 목록(SeasonData.daily_music)을 쓴다. 장터와 계절 마무리는 따로 곡이 있다.
+@export var daily_music: DailyMusic
 ## 이 화면을 켤 때 게임이 아직 시작 전이면 새 게임을 시작한다 (시작 재료, 레시피, 텃밭을 받는다).
 @export var start_new_game_on_ready: bool = true
 ## 텃밭을 다 둘러본 뒤 넘어갈 점심 부엌 장면
@@ -63,13 +63,16 @@ var _status_text: String = ""
 
 
 func _ready() -> void:
-	Sound.play_music(daily_music.get_today_track(true) if daily_music != null else null)
+	var music: DailyMusic = daily_music if daily_music != null else GameData.get_daily_music()
+	Sound.play_music(music.get_today_track(true) if music != null else null)
 	if start_new_game_on_ready and not GameState.is_game_started:
 		GameState.start_new_game()
-	_day_label.text = DAY_TEXT_FORMAT % GameState.current_day
+	_day_label.text = DAY_TEXT_FORMAT % [GameData.get_season_name(), GameState.current_day]
 	_set_status(WELCOME_TEXT)
 	var setup: StartingSetup = GameData.get_starting_setup()
-	if GameState.current_day == GameState.STARTING_DAY and setup != null and not setup.first_morning_text.is_empty():
+	# 게임 첫날(봄 1일째)에만. 여름 1일째에는 나오지 않는다.
+	if GameState.current_day == GameState.STARTING_DAY and GameState.current_season == Season.Id.SPRING \
+			and setup != null and not setup.first_morning_text.is_empty():
 		_set_status(setup.first_morning_text)
 	_update_logs_button()
 	# 이웃 바구니에서 버섯이 나오면 텃밭에 있는 동안에도 바로 열린다.
@@ -157,7 +160,7 @@ func _on_basket_button_pressed() -> void:
 ## 잔치 준비 목록을 받았으면 (계절을 마치기 전까지) 봄 잔치 바구니 버튼을 보여 준다.
 func _update_feast_button() -> void:
 	var prep: FeastPrep = _get_feast_prep()
-	_feast_button.visible = prep != null and GameState.is_feast_prep_announced and not GameState.is_spring_completed
+	_feast_button.visible = prep != null and GameState.is_feast_prep_announced
 	if prep != null:
 		_feast_button.text = FEAST_BUTTON_FORMAT % [GameState.get_feast_delivered_total(), prep.get_total()]
 
