@@ -28,7 +28,7 @@ const GIFT_SOUND: StringName = &"gift"
 const NOTE_PAGE_SOUND: StringName = &"note_page"
 
 ## 이 장면의 배경음악. 비워 두면 앞 장면의 음악을 서서히 끈다.
-## 봄 동안 깔리는 곡을 넣어 둔다 (텃밭·원목·장터·부엌·평상·잔치가 같은 곡이라 장면이 바뀌어도 끊기지 않는다).
+## 봄 동안 깔리는 곡을 넣어 둔다 (텃밭·원목·부엌·평상이 같은 곡이라 장면이 바뀌어도 끊기지 않는다. 장터와 봄 잔치는 따로 곡이 있다).
 @export var music: AudioStream = preload("res://assets/audio/music/spring_theme.mp3")
 ## 잠자리에 든 뒤 넘어갈 다음 날 아침 장면
 @export_file("*.tscn") var morning_scene_path: String = "res://scenes/garden/garden.tscn"

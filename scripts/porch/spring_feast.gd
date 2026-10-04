@@ -7,8 +7,8 @@ const NEXT_TEXT: String = "다음"
 const RECIPE_ITEM_FORMAT: String = "· %s"
 
 ## 이 장면의 배경음악. 비워 두면 앞 장면의 음악을 서서히 끈다.
-## 봄 동안 깔리는 곡을 넣어 둔다 (텃밭·원목·장터·부엌·평상·잔치가 같은 곡이라 장면이 바뀌어도 끊기지 않는다).
-@export var music: AudioStream = preload("res://assets/audio/music/spring_theme.mp3")
+## 봄 잔치 날 저녁의 잔잔한 잔치 곡을 넣어 둔다.
+@export var music: AudioStream = preload("res://assets/audio/music/spring_feast_night.mp3")
 ## 봄을 마친 뒤 돌아갈 타이틀 장면
 @export_file("*.tscn") var title_scene_path: String = "res://scenes/ui/title.tscn"
 ## 손님 그림이 아직 없을 때 쓰는 임시 사각형 크기와 색

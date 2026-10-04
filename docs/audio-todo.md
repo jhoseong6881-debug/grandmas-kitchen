@@ -101,10 +101,13 @@
 ### 음악 출처 기록 (출시 전에 권리를 꼭 다시 확인)
 | 파일 | 쓰는 곳 | 만든 곳 | 요금제 / 권리 | 만든 날 | 프롬프트 |
 |---|---|---|---|---|---|
-| spring_theme.mp3 | 봄 동안 깔리는 곡: 텃밭, 버섯 원목, 장터, 부엌, 평상, 봄 잔치 | Suno AI | Pro 구독 중 생성 → 상업적 이용 가능 (Suno 약관 기준, 출시 전 다시 확인) | 2026-10-03 | (직접 적기) |
+| spring_theme.mp3 | 봄 동안 깔리는 곡: 텃밭, 버섯 원목, 부엌, 평상 | Suno AI | Pro 구독 중 생성 → 상업적 이용 가능 (Suno 약관 기준, 출시 전 다시 확인) | 2026-10-03 | (직접 적기) |
+| forest_market.mp3 | 숲속 장터 (장날) | Suno AI (v6) | Pro | 2026-10-04 | cozy acoustic folk instrumental, cheerful bustling village market, bouncy ukulele and pizzicato strings, playful clarinet melody, light woodblock and shaker, warm accordion, lighthearted and friendly, diatonic major key, 110 BPM, loopable video game background music / 제외: vocals, singing, EDM, heavy drums, electric guitar, sad, dark |
+| spring_feast_night.mp3 | 봄 잔치 (15일째 저녁) | Suno AI (v6) | Pro | 2026-10-04 | japanese anime slice of life soundtrack, warm and joyful evening celebration, friends smiling around a table in a cozy countryside garden as warm lights come on, light acoustic guitar strumming and bright piano, playful pizzicato strings, cheerful clarinet melody, soft shaker and gentle hand percussion, relaxed and happy, calm but festive, bright major key, 88 BPM, loopable video game background music / 제외: vocals, singing, sad, melancholic, wistful, nostalgic, minor key, dramatic, loud drums, EDM, rock |
 
 - Suno 무료 요금제로 만든 곡은 상업적으로 쓸 수 없고, 나중에 유료로 바꿔도 소급되지 않는다.
 - 스팀 등록 때 "AI로 만든 콘텐츠"(배경음악)를 밝힌다.
 
 ### 아직 없는 곡
-타이틀 (직접 만들 예정), 프롤로그. 장면마다 다른 곡을 원하면 그 장면의 Music 칸만 바꾸면 된다 (점심 부엌 2~3곡 돌려 틀기도 생각 중).
+타이틀 (직접 만들 예정), 프롤로그.
+프롬프트 쓸 때: 동양 전통 악기나 '등불 축제' 같은 말은 넣지 않는다 (중국풍으로 나옴). 제외 칸에도 그런 단어는 넣지 않는다. 장면마다 다른 곡을 원하면 그 장면의 Music 칸만 바꾸면 된다 (점심 부엌 2~3곡 돌려 틀기도 생각 중).
