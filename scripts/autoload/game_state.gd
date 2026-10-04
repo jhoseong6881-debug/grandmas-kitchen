@@ -31,8 +31,8 @@ var unlocked_recipe_ids: Array[StringName] = []
 var plot_crop_ids: Dictionary[StringName, Array] = {}
 ## 밭 id → 칸마다 다 자라기까지 남은 날 수 (0 = 거둘 수 있음)
 var plot_days_left: Dictionary[StringName, Array] = {}
-## 오늘 아침 이웃 바구니를 이미 열어 봤는지. 하루가 지나면 다시 false.
-var is_todays_gift_collected: bool = false
+## 이웃 바구니에 재료를 두고 간 손님 id (저녁 평상에 왔던 손님들. 한 번 올 때마다 한 칸). 바구니를 열면 비운다.
+var basket_guest_ids: Array[StringName] = []
 ## 숲속 장터: 너구리 상인을 만났는지 (첫 인사를 한 번만 하려고 저장한다)
 var has_met_merchant: bool = false
 ## 이미 본 할머니 회상 장면 id (MemoryBook)
@@ -139,7 +139,6 @@ func remove_ingredients(counts: Dictionary[StringName, int]) -> bool:
 func advance_day() -> void:
 	current_day += 1
 	todays_served_guests.clear()
-	is_todays_gift_collected = false
 	todays_market_trades.clear()
 	has_visited_market_today = false
 	has_opened_feast_prep_today = false
@@ -502,7 +501,7 @@ func new_game() -> void:
 	growth_shown_day.clear()
 	current_season = Season.Id.SPRING
 	is_spring_completed = false
-	is_todays_gift_collected = false
+	basket_guest_ids.clear()
 	has_met_merchant = false
 	is_raining_today = false
 	seen_memory_ids.clear()
@@ -601,6 +600,7 @@ func _to_save_data() -> Dictionary:
 		"is_spring_completed": is_spring_completed,
 		"has_met_merchant": has_met_merchant,
 		"is_raining_today": is_raining_today,
+		"basket_guest_ids": Array(basket_guest_ids).map(func(guest_id: StringName) -> String: return String(guest_id)),
 		"seen_memory_ids": Array(seen_memory_ids).map(func(memory_id: StringName) -> String: return String(memory_id)),
 		"is_feast_prep_announced": is_feast_prep_announced,
 		"feast_prep_delivered": _string_keys(feast_prep_delivered),
@@ -659,6 +659,8 @@ func _from_save_data(data: Dictionary) -> void:
 	is_spring_completed = bool(data.get("is_spring_completed", false))
 	has_met_merchant = bool(data.get("has_met_merchant", false))
 	is_raining_today = bool(data.get("is_raining_today", false))
+	for guest_id: Variant in data.get("basket_guest_ids", []):
+		basket_guest_ids.append(StringName(str(guest_id)))
 	for memory_id: Variant in data.get("seen_memory_ids", []):
 		seen_memory_ids.append(StringName(str(memory_id)))
 	_unlock_places_from_state()

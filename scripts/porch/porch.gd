@@ -47,6 +47,8 @@ const NOTE_PAGE_SOUND: StringName = &"note_page"
 ## 버튼을 누를 때마다 하나씩 실행할 장면 단계
 var _beats: Array[Callable] = []
 var _evening_guest: AnimalGuest
+## 오늘 저녁 평상에 온 손님 id (잠들 때 이웃 바구니에 넘긴다)
+var _met_tonight_ids: Array[StringName] = []
 ## 지금 대답을 기다리는 대화 (없으면 null)
 var _current_talk: EveningTalk
 
@@ -162,6 +164,8 @@ func _add_feast_announcement_beats() -> void:
 ## 다음 손님으로 바꾼다. 앞 손님이 남긴 아래 글과 노트 카드는 치운다.
 func _switch_guest(guest: AnimalGuest) -> void:
 	_evening_guest = guest
+	if guest.id not in _met_tonight_ids:
+		_met_tonight_ids.append(guest.id)
 	_status_label.text = ""
 	_note_card.hide()
 	if guest.id not in GameState.porch_met_guest_ids:
@@ -343,6 +347,8 @@ func _go_to_sleep() -> void:
 	# 잠드는 동안 버튼이 또 눌려 두 번 잠들지 않게 막는다.
 	_next_button.disabled = true
 	var night: int = GameState.current_day
+	# 오늘 저녁 평상에 온 손님들이 내일 아침 이웃 바구니에 재료를 두고 간다.
+	GameState.basket_guest_ids.append_array(_met_tonight_ids)
 	GameState.advance_day()
 	# 노트를 3·6·9장 되찾은 날 밤에는 꿈 한 줄 대신 할머니 회상 장면을 본다 (본 것으로 적고 저장한다).
 	var memory: GrandmaMemory = memory_book.get_next(GameState.current_season, GameState.count_found_notes(),

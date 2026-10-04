@@ -1,6 +1,7 @@
 extends Control
 ## 아침 당근 텃밭 장면. 다 자란 칸을 눌러 채소를 거두고, 빈 칸에 심을 작물을 고르고,
 ## 이웃이 두고 간 바구니를 열어 본 뒤 오늘의 메뉴를 골라 부엌으로 간다.
+## 이웃 바구니에는 어젯밤 평상에 왔던 손님들이 한 명에 하나씩 밥값 재료를 두고 간다 (평상에 아무도 안 왔으면 비어 있다).
 ## 버섯 원목으로 가는 길도 여기서 간다. 장날(MarketSettings)에는 숲속 장터로 가는 버튼도 생긴다. 칸을 다루는 일은 PlotRow 가 맡는다.
 ## 물 주기나 비료 같은 복잡한 농사는 없다.
 
@@ -8,6 +9,8 @@ const DAY_TEXT_FORMAT: String = "%d일째 아침"
 const PLANTED_FORMAT: String = "%s%s 심었어요. %d일 뒤에 거둘 수 있어요."
 const HARVEST_POP_FORMAT: String = "+%d %s"
 const GIFT_FORMAT: String = "%s%s %s %d개를 두고 갔어요."
+const GIFT_LINE_SEPARATOR: String = "\n"
+const GIFT_POP_SEPARATOR: String = "  "
 const GIFT_READY_TEXT: String = "이웃 바구니\n(뭔가 들어 있어요)"
 const GIFT_EMPTY_TEXT: String = "이웃 바구니\n(비었어요)"
 const WELCOME_TEXT: String = "좋은 아침이에요. 텃밭을 둘러볼까요?"
@@ -127,21 +130,26 @@ func _on_planted(crop: Crop, _plot_button: Button) -> void:
 
 ## 이웃 바구니: 손님 중 한 명이 자기 밥값 재료 하나를 두고 간다. 하루에 한 번.
 func _on_basket_button_pressed() -> void:
-	if GameState.is_todays_gift_collected:
+	if GameState.basket_guest_ids.is_empty():
 		return
-	var neighbors: Array[AnimalGuest] = GameData.get_all_guests().filter(
-			func(guest: AnimalGuest) -> bool: return not guest.payment_ingredients.is_empty())
-	GameState.is_todays_gift_collected = true
+	var lines: PackedStringArray = []
+	var pops: PackedStringArray = []
+	for guest_id: StringName in GameState.basket_guest_ids:
+		var neighbor: AnimalGuest = GameData.get_guest(guest_id)
+		if neighbor == null or neighbor.payment_ingredients.is_empty():
+			continue
+		var gift: Ingredient = neighbor.payment_ingredients.pick_random()
+		GameState.add_ingredient(gift.id, gift_amount)
+		lines.append(GIFT_FORMAT % [neighbor.display_name, Korean.subject_particle(neighbor.display_name),
+				gift.display_name, gift_amount])
+		pops.append(HARVEST_POP_FORMAT % [gift_amount, gift.display_name])
+	GameState.basket_guest_ids.clear()
 	_update_basket()
-	if neighbors.is_empty():
+	if lines.is_empty():
 		return
-	var neighbor: AnimalGuest = neighbors.pick_random()
-	var gift: Ingredient = neighbor.payment_ingredients.pick_random()
-	GameState.add_ingredient(gift.id, gift_amount)
 	Sound.play(RECEIVE_SOUND)
-	_set_status(GIFT_FORMAT % [neighbor.display_name, Korean.subject_particle(neighbor.display_name),
-			gift.display_name, gift_amount])
-	_pop_text(HARVEST_POP_FORMAT % [gift_amount, gift.display_name], _basket_button)
+	_set_status(GIFT_LINE_SEPARATOR.join(lines))
+	_pop_text(GIFT_POP_SEPARATOR.join(pops), _basket_button)
 	_show_unlock_notice()
 	_focus_next_thing_to_do()
 
@@ -195,8 +203,9 @@ func _on_basket_gui_input(event: InputEvent) -> void:
 
 
 func _update_basket() -> void:
-	_basket_button.disabled = GameState.is_todays_gift_collected
-	_basket_button.text = GIFT_EMPTY_TEXT if GameState.is_todays_gift_collected else GIFT_READY_TEXT
+	var is_empty: bool = GameState.basket_guest_ids.is_empty()
+	_basket_button.disabled = is_empty
+	_basket_button.text = GIFT_EMPTY_TEXT if is_empty else GIFT_READY_TEXT
 
 
 ## 부엌으로 가기 전에 오늘의 메뉴부터 고른다.
