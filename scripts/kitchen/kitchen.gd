@@ -239,7 +239,7 @@ func _call_next_guest() -> void:
 				order_text = guest.first_order_line.format({"recipe": order.display_name})
 			if _taste_hint(guest) != "":
 				order_text += TASTE_HINT_JOIN + _taste_hint(guest)
-			current_request = _choose_request(order)
+			current_request = _choose_request(guest, order)
 			if current_request != null:
 				order_text += REQUEST_JOIN + current_request.line
 			_guest_spot.show_guest(guest, order_text, GameState.is_raining_today)
@@ -264,12 +264,15 @@ func _count_guests_today() -> int:
 
 
 ## 가끔(request_chance) 이 요리에 나올 수 있는 오늘의 부탁 하나를 고른다. request_start_day 전에는 부탁하지 않는다. 없으면 null.
-func _choose_request(order: Recipe) -> GuestRequest:
+## 고명 부탁은 손님 입맛(좋아하는 고명)과 같은 것만 한다 (꿀을 좋아하는 곰이 "고소하게"를 부탁하지 않게).
+func _choose_request(guest: AnimalGuest, order: Recipe) -> GuestRequest:
 	var settings: RegularSettings = GameData.get_regular_settings()
 	if GameState.current_day < settings.request_start_day or randf() >= settings.request_chance:
 		return null
 	var possible: Array[GuestRequest] = GameData.get_all_requests().filter(
-			func(request: GuestRequest) -> bool: return request.applies_to(order))
+			func(request: GuestRequest) -> bool:
+				return request.applies_to(order) and (not request.is_garnish_request()
+						or guest.favorite_garnish == null or request.garnish == guest.favorite_garnish))
 	return possible.pick_random() if not possible.is_empty() else null
 
 
