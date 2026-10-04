@@ -62,6 +62,8 @@ const TIER_UP_SOUND: StringName = &"tier_up"
 @export var fallback_payment_amount: int = 1
 ## 미니게임을 한 번도 안 틀리면 밥값 재료마다 이만큼 더 받는다.
 @export var perfect_bonus_amount: int = 1
+## 손님이 들어올 때, 문이 열리고 나서 다시 닫히기까지 기다리는 시간(초)
+@export var door_close_delay: float = 0.4
 ## 밥값 문구에서 재료 아이콘 크기(픽셀). 픽셀 글꼴에 맞춰 12의 배수로.
 @export var payment_icon_size: int = 48
 ## true: "아이콘 당근 ×2", false: "아이콘 ×2". 재료 그림이 다 생기면 false로 바꿔도 된다.
@@ -109,6 +111,8 @@ var _status_default_color: Color
 @onready var _day_label: Label = %DayLabel
 @onready var _lunch_label: Label = %LunchLabel
 @onready var _guest_spot: GuestSpot = %GuestSpot
+## 손님이 드나드는 가게 문 (없으면 손님이 바로 나타난다)
+@onready var _door: KitchenDoor = get_node_or_null("%KitchenDoor")
 @onready var _cook_button: Button = %CookButton
 @onready var _serve_button: Button = %ServeButton
 @onready var _next_guest_button: Button = %NextGuestButton
@@ -198,6 +202,9 @@ func _start_lunch() -> void:
 func _call_next_guest() -> void:
 	_show_only_button(null)
 	_set_status("", false)
+	# 앞 손님은 문으로 걸어 나간다.
+	if current_guest != null and _guest_spot.visible:
+		await _guest_leaves()
 	_guest_spot.clear()
 	current_guest = null
 	current_order = null
@@ -249,7 +256,7 @@ func _call_next_guest() -> void:
 			if current_request != null:
 				order_text += REQUEST_JOIN + current_request.get_line(guest)
 			_guest_spot.show_guest(guest, order_text, GameState.is_raining_today, order_expression)
-			Sound.play(GUEST_ARRIVE_SOUND)
+			await _guest_enters()
 			_show_only_button(_cook_button)
 			return
 	_end_lunch(OUT_OF_INGREDIENTS_TEXT)
@@ -258,6 +265,31 @@ func _call_next_guest() -> void:
 ## 오늘 메뉴 수 + extra_guests_over_menu + 가게 단계의 손님 보너스. 최대는 가게 단계의 max_guests
 ## (가게 단계 데이터가 없으면 guests_per_lunch). 소문이 퍼질수록 손님이 는다.
 ## 메뉴를 안 정했으면(메뉴가 비어 있으면 되찾은 레시피 전부를 낼 수 있다) 되찾은 레시피 수로 센다.
+## 문이 열리고, 손님이 카운터 앞에 스르륵 나타난 뒤 문이 닫힌다. (문 장면이 없으면 바로 나타난다)
+func _guest_enters() -> void:
+	if _door == null:
+		Sound.play(GUEST_ARRIVE_SOUND)
+		return
+	await _door.open()
+	_close_door_after(door_close_delay)
+	await _guest_spot.fade_in()
+
+
+func _close_door_after(delay: float) -> void:
+	# 두 번째 값 false: 일시 정지 중에는 이 기다림도 멈춘다.
+	await get_tree().create_timer(delay, false).timeout
+	_door.close()
+
+
+## 문이 열리고, 손님이 스르륵 사라진 뒤 문이 닫힌다.
+func _guest_leaves() -> void:
+	if _door == null:
+		return
+	await _door.open()
+	await _guest_spot.fade_out()
+	await _door.close()
+
+
 func _count_guests_today() -> int:
 	var menu_count: int = GameState.menu_recipe_ids.size()
 	if menu_count == 0:

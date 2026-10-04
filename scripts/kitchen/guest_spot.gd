@@ -3,6 +3,7 @@ extends Control
 ## 손님 자리. 손님 모습과 말풍선을 보여 준다. 부엌 조리대 앞과 저녁 평상에서 쓴다.
 ## 누가 무엇을 말할지는 정하지 않는다. 부엌이나 평상이 정해서 show_order / show_guest 로 알려 준다.
 ## walk_in() 을 부르면 옆에서 통통 걸어 들어와 앉은 뒤에 말풍선이 보인다 (저녁 평상).
+## fade_in() / fade_out() 은 제자리에서 스르륵 나타나고 사라진다 (점심, 부엌 문이 열리고 닫힐 때).
 ## 봄비 오는 날에는 우비를 입은 모습으로 보여 준다 (우비 그림이 없으면 임시 우비 도형을 씌운다).
 ## 대사마다 표정(AnimalGuest.EXPRESSION_*)을 바꿀 수 있다. 그림이 없으면 임시 도형 위에 표정 이름을 작게 보여 준다.
 
@@ -22,6 +23,8 @@ const WALK_SOUND: StringName = &"walk"
 @export var walk_bob_height: float = 14.0
 @export var sit_drop: float = 10.0
 @export var sit_duration: float = 0.15
+## 제자리에서 나타나고 사라지는 시간(초)
+@export var fade_duration: float = 0.35
 
 @onready var _portrait: TextureRect = %Portrait
 @onready var _portrait_placeholder: ColorRect = %PortraitPlaceholder
@@ -37,6 +40,38 @@ var _in_raincoat: bool = false
 var _walk_tween: Tween
 ## 임시 우비 (손님 모습 위, 이름 아래에 겹친다)
 var _raincoat: RaincoatShape = RaincoatShape.new()
+
+
+## 제자리에서 스르륵 나타난다. 다 나타나면 이름과 말풍선이 보인다. show_guest 를 먼저 불러 둔다. 기다리려면 await.
+func fade_in() -> void:
+	_kill_walk()
+	_bubble.hide()
+	_name_label.hide()
+	modulate.a = 0.0
+	show()
+	_walk_tween = create_tween()
+	_walk_tween.tween_property(self, "modulate:a", 1.0, fade_duration)
+	await _walk_tween.finished
+	_bubble.show()
+	_name_label.show()
+
+
+## 말풍선을 닫고 스르륵 사라진다. 끝나면 숨는다.
+func fade_out() -> void:
+	_kill_walk()
+	_bubble.hide()
+	_name_label.hide()
+	_walk_tween = create_tween()
+	_walk_tween.tween_property(self, "modulate:a", 0.0, fade_duration)
+	await _walk_tween.finished
+	hide()
+	modulate.a = 1.0
+	_name_label.show()
+
+
+func _kill_walk() -> void:
+	if _walk_tween != null and _walk_tween.is_valid():
+		_walk_tween.kill()
 
 
 func walk_in() -> void:

@@ -15,6 +15,7 @@
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/mince_minigame.tscn" id="15_mince"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/result_board.tscn" id="16_result"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/simmer_minigame.tscn" id="13_simmer"]
+[ext_resource type="PackedScene" path="res://scenes/kitchen/kitchen_door.tscn" id="20_door"]
 
 [node name="Kitchen" type="Control"]
 layout_mode = 3
@@ -44,6 +45,14 @@ offset_top = -300.0
 grow_horizontal = 2
 grow_vertical = 0
 color = Color(0.6, 0.42, 0.28, 1)
+
+[node name="KitchenDoor" parent="." instance=ExtResource("20_door")]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 1460.0
+offset_top = 520.0
+offset_right = 1660.0
+offset_bottom = 780.0
 
 [node name="GuestSpot" parent="." instance=ExtResource("4_guest_spot")]
 unique_name_in_owner = true
