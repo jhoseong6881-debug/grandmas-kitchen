@@ -105,9 +105,20 @@ func _on_back_button_pressed() -> void:
 	get_tree().change_scene_to_file(garden_scene_path)
 
 
+## 말풍선에 상인의 말을 띄운다. 한글이 낱말 중간에서 잘리지 않게 띄어쓰기 자리에서 줄을 바꿔 넣는다.
 func _say(text: String) -> void:
-	_speech_label.text = SPEECH_FORMAT % [_settings.merchant_name,
-			text.format({"name": GameState.player_name})] if not text.is_empty() else ""
+	if text.is_empty():
+		_speech_label.text = ""
+		return
+	var speech: String = SPEECH_FORMAT % [_settings.merchant_name, text.format({"name": GameState.player_name})]
+	# 말풍선(장면에서 폭을 정해 둔 칸)의 폭에서 테두리 안쪽 여백을 뺀 만큼이 글 칸의 폭이다.
+	var bubble: Control = _speech_label.get_parent() as Control
+	var width: float = bubble.size.x - bubble.get_theme_stylebox("panel").get_minimum_size().x
+	if width <= 0.0:
+		_speech_label.text = speech
+		return
+	_speech_label.text = Korean.wrap_by_spaces(speech, _speech_label.get_theme_font("font"),
+			_speech_label.get_theme_font_size("font_size"), width)
 
 
 ## 위아래로 거래 버튼 → 돌아가기 버튼 → 다시 첫 거래로 돈다 (게임패드).

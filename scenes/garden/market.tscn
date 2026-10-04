@@ -111,7 +111,8 @@ layout_mode = 0
 offset_left = 680.0
 offset_top = 300.0
 offset_right = 1840.0
-offset_bottom = 480.0
+offset_bottom = 500.0
+grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_speech")
 
 [node name="SpeechLabel" type="Label" parent="Speech"]
