@@ -9,6 +9,9 @@ extends Control
 ## 대사마다 표정(AnimalGuest.EXPRESSION_*)을 바꿀 수 있다. 그림이 없으면 임시 도형 위에 표정 이름을 작게 보여 준다.
 ## bubble_above 를 켜면 이름과 말풍선이 오른쪽 대신 머리 위에 뜬다 (평상에서 옆에 같이 앉은 손님).
 
+## 걸어 들어와 자리에 앉았을 때 (walk_in 이 끝나고 말풍선이 뜬 뒤)
+signal arrived
+
 ## 그림이 없을 때 임시 도형 위에 보여 줄 표정 이름
 const EXPRESSION_NAMES: Dictionary[StringName, String] = {
 	AnimalGuest.EXPRESSION_HAPPY: "(웃음)",
@@ -104,6 +107,11 @@ func fade_out() -> void:
 	_name_label.show()
 
 
+## 걸어 들어오는 중인지 (아직 자리에 앉지 않았으면 true)
+func is_walking() -> bool:
+	return _walk_tween != null and _walk_tween.is_valid() and _walk_tween.is_running()
+
+
 func _kill_walk() -> void:
 	if _walk_tween != null and _walk_tween.is_valid():
 		_walk_tween.kill()
@@ -128,6 +136,7 @@ func walk_in() -> void:
 	_walk_tween.tween_property(self, "position:y", _home_position.y + sit_drop, sit_duration)
 	_walk_tween.tween_property(self, "position:y", _home_position.y, sit_duration)
 	_walk_tween.tween_callback(_bubble.show)
+	_walk_tween.tween_callback(arrived.emit)
 
 
 func _ready() -> void:

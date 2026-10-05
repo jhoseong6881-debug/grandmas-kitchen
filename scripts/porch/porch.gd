@@ -209,6 +209,18 @@ func _switch_guest(guest: AnimalGuest) -> void:
 	if guest.id not in GameState.porch_met_guest_ids:
 		GameState.porch_met_guest_ids.append(guest.id)
 	_guest_spot.walk_in()
+	_wait_until_seated()
+
+
+## 손님이 걸어 들어오는 동안은 "다음"을 숨겨 둔다 (앉기 전에 말이 넘어가지 않게). 앉으면 다시 보인다.
+func _wait_until_seated() -> void:
+	if not _guest_spot.is_walking():
+		return
+	_next_button.hide()
+	await _guest_spot.arrived
+	if not _reply_box.visible:
+		_next_button.show()
+		_next_button.grab_focus()
 
 
 ## 약속 주문을 물을지와 그 요리: 이웃 이상 단골이고, 내일이 계절 안이고, 내일 약속이 아직 없을 때 가끔(promise_chance).
@@ -378,6 +390,9 @@ func _tell_talk(talk: EveningTalk) -> void:
 	_current_talk = talk
 	_guest_spot.show_guest(_evening_guest, _with_name(talk.line), false, talk.expression)
 	if not talk.replies.is_empty():
+		# 손님이 아직 걸어오는 중이면 앉고 말풍선이 뜬 다음에 대답을 고르게 한다.
+		if _guest_spot.is_walking():
+			await _guest_spot.arrived
 		_show_replies(talk.replies)
 
 
