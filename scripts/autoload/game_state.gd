@@ -318,13 +318,21 @@ func get_todays_guest_count() -> int:
 	return clampi(dishes + GameData.get_menu_settings().extra_guests_over_menu + bonus, 1, max_guests)
 
 
-## 약속한 손님을 맨 앞에 두고, 나머지는 이번 계절 손님을 섞어서 채운다 (손님이 모자랄 때만 같은 손님이 또 온다).
+## 약속한 손님을 맨 앞에 두고, 다음은 오늘 사연 막이 새로 열리는 손님 (잠들 때 "내일은… 무슨 일이 있는 것 같아요"로 알린 손님),
+## 나머지는 이번 계절 손님을 섞어서 채운다 (손님이 모자랄 때만 같은 손님이 또 온다).
 func _choose_todays_guests() -> void:
 	todays_guests_day = current_day
 	todays_guest_ids.clear()
 	var count: int = get_todays_guest_count()
 	if has_promise_on(current_day) and GameData.get_guest(promise_guest_id) != null:
 		todays_guest_ids.append(promise_guest_id)
+	var story_guests: Array[AnimalGuest] = GameData.get_season_guests().filter(func(guest: AnimalGuest) -> bool:
+			var chapter: GuestStoryChapter = get_next_story_chapter(guest)
+			return chapter != null and chapter.open_day == current_day)
+	story_guests.shuffle()
+	for guest: AnimalGuest in story_guests:
+		if todays_guest_ids.size() < count and guest.id not in todays_guest_ids:
+			todays_guest_ids.append(guest.id)
 	var pool: Array[AnimalGuest] = []
 	while todays_guest_ids.size() < count:
 		if pool.is_empty():
@@ -701,6 +709,8 @@ func load_game() -> bool:
 
 
 func _to_save_data() -> Dictionary:
+	# 잠들 때 저장하므로, 내일(이미 넘어간 오늘) 손님을 여기서 정해 같이 저장한다. 불러오기로 손님을 다시 뽑지 못하게.
+	get_todays_guest_ids()
 	var inventory_data: Dictionary = {}
 	for ingredient_id: StringName in inventory:
 		inventory_data[String(ingredient_id)] = inventory[ingredient_id]
