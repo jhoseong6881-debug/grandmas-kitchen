@@ -133,6 +133,7 @@ talks = Array[ExtResource("10_talk")]([SubResource("StoryTalk_5"), SubResource("
 [resource]
 script = ExtResource("1_guest")
 id = &"hedgehog"
+icon_placeholder_color = Color(0.6, 0.55, 0.5, 1)
 display_name = "고슴도치"
 personality = "가시가 뾰족해 무뚝뚝해 보이지만 꼼꼼하고 다정하다. 숲 바닥 버섯 자리는 모르는 데가 없다."
 favorite_recipes = Array[ExtResource("2_recipe")]([ExtResource("4_carrot_kimbop"), ExtResource("5_forest_mushroom_stir_fry"), ExtResource("6_mushroom_egg_jeon"), ExtResource("7_acorn_jelly_mushroom_bap")])

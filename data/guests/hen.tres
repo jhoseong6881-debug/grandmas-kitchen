@@ -138,6 +138,7 @@ talks = Array[ExtResource("9_talk")]([SubResource("StoryTalk_5"), SubResource("S
 [resource]
 script = ExtResource("1_guest")
 id = &"hen"
+icon_placeholder_color = Color(0.9, 0.4, 0.32, 1)
 display_name = "암탉"
 personality = "새벽마다 마을을 깨우는 부지런한 수다쟁이. 할머니와 아침마다 수다를 떨던 사이."
 favorite_recipes = Array[ExtResource("2_recipe")]([ExtResource("4_stir_fry"), ExtResource("5_kimbop"), ExtResource("7_egg_roll")])

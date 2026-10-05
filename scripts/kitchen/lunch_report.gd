@@ -4,6 +4,8 @@ extends RefCounted
 
 ## 대접한 손님 이름 (온 순서대로)
 var guest_names: Array[String] = []
+## 대접한 손님 (온 순서대로, 결과판에서 아이콘을 보여 줄 때 쓴다)
+var guests: Array[AnimalGuest] = []
 ## 받은 밥값: 재료 id → 개수
 var payment: Dictionary[StringName, int] = {}
 var perfect_count: int = 0

@@ -12,6 +12,12 @@ const EXPRESSION_HAPPY: StringName = &"happy"
 const EXPRESSION_SURPRISED: StringName = &"surprised"
 const EXPRESSION_SAD: StringName = &"sad"
 
+## 그림이 없을 때 만드는 임시 사각형 아이콘의 크기(픽셀). 화면에서는 늘려서 보여 준다.
+const PLACEHOLDER_ICON_PIXELS: int = 12
+
+## 작은 얼굴 아이콘 (원본 16×16). 장사 결과판 손님 줄에 이름 옆에 나온다. 비워 두면 icon_placeholder_color 색의 임시 사각형.
+@export var icon: Texture2D
+@export var icon_placeholder_color: Color = Color(0.86, 0.84, 0.8)
 ## 손님 그림 (기본 표정, 원본 120×160 · 화면 360×480). 비워 두면 임시 도형으로 표시한다.
 @export var portrait: Texture2D
 ## 표정 그림: happy(웃음), surprised(놀람), sad(시무룩) 를 이름으로 넣는다. 없는 표정은 기본 그림을 쓴다.
@@ -73,6 +79,21 @@ const EXPRESSION_SAD: StringName = &"sad"
 @export_multiline var taste_match_line: String = ""
 ## 단골 단계가 오를 때 받는 보상 (첫 칸 = 이웃, 둘째 = 단골, 셋째 = 식구)
 @export var regular_rewards: Array[RegularReward] = []
+
+
+## 그림이 없을 때 쓰는 임시 사각형 (처음 쓸 때 한 번 만들어 둔다)
+var _placeholder_icon: Texture2D
+
+
+## 아이콘으로 쓸 그림. 그림이 있으면 그 그림, 없으면 임시 색 사각형.
+func get_icon_texture() -> Texture2D:
+	if icon != null:
+		return icon
+	if _placeholder_icon == null:
+		var image: Image = Image.create(PLACEHOLDER_ICON_PIXELS, PLACEHOLDER_ICON_PIXELS, false, Image.FORMAT_RGBA8)
+		image.fill(icon_placeholder_color)
+		_placeholder_icon = ImageTexture.create_from_image(image)
+	return _placeholder_icon
 
 
 ## 단골 단계 tier(1 = 이웃)의 보상. 없으면 null.

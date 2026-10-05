@@ -564,6 +564,7 @@ func _record_serve(guest: AnimalGuest, payment: Dictionary[StringName, int], is_
 	var rules: ReputationSettings = GameData.get_reputation_settings()
 	var points: int = rules.serve_points
 	_report.guest_names.append(guest.display_name)
+	_report.guests.append(guest)
 	_report.add_payment(payment)
 	_report.add_affection(guest.display_name, affection_points)
 	if _is_perfect_cook:

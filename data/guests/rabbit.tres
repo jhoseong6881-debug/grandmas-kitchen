@@ -142,6 +142,7 @@ talks = Array[ExtResource("9_talk")]([SubResource("StoryTalk_6"), SubResource("S
 [resource]
 script = ExtResource("1_guest")
 id = &"rabbit"
+icon_placeholder_color = Color(0.96, 0.9, 0.9, 1)
 display_name = "토끼"
 personality = "수줍음이 많지만 당근 이야기만 나오면 말이 많아진다."
 favorite_recipes = Array[ExtResource("2_recipe")]([ExtResource("4_kimbop"), ExtResource("6_jeon"), ExtResource("7_jorim")])

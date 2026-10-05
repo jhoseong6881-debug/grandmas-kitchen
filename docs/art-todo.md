@@ -100,3 +100,4 @@
 | data/crops/mushroom_crop.tres (Growth Textures) | 원목 버섯이 자라는 단계 그림 (작은 버섯 1개 → 2개 → 3개 다 자람) | 260x150 | 할 일 |
 | data/places/*.tres (Ground Color) | 칸 아래 땅 그림 (흙 / 원목). 지금은 단색 띠 | 260x34 | 선택 |
 | scenes/garden/basket_note.tscn (Paper) | 이웃 바구니 쪽지 종이 (지금은 크림색 상자). 귀퉁이 접힌 메모지, 손님마다 다른 종이여도 좋음 | 960x? (글 길이에 따라 늘어남, 9칸 늘이기) | 선택 |
+| data/guests/*.tres (Icon) | 손님 작은 얼굴 아이콘 (장사 결과판 손님 줄 이름 옆, 손님 수첩에도 쓸 수 있음). 지금은 손님마다 다른 색 네모 | 48x48 (원본 16x16) | 할 일 |

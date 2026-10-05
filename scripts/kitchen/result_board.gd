@@ -7,8 +7,9 @@ extends Control
 signal continued
 
 const TITLE_FORMAT: String = "오늘의 장사 · %s %d일째"
-const GUESTS_FORMAT: String = "손님 %d명   %s"
-const GUEST_SEPARATOR: String = " · "
+const GUESTS_PREFIX_FORMAT: String = "손님 %d명   "
+const GUEST_ITEM_FORMAT: String = " %s"
+const GUEST_SEPARATOR: String = "   "
 const PAYMENT_PREFIX: String = "받은 밥값   "
 const PAYMENT_ITEM_FORMAT: String = " %s ×%d    "
 const NONE_TEXT: String = "없음"
@@ -32,6 +33,8 @@ const SHOP_UP_SOUND: StringName = &"shop_up"
 ## 소문 숫자와 게이지가 올라가는 시간(초)
 @export var count_duration: float = 0.8
 @export var payment_icon_size: int = 36
+## 손님 이름 옆 작은 얼굴 아이콘 크기
+@export var guest_icon_size: int = 36
 
 var _tween: Tween
 var _is_revealing: bool = false
@@ -42,7 +45,7 @@ var _gauge_to: float = 0.0
 var _new_shop_tier: int = -1
 
 @onready var _title_label: Label = %TitleLabel
-@onready var _guests_label: Label = %GuestsLabel
+@onready var _guests_label: RichTextLabel = %GuestsLabel
 @onready var _payment_label: RichTextLabel = %PaymentLabel
 @onready var _highlight_label: Label = %HighlightLabel
 @onready var _affection_label: Label = %AffectionLabel
@@ -65,8 +68,7 @@ func _ready() -> void:
 func open(report: LunchReport) -> void:
 	var settings: ReputationSettings = GameData.get_reputation_settings()
 	_title_label.text = TITLE_FORMAT % [GameData.get_season_name(), GameState.current_day]
-	_guests_label.text = GUESTS_FORMAT % [report.guest_names.size(),
-			GUEST_SEPARATOR.join(report.guest_names) if not report.guest_names.is_empty() else NONE_TEXT]
+	_fill_guests(report.guests)
 	_fill_payment(report.payment)
 	_highlight_label.text = HIGHLIGHT_FORMAT % [report.perfect_count, report.grandma_taste_count,
 			report.request_met_count, report.request_count, report.taste_match_count]
@@ -99,6 +101,20 @@ func open(report: LunchReport) -> void:
 			_shop_up_label.text += SHOP_UNLOCK_FORMAT % level.unlock_text
 	show()
 	_reveal()
+
+
+## "손님 3명   [아이콘] 곰   [아이콘] 암탉   [아이콘] 고슴도치"
+func _fill_guests(guests: Array[AnimalGuest]) -> void:
+	_guests_label.clear()
+	_guests_label.add_text(GUESTS_PREFIX_FORMAT % guests.size())
+	if guests.is_empty():
+		_guests_label.add_text(NONE_TEXT)
+	for i: int in guests.size():
+		if i > 0:
+			_guests_label.add_text(GUEST_SEPARATOR)
+		_guests_label.add_image(guests[i].get_icon_texture(), guest_icon_size, guest_icon_size,
+				Color.WHITE, INLINE_ALIGNMENT_CENTER)
+		_guests_label.add_text(GUEST_ITEM_FORMAT % guests[i].display_name)
 
 
 ## "받은 밥값   [아이콘] 당근 ×4   [아이콘] 꿀 ×2"
