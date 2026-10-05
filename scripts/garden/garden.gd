@@ -134,6 +134,7 @@ func _on_planted(crop: Crop, _plot_button: Button) -> void:
 
 
 ## 이웃 바구니: 어젯밤 평상에 왔던 손님들이 자기 밥값 재료 하나와 쪽지를 두고 간다. 하루에 한 번.
+## (며칠 안 열었으면 온 밤만큼 재료가 쌓여 있고, 쪽지는 손님마다 한 장)
 func _on_basket_button_pressed() -> void:
 	if GameState.basket_guest_ids.is_empty():
 		return
@@ -141,15 +142,20 @@ func _on_basket_button_pressed() -> void:
 	var pops: PackedStringArray = []
 	var notes: Array[String] = []
 	var signatures: Array[String] = []
+	# 바구니를 며칠 안 열면 같은 손님이 여러 번 쌓인다. 손님마다 한 줄로 합치고(온 밤만큼 재료), 쪽지는 한 장만.
+	var visits: Dictionary[StringName, int] = {}
 	for guest_id: StringName in GameState.basket_guest_ids:
+		visits[guest_id] = visits.get(guest_id, 0) + 1
+	for guest_id: StringName in visits:
 		var neighbor: AnimalGuest = GameData.get_guest(guest_id)
 		if neighbor == null or neighbor.payment_ingredients.is_empty():
 			continue
 		var gift: Ingredient = neighbor.payment_ingredients.pick_random()
-		GameState.add_ingredient(gift.id, gift_amount)
+		var amount: int = gift_amount * visits[guest_id]
+		GameState.add_ingredient(gift.id, amount)
 		lines.append(GIFT_FORMAT % [neighbor.display_name, Korean.subject_particle(neighbor.display_name),
-				gift.display_name, gift_amount])
-		pops.append(HARVEST_POP_FORMAT % [gift_amount, gift.display_name])
+				gift.display_name, amount])
+		pops.append(HARVEST_POP_FORMAT % [amount, gift.display_name])
 		var note: String = _pick_basket_note(neighbor, gift)
 		if not note.is_empty():
 			notes.append(note)
