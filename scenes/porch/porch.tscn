@@ -4,20 +4,7 @@
 [ext_resource type="PackedScene" path="res://scenes/kitchen/guest_spot.tscn" id="2_guest_spot"]
 [ext_resource type="PackedScene" path="res://scenes/ui/guest_notebook.tscn" id="3_notebook"]
 [ext_resource type="PackedScene" path="res://scenes/ui/notebook_button.tscn" id="90_notebook_button"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_note"]
-bg_color = Color(0.98, 0.94, 0.82, 1)
-border_width_left = 6
-border_width_top = 6
-border_width_right = 6
-border_width_bottom = 6
-border_color = Color(0.72, 0.56, 0.36, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-shadow_color = Color(0, 0, 0, 0.35)
-shadow_size = 12
+[ext_resource type="PackedScene" path="res://scenes/porch/recipe_note_book.tscn" id="91_note_book"]
 
 [node name="Porch" type="Control"]
 layout_mode = 3
@@ -109,7 +96,7 @@ offset_right = 1790.0
 offset_bottom = 760.0
 theme_override_constants/separation = 16
 
-[node name="NoteCard" type="Panel" parent="."]
+[node name="NoteCard" parent="." instance=ExtResource("91_note_book")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
@@ -118,50 +105,12 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -360.0
-offset_top = -300.0
-offset_right = 360.0
-offset_bottom = 60.0
+offset_left = -420.0
+offset_top = -280.0
+offset_right = 420.0
+offset_bottom = 200.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_note")
-
-[node name="Rows" type="VBoxContainer" parent="NoteCard"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 40.0
-offset_top = 36.0
-offset_right = -40.0
-offset_bottom = -36.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 24
-alignment = 1
-
-[node name="NoteTitle" type="Label" parent="NoteCard/Rows"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.55, 0.38, 0.2, 1)
-theme_override_font_sizes/font_size = 36
-text = "할머니 레시피 노트"
-horizontal_alignment = 1
-
-[node name="NoteRecipeLabel" type="Label" parent="NoteCard/Rows"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.3, 0.2, 0.12, 1)
-theme_override_font_sizes/font_size = 60
-text = "요리 이름"
-horizontal_alignment = 1
-
-[node name="NoteIngredientsLabel" type="Label" parent="NoteCard/Rows"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.4, 0.3, 0.2, 1)
-theme_override_font_sizes/font_size = 36
-text = "재료: "
-horizontal_alignment = 1
 
 [node name="NextButton" type="Button" parent="."]
 unique_name_in_owner = true

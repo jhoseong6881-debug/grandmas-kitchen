@@ -18,8 +18,6 @@ const GIFT_INGREDIENT_FORMAT: String = "단골 선물을 받았어요!  %s ×%d"
 const GIFT_PLOT_FORMAT: String = "단골 선물!  %s에 칸이 하나 늘었어요"
 const GIFT_KEEPSAKE_FORMAT: String = "할머니의 기념품을 받았어요!  「%s」"
 const GIFT_SEPARATOR: String = "\n"
-const NOTE_INGREDIENTS_FORMAT: String = "재료: %s"
-const NOTE_INGREDIENT_SEPARATOR: String = ", "
 const FALLBACK_STORY_LINE: String = "오늘도 잘 먹었어요."
 const REPLY_FORMAT: String = "▸ %s"
 const NEXT_TEXT: String = "다음"
@@ -38,9 +36,6 @@ const NOTE_PAGE_SOUND: StringName = &"note_page"
 @export var sleep_transition_scene: PackedScene = preload("res://scenes/ui/sleep_transition.tscn")
 ## 할머니 회상 장면 목록 (노트를 3·6·9장 되찾은 날 밤, 손님 사연을 다 본 날 밤에 하나씩)
 @export var memory_book: MemoryBook = preload("res://data/story/memories.tres")
-## 노트 카드가 뜰 때 커졌다 돌아오는 정도와 시간(초)
-@export var note_pop_scale: float = 1.1
-@export var note_pop_duration: float = 0.2
 @export var reply_font_size: int = 36
 @export var reply_button_height: float = 72.0
 ## 손님끼리 대화 목록
@@ -61,9 +56,8 @@ var _current_talk: EveningTalk
 ## 손님끼리 대화할 때 옆에 와 앉는 손님 자리 (말풍선이 머리 위)
 @onready var _side_spot: GuestSpot = %SideGuestSpot
 @onready var _status_label: Label = %StatusLabel
-@onready var _note_card: Control = %NoteCard
-@onready var _note_recipe_label: Label = %NoteRecipeLabel
-@onready var _note_ingredients_label: Label = %NoteIngredientsLabel
+## 되찾은 레시피 노트를 펼쳐 보여 주는 책
+@onready var _note_card: RecipeNoteBook = %NoteCard
 @onready var _next_button: Button = %NextButton
 @onready var _reply_box: VBoxContainer = %ReplyBox
 @onready var _notebook: GuestNotebook = %GuestNotebook
@@ -409,17 +403,10 @@ func _on_reply_chosen(reply_index: int) -> void:
 func _receive_note_page(recipe: Recipe) -> void:
 	GameState.unlock_recipe(recipe.id)
 	Sound.play(NOTE_PAGE_SOUND)
-	var ingredient_names: PackedStringArray = []
-	for ingredient: Ingredient in recipe.ingredients:
-		ingredient_names.append(ingredient.display_name)
-	_note_recipe_label.text = recipe.display_name
-	_note_ingredients_label.text = NOTE_INGREDIENTS_FORMAT % NOTE_INGREDIENT_SEPARATOR.join(ingredient_names)
 	_status_label.text = NOTE_FOUND_TEXT
-	_note_card.pivot_offset = _note_card.size / 2.0
-	_note_card.scale = Vector2.ONE * note_pop_scale
-	_note_card.show()
-	var tween: Tween = create_tween()
-	tween.tween_property(_note_card, "scale", Vector2.ONE, note_pop_duration)
+	# 책이 손님 말풍선을 가리지 않게 말풍선은 잠깐 숨긴다 (다음 말을 할 때 다시 뜬다).
+	_guest_spot.set_bubble_shown(false)
+	_note_card.show_recipe(recipe)
 
 
 ## 잠자리에 들면 날짜를 넘기고 자동 저장한다. 이어 하면 다음 날 아침부터 시작한다.
