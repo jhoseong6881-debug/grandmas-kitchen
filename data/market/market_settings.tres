@@ -10,58 +10,34 @@
 
 [sub_resource type="Resource" id="Trade_1"]
 script = ExtResource("2_trade")
-id = &"mushroom_to_honey"
-give_ingredient = ExtResource("7_mushroom")
+id = &"egg_to_carrot"
+give_ingredient = ExtResource("4_egg")
 give_amount = 3
-get_ingredient = ExtResource("5_honey")
+get_ingredient = ExtResource("3_carrot")
 get_amount = 1
 
 [sub_resource type="Resource" id="Trade_2"]
 script = ExtResource("2_trade")
-id = &"mushroom_to_egg"
+id = &"mushroom_to_carrot"
 give_ingredient = ExtResource("7_mushroom")
 give_amount = 3
-get_ingredient = ExtResource("4_egg")
+get_ingredient = ExtResource("3_carrot")
 get_amount = 1
 
 [sub_resource type="Resource" id="Trade_3"]
 script = ExtResource("2_trade")
-id = &"mushroom_to_acorn"
-give_ingredient = ExtResource("7_mushroom")
+id = &"honey_to_carrot"
+give_ingredient = ExtResource("5_honey")
 give_amount = 3
-get_ingredient = ExtResource("6_acorn")
+get_ingredient = ExtResource("3_carrot")
 get_amount = 1
 
 [sub_resource type="Resource" id="Trade_4"]
 script = ExtResource("2_trade")
-id = &"carrot_to_honey"
-give_ingredient = ExtResource("3_carrot")
-give_amount = 2
-get_ingredient = ExtResource("5_honey")
-get_amount = 1
-
-[sub_resource type="Resource" id="Trade_5"]
-script = ExtResource("2_trade")
-id = &"carrot_to_egg"
-give_ingredient = ExtResource("3_carrot")
-give_amount = 2
-get_ingredient = ExtResource("4_egg")
-get_amount = 1
-
-[sub_resource type="Resource" id="Trade_6"]
-script = ExtResource("2_trade")
-id = &"carrot_to_acorn"
-give_ingredient = ExtResource("3_carrot")
-give_amount = 2
+id = &"egg_to_acorn"
+give_ingredient = ExtResource("4_egg")
+give_amount = 3
 get_ingredient = ExtResource("6_acorn")
-get_amount = 1
-
-[sub_resource type="Resource" id="Trade_7"]
-script = ExtResource("2_trade")
-id = &"mushroom_to_carrot"
-give_ingredient = ExtResource("7_mushroom")
-give_amount = 2
-get_ingredient = ExtResource("3_carrot")
 get_amount = 1
 
 [resource]
@@ -73,4 +49,4 @@ trade_done_lines = Array[String](["거래 성사! 고맙구먼.", "좋아, 좋�
 short_line = "어허, 그건 재료가 모자라는데?"
 sold_out_line = "그건 오늘 다 나갔어. 다음 장날에!"
 farewell_line = "닷새 뒤에 또 보자고!"
-trades = Array[ExtResource("2_trade")]([SubResource("Trade_1"), SubResource("Trade_2"), SubResource("Trade_3"), SubResource("Trade_4"), SubResource("Trade_5"), SubResource("Trade_6"), SubResource("Trade_7")])
+trades = Array[ExtResource("2_trade")]([SubResource("Trade_1"), SubResource("Trade_2"), SubResource("Trade_3"), SubResource("Trade_4")])
