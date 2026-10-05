@@ -5,6 +5,7 @@ extends Control
 ## 손님은 옆에서 걸어 들어와 평상에 앉고, 평상에 처음 온 손님은 인사(porch_greeting_line)부터 한다.
 ## 단골 단계가 오른 손님이면 그 단계의 새 이야기를 나누고 단골 선물을 건넨다.
 ## 사연(AnimalGuest.story_chapters)의 다음 막이 열렸으면 평소 이야기 대신 그 막을 한다.
+## 손님끼리 대화(DuoTalkBook)가 열렸으면 첫 손님 이야기 뒤에 다른 손님이 옆에 와 앉아 둘이 이야기한다 (주인공은 듣기만).
 ## 이미 되찾은 레시피의 할머니 비법을 아는 손님이면 비법을 알려 준다.
 ## 돌려줄 할머니 레시피 노트 페이지가 있으면 건네준다. 다 듣고 나면 잠자리에 들어 다음 날 아침 텃밭으로 간다.
 ## 장면은 "다음" 버튼을 누를 때마다 한 단계씩 진행한다. 대답을 고르는 동안에는 "다음" 버튼이 숨는다.
@@ -42,6 +43,8 @@ const NOTE_PAGE_SOUND: StringName = &"note_page"
 @export var note_pop_duration: float = 0.2
 @export var reply_font_size: int = 36
 @export var reply_button_height: float = 72.0
+## 손님끼리 대화 목록
+@export var duo_book: DuoTalkBook = preload("res://data/story/porch_duos.tres")
 ## 저녁에 찾아오는 손님 수의 최대. 첫 손님 다음 손님들은 단골 보상이나 사연 막을 기다리는 손님만 온다.
 @export var max_evening_guests: int = 2
 
@@ -55,6 +58,8 @@ var _current_talk: EveningTalk
 
 @onready var _day_label: Label = %DayLabel
 @onready var _guest_spot: GuestSpot = %GuestSpot
+## 손님끼리 대화할 때 옆에 와 앉는 손님 자리 (말풍선이 머리 위)
+@onready var _side_spot: GuestSpot = %SideGuestSpot
 @onready var _status_label: Label = %StatusLabel
 @onready var _note_card: Control = %NoteCard
 @onready var _note_recipe_label: Label = %NoteRecipeLabel
@@ -82,8 +87,16 @@ func _ready() -> void:
 		_beats.append(func() -> void: _status_label.text = QUIET_EVENING_TEXT)
 	else:
 		_add_guest_beats(first_guest, true)
-		for guest: AnimalGuest in _choose_extra_guests(first_guest):
-			_add_guest_beats(guest, false)
+		var duo: GuestDuoTalk = _choose_duo_talk(first_guest)
+		if duo != null:
+			# 대화하러 온 손님이 두 번째 손님이 된다. 기다리는 단골 보상이나 사연 막이 있으면 대화 뒤에 이어서 한다.
+			var partner: AnimalGuest = GameData.get_guest(duo.get_partner_id(first_guest.id))
+			_add_duo_beats(duo, first_guest, partner)
+			if _has_waiting_beats(partner):
+				_add_guest_beats(partner, false)
+		else:
+			for guest: AnimalGuest in _choose_extra_guests(first_guest):
+				_add_guest_beats(guest, false)
 	_run_next_beat()
 	if _next_button.visible:
 		_next_button.grab_focus()
@@ -173,8 +186,10 @@ func _add_feast_announcement_beats() -> void:
 		_status_label.text = prep.announced_status_text)
 
 
-## 다음 손님으로 바꾼다. 앞 손님이 남긴 아래 글과 노트 카드는 치운다.
+## 다음 손님으로 바꾼다. 앞 손님이 남긴 아래 글과 노트 카드는 치운다. 옆에 앉았던 손님은 사라진다.
 func _switch_guest(guest: AnimalGuest) -> void:
+	if _side_spot.visible:
+		_side_spot.fade_out()
 	_evening_guest = guest
 	if guest.id not in _met_tonight_ids:
 		_met_tonight_ids.append(guest.id)
@@ -183,6 +198,51 @@ func _switch_guest(guest: AnimalGuest) -> void:
 	if guest.id not in GameState.porch_met_guest_ids:
 		GameState.porch_met_guest_ids.append(guest.id)
 	_guest_spot.walk_in()
+
+
+## 오늘 저녁 손님끼리 대화: 첫 손님이 낀 대화 중, 다른 손님도 오늘 대접했고 평상에 와 본 적 있는 손님인 것. 없으면 null.
+## 사연 막을 기다리는 다른 손님이 있으면 그 손님과의 대화만 고른다 (대화하러 온 손님이 사연 손님 자리를 빼앗지 않게).
+func _choose_duo_talk(first_guest: AnimalGuest) -> GuestDuoTalk:
+	if duo_book == null:
+		return null
+	var others: Array[AnimalGuest] = _todays_served_guests().filter(func(guest: AnimalGuest) -> bool:
+			return guest != first_guest and guest.id in GameState.porch_met_guest_ids)
+	var with_chapter: Array[AnimalGuest] = others.filter(
+			func(guest: AnimalGuest) -> bool: return GameState.get_next_story_chapter(guest) != null)
+	var served_ids: Array[StringName] = []
+	for guest: AnimalGuest in (with_chapter if not with_chapter.is_empty() else others):
+		served_ids.append(guest.id)
+	return duo_book.get_ready(GameState.current_season, GameState.current_day, first_guest.id, served_ids,
+			GameState.seen_duo_talk_ids, GameState.seen_story_chapter_ids)
+
+
+## 손님끼리 대화: 다른 손님이 옆에 스르륵 와 앉고, 한 줄씩 번갈아 말한다. 말하는 손님만 말풍선이 뜨고 듣는 손님은 조금 어두워진다.
+func _add_duo_beats(duo: GuestDuoTalk, first_guest: AnimalGuest, partner: AnimalGuest) -> void:
+	for i: int in duo.lines.size():
+		var line: DuoLine = duo.lines[i]
+		if i == 0:
+			_beats.append(func() -> void:
+				GameState.seen_duo_talk_ids.append(duo.id)
+				if partner.id not in _met_tonight_ids:
+					_met_tonight_ids.append(partner.id)
+				_status_label.text = ""
+				_note_card.hide()
+				_side_spot.show_guest(partner, "")
+				_side_spot.fade_in(false)
+				_say_duo_line(line, first_guest))
+		else:
+			_beats.append(_say_duo_line.bind(line, first_guest))
+
+
+func _say_duo_line(line: DuoLine, first_guest: AnimalGuest) -> void:
+	var is_first_speaking: bool = line.speaker == first_guest.id
+	var speaker: GuestSpot = _guest_spot if is_first_speaking else _side_spot
+	var listener: GuestSpot = _side_spot if is_first_speaking else _guest_spot
+	speaker.say(_with_name(line.text), line.expression)
+	speaker.set_bubble_shown(true)
+	speaker.set_listening(false)
+	listener.set_bubble_shown(false)
+	listener.set_listening(true)
 
 
 ## 평상에 처음 온 손님이면 인사부터 한다 (인사 글이 있을 때).

@@ -6,6 +6,7 @@ extends Control
 ## fade_in() / fade_out() 은 제자리에서 스르륵 나타나고 사라진다 (점심, 부엌 문이 열리고 닫힐 때).
 ## 봄비 오는 날에는 우비를 입은 모습으로 보여 준다 (우비 그림이 없으면 임시 우비 도형을 씌운다).
 ## 대사마다 표정(AnimalGuest.EXPRESSION_*)을 바꿀 수 있다. 그림이 없으면 임시 도형 위에 표정 이름을 작게 보여 준다.
+## bubble_above 를 켜면 이름과 말풍선이 오른쪽 대신 머리 위에 뜬다 (평상에서 옆에 같이 앉은 손님).
 
 ## 그림이 없을 때 임시 도형 위에 보여 줄 표정 이름
 const EXPRESSION_NAMES: Dictionary[StringName, String] = {
@@ -25,6 +26,13 @@ const WALK_SOUND: StringName = &"walk"
 @export var sit_duration: float = 0.15
 ## 제자리에서 나타나고 사라지는 시간(초)
 @export var fade_duration: float = 0.35
+## 켜면 이름과 말풍선을 머리 위에 띄운다. 말풍선 위치(손님 그림 왼쪽 위 기준)와 폭, 높이, 이름 칸 높이
+@export var bubble_above: bool = false
+@export var above_bubble_offset: Vector2 = Vector2(0.0, -150.0)
+@export var above_bubble_size: Vector2 = Vector2(640.0, 120.0)
+@export var above_name_height: float = 48.0
+## 다른 손님이 말하는 동안 듣는 손님 그림을 이만큼 어둡게 (1 = 그대로)
+@export var listening_brightness: float = 0.6
 
 @onready var _portrait: TextureRect = %Portrait
 @onready var _portrait_placeholder: ColorRect = %PortraitPlaceholder
@@ -43,16 +51,19 @@ var _raincoat: RaincoatShape = RaincoatShape.new()
 
 
 ## 제자리에서 스르륵 나타난다. 다 나타나면 이름과 말풍선이 보인다. show_guest 를 먼저 불러 둔다. 기다리려면 await.
-func fade_in() -> void:
+## show_bubble 이 false 면 말풍선은 건드리지 않는다 (부르는 쪽이 set_bubble_shown 으로 정한다).
+func fade_in(show_bubble: bool = true) -> void:
 	_kill_walk()
-	_bubble.hide()
+	if show_bubble:
+		_bubble.hide()
 	_name_label.hide()
 	modulate.a = 0.0
 	show()
 	_walk_tween = create_tween()
 	_walk_tween.tween_property(self, "modulate:a", 1.0, fade_duration)
 	await _walk_tween.finished
-	_bubble.show()
+	if show_bubble:
+		_bubble.show()
 	_name_label.show()
 
 
@@ -97,6 +108,11 @@ func walk_in() -> void:
 
 func _ready() -> void:
 	hide()
+	if bubble_above:
+		_bubble.position = above_bubble_offset
+		_bubble.size = above_bubble_size
+		_name_label.position = above_bubble_offset - Vector2(0.0, above_name_height + 2.0)
+		_name_label.size = Vector2(above_bubble_size.x, above_name_height)
 	_raincoat.position = _portrait_placeholder.position
 	_raincoat.size = _portrait_placeholder.size
 	_raincoat.hide()
@@ -114,6 +130,7 @@ func show_guest(guest: AnimalGuest, text: String, in_raincoat: bool = false,
 		expression: StringName = AnimalGuest.EXPRESSION_DEFAULT) -> void:
 	_guest = guest
 	_in_raincoat = in_raincoat
+	set_listening(false)
 	_raincoat.visible = in_raincoat and guest.raincoat_portrait == null
 	if _raincoat.visible:
 		_raincoat.color = GameData.get_rain_settings().raincoat_color
@@ -155,6 +172,18 @@ func _set_bubble_text(text: String) -> void:
 		return
 	_bubble_text.text = Korean.wrap_by_spaces(text, _bubble_text.get_theme_font("font"),
 			_bubble_text.get_theme_font_size("font_size"), width)
+
+
+## 말풍선만 숨기거나 보인다 (손님끼리 대화할 때 듣는 손님은 숨긴다)
+func set_bubble_shown(shown: bool) -> void:
+	_bubble.visible = shown
+
+
+## 듣는 중이면 그림을 조금 어둡게 한다
+func set_listening(listening: bool) -> void:
+	var tint: Color = Color(listening_brightness, listening_brightness, listening_brightness) if listening else Color.WHITE
+	_portrait.modulate = tint
+	_portrait_placeholder.modulate = tint
 
 
 func clear() -> void:

@@ -78,6 +78,15 @@ offset_top = 300.0
 offset_right = 1800.0
 offset_bottom = 780.0
 
+[node name="SideGuestSpot" parent="." instance=ExtResource("2_guest_spot")]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 360.0
+offset_top = 300.0
+offset_right = 1400.0
+offset_bottom = 780.0
+bubble_above = true
+
 [node name="DayLabel" type="Label" parent="."]
 unique_name_in_owner = true
 layout_mode = 0
