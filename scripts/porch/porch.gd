@@ -191,11 +191,15 @@ func _needs_greeting(guest: AnimalGuest) -> bool:
 
 
 ## 첫 손님 다음에 이어서 올 손님: 오늘 대접한 손님 중 단골 보상이나 사연 막을 기다리는 손님 (max_evening_guests - 1 명까지).
+## 사연 막을 기다리는 손님이 먼저 온다 (사연은 계절이 끝나면 못 보지만, 단골 보상은 다음에 받아도 되니까).
 func _choose_extra_guests(first_guest: AnimalGuest) -> Array[AnimalGuest]:
 	var waiting: Array[AnimalGuest] = _todays_served_guests().filter(
 			func(guest: AnimalGuest) -> bool: return guest != first_guest and _has_waiting_beats(guest))
 	waiting.shuffle()
-	return waiting.slice(0, maxi(max_evening_guests - 1, 0))
+	var with_chapter: Array[AnimalGuest] = waiting.filter(
+			func(guest: AnimalGuest) -> bool: return GameState.get_next_story_chapter(guest) != null)
+	var others: Array[AnimalGuest] = waiting.filter(func(guest: AnimalGuest) -> bool: return guest not in with_chapter)
+	return (with_chapter + others).slice(0, maxi(max_evening_guests - 1, 0))
 
 
 func _todays_served_guests() -> Array[AnimalGuest]:
@@ -368,15 +372,19 @@ func _go_to_sleep() -> void:
 	GameState.basket_guest_ids.append_array(_met_tonight_ids)
 	GameState.advance_day()
 	# 노트를 3·6·9장 되찾은 날 밤, 손님 사연을 다 본 날 밤에는 꿈 한 줄 대신 할머니 회상 장면을 본다 (본 것으로 적고 저장한다).
-	var memory: GrandmaMemory = memory_book.get_next(GameState.current_season, GameState.count_found_notes(),
-			GameState.seen_memory_ids, GameState.are_season_stories_finished()) if memory_book != null else null
-	if memory != null:
-		GameState.seen_memory_ids.append(memory.id)
+	# 하룻밤에 하나. 계절 마지막 밤(내일 저녁이 계절 잔치)에는 남은 회상을 모두 이어서 본다.
+	var memories: Array[GrandmaMemory] = memory_book.get_ready(GameState.current_season, GameState.count_found_notes(),
+			GameState.seen_memory_ids, GameState.are_season_stories_finished()) if memory_book != null else []
+	if not GameState.is_season_end_day():
+		memories = memories.slice(0, 1)
+	var memory_story: Story = MemoryBook.join_stories(memories) if not memories.is_empty() else null
+	for seen: GrandmaMemory in memories:
+		GameState.seen_memory_ids.append(seen.id)
 	var transition: SleepTransition = sleep_transition_scene.instantiate()
 	add_child(transition)
 	await transition.play(night, GameState.current_day, GameState.save_game,
-			memory_book.dream_text if memory != null else "", memory == null)
-	if memory != null:
-		StoryScene.play_story(get_tree(), memory.story, morning_scene_path)
+			memory_book.dream_text if memory_story != null else "", memory_story == null)
+	if memory_story != null:
+		StoryScene.play_story(get_tree(), memory_story, morning_scene_path)
 	else:
 		get_tree().change_scene_to_file(morning_scene_path)

@@ -86,7 +86,7 @@ expression = &"surprised"
 [sub_resource type="Resource" id="StoryChapter_1"]
 script = ExtResource("40_chapter")
 id = &"bear_spring_1"
-open_day = 5
+open_day = 4
 talks = Array[ExtResource("10_talk")]([SubResource("StoryTalk_1"), SubResource("StoryTalk_2")])
 
 [sub_resource type="Resource" id="StoryTalk_3"]
@@ -108,7 +108,7 @@ reaction_expressions = Array[StringName]([&"happy", &"happy"])
 [sub_resource type="Resource" id="StoryChapter_2"]
 script = ExtResource("40_chapter")
 id = &"bear_spring_2"
-open_day = 9
+open_day = 8
 talks = Array[ExtResource("10_talk")]([SubResource("StoryTalk_3"), SubResource("StoryTalk_4")])
 
 [sub_resource type="Resource" id="StoryTalk_5"]
@@ -130,7 +130,7 @@ reaction_expressions = Array[StringName]([&"happy", &"sad"])
 [sub_resource type="Resource" id="StoryChapter_3"]
 script = ExtResource("40_chapter")
 id = &"bear_spring_3"
-open_day = 13
+open_day = 12
 talks = Array[ExtResource("10_talk")]([SubResource("StoryTalk_5"), SubResource("StoryTalk_6")])
 
 [resource]

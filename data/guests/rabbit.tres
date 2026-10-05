@@ -127,13 +127,13 @@ talks = Array[ExtResource("9_talk")]([SubResource("StoryTalk_1"), SubResource("S
 [sub_resource type="Resource" id="StoryChapter_2"]
 script = ExtResource("40_chapter")
 id = &"rabbit_spring_2"
-open_day = 7
+open_day = 6
 talks = Array[ExtResource("9_talk")]([SubResource("StoryTalk_3"), SubResource("StoryTalk_4"), SubResource("StoryTalk_5")])
 
 [sub_resource type="Resource" id="StoryChapter_3"]
 script = ExtResource("40_chapter")
 id = &"rabbit_spring_3"
-open_day = 11
+open_day = 10
 talks = Array[ExtResource("9_talk")]([SubResource("StoryTalk_6"), SubResource("StoryTalk_7")])
 
 [resource]

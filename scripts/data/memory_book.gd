@@ -2,6 +2,7 @@ class_name MemoryBook
 extends Resource
 ## 할머니 회상 장면 목록. data/story/memories.tres 에 있다.
 ## 노트를 되찾은 날 밤 잠들 때, 아직 안 본 회상 중 노트 수가 찬 첫 번째 것을 보여 준다 (하룻밤에 하나).
+## 계절 마지막 밤(다음 날 저녁이 계절 잔치)에는 남은 회상을 모두 이어서 보여 준다 (get_ready).
 
 @export var memories: Array[GrandmaMemory] = []
 ## 회상이 있는 밤, 잠드는 장면에서 꿈 한 줄 대신 보여 주는 글
@@ -12,9 +13,22 @@ extends Resource
 ## found_notes: 이번 계절에 되찾은 노트 수, seen_ids: 이미 본 회상 id, stories_finished: 이번 계절 손님 사연을 다 봤는지
 func get_next(season: Season.Id, found_notes: int, seen_ids: Array[StringName],
 		stories_finished: bool = false) -> GrandmaMemory:
-	for memory: GrandmaMemory in memories:
-		if memory != null and memory.story != null and memory.season == season \
-				and found_notes >= memory.notes_needed and memory.id not in seen_ids \
-				and (stories_finished or not memory.needs_all_stories):
-			return memory
-	return null
+	var ready: Array[GrandmaMemory] = get_ready(season, found_notes, seen_ids, stories_finished)
+	return ready[0] if not ready.is_empty() else null
+
+
+## 조건이 찬 안 본 회상 전부 (목록 순서대로)
+func get_ready(season: Season.Id, found_notes: int, seen_ids: Array[StringName],
+		stories_finished: bool = false) -> Array[GrandmaMemory]:
+	return memories.filter(func(memory: GrandmaMemory) -> bool:
+			return memory != null and memory.story != null and memory.season == season \
+					and found_notes >= memory.notes_needed and memory.id not in seen_ids \
+					and (stories_finished or not memory.needs_all_stories))
+
+
+## 여러 회상을 이어 붙인 이야기 하나 (장을 차례대로)
+static func join_stories(ready: Array[GrandmaMemory]) -> Story:
+	var story: Story = Story.new()
+	for memory: GrandmaMemory in ready:
+		story.chapters.append_array(memory.story.chapters)
+	return story

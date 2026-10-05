@@ -104,7 +104,7 @@ reaction_expressions = Array[StringName]([&"sad", &""])
 [sub_resource type="Resource" id="StoryChapter_2"]
 script = ExtResource("40_chapter")
 id = &"hedgehog_spring_2"
-open_day = 9
+open_day = 8
 talks = Array[ExtResource("10_talk")]([SubResource("StoryTalk_3"), SubResource("StoryTalk_4")])
 
 [sub_resource type="Resource" id="StoryTalk_5"]
@@ -124,7 +124,7 @@ reaction_expressions = Array[StringName]([&"happy", &"happy"])
 [sub_resource type="Resource" id="StoryChapter_3"]
 script = ExtResource("40_chapter")
 id = &"hedgehog_spring_3"
-open_day = 12
+open_day = 11
 talks = Array[ExtResource("10_talk")]([SubResource("StoryTalk_5"), SubResource("StoryTalk_6")])
 
 [resource]
