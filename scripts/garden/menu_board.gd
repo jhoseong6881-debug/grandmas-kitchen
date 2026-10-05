@@ -15,12 +15,9 @@ const LIMIT_TEXT: String = "메뉴는 %d개까지 고를 수 있어요."
 const PICK_ONE_TEXT: String = "메뉴를 하나 이상 골라 주세요."
 const SHORT_TEXT: String = "  재료 부족"
 const INGREDIENT_FORMAT: String = "×%d  "
-const LIKES_FORMAT: String = "좋아해요: %s"
 const PROMISE_FORMAT: String = "★ %s%s 약속"
 const INVENTORY_ITEM_FORMAT: String = "%s ×%d"
 const INVENTORY_EMPTY_TEXT: String = "없어요"
-const LIKES_UNKNOWN_TEXT: String = "좋아해요: ???"
-const NAME_SEPARATOR: String = ", "
 
 @export var row_font_size: int = 36
 @export var detail_font_size: int = 24
@@ -113,10 +110,9 @@ func _make_row(recipe: Recipe) -> HBoxContainer:
 	row.add_child(button)
 	_dish_buttons[recipe.id] = button
 	row.add_child(_make_ingredients_label(recipe))
+	# 누가 좋아하는지는 손님 수첩에서 찾아본다. 여기서는 오늘 점심 약속한 요리에만 표시를 붙인다.
 	var likes: Label = Label.new()
-	likes.text = _likes_text(recipe)
 	likes.add_theme_font_size_override("font_size", detail_font_size)
-	# 오늘 점심 약속한 요리면 좋아하는 손님 대신 약속을 알려 준다.
 	if _is_promised(recipe.id):
 		var guest: AnimalGuest = GameData.get_guest(GameState.promise_guest_id)
 		var guest_name: String = guest.display_name if guest != null else ""
@@ -190,15 +186,6 @@ func _make_ingredients_label(recipe: Recipe) -> RichTextLabel:
 ## 오늘 점심 약속한 요리인지
 func _is_promised(recipe_id: StringName) -> bool:
 	return GameState.has_promise_on(GameState.current_day) and GameState.promise_recipe_id == recipe_id
-
-
-## 좋아하는 손님 중 만나 본 손님 이름. 아무도 못 만났으면 ???.
-func _likes_text(recipe: Recipe) -> String:
-	var names: PackedStringArray = []
-	for guest: AnimalGuest in GameData.get_all_guests():
-		if recipe in guest.favorite_recipes and GameState.has_met_guest(guest.id):
-			names.append(guest.display_name)
-	return LIKES_FORMAT % NAME_SEPARATOR.join(names) if not names.is_empty() else LIKES_UNKNOWN_TEXT
 
 
 func _toggle(recipe_id: StringName) -> void:
