@@ -8,6 +8,8 @@ extends Control
 ## 도시락마다 넣을 요리를 내가 골라 요리한다 (_start_picnic). 요리·대접·밥값 흐름은 평소와 같다.
 ## 손님 생일 날(SpecialLunch.BIRTHDAY)에는 생일 손님이 첫 손님으로 와서 생일 소원 요리를 부탁하고 (해 주면 덤 재료와 단골도),
 ## 다른 손님들은 주문 앞에 축하 한마디를 한다.
+## "아무거나 맛있는 거" 날(SpecialLunch.CHEF_CHOICE)에는 손님마다 "알아서 해 주세요" 하고, 요리하기 대신 요리 고르기를 눌러
+## 낼 요리를 내가 고른다 (_choose_chef_dish). 좋아하는 요리면 밥값 전부와 단골도 덤, 아니면 평소 대신 시킨 요리처럼.
 
 const DAY_TEXT_FORMAT: String = "%s %d일째"
 const LUNCH_PROGRESS_FORMAT: String = "점심 손님 %d / %d"
@@ -127,6 +129,11 @@ var _picnic_dishes: Array[StringName] = []
 ## 손님 생일 날의 생일 손님 (아니면 null)과, 지금 주문이 생일 소원 요리인지
 var _birthday_host: AnimalGuest
 var _is_birthday_order: bool = false
+## "아무거나 맛있는 거" 날인지, 지금 손님 요리를 아직 고르기 전인지, 고른 요리가 그 손님이 좋아하는 요리인지
+var _is_chef_day: bool = false
+var _is_choosing_dish: bool = false
+var _is_chef_hit: bool = false
+var _cook_text: String = ""
 var _next_guest_text: String = ""
 var _lunchbox_picker: LunchboxPicker
 ## 요리 중에 아직 남은 미니게임 단계
@@ -197,6 +204,7 @@ func _ready() -> void:
 	_lunchbox_picker = lunchbox_picker_scene.instantiate()
 	add_child(_lunchbox_picker)
 	_next_guest_text = _next_guest_button.text
+	_cook_text = _cook_button.text
 	RainOverlay.apply_daytime(self, false)
 	if start_new_game_on_ready and not GameState.is_game_started:
 		GameState.start_new_game()
@@ -259,6 +267,8 @@ func _start_lunch() -> void:
 	_picnic_dishes.clear()
 	_birthday_host = _picnic_host if _special != null and _special.kind == SpecialLunch.Kind.BIRTHDAY else null
 	_is_birthday_order = false
+	_is_chef_day = _special != null and _special.kind == SpecialLunch.Kind.CHEF_CHOICE
+	_is_choosing_dish = false
 	if _is_picnic:
 		_update_lunch_label()
 		_start_picnic()
@@ -361,6 +371,14 @@ func _call_next_guest() -> void:
 		current_request = _choose_request(guest, order) if not _is_promise_order and not _is_birthday_order else null
 		if current_request != null:
 			order_text += REQUEST_JOIN + current_request.get_line(guest)
+		# "아무거나 맛있는 거" 날: 주문 대신 "알아서 해 주세요". 요리는 요리 고르기에서 내가 고른다.
+		if _is_chef_day:
+			current_request = null
+			_is_promise_order = false
+			order_text = _special.fill(_special.guest_lines.get(guest.id, _special.default_request_line))
+			order_expression = AnimalGuest.EXPRESSION_HAPPY
+			_is_choosing_dish = true
+			_cook_button.text = _special.choose_button_text
 		_guest_spot.show_guest(guest, order_text, GameState.is_raining_today, order_expression)
 		await _guest_enters()
 		_show_only_button(_cook_button)
@@ -644,9 +662,45 @@ func _picnic_text(text: String, guest: AnimalGuest, extra: Dictionary = {}) -> S
 	return text.format(values)
 
 
+# --- "아무거나 맛있는 거" 날 ---
+
+## 지금 손님에게 낼 요리를 고른다 (수첩을 보고 와도 된다). 고르면 바로 요리를 시작한다.
+func _choose_chef_dish() -> void:
+	_show_only_button(null)
+	var guest: AnimalGuest = current_guest
+	var recipes: Array[Recipe] = GameData.get_all_recipes().filter(
+			func(recipe: Recipe) -> bool: return GameState.is_recipe_unlocked(recipe.id) and GameState.is_on_menu(recipe.id))
+	var served: Array[String] = []
+	for recipe_id: StringName in _orders_today:
+		var served_recipe: Recipe = GameData.get_recipe(recipe_id)
+		if served_recipe != null and _orders_today[recipe_id] > 0 and served_recipe != current_order:
+			served.append(served_recipe.display_name)
+	var recipe: Recipe = null
+	while recipe == null:
+		_lunchbox_picker.open(_picnic_text(_special.choose_title_format, guest), guest, recipes, served,
+				_special.notebook_button_text, _special.chooser_guest_format, _special.chooser_served_format)
+		recipe = await _lunchbox_picker.closed
+		if recipe == null:
+			_notebook.open()
+			while _notebook.visible:
+				await _notebook.visibility_changed
+	if current_order != null:
+		_orders_today[current_order.id] = _orders_today.get(current_order.id, 1) - 1
+	current_order = recipe
+	_orders_today[recipe.id] = _orders_today.get(recipe.id, 0) + 1
+	_is_fallback_order = recipe not in guest.favorite_recipes
+	_is_chef_hit = not _is_fallback_order
+	_is_choosing_dish = false
+	_cook_button.text = _cook_text
+	_on_cook_button_pressed()
+
+
 # --- 요리 ---
 
 func _on_cook_button_pressed() -> void:
+	if _is_choosing_dish:
+		_choose_chef_dish()
+		return
 	_show_only_button(null)
 	_set_side_buttons_enabled(false)
 	GameState.remove_ingredients(current_order.get_ingredient_counts())
@@ -762,7 +816,13 @@ func _serve(garnish: Garnish) -> void:
 	if _is_promise_order and not guest.promise_kept_line.is_empty():
 		line = guest.promise_kept_line.format({"name": GameState.player_name})
 		expression = AnimalGuest.EXPRESSION_HAPPY
-	if _is_birthday_order and not _special.wish_thanks_line.is_empty():
+	if _is_chef_day and _is_chef_hit:
+		line = _special.fill(_special.hit_lines.get(guest.id, _special.default_hit_line))
+		expression = AnimalGuest.EXPRESSION_HAPPY
+	elif _is_chef_day and current_order in guest.disliked_recipes:
+		line = _special.fill(_special.dislike_lines.get(guest.id, _special.default_dislike_line))
+		expression = AnimalGuest.EXPRESSION_SAD
+	elif _is_birthday_order and not _special.wish_thanks_line.is_empty():
 		line = _special.fill(_special.wish_thanks_line)
 		expression = AnimalGuest.EXPRESSION_HAPPY
 	elif _is_picnic:
@@ -797,6 +857,11 @@ func _serve(garnish: Garnish) -> void:
 		pop_sounds.append(POP_SOUND)
 		points += settings.promise_points
 		_is_promise_order = false
+	if _is_chef_hit:
+		pops.append(_special.hit_pop_text)
+		pop_sounds.append(POP_SOUND)
+		points += _special.bonus_affection
+		_is_chef_hit = false
 	if _is_birthday_order:
 		pops.append(_special.birthday_pop_text)
 		pop_sounds.append(POP_SOUND)

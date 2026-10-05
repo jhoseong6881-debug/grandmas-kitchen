@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="SpecialLunch" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/special_lunch.gd" id="1_lunch"]
+
+[resource]
+script = ExtResource("1_lunch")
+id = &"spring_chef_day"
+kind = 2
+day = 13
+display_name = "아무거나 맛있는 거 날"
+host_id = &""
+preview_text = "손님들이 \"아무거나 맛있는 거\"를 부탁할 것 같아요"
+menu_notice = "아무거나 맛있는 거 날! 손님마다 낼 요리를 내가 골라요. 누가 뭘 좋아하는지 손님 수첩을 봐 두세요."
+choose_title_format = "{guest}에게 낼 요리를 골라요"
+notebook_button_text = "손님 수첩 보기"
+guest_lines = {
+&"rabbit": "저, 오늘은… 알아서 맛있는 걸로 주실 수 있나요? 뭐든 좋아요. 아, 아마도요.",
+&"hen": "꼬꼬! 오늘은 메뉴판 안 볼래! 네가 제일 자신 있는 걸로 줘!",
+&"squirrel": "…오늘은, 골라 주세요. …맛있는 걸로요.",
+&"bear": "음~ 오늘은 아무거나. 네가 해 주는 건 다 맛있으니까. 음~",
+&"hedgehog": "…알아서 해라. …실망시키진 마라."
+}
+bonus_affection = 3
+hit_lines = {
+&"rabbit": "어, 어떻게 아셨어요? 이거 제일 좋아하는 거예요!",
+&"hen": "어머, 내 맘을 어떻게 알았니! 역시 할매 손주야, 꼬꼬!",
+&"squirrel": "…! …이거, 좋아하는 거예요. …고마워요.",
+&"bear": "음~! 이거야, 이거. 딱 먹고 싶던 거였어.",
+&"hedgehog": "…흥. 제법이군. …좋아하는 걸 기억했나."
+}
+dislike_lines = {
+&"rabbit": "아… 이건 제가 잘 못 먹는 거예요. 그, 그래도 고마워요.",
+&"hen": "어머, 이건 내가 좀… 그래도 마음은 고맙다, 꼬꼬.",
+&"squirrel": "…이건, 조금… 못 먹어요. …미안해요.",
+&"bear": "음… 이건 내 입엔 좀 안 맞네. 그래도 고마워.",
+&"hedgehog": "…이건 별로다. …다음엔 기억해 둬라."
+}
+hit_pop_text = "♥ 딱 원하던 거!"
+choose_button_text = "요리 고르기"
+chooser_guest_format = " %s"
+chooser_served_format = "오늘 낸 요리: %s"

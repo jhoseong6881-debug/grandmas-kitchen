@@ -13,7 +13,12 @@ extends Resource
 ## 해 주면 덤 재료(gift_ingredient)와 단골도를 더 받는다. 다른 손님들은 주문 앞에 생일 축하 한마디(guest_lines)를 한다.
 ## 글에서 {recipe} 는 소원 요리 이름, {recipe_obj} 는 그 뒤에 을/를을 붙인 것, {host} 는 생일 손님 이름으로 바뀐다.
 
-enum Kind { PICNIC, BIRTHDAY }
+##
+## CHEF_CHOICE ("아무거나 맛있는 거" 날): 손님마다 "알아서 맛있는 걸로"(guest_lines) 부탁하고, 낼 요리를 내가 고른다.
+## 그 손님이 좋아하는 요리면 밥값을 다 받고 단골도(bonus_affection)가 더 오르고 hit_lines 의 말을 한다.
+## 그냥 그런 요리면 평소 대신 시킨 요리처럼 밥값을 조금, 싫어하는 요리면 dislike_lines 의 말 (벌점은 없다). host 는 비워 둔다.
+
+enum Kind { PICNIC, BIRTHDAY, CHEF_CHOICE }
 
 @export var id: StringName
 @export var kind: Kind = Kind.PICNIC
@@ -48,19 +53,30 @@ enum Kind { PICNIC, BIRTHDAY }
 ## 위로 떠오르는 글
 @export var variety_pop_text: String = "♪ 골고루 담았어요!"
 
-@export_group("생일")
+@export_group("생일 · 아무거나 날")
 ## 생일 소원 요리. 아직 못 되찾았으면 생일 손님이 평소 안 시키는 다른 요리로 바꾼다.
 @export var wish_recipe: Recipe
 ## 소원 요리를 낼 수 없을 때 (그 뒤에 평소처럼 주문한다)
 @export_multiline var wish_missed_line: String = ""
 ## 소원 요리를 대접받고
 @export_multiline var wish_thanks_line: String = ""
-## 다른 손님이 주문 앞에 하는 말 (손님 id → 말)
+## 생일: 다른 손님이 주문 앞에 하는 말 / 아무거나 날: 손님이 "알아서 해 주세요" 하고 부탁하는 말 (손님 id → 말)
 @export var guest_lines: Dictionary[StringName, String] = {}
 ## 소원 요리를 해 주면 더 받는 재료와 개수, 단골도
 @export var gift_ingredient: Ingredient
 @export var gift_amount: int = 2
 @export var bonus_affection: int = 3
+## 아무거나 날: 좋아하는 요리를 냈을 때 / 싫어하는 요리를 냈을 때 손님 말 (손님 id → 말), 비었을 때 기본 말
+@export var hit_lines: Dictionary[StringName, String] = {}
+@export var dislike_lines: Dictionary[StringName, String] = {}
+@export_multiline var default_request_line: String = "오늘은 알아서 맛있는 걸로 주세요!"
+@export_multiline var default_hit_line: String = "어떻게 알았어요? 이거 제일 좋아하는 거예요!"
+@export_multiline var default_dislike_line: String = "음… 이건 제 입에는 좀 안 맞네요. 그래도 고마워요."
+@export var hit_pop_text: String = "♥ 딱 원하던 거!"
+## 아무거나 날: 요리하기 버튼 대신 쓰는 글, 고르는 창 위 손님 줄 모양, 오늘 낸 요리 줄 모양
+@export var choose_button_text: String = "요리 고르기"
+@export var chooser_guest_format: String = " %s"
+@export var chooser_served_format: String = "오늘 낸 요리: %s"
 @export var birthday_pop_text: String = "♪ 생일 축하해요!"
 ## 메뉴판에서 소원 요리 줄 옆에 붙는 표시
 @export var menu_tag_format: String = "♪ {host} 생일 소원"
