@@ -8,8 +8,12 @@ extends Resource
 ## 도시락이 모두 다른 요리면 "골고루" 덤 소문을 받는다. 도시락을 받은 손님은 저녁 평상에 평소처럼 온다.
 ## 글에서 {guest} 는 도시락 주인 이름, {particle} 은 그 이름 뒤 "이/가", {names} 는 host 말고 도시락 받을 손님 이름들,
 ## {count} 는 도시락 수, {name} 은 주인공 이름으로 바뀐다.
+##
+## BIRTHDAY (손님 생일): host 손님이 첫 손님으로 와서 평소엔 안 시키는 "생일 소원" 요리(get_wish_recipe)를 부탁한다.
+## 해 주면 덤 재료(gift_ingredient)와 단골도를 더 받는다. 다른 손님들은 주문 앞에 생일 축하 한마디(guest_lines)를 한다.
+## 글에서 {recipe} 는 소원 요리 이름, {recipe_obj} 는 그 뒤에 을/를을 붙인 것, {host} 는 생일 손님 이름으로 바뀐다.
 
-enum Kind { PICNIC }
+enum Kind { PICNIC, BIRTHDAY }
 
 @export var id: StringName
 @export var kind: Kind = Kind.PICNIC
@@ -43,3 +47,42 @@ enum Kind { PICNIC }
 @export var variety_reputation: int = 3
 ## 위로 떠오르는 글
 @export var variety_pop_text: String = "♪ 골고루 담았어요!"
+
+@export_group("생일")
+## 생일 소원 요리. 아직 못 되찾았으면 생일 손님이 평소 안 시키는 다른 요리로 바꾼다.
+@export var wish_recipe: Recipe
+## 소원 요리를 낼 수 없을 때 (그 뒤에 평소처럼 주문한다)
+@export_multiline var wish_missed_line: String = ""
+## 소원 요리를 대접받고
+@export_multiline var wish_thanks_line: String = ""
+## 다른 손님이 주문 앞에 하는 말 (손님 id → 말)
+@export var guest_lines: Dictionary[StringName, String] = {}
+## 소원 요리를 해 주면 더 받는 재료와 개수, 단골도
+@export var gift_ingredient: Ingredient
+@export var gift_amount: int = 2
+@export var bonus_affection: int = 3
+@export var birthday_pop_text: String = "♪ 생일 축하해요!"
+## 메뉴판에서 소원 요리 줄 옆에 붙는 표시
+@export var menu_tag_format: String = "♪ {host} 생일 소원"
+
+
+## 생일 소원 요리: wish_recipe 를 되찾았으면 그것, 아니면 되찾은 요리 중 생일 손님이 좋아하지도 싫어하지도 않는 첫 요리,
+## 그것도 없으면 null. (같은 날에는 늘 같은 요리가 나온다)
+func get_wish_recipe() -> Recipe:
+	if wish_recipe != null and GameState.is_recipe_unlocked(wish_recipe.id):
+		return wish_recipe
+	var host: AnimalGuest = GameData.get_guest(host_id)
+	for recipe: Recipe in GameData.get_all_recipes():
+		if GameState.is_recipe_unlocked(recipe.id) and (host == null
+				or (recipe not in host.favorite_recipes and recipe not in host.disliked_recipes)):
+			return recipe
+	return null
+
+
+## text 의 {recipe} (소원 요리), {recipe_obj} (소원 요리 + 을/를), {host}, {name} 을 채운다
+func fill(text: String) -> String:
+	var wish: Recipe = get_wish_recipe()
+	var host: AnimalGuest = GameData.get_guest(host_id)
+	var wish_name: String = wish.display_name if wish != null else ""
+	return text.format({"recipe": wish_name, "recipe_obj": wish_name + Korean.object_particle(wish_name),
+			"host": host.display_name if host != null else "", "name": GameState.player_name})

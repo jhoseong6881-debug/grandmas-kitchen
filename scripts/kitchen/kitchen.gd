@@ -6,6 +6,8 @@ extends Control
 ## 오늘 손님을 다 맞으면 점심 장사가 끝나고 저녁 평상으로 간다.
 ## 특별한 점심 날(SpecialLunch.PICNIC, 소풍 도시락 날)에는 주인 손님 한 명이 오늘 손님 모두의 도시락을 주문하고,
 ## 도시락마다 넣을 요리를 내가 골라 요리한다 (_start_picnic). 요리·대접·밥값 흐름은 평소와 같다.
+## 손님 생일 날(SpecialLunch.BIRTHDAY)에는 생일 손님이 첫 손님으로 와서 생일 소원 요리를 부탁하고 (해 주면 덤 재료와 단골도),
+## 다른 손님들은 주문 앞에 축하 한마디를 한다.
 
 const DAY_TEXT_FORMAT: String = "%s %d일째"
 const LUNCH_PROGRESS_FORMAT: String = "점심 손님 %d / %d"
@@ -24,6 +26,7 @@ const REQUEST_JOIN: String = " "
 const REQUEST_DONE_POP_TEXT: String = "♪ 부탁을 들어줬어요!"
 const PROMISE_KEPT_POP_TEXT: String = "★ 약속을 지켰어요!"
 const PROMISE_BONUS_FORMAT: String = "  약속 덤 +%d"
+const BIRTHDAY_BONUS_FORMAT: String = " (생일 덤 +%d)"
 const REQUEST_MISSED_LINE: String = "부탁한 대로는 아니지만… 그래도 맛있어요!"
 const REQUEST_BONUS_FORMAT: String = " (부탁 +%d)"
 const PAYMENT_PREFIX: String = "밥값으로 "
@@ -121,6 +124,9 @@ var _special: SpecialLunch
 var _picnic_host: AnimalGuest
 var _is_picnic: bool = false
 var _picnic_dishes: Array[StringName] = []
+## 손님 생일 날의 생일 손님 (아니면 null)과, 지금 주문이 생일 소원 요리인지
+var _birthday_host: AnimalGuest
+var _is_birthday_order: bool = false
 var _next_guest_text: String = ""
 var _lunchbox_picker: LunchboxPicker
 ## 요리 중에 아직 남은 미니게임 단계
@@ -245,6 +251,8 @@ func _start_lunch() -> void:
 	_is_picnic = _special != null and _special.kind == SpecialLunch.Kind.PICNIC and _picnic_host != null \
 			and not _todays_guests.is_empty()
 	_picnic_dishes.clear()
+	_birthday_host = _picnic_host if _special != null and _special.kind == SpecialLunch.Kind.BIRTHDAY else null
+	_is_birthday_order = false
 	if _is_picnic:
 		_update_lunch_label()
 		_start_picnic()
@@ -323,10 +331,28 @@ func _call_next_guest() -> void:
 			else:
 				order_text = guest.promise_missed_line.format(values) + " " + order_text
 				order_expression = AnimalGuest.EXPRESSION_SAD
+		# 생일 손님: 생일 소원 요리를 낼 수 있으면 그걸, 없으면 아쉬운 말 한마디 뒤 평소처럼 주문한다.
+		_is_birthday_order = false
+		if _birthday_host != null and guest == _birthday_host:
+			var wish: Recipe = _special.get_wish_recipe()
+			if wish != null and _can_cook(wish):
+				_orders_today[order.id] = _orders_today.get(order.id, 1) - 1
+				order = wish
+				current_order = order
+				_orders_today[order.id] = _orders_today.get(order.id, 0) + 1
+				_is_fallback_order = false
+				_is_birthday_order = true
+				order_text = _special.fill(_special.intro_line)
+				order_expression = AnimalGuest.EXPRESSION_HAPPY
+			else:
+				order_text = _special.fill(_special.wish_missed_line) + " " + order_text
+				order_expression = AnimalGuest.EXPRESSION_SAD
+		elif _birthday_host != null and _special.guest_lines.has(guest.id):
+			order_text = _special.fill(_special.guest_lines[guest.id]) + " " + order_text
 		if _taste_hint(guest) != "":
 			order_text += TASTE_HINT_JOIN + _taste_hint(guest)
-		# 약속 주문에는 오늘의 부탁을 덧붙이지 않는다.
-		current_request = _choose_request(guest, order) if not _is_promise_order else null
+		# 약속 주문과 생일 소원에는 오늘의 부탁을 덧붙이지 않는다.
+		current_request = _choose_request(guest, order) if not _is_promise_order and not _is_birthday_order else null
 		if current_request != null:
 			order_text += REQUEST_JOIN + current_request.get_line(guest)
 		_guest_spot.show_guest(guest, order_text, GameState.is_raining_today, order_expression)
@@ -706,6 +732,9 @@ func _serve(garnish: Garnish) -> void:
 	if is_request_met and settings.request_payment_bonus > 0 and not payment.is_empty():
 		payment[payment.keys()[0]] += settings.request_payment_bonus
 		bonus_text += REQUEST_BONUS_FORMAT % settings.request_payment_bonus
+	if _is_birthday_order and _special.gift_ingredient != null and _special.gift_amount > 0:
+		payment[_special.gift_ingredient.id] = payment.get(_special.gift_ingredient.id, 0) + _special.gift_amount
+		bonus_text += BIRTHDAY_BONUS_FORMAT % _special.gift_amount
 	if _is_promise_order and settings.promise_payment_bonus > 0 and not payment.is_empty():
 		payment[payment.keys()[0]] += settings.promise_payment_bonus
 		bonus_text += PROMISE_BONUS_FORMAT % settings.promise_payment_bonus
@@ -725,7 +754,10 @@ func _serve(garnish: Garnish) -> void:
 	if _is_promise_order and not guest.promise_kept_line.is_empty():
 		line = guest.promise_kept_line.format({"name": GameState.player_name})
 		expression = AnimalGuest.EXPRESSION_HAPPY
-	if _is_picnic:
+	if _is_birthday_order and not _special.wish_thanks_line.is_empty():
+		line = _special.fill(_special.wish_thanks_line)
+		expression = AnimalGuest.EXPRESSION_HAPPY
+	elif _is_picnic:
 		# 소풍 도시락: 도시락 주인 대신 주문한 손님(host)이 도시락을 받아 들고 말한다.
 		line = _picnic_line(guest)
 		expression = AnimalGuest.EXPRESSION_HAPPY if not _is_fallback_order else AnimalGuest.EXPRESSION_DEFAULT
@@ -757,6 +789,11 @@ func _serve(garnish: Garnish) -> void:
 		pop_sounds.append(POP_SOUND)
 		points += settings.promise_points
 		_is_promise_order = false
+	if _is_birthday_order:
+		pops.append(_special.birthday_pop_text)
+		pop_sounds.append(POP_SOUND)
+		points += _special.bonus_affection
+		_is_birthday_order = false
 	if is_taste_match:
 		GameState.learn_taste(guest.id)
 		pops.append(TASTE_MATCH_POP_TEXT)

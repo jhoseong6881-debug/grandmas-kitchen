@@ -21,7 +21,7 @@ static func get_lines(day: int, for_tomorrow: bool, max_lines: int = 3) -> Array
 	# 특별한 점심 날 (예: 소풍 도시락 날)
 	var special: SpecialLunch = GameData.get_special_lunch(day)
 	if special != null and not special.preview_text.is_empty():
-		lines.append(special.preview_text)
+		lines.append(special.fill(special.preview_text))
 	var promise_line: String = _promise_line(day)
 	if not promise_line.is_empty():
 		lines.append(promise_line)

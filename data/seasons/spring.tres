@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://scripts/data/season_data.gd" id="1_season"]
 [ext_resource type="Script" path="res://scripts/data/special_lunch.gd" id="20_lunch_script"]
 [ext_resource type="Resource" path="res://data/seasons/spring_picnic.tres" id="21_picnic"]
+[ext_resource type="Resource" path="res://data/seasons/spring_bear_birthday.tres" id="22_birthday"]
 [ext_resource type="Script" path="res://scripts/data/animal_guest.gd" id="2_guest"]
 [ext_resource type="Resource" path="res://data/guests/rabbit.tres" id="3_rabbit"]
 [ext_resource type="Resource" path="res://data/guests/hen.tres" id="4_hen"]
@@ -23,6 +24,6 @@ guests = Array[ExtResource("2_guest")]([ExtResource("3_rabbit"), ExtResource("4_
 daily_music = ExtResource("8_music")
 rain = ExtResource("9_rain")
 market = ExtResource("10_market")
-special_lunches = Array[ExtResource("20_lunch_script")]([ExtResource("21_picnic")])
+special_lunches = Array[ExtResource("20_lunch_script")]([ExtResource("21_picnic"), ExtResource("22_birthday")])
 ending = ExtResource("11_ending")
 next_season = 1

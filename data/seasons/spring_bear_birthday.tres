@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="SpecialLunch" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/special_lunch.gd" id="1_lunch"]
+[ext_resource type="Resource" path="res://data/recipes/carrot_acorn_jeon.tres" id="2_wish"]
+[ext_resource type="Resource" path="res://data/ingredients/honey.tres" id="3_honey"]
+
+[resource]
+script = ExtResource("1_lunch")
+id = &"spring_bear_birthday"
+kind = 1
+day = 11
+display_name = "곰 생일"
+host_id = &"bear"
+preview_text = "곰 생일이에요 ({recipe_obj} 먹고 싶대요)"
+menu_notice = "곰 생일! 곰이 생일상으로 {recipe_obj} 먹고 싶대요. 메뉴에 꼭 넣어 주세요."
+intro_line = "음~ 오늘 내 생일이야. 할머니가 생일상에 늘 {recipe_obj} 올려 주셨거든… 오늘 한 번만 부탁해도 될까?"
+wish_recipe = ExtResource("2_wish")
+wish_missed_line = "음… 오늘은 {recipe} 없구나. 괜찮아, 생일은 내년에도 오니까. 그럼…"
+wish_thanks_line = "음… 이 냄새야. 할머니 생일상 냄새. 고마워, {name}. 벌들한테 꿀 좀 더 달라고 했어. 음~"
+guest_lines = {
+&"hen": "꼬꼬! 오늘 곰 생일인 거 알지? 나는 알 하나 몰래 갖다 놨어.",
+&"rabbit": "오, 오늘 곰 아저씨 생일이래요! 저는 당근 잎으로 리본 만들었어요.",
+&"squirrel": "…곰 생일이래요. …도토리, 제일 반질반질한 걸로 줬어요.",
+&"hedgehog": "…오늘 곰 녀석 생일이다. …알고는 있어라."
+}
+gift_ingredient = ExtResource("3_honey")
+gift_amount = 2
+bonus_affection = 3
+birthday_pop_text = "♪ 생일 축하해요!"
+menu_tag_format = "♪ {host} 생일 소원"

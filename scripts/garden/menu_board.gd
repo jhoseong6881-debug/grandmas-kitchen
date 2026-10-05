@@ -92,7 +92,7 @@ func open() -> void:
 	_fill_inventory()
 	_fill_today_guests()
 	var special: SpecialLunch = GameData.get_special_lunch(GameState.current_day)
-	_subtitle.text = special.menu_notice if special != null and not special.menu_notice.is_empty() else _default_subtitle
+	_subtitle.text = special.fill(special.menu_notice) if special != null and not special.menu_notice.is_empty() else _default_subtitle
 	_subtitle.add_theme_color_override("font_color", selected_color if special != null else _default_subtitle_color)
 	_refresh()
 	_keep_focus_inside(buttons)
@@ -105,9 +105,9 @@ func open() -> void:
 ## 메뉴 칸이 늘어서 자리가 남으면 어제 메뉴에 없던 레시피로 채운다 (새로 되찾은 레시피가 바로 메뉴에 오르게, 뒤에 되찾은 것부터).
 func _initial_selection(recipes: Array[Recipe]) -> Array[StringName]:
 	var ids: Array[StringName] = []
-	# 오늘 약속한 요리는 처음부터 골라 둔다.
+	# 오늘 약속한 요리와 생일 소원 요리는 처음부터 골라 둔다.
 	for recipe: Recipe in recipes:
-		if _is_promised(recipe.id):
+		if _is_promised(recipe.id) or _is_birthday_wish(recipe.id):
 			ids.append(recipe.id)
 	for recipe: Recipe in recipes:
 		if (recipes.size() <= _max_dishes() or recipe.id in GameState.menu_recipe_ids) and recipe.id not in ids:
@@ -139,6 +139,10 @@ func _make_row(recipe: Recipe) -> HBoxContainer:
 		var guest: AnimalGuest = GameData.get_guest(GameState.promise_guest_id)
 		var guest_name: String = guest.display_name if guest != null else ""
 		likes.text = PROMISE_FORMAT % [guest_name, Korean.with_particle(guest_name)]
+		likes.add_theme_color_override("font_color", selected_color)
+	elif _is_birthday_wish(recipe.id):
+		var special: SpecialLunch = GameData.get_special_lunch(GameState.current_day)
+		likes.text = special.fill(special.menu_tag_format)
 		likes.add_theme_color_override("font_color", selected_color)
 	likes.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	row.add_child(likes)
@@ -240,6 +244,15 @@ func _make_ingredients_label(recipe: Recipe) -> RichTextLabel:
 		label.add_text(SHORT_TEXT)
 		label.pop()
 	return label
+
+
+## 오늘이 손님 생일이고 이 요리가 생일 소원 요리인지
+func _is_birthday_wish(recipe_id: StringName) -> bool:
+	var special: SpecialLunch = GameData.get_special_lunch(GameState.current_day)
+	if special == null or special.kind != SpecialLunch.Kind.BIRTHDAY:
+		return false
+	var wish: Recipe = special.get_wish_recipe()
+	return wish != null and wish.id == recipe_id
 
 
 ## 오늘 점심 약속한 요리인지
