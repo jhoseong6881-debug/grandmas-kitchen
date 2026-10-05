@@ -8,7 +8,7 @@
 [resource]
 script = ExtResource("1_level")
 display_name = "숲속 맛집"
-reputation = 50
+reputation = 80
 extra_guests = 1
 max_guests = 4
 keepsake_slots = 4

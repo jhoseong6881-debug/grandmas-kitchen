@@ -13,6 +13,7 @@ extends Control
 const DAY_TEXT_FORMAT: String = "%s %d일째 저녁"
 const QUIET_EVENING_TEXT: String = "오늘 저녁은 조용하네요. 별이 참 많아요."
 const NOTE_FOUND_TEXT: String = "할머니 레시피 노트 한 장을 되찾았어요!"
+const MENU_SLOT_UP_FORMAT: String = "  ·  메뉴 칸이 늘었어요 (%d칸)"
 const SECRET_LEARNED_FORMAT: String = "할머니 비법을 알았어요!  ★ %s"
 const GIFT_INGREDIENT_FORMAT: String = "단골 선물을 받았어요!  %s ×%d"
 const GIFT_PLOT_FORMAT: String = "단골 선물!  %s에 칸이 하나 늘었어요"
@@ -401,9 +402,12 @@ func _on_reply_chosen(reply_index: int) -> void:
 
 
 func _receive_note_page(recipe: Recipe) -> void:
+	var slots_before: int = GameState.get_menu_slots()
 	GameState.unlock_recipe(recipe.id)
 	Sound.play(NOTE_PAGE_SOUND)
 	_status_label.text = NOTE_FOUND_TEXT
+	if GameState.get_menu_slots() > slots_before:
+		_status_label.text += MENU_SLOT_UP_FORMAT % GameState.get_menu_slots()
 	# 책이 손님 말풍선을 가리지 않게 말풍선은 잠깐 숨긴다 (다음 말을 할 때 다시 뜬다).
 	_guest_spot.set_bubble_shown(false)
 	_note_card.show_recipe(recipe)

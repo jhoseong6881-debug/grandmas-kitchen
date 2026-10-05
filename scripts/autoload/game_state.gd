@@ -289,6 +289,11 @@ func see_story_chapter(chapter_id: StringName) -> void:
 
 # --- 레시피 ---
 
+## 오늘의 메뉴 칸 수: 되찾은 레시피(모든 계절)가 늘수록 는다 (MenuSettings)
+func get_menu_slots() -> int:
+	return GameData.get_menu_settings().get_max_dishes(unlocked_recipe_ids.size())
+
+
 func unlock_recipe(recipe_id: StringName) -> void:
 	if is_recipe_unlocked(recipe_id):
 		return

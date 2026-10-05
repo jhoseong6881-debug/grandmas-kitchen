@@ -1,6 +1,7 @@
 class_name MenuBoard
 extends Control
-## 오늘의 메뉴판. 아침에 부엌으로 가기 전에 열려서, 되찾은 레시피 중 오늘 낼 요리를 max_dishes 개까지 고른다.
+## 오늘의 메뉴판. 아침에 부엌으로 가기 전에 열려서, 되찾은 레시피 중 오늘 낼 요리를 메뉴 칸 수만큼 고른다.
+## 메뉴 칸 수는 되찾은 레시피가 늘수록 는다 (GameState.get_menu_slots, data/menu_settings.tres).
 ## 요리마다 필요한 재료(아이콘 ×개수, 모자라면 "재료 부족")와 좋아하는 손님(만나 본 손님만)을 보여 준다.
 ## 다 고르면 confirmed 시그널로 고른 레시피 id 들을 알려 준다. 돌아가기를 누르면 cancelled.
 
@@ -20,8 +21,6 @@ const INVENTORY_EMPTY_TEXT: String = "없어요"
 const LIKES_UNKNOWN_TEXT: String = "좋아해요: ???"
 const NAME_SEPARATOR: String = ", "
 
-## 하루에 낼 수 있는 메뉴 수
-@export var max_dishes: int = 3
 @export var row_font_size: int = 36
 @export var detail_font_size: int = 24
 @export var dish_button_width: float = 480.0
@@ -47,6 +46,11 @@ var _previous_focus: Control
 @onready var _inventory_grid: GridContainer = %InventoryGrid
 @onready var _start_button: Button = %StartButton
 @onready var _back_button: Button = %BackButton
+
+
+## 오늘 고를 수 있는 메뉴 수
+func _max_dishes() -> int:
+	return GameState.get_menu_slots()
 
 
 func _ready() -> void:
@@ -77,13 +81,20 @@ func open() -> void:
 		buttons[0].grab_focus()
 
 
-## 처음에 골라 둘 메뉴: 되찾은 레시피가 max_dishes 개 이하면 전부, 아니면 어제 메뉴 중 아직 낼 수 있는 것.
+## 처음에 골라 둘 메뉴: 되찾은 레시피가 메뉴 칸 이하면 전부, 아니면 어제 메뉴.
+## 메뉴 칸이 늘어서 자리가 남으면 어제 메뉴에 없던 레시피로 채운다 (새로 되찾은 레시피가 바로 메뉴에 오르게, 뒤에 되찾은 것부터).
 func _initial_selection(recipes: Array[Recipe]) -> Array[StringName]:
 	var ids: Array[StringName] = []
 	for recipe: Recipe in recipes:
-		if recipes.size() <= max_dishes or recipe.id in GameState.menu_recipe_ids:
+		if recipes.size() <= _max_dishes() or recipe.id in GameState.menu_recipe_ids:
 			ids.append(recipe.id)
-	return ids.slice(0, max_dishes)
+	for i: int in range(GameState.unlocked_recipe_ids.size() - 1, -1, -1):
+		if ids.size() >= _max_dishes():
+			break
+		var recipe_id: StringName = GameState.unlocked_recipe_ids[i]
+		if recipe_id not in ids and recipes.any(func(recipe: Recipe) -> bool: return recipe.id == recipe_id):
+			ids.append(recipe_id)
+	return ids.slice(0, _max_dishes())
 
 
 func _make_row(recipe: Recipe) -> HBoxContainer:
@@ -178,8 +189,8 @@ func _toggle(recipe_id: StringName) -> void:
 	_message_label.text = ""
 	if recipe_id in _selected_ids:
 		_selected_ids.erase(recipe_id)
-	elif _selected_ids.size() >= max_dishes:
-		_message_label.text = LIMIT_TEXT % max_dishes
+	elif _selected_ids.size() >= _max_dishes():
+		_message_label.text = LIMIT_TEXT % _max_dishes()
 	else:
 		_selected_ids.append(recipe_id)
 	_refresh()
@@ -197,7 +208,7 @@ func _refresh() -> void:
 			button.text = UNSELECTED_FORMAT % recipe.display_name
 			for color_name: String in ["font_color", "font_focus_color", "font_hover_color", "font_pressed_color"]:
 				button.remove_theme_color_override(color_name)
-	_count_label.text = COUNT_FORMAT % [_selected_ids.size(), max_dishes]
+	_count_label.text = COUNT_FORMAT % [_selected_ids.size(), _max_dishes()]
 
 
 func _on_start_button_pressed() -> void:
