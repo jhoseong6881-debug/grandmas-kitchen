@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="SpecialLunch" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/special_lunch.gd" id="1_lunch"]
+
+[resource]
+script = ExtResource("1_lunch")
+id = &"spring_picnic"
+kind = 0
+day = 8
+display_name = "소풍 도시락 날"
+host_id = &"hen"
+preview_text = "암탉네 마을 소풍 날이에요"
+menu_notice = "소풍 도시락 날! 도시락마다 그 손님이 좋아할 요리를 골라 넣어요."
+intro_line = "꼬꼬! 오늘 마을 소풍 가는 날이야! {names}, 그리고 내 것까지 도시락 {count}개 싸 줄래? 누가 뭘 좋아하는지는… 네가 더 잘 알지?"
+choose_title_format = "도시락에 넣을 요리를 골라요"
+notebook_button_text = "손님 수첩 보기"
+favorite_line = "어머, {guest}{particle} 제일 좋아하는 거잖아! 꼬꼬!"
+other_line = "음~ 이것도 맛있겠다! {guest}도 잘 먹을 거야."
+self_favorite_line = "어머, 내가 제일 좋아하는 거잖아! 꼬꼬!"
+self_other_line = "내 건 이걸로! 소풍 가서 먹으면 뭐든 맛있지. 꼬꼬."
+skipped_line = "재료가 모자라구나… {guest} 도시락은 내가 김밥 한 줄 사 갈게. 꼬꼬."
+done_line = "다 쌌다! 고마워, {name}. 소풍 가서 네 얘기 실컷 할게! 꼬꼬!"
+variety_line = "도시락마다 다 다르네? 서로 바꿔 먹는 재미가 있겠다!"
+variety_reputation = 3
+variety_pop_text = "♪ 골고루 담았어요!"

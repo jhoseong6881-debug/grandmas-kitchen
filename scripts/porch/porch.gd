@@ -252,7 +252,8 @@ func _choose_promise_recipe(guest: AnimalGuest) -> Recipe:
 	var settings: RegularSettings = GameData.get_regular_settings()
 	var tomorrow: int = GameState.current_day + 1
 	var ending: SeasonEnding = GameData.get_season_ending()
-	if guest.promise_ask_line.is_empty() or GameState.has_promise_on(tomorrow) \
+	# 내일이 특별한 점심 날(소풍 도시락 등)이면 약속하지 않는다 (그날은 손님이 따로 주문하지 않으니까).
+	if guest.promise_ask_line.is_empty() or GameState.has_promise_on(tomorrow) or GameData.get_special_lunch(tomorrow) != null \
 			or (ending != null and tomorrow > ending.last_day) \
 			or GameState.get_regular_tier(guest.id) < settings.promise_min_tier or randf() >= settings.promise_chance:
 		return null

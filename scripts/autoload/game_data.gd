@@ -186,6 +186,17 @@ func get_season_ending() -> SeasonEnding:
 	return season.ending if season != null else null
 
 
+## 지금 계절 day 날의 특별한 점심 (없으면 null)
+func get_special_lunch(day: int) -> SpecialLunch:
+	var season: SeasonData = get_current_season()
+	if season == null:
+		return null
+	for lunch: SpecialLunch in season.special_lunches:
+		if lunch != null and lunch.day == day:
+			return lunch
+	return null
+
+
 ## 지금 계절의 날마다 바뀌는 곡 (없으면 null)
 func get_daily_music() -> DailyMusic:
 	var season: SeasonData = get_current_season()

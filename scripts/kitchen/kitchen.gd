@@ -4,9 +4,16 @@ extends Control
 ## 오늘 올 손님은 아침에 정해져 있다 (GameState.get_todays_guest_ids, 메뉴판에 미리 보인다).
 ## 메뉴에 먹을 수 있는 요리가 없는 손님은 아쉬워하며 그냥 돌아간다 (호감도는 깎이지 않는다).
 ## 오늘 손님을 다 맞으면 점심 장사가 끝나고 저녁 평상으로 간다.
+## 특별한 점심 날(SpecialLunch.PICNIC, 소풍 도시락 날)에는 주인 손님 한 명이 오늘 손님 모두의 도시락을 주문하고,
+## 도시락마다 넣을 요리를 내가 골라 요리한다 (_start_picnic). 요리·대접·밥값 흐름은 평소와 같다.
 
 const DAY_TEXT_FORMAT: String = "%s %d일째"
 const LUNCH_PROGRESS_FORMAT: String = "점심 손님 %d / %d"
+const PICNIC_PROGRESS_FORMAT: String = "소풍 도시락 %d / %d"
+const PICNIC_PACK_BUTTON_TEXT: String = "도시락 싸기"
+const PICNIC_HAND_OVER_TEXT: String = "도시락 건네기"
+const PICNIC_DONE_TEXT: String = "도시락을 다 쌌어요! 오늘 점심 장사 끝."
+const PICNIC_NAME_SEPARATOR: String = ", "
 const COOKED_TEXT_FORMAT: String = "%s 완성!"
 const PERFECT_COOKED_TEXT_FORMAT: String = "%s 완성! 한 번도 안 틀렸어요!"
 const GRANDMA_COOKED_TEXT_FORMAT: String = "%s 완성! ♥ 할머니 손맛이 났어요!"
@@ -70,6 +77,8 @@ const TIER_UP_SOUND: StringName = &"tier_up"
 @export var door_close_delay: float = 0.5
 ## 앞 손님이 나가고 문이 닫힌 뒤, 다음 손님이 문을 열기까지 쉬는 시간(초)
 @export var next_guest_delay: float = 1.0
+## 소풍 도시락 날 "○○ 도시락에 넣을 요리" 창
+@export var lunchbox_picker_scene: PackedScene = preload("res://scenes/kitchen/lunchbox_picker.tscn")
 ## 대접할 때 접시가 조리대 위를 드윽 미끄러져 손님 앞으로 가는 시간(초)과, 내 쪽(화면 아래)에서 출발하는 거리(픽셀), 처음 크기
 @export var serve_slide_duration: float = 0.5
 @export var serve_slide_distance: float = 360.0
@@ -107,6 +116,13 @@ var _todays_guests: Array[AnimalGuest] = []
 ## 오늘 주문받은 요리 id → 횟수. 손님이 오늘 덜 나간 요리를 먼저 시키게 할 때 쓴다 (같은 요리만 반복되지 않게).
 var _orders_today: Dictionary[StringName, int] = {}
 var _guests_today: int = 0
+## 오늘의 특별한 점심 (없으면 null), 소풍 도시락 날 주문하러 온 손님, 지금 요리가 도시락인지, 싼 도시락 요리 id
+var _special: SpecialLunch
+var _picnic_host: AnimalGuest
+var _is_picnic: bool = false
+var _picnic_dishes: Array[StringName] = []
+var _next_guest_text: String = ""
+var _lunchbox_picker: LunchboxPicker
 ## 요리 중에 아직 남은 미니게임 단계
 var _remaining_steps: Array[CookStep] = []
 ## 이번 요리의 미니게임을 지금까지 전부 한 번도 안 틀렸는지
@@ -172,6 +188,9 @@ func _ready() -> void:
 	_status_default_color = _cook_status_label.get_theme_color("default_color")
 	_add_shop_decor()
 	_add_goal_board()
+	_lunchbox_picker = lunchbox_picker_scene.instantiate()
+	add_child(_lunchbox_picker)
+	_next_guest_text = _next_guest_button.text
 	RainOverlay.apply_daytime(self, false)
 	if start_new_game_on_ready and not GameState.is_game_started:
 		GameState.start_new_game()
@@ -221,6 +240,15 @@ func _start_lunch() -> void:
 			_todays_guests.append(guest)
 	_guests_today = _todays_guests.size()
 	_take_promise()
+	_special = GameData.get_special_lunch(GameState.current_day)
+	_picnic_host = GameData.get_guest(_special.host_id) if _special != null else null
+	_is_picnic = _special != null and _special.kind == SpecialLunch.Kind.PICNIC and _picnic_host != null \
+			and not _todays_guests.is_empty()
+	_picnic_dishes.clear()
+	if _is_picnic:
+		_update_lunch_label()
+		_start_picnic()
+		return
 	_update_lunch_label()
 	_call_next_guest()
 
@@ -465,7 +493,10 @@ func _end_lunch(message: String) -> void:
 
 
 func _on_next_guest_button_pressed() -> void:
-	_call_next_guest()
+	if _is_picnic:
+		_pack_next_lunchbox()
+	else:
+		_call_next_guest()
 
 
 ## 장사 결과판을 보여 준 뒤 저녁으로 간다.
@@ -484,6 +515,99 @@ func _on_evening_button_pressed() -> void:
 			sunset_text = rain.sunset_text
 		await sunset.play(GameState.current_day, sunset_text)
 	get_tree().change_scene_to_file(feast_scene_path if GameState.is_season_end_day() else porch_scene_path)
+
+
+# --- 소풍 도시락 날 ---
+
+## 주인 손님이 들어와서 오늘 손님 모두의 도시락을 주문한다.
+func _start_picnic() -> void:
+	var others: PackedStringArray = []
+	for guest: AnimalGuest in _todays_guests:
+		if guest != _picnic_host:
+			others.append(guest.display_name)
+	current_guest = _picnic_host
+	current_order = null
+	_guest_spot.show_guest(_picnic_host, _picnic_text(_special.intro_line, _picnic_host,
+			{"names": PICNIC_NAME_SEPARATOR.join(others), "count": _guests_today}),
+			GameState.is_raining_today, AnimalGuest.EXPRESSION_HAPPY)
+	await _guest_enters()
+	_next_guest_button.text = PICNIC_PACK_BUTTON_TEXT
+	_show_only_button(_next_guest_button)
+
+
+## 다음 도시락: 넣을 요리를 고르고 (수첩을 보고 와도 된다) 바로 요리를 시작한다. 다 쌌으면 마무리.
+func _pack_next_lunchbox() -> void:
+	_show_only_button(null)
+	_set_status("", false)
+	_served_dish.hide()
+	if _guests_served >= _guests_today:
+		_finish_picnic()
+		return
+	var guest: AnimalGuest = _todays_guests[_guests_served]
+	var recipes: Array[Recipe] = GameData.get_all_recipes().filter(
+			func(recipe: Recipe) -> bool: return GameState.is_recipe_unlocked(recipe.id) and GameState.is_on_menu(recipe.id))
+	if not recipes.any(func(recipe: Recipe) -> bool: return GameState.has_ingredients(recipe.get_ingredient_counts())):
+		# 재료가 모자라 이 손님 도시락은 못 싼다 (벌점 없음).
+		_guest_spot.say(_picnic_text(_special.skipped_line, guest), AnimalGuest.EXPRESSION_SAD)
+		_guests_served += 1
+		_update_lunch_label()
+		if _guests_served >= _guests_today:
+			_next_guest_button.text = PICNIC_HAND_OVER_TEXT
+		_show_only_button(_next_guest_button)
+		return
+	var packed: Array[String] = []
+	for recipe_id: StringName in _picnic_dishes:
+		packed.append(GameData.get_recipe(recipe_id).display_name)
+	var recipe: Recipe = null
+	while recipe == null:
+		_lunchbox_picker.open(_picnic_text(_special.choose_title_format, guest), guest, recipes, packed,
+				_special.notebook_button_text)
+		recipe = await _lunchbox_picker.closed
+		if recipe == null:
+			# 손님 수첩을 보고 오면 다시 고른다.
+			_notebook.open()
+			while _notebook.visible:
+				await _notebook.visibility_changed
+	current_guest = guest
+	current_order = recipe
+	current_request = null
+	_is_promise_order = false
+	_is_fallback_order = recipe not in guest.favorite_recipes
+	_orders_today[recipe.id] = _orders_today.get(recipe.id, 0) + 1
+	_picnic_dishes.append(recipe.id)
+	_on_cook_button_pressed()
+
+
+## 도시락을 다 쌌다: 주인 손님의 마지막 말. 모두 다른 요리로 쌌으면 덤 소문.
+func _finish_picnic() -> void:
+	current_guest = _picnic_host
+	var line: String = _picnic_text(_special.done_line, _picnic_host)
+	var unique: Dictionary = {}
+	for recipe_id: StringName in _picnic_dishes:
+		unique[recipe_id] = true
+	if _picnic_dishes.size() >= 2 and unique.size() == _picnic_dishes.size():
+		line += " " + _picnic_text(_special.variety_line, _picnic_host)
+		_report.reputation += _special.variety_reputation
+		_pop_one_by_one([_special.variety_pop_text], [POP_SOUND])
+	_guest_spot.say(line, AnimalGuest.EXPRESSION_HAPPY)
+	_next_guest_button.text = _next_guest_text
+	_set_status(PICNIC_DONE_TEXT, false)
+	_show_only_button(_evening_button)
+
+
+## 도시락 하나를 다 쌌을 때 주인 손님의 말 (도시락 주인이 좋아하는 요리인지, 주인 손님 자기 것인지에 따라)
+func _picnic_line(guest: AnimalGuest) -> String:
+	var is_favorite: bool = not _is_fallback_order
+	if guest == _picnic_host:
+		return _picnic_text(_special.self_favorite_line if is_favorite else _special.self_other_line, guest)
+	return _picnic_text(_special.favorite_line if is_favorite else _special.other_line, guest)
+
+
+func _picnic_text(text: String, guest: AnimalGuest, extra: Dictionary = {}) -> String:
+	var values: Dictionary = {"guest": guest.display_name, "particle": Korean.subject_particle(guest.display_name),
+			"name": GameState.player_name}
+	values.merge(extra)
+	return text.format(values)
 
 
 # --- 요리 ---
@@ -601,7 +725,11 @@ func _serve(garnish: Garnish) -> void:
 	if _is_promise_order and not guest.promise_kept_line.is_empty():
 		line = guest.promise_kept_line.format({"name": GameState.player_name})
 		expression = AnimalGuest.EXPRESSION_HAPPY
-	if is_grandma_taste:
+	if _is_picnic:
+		# 소풍 도시락: 도시락 주인 대신 주문한 손님(host)이 도시락을 받아 들고 말한다.
+		line = _picnic_line(guest)
+		expression = AnimalGuest.EXPRESSION_HAPPY if not _is_fallback_order else AnimalGuest.EXPRESSION_DEFAULT
+	elif is_grandma_taste:
 		# 비법을 알려 준 손님은 그 요리만의 말을, 다른 손님은 자기 말투의 말을 한다.
 		var taste_line: String = current_order.grandma_taste_line
 		if guest.id != current_order.secret_teller_id and not guest.grandma_taste_line.is_empty():
@@ -648,6 +776,8 @@ func _serve(garnish: Garnish) -> void:
 	current_request = null
 	_guests_served += 1
 	_update_lunch_label()
+	if _is_picnic and _guests_served >= _guests_today:
+		_next_guest_button.text = PICNIC_HAND_OVER_TEXT
 	_show_only_button(_next_guest_button)
 	_pop_one_by_one(pops, pop_sounds)
 
@@ -755,7 +885,7 @@ func _begin_status(is_perfect: bool) -> void:
 
 
 func _update_lunch_label() -> void:
-	_lunch_label.text = LUNCH_PROGRESS_FORMAT % [_guests_served, _guests_today]
+	_lunch_label.text = (PICNIC_PROGRESS_FORMAT if _is_picnic else LUNCH_PROGRESS_FORMAT) % [_guests_served, _guests_today]
 
 
 func _on_day_changed(new_day: int) -> void:

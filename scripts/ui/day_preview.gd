@@ -1,7 +1,7 @@
 class_name DayPreview
 extends RefCounted
 ## 그날 있을 일을 몇 줄로 모은다. 잠드는 장면의 "내일은…"과 타이틀의 이어 하기 요약에서 쓴다.
-## 지어낸 말이 아니라 실제로 그날 일어날 일만 모은다: 손님과의 약속, 계절 잔치, 사연이 열리는 손님, 장날, 다 자라는 작물.
+## 지어낸 말이 아니라 실제로 그날 일어날 일만 모은다: 특별한 점심 날, 손님과의 약속, 계절 잔치, 사연이 열리는 손님, 장날, 다 자라는 작물.
 ## 아무 일도 없으면 빈 목록 (억지로 채우지 않는다).
 
 const FEAST_FORMAT: String = "%s 날이에요!"
@@ -18,6 +18,10 @@ const LINE_SEPARATOR: String = "  ·  "
 ## false 면 그날 아침 기준 (이어 하기 요약).
 static func get_lines(day: int, for_tomorrow: bool, max_lines: int = 3) -> Array[String]:
 	var lines: Array[String] = []
+	# 특별한 점심 날 (예: 소풍 도시락 날)
+	var special: SpecialLunch = GameData.get_special_lunch(day)
+	if special != null and not special.preview_text.is_empty():
+		lines.append(special.preview_text)
 	var promise_line: String = _promise_line(day)
 	if not promise_line.is_empty():
 		lines.append(promise_line)

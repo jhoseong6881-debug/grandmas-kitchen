@@ -54,6 +54,10 @@ var _previous_focus: Control
 @onready var _inventory_grid: GridContainer = %InventoryGrid
 ## 위쪽: 오늘 점심에 올 손님 (얼굴 + 이름, 약속한 손님은 ★, 처음 오는 손님은 ?)
 @onready var _today_guests: HBoxContainer = %TodayGuests
+## 제목 아래 안내 줄 (특별한 점심 날에는 그날 안내로 바꾼다)
+@onready var _subtitle: Label = $Board/Subtitle
+var _default_subtitle: String = ""
+var _default_subtitle_color: Color
 @onready var _start_button: Button = %StartButton
 @onready var _back_button: Button = %BackButton
 
@@ -65,6 +69,8 @@ func _max_dishes() -> int:
 
 func _ready() -> void:
 	_start_button.pressed.connect(_on_start_button_pressed)
+	_default_subtitle = _subtitle.text
+	_default_subtitle_color = _subtitle.get_theme_color("font_color")
 	_back_button.pressed.connect(_on_back_button_pressed)
 	hide()
 
@@ -85,6 +91,9 @@ func open() -> void:
 	_message_label.text = ""
 	_fill_inventory()
 	_fill_today_guests()
+	var special: SpecialLunch = GameData.get_special_lunch(GameState.current_day)
+	_subtitle.text = special.menu_notice if special != null and not special.menu_notice.is_empty() else _default_subtitle
+	_subtitle.add_theme_color_override("font_color", selected_color if special != null else _default_subtitle_color)
 	_refresh()
 	_keep_focus_inside(buttons)
 	show()

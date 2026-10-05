@@ -331,13 +331,16 @@ func get_todays_guest_count() -> int:
 	return clampi(dishes + GameData.get_menu_settings().extra_guests_over_menu + bonus, 1, max_guests)
 
 
-## 약속한 손님을 맨 앞에 두고, 다음은 오늘 사연 막이 새로 열리는 손님 (잠들 때 "내일은… 무슨 일이 있는 것 같아요"로 알린 손님),
+## 특별한 점심 날(SpecialLunch)이면 그 주인 손님(host)이 맨 앞, 아니면 약속한 손님이 맨 앞. 다음은 오늘 사연 막이 새로 열리는 손님 (잠들 때 "내일은… 무슨 일이 있는 것 같아요"로 알린 손님),
 ## 나머지는 이번 계절 손님을 섞어서 채운다 (손님이 모자랄 때만 같은 손님이 또 온다).
 func _choose_todays_guests() -> void:
 	todays_guests_day = current_day
 	todays_guest_ids.clear()
 	var count: int = get_todays_guest_count()
-	if has_promise_on(current_day) and GameData.get_guest(promise_guest_id) != null:
+	var special: SpecialLunch = GameData.get_special_lunch(current_day)
+	if special != null and GameData.get_guest(special.host_id) != null:
+		todays_guest_ids.append(special.host_id)
+	if has_promise_on(current_day) and GameData.get_guest(promise_guest_id) != null and promise_guest_id not in todays_guest_ids:
 		todays_guest_ids.append(promise_guest_id)
 	var story_guests: Array[AnimalGuest] = GameData.get_season_guests().filter(func(guest: AnimalGuest) -> bool:
 			var chapter: GuestStoryChapter = get_next_story_chapter(guest)

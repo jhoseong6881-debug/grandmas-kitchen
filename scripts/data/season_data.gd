@@ -17,6 +17,8 @@ extends Resource
 @export var rain: RainSettings
 ## 숲속 장터 설정. 비워 두면 이 계절에는 장터가 열리지 않는다.
 @export var market: MarketSettings
+## 특별한 점심 날 (예: 8일째 소풍 도시락 날). 그날은 점심 방식이 바뀐다.
+@export var special_lunches: Array[SpecialLunch] = []
 ## 계절 마무리 (마지막 날, 잔치 준비, 노트 카드, 예고). 비워 두면 이 계절은 끝나지 않는다 (만드는 중인 계절).
 @export var ending: SeasonEnding
 ## 계절이 시작될 때 보여 주는 짧은 장면 (프롤로그 화면으로 보여 준다). 비워 두면 바로 1일째 아침.
