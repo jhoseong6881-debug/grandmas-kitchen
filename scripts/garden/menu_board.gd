@@ -15,6 +15,8 @@ const PICK_ONE_TEXT: String = "메뉴를 하나 이상 골라 주세요."
 const SHORT_TEXT: String = "  재료 부족"
 const INGREDIENT_FORMAT: String = "×%d  "
 const LIKES_FORMAT: String = "좋아해요: %s"
+const INVENTORY_ITEM_FORMAT: String = "%s ×%d"
+const INVENTORY_EMPTY_TEXT: String = "없어요"
 const LIKES_UNKNOWN_TEXT: String = "좋아해요: ???"
 const NAME_SEPARATOR: String = ", "
 
@@ -26,6 +28,9 @@ const NAME_SEPARATOR: String = ", "
 @export var ingredients_width: float = 360.0
 @export var row_height: float = 60.0
 @export var ingredient_icon_size: int = 24
+## 왼쪽 아래 가진 재료 줄에 한 줄로 놓는 재료 수
+@export var inventory_items_per_line: int = 3
+@export var inventory_text_color: Color = Color(0.92, 0.9, 0.82)
 @export var short_color: Color = Color(1, 0.55, 0.45)
 ## 고른 요리의 글자 색
 @export var selected_color: Color = Color(1, 0.84, 0.25)
@@ -38,6 +43,8 @@ var _previous_focus: Control
 @onready var _rows: VBoxContainer = %MenuRows
 @onready var _count_label: Label = %CountLabel
 @onready var _message_label: Label = %MessageLabel
+## 왼쪽 아래: 지금 가진 재료 (아이콘 + 이름 ×개수)
+@onready var _inventory_grid: GridContainer = %InventoryGrid
 @onready var _start_button: Button = %StartButton
 @onready var _back_button: Button = %BackButton
 
@@ -62,6 +69,7 @@ func open() -> void:
 		_rows.add_child(row)
 		buttons.append(_dish_buttons[recipe.id])
 	_message_label.text = ""
+	_fill_inventory()
 	_refresh()
 	_keep_focus_inside(buttons)
 	show()
@@ -98,6 +106,42 @@ func _make_row(recipe: Recipe) -> HBoxContainer:
 
 
 ## "■×1 ■×2  재료 부족" (재료 아이콘과 필요한 개수, 지금 모자라면 빨간 "재료 부족")
+## 왼쪽 아래 가진 재료: [아이콘] 당근 ×6 처럼 한 칸씩, inventory_items_per_line 칸마다 줄을 바꾼다
+func _fill_inventory() -> void:
+	for child: Node in _inventory_grid.get_children():
+		child.queue_free()
+	_inventory_grid.columns = inventory_items_per_line
+	var shown: int = 0
+	for ingredient_id: StringName in GameState.inventory:
+		var count: int = GameState.get_ingredient_count(ingredient_id)
+		if count <= 0:
+			continue
+		var ingredient: Ingredient = GameData.get_ingredient(ingredient_id)
+		var cell: HBoxContainer = HBoxContainer.new()
+		if ingredient != null:
+			var icon: TextureRect = TextureRect.new()
+			icon.texture = ingredient.get_icon_texture()
+			icon.custom_minimum_size = Vector2(ingredient_icon_size, ingredient_icon_size)
+			icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			cell.add_child(icon)
+		var ingredient_name: String = ingredient.display_name if ingredient != null else String(ingredient_id)
+		cell.add_child(_make_inventory_label(INVENTORY_ITEM_FORMAT % [ingredient_name, count]))
+		_inventory_grid.add_child(cell)
+		shown += 1
+	# 지운 칸은 이번 프레임 끝까지 남아 있으므로 자식 수 대신 직접 센다.
+	if shown == 0:
+		_inventory_grid.add_child(_make_inventory_label(INVENTORY_EMPTY_TEXT))
+
+
+func _make_inventory_label(text: String) -> Label:
+	var label: Label = Label.new()
+	label.text = text
+	label.add_theme_font_size_override("font_size", detail_font_size)
+	label.add_theme_color_override("font_color", inventory_text_color)
+	return label
+
+
 func _make_ingredients_label(recipe: Recipe) -> RichTextLabel:
 	var label: RichTextLabel = RichTextLabel.new()
 	label.custom_minimum_size = Vector2(ingredients_width, row_height)
