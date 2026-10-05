@@ -43,6 +43,12 @@ func _refresh_text() -> void:
 		_button.text += PROMISE_MARK
 
 
+## 누를 수 있는지 (부엌에서 요리 미니게임을 하는 동안은 막는다)
+func set_enabled(enabled: bool) -> void:
+	_button.disabled = not enabled
+	_button.focus_mode = Control.FOCUS_ALL if enabled else Control.FOCUS_NONE
+
+
 func open() -> void:
 	# 버튼 자리와 상관없이 화면 전체를 덮는다.
 	_popup.global_position = Vector2.ZERO

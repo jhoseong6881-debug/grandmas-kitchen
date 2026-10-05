@@ -134,6 +134,8 @@ var _status_default_color: Color
 @onready var _cook_status_label: RichTextLabel = %CookStatusLabel
 @onready var _notebook: GuestNotebook = %GuestNotebook
 @onready var _notebook_button: Button = %NotebookButton
+## 계절 목표 버튼 (부엌이 켜질 때 붙인다)
+var _goal_button: GoalButton
 @onready var _garnish_picker: GarnishPicker = %GarnishPicker
 @onready var _result_board: ResultBoard = %ResultBoard
 ## 요리 완성 장면 ("완성~!")과 대접한 접시 (손님 앞 조리대 위)
@@ -189,8 +191,18 @@ func _add_goal_board() -> void:
 	var board: Control = goal_board_scene.instantiate()
 	board.position = goal_board_position
 	add_child(board)
-	# 미니게임과 창들보다 뒤에 그려지게, 첫 미니게임보다 앞 순서에 둔다.
+	_goal_button = board as GoalButton
+	# 미니게임과 창들보다 뒤에 그려지게, 첫 미니게임보다 앞 순서에 둔다. 손님 수첩 버튼도 같이.
 	move_child(board, get_node("%ChopMinigame").get_index())
+	move_child(_notebook_button, get_node("%ChopMinigame").get_index())
+
+
+## 손님 수첩과 계절 목표 버튼을 누를 수 있게 / 없게 (요리 미니게임과 완성 장면 동안은 막는다)
+func _set_side_buttons_enabled(enabled: bool) -> void:
+	_notebook_button.disabled = not enabled
+	_notebook_button.focus_mode = Control.FOCUS_ALL if enabled else Control.FOCUS_NONE
+	if _goal_button != null:
+		_goal_button.set_enabled(enabled)
 
 
 func _add_shop_decor() -> void:
@@ -493,6 +505,7 @@ func _on_evening_button_pressed() -> void:
 
 func _on_cook_button_pressed() -> void:
 	_show_only_button(null)
+	_set_side_buttons_enabled(false)
 	GameState.remove_ingredients(current_order.get_ingredient_counts())
 	_is_perfect_cook = true
 	_remaining_steps = current_order.cook_steps.duplicate()
@@ -522,6 +535,7 @@ func _is_grandma_cook() -> bool:
 func _run_next_step() -> void:
 	if _remaining_steps.is_empty():
 		await _dish_showcase.show_dish(current_order, _is_perfect_cook, _is_grandma_cook())
+		_set_side_buttons_enabled(true)
 		var format: String = PERFECT_COOKED_TEXT_FORMAT if _is_perfect_cook else COOKED_TEXT_FORMAT
 		if _is_grandma_cook():
 			format = GRANDMA_COOKED_TEXT_FORMAT
