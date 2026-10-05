@@ -46,6 +46,9 @@ const EXPRESSION_SAD: StringName = &"sad"
 @export var taste_hint_line: String = ""
 ## 처음 저녁 평상에 왔을 때, 걸어 들어와 앉은 뒤 하는 인사 (그다음 평소 이야기가 이어진다). {name} 은 주인공 이름.
 @export_multiline var porch_greeting_line: String = ""
+## 이웃 바구니 쪽지 (평소). 저녁 평상에 왔던 다음 날 아침, 바구니 재료와 함께 이 중 하나를 남긴다 (날마다 돌아가며).
+## {ingredient} 는 두고 간 재료 이름, {name} 은 주인공 이름. 사연 막 다음 날에는 그 막의 쪽지(GuestStoryChapter.basket_note)를 먼저 남긴다.
+@export_multiline var basket_notes: Array[String] = []
 ## 대접받고 하는 말
 @export var thanks_line: String = "잘 먹었어요!"
 ## 미니게임을 한 번도 안 틀리고 대접받았을 때 하는 말

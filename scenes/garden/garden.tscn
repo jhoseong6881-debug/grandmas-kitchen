@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://scripts/garden/plot_row.gd" id="5_plot_row"]
 [ext_resource type="PackedScene" path="res://scenes/garden/plant_picker.tscn" id="6_picker"]
 [ext_resource type="PackedScene" path="res://scenes/garden/feast_prep_panel.tscn" id="7_feast"]
+[ext_resource type="PackedScene" path="res://scenes/garden/basket_note.tscn" id="8_note"]
 
 [node name="Garden" type="Control" unique_id=1678010223]
 layout_mode = 3
@@ -203,4 +204,8 @@ layout_mode = 1
 [node name="FeastPrepPanel" parent="." instance=ExtResource("7_feast")]
 unique_name_in_owner = true
 visible = false
+layout_mode = 1
+
+[node name="BasketNote" parent="." instance=ExtResource("8_note")]
+unique_name_in_owner = true
 layout_mode = 1

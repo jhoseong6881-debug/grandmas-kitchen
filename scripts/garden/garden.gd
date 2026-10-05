@@ -57,6 +57,7 @@ const RUSTLE_SOUND: StringName = &"rustle"
 @onready var _notebook: GuestNotebook = %GuestNotebook
 @onready var _notebook_button: Button = %NotebookButton
 @onready var _menu_board: MenuBoard = %MenuBoard
+@onready var _basket_note: BasketNote = %BasketNote
 
 ## 아래 안내 글 (줄바꿈을 넣기 전 원래 글). 한 줄 더할 때 쓴다.
 var _status_text: String = ""
@@ -92,6 +93,7 @@ func _ready() -> void:
 	_market_button.pressed.connect(get_tree().change_scene_to_file.bind(market_scene_path))
 	_feast_button.pressed.connect(_on_feast_button_pressed)
 	_feast_prep_panel.closed.connect(_focus_next_thing_to_do)
+	_basket_note.closed.connect(_focus_next_thing_to_do)
 	GameState.feast_prep_changed.connect(_update_feast_button)
 	_update_feast_button()
 	_basket_button.pressed.connect(_on_basket_button_pressed)
@@ -131,12 +133,14 @@ func _on_planted(crop: Crop, _plot_button: Button) -> void:
 	_focus_next_thing_to_do()
 
 
-## 이웃 바구니: 손님 중 한 명이 자기 밥값 재료 하나를 두고 간다. 하루에 한 번.
+## 이웃 바구니: 어젯밤 평상에 왔던 손님들이 자기 밥값 재료 하나와 쪽지를 두고 간다. 하루에 한 번.
 func _on_basket_button_pressed() -> void:
 	if GameState.basket_guest_ids.is_empty():
 		return
 	var lines: PackedStringArray = []
 	var pops: PackedStringArray = []
+	var notes: Array[String] = []
+	var signatures: Array[String] = []
 	for guest_id: StringName in GameState.basket_guest_ids:
 		var neighbor: AnimalGuest = GameData.get_guest(guest_id)
 		if neighbor == null or neighbor.payment_ingredients.is_empty():
@@ -146,6 +150,10 @@ func _on_basket_button_pressed() -> void:
 		lines.append(GIFT_FORMAT % [neighbor.display_name, Korean.subject_particle(neighbor.display_name),
 				gift.display_name, gift_amount])
 		pops.append(HARVEST_POP_FORMAT % [gift_amount, gift.display_name])
+		var note: String = _pick_basket_note(neighbor, gift)
+		if not note.is_empty():
+			notes.append(note)
+			signatures.append(neighbor.display_name)
 	GameState.basket_guest_ids.clear()
 	_update_basket()
 	if lines.is_empty():
@@ -154,7 +162,23 @@ func _on_basket_button_pressed() -> void:
 	_set_status(GIFT_LINE_SEPARATOR.join(lines))
 	_pop_text(GIFT_POP_SEPARATOR.join(pops), _basket_button)
 	_show_unlock_notice()
-	_focus_next_thing_to_do()
+	if notes.is_empty():
+		_focus_next_thing_to_do()
+	else:
+		_basket_note.open(notes, signatures)
+
+
+## 바구니 쪽지: 아직 쪽지로 남기지 않은 본 사연 막 쪽지가 있으면 그것(가장 최근 막), 없으면 평소 쪽지 중 오늘 차례인 것.
+func _pick_basket_note(guest: AnimalGuest, gift: Ingredient) -> String:
+	var text: String = ""
+	for chapter: GuestStoryChapter in guest.story_chapters:
+		if chapter != null and not chapter.basket_note.is_empty() and chapter.id in GameState.seen_story_chapter_ids \
+				and chapter.id not in GameState.used_basket_note_ids:
+			GameState.used_basket_note_ids.append(chapter.id)
+			text = chapter.basket_note
+	if text.is_empty() and not guest.basket_notes.is_empty():
+		text = guest.basket_notes[GameState.current_day % guest.basket_notes.size()]
+	return text.format({"name": GameState.player_name, "ingredient": gift.display_name})
 
 
 ## 잔치 준비 목록을 받았으면 (계절을 마치기 전까지) 봄 잔치 바구니 버튼을 보여 준다.

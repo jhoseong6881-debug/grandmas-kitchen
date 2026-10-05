@@ -55,3 +55,8 @@
 - 데이터: data/story/porch_duos.tres (GuestDuoTalk / DuoLine). 사연 사이에만 나오는 대화는 requires_seen_chapters / ends_after_chapters 로 정한다.
 - 봄 대화 8개: 토끼·다람쥐(수줍음), 곰·토끼(붕대), 다람쥐·고슴도치(새싹 힌트), 암탉·다람쥐(할머니 자리), 고슴도치·곰(평상 원목), 곰·암탉(병아리), 암탉·토끼(김밥 연습 소리), 암탉·고슴도치(잔치 초대)
 - 자동 플레이 200판: 한 판에 평균 5개쯤 본다 (사연 사이에만 나오는 대화는 절반쯤 판에서). 플레이마다 보는 대화가 달라진다.
+
+## 이웃 바구니 쪽지 (2026-10-05)
+- 저녁 평상에 왔던 손님은 다음 날 아침 바구니에 재료와 함께 손글씨 쪽지를 남긴다 (scenes/garden/basket_note.tscn).
+- 사연 막을 본 다음 날에는 그 막의 쪽지(GuestStoryChapter.basket_note), 아니면 평소 쪽지 4개(AnimalGuest.basket_notes) 중 날마다 돌아가며 하나.
+- 사연 쪽지를 남겼는지는 GameState.used_basket_note_ids 에 저장한다.

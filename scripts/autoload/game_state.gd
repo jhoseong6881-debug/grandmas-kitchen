@@ -52,6 +52,8 @@ var met_guest_ids: Array[StringName] = []
 var guest_story_progress: Dictionary[StringName, int] = {}
 ## 저녁 평상에서 이미 본 손님 사연 막 id (GuestStoryChapter)
 var seen_story_chapter_ids: Array[StringName] = []
+## 이웃 바구니 쪽지로 이미 남긴 사연 막 id (같은 사연 쪽지를 두 번 남기지 않게)
+var used_basket_note_ids: Array[StringName] = []
 ## 저녁 평상에서 이미 본 손님끼리 대화 id (GuestDuoTalk)
 var seen_duo_talk_ids: Array[StringName] = []
 ## 손님에게 들어서 알게 된 할머니 비법 (레시피 id)
@@ -533,6 +535,7 @@ func new_game() -> void:
 	guest_story_progress.clear()
 	seen_story_chapter_ids.clear()
 	seen_duo_talk_ids.clear()
+	used_basket_note_ids.clear()
 	todays_served_guests.clear()
 	plot_crop_ids.clear()
 	plot_days_left.clear()
@@ -657,6 +660,7 @@ func _to_save_data() -> Dictionary:
 		"seen_memory_ids": Array(seen_memory_ids).map(func(memory_id: StringName) -> String: return String(memory_id)),
 		"seen_story_chapter_ids": Array(seen_story_chapter_ids).map(func(chapter_id: StringName) -> String: return String(chapter_id)),
 		"seen_duo_talk_ids": Array(seen_duo_talk_ids).map(func(talk_id: StringName) -> String: return String(talk_id)),
+		"used_basket_note_ids": Array(used_basket_note_ids).map(func(chapter_id: StringName) -> String: return String(chapter_id)),
 		"is_feast_prep_announced": is_feast_prep_announced,
 		"feast_prep_delivered": _string_keys(feast_prep_delivered),
 	}
@@ -722,6 +726,8 @@ func _from_save_data(data: Dictionary) -> void:
 		seen_story_chapter_ids.append(StringName(str(chapter_id)))
 	for talk_id: Variant in data.get("seen_duo_talk_ids", []):
 		seen_duo_talk_ids.append(StringName(str(talk_id)))
+	for chapter_id: Variant in data.get("used_basket_note_ids", []):
+		used_basket_note_ids.append(StringName(str(chapter_id)))
 	_unlock_places_from_state()
 	is_feast_prep_announced = bool(data.get("is_feast_prep_announced", false))
 	var feast_data: Dictionary = data.get("feast_prep_delivered", {})

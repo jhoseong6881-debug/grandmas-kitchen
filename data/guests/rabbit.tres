@@ -122,18 +122,21 @@ reaction_expressions = Array[StringName]([&"surprised", &"happy"])
 script = ExtResource("40_chapter")
 id = &"rabbit_spring_1"
 open_day = 3
+basket_note = "어제 일은 잊어 주세요. 앞발은 진짜 괜찮아요!"
 talks = Array[ExtResource("9_talk")]([SubResource("StoryTalk_1"), SubResource("StoryTalk_2")])
 
 [sub_resource type="Resource" id="StoryChapter_2"]
 script = ExtResource("40_chapter")
 id = &"rabbit_spring_2"
 open_day = 6
+basket_note = "비밀 지켜 줘서 고마워요. 오늘도 연습할 거예요. 탁, 탁, 탁."
 talks = Array[ExtResource("9_talk")]([SubResource("StoryTalk_3"), SubResource("StoryTalk_4"), SubResource("StoryTalk_5")])
 
 [sub_resource type="Resource" id="StoryChapter_3"]
 script = ExtResource("40_chapter")
 id = &"rabbit_spring_3"
 open_day = 10
+basket_note = "김밥 다 먹었어요? …다 먹었으면 좋겠다."
 talks = Array[ExtResource("9_talk")]([SubResource("StoryTalk_6"), SubResource("StoryTalk_7")])
 
 [resource]
@@ -153,6 +156,7 @@ fallback_order_line = "저, 저기… 오늘은 {recipe}… 그거라도 괜찮�
 first_order_line = "와, 진짜 밥집 문이 열렸네요! 할머니 계실 때도 제가 첫 손님이었어요. …{recipe} 하나 주실 수 있나요?"
 taste_hint_line = "아, 저는 양념 없이 담백한 게 좋아요."
 porch_greeting_line = "저… 저녁에도 와도 돼요? 할머니 계실 땐 이 평상에서 같이 별을 봤거든요."
+basket_notes = Array[String](["어제 밥 정말 맛있었어요. {ingredient}, 제일 예쁜 걸로 골랐어요.", "오늘도 문 열죠? 점심때 꼭 갈게요!", "밭 지나가다가 살짝 놓고 가요. 들키면 부끄러우니까요.", "비 오는 날엔 당근전… 아, 아니에요. 그냥 맛있게 드세요."])
 thanks_line = "정말 맛있었어요... 또 와도 되죠?"
 perfect_line = "와... 칼질 솜씨가 할머니랑 똑같아요! 이거, 당근 더 드릴게요."
 evening_talks = Array[ExtResource("9_talk")]([SubResource("EveningTalk_1"), SubResource("EveningTalk_2"), SubResource("EveningTalk_3")])

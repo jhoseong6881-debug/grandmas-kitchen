@@ -12,3 +12,5 @@ extends Resource
 @export var open_day: int = 3
 ## 차례대로 나누는 대화. 대화마다 "다음"을 누르면 넘어가고, 대답이 있으면 고른 뒤에 넘어간다.
 @export var talks: Array[EveningTalk] = []
+## 이 막을 본 다음 날 아침, 이웃 바구니에 이 손님이 남기는 쪽지 (비워 두면 평소 쪽지). {name}, {ingredient} 를 쓸 수 있다.
+@export_multiline var basket_note: String = ""

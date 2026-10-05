@@ -85,6 +85,7 @@ line = "…할머니는 그랬다. 동그랗게 난 버섯은 누가 오래 기�
 script = ExtResource("40_chapter")
 id = &"hedgehog_spring_1"
 open_day = 4
+basket_note = "…그 자리, 언젠가 보여 주마. 언젠가."
 talks = Array[ExtResource("10_talk")]([SubResource("StoryTalk_1"), SubResource("StoryTalk_2")])
 
 [sub_resource type="Resource" id="StoryTalk_3"]
@@ -105,6 +106,7 @@ reaction_expressions = Array[StringName]([&"sad", &""])
 script = ExtResource("40_chapter")
 id = &"hedgehog_spring_2"
 open_day = 8
+basket_note = "…버섯, 창가에 뒀냐. 햇볕이 너무 세면 안 된다."
 talks = Array[ExtResource("10_talk")]([SubResource("StoryTalk_3"), SubResource("StoryTalk_4")])
 
 [sub_resource type="Resource" id="StoryTalk_5"]
@@ -125,6 +127,7 @@ reaction_expressions = Array[StringName]([&"happy", &"happy"])
 script = ExtResource("40_chapter")
 id = &"hedgehog_spring_3"
 open_day = 11
+basket_note = "…장갑은 네가 가져라. 버섯 딸 때 껴라. 손 다친다."
 talks = Array[ExtResource("10_talk")]([SubResource("StoryTalk_5"), SubResource("StoryTalk_6")])
 
 [resource]
@@ -145,6 +148,7 @@ fallback_order_line = "없나. …그럼 {recipe}. 그걸로 하지."
 first_order_line = "…할머니 밥집 단골이었다. 손주가 문을 열었다길래 와 봤지. …{recipe}. 따뜻하게 부탁해."
 taste_hint_line = "…맵싸하게 해 주면 좋겠군."
 porch_greeting_line = "…평상이군. 네 할머니는 여기서 내 가시 사이 낙엽을 떼어 주곤 했다."
+basket_notes = Array[String](["…{ingredient}. 비 온 다음 날 딴 거다.", "…흥. 밥값이다.", "…숲길이 젖었다. 미끄러우니 조심해라.", "…어제 밥, 나쁘지 않았다."])
 thanks_line = "…잘 먹었어. 버섯, 두고 간다."
 perfect_line = "흠… 완벽하군. 제일 좋은 버섯으로 더 주지."
 evening_talks = Array[ExtResource("10_talk")]([SubResource("EveningTalk_1"), SubResource("EveningTalk_2"), SubResource("EveningTalk_3")])
