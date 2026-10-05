@@ -2,31 +2,46 @@
 
 [ext_resource type="Script" path="res://scripts/kitchen/minigames/plate_minigame.gd" id="1_plate"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bowl"]
-bg_color = Color(0.93, 0.9, 0.84, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 190
-corner_radius_bottom_left = 190
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_plate"]
+bg_color = Color(0.93, 0.92, 0.88, 1)
+border_width_left = 18
+border_width_top = 18
+border_width_right = 18
+border_width_bottom = 18
+border_color = Color(0.82, 0.8, 0.75, 1)
+corner_radius_top_left = 260
+corner_radius_top_right = 260
+corner_radius_bottom_right = 260
+corner_radius_bottom_left = 260
+shadow_color = Color(0, 0, 0, 0.3)
+shadow_size = 14
+shadow_offset = Vector2(0, 10)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_food"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_inner"]
+bg_color = Color(0.98, 0.97, 0.94, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.86, 0.84, 0.8, 1)
+corner_radius_top_left = 200
+corner_radius_top_right = 200
+corner_radius_bottom_right = 200
+corner_radius_bottom_left = 200
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_piece"]
 bg_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 120
-corner_radius_top_right = 120
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.4, 0.3, 0.2, 1)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bowl_rim"]
-draw_center = false
-border_width_left = 10
-border_width_top = 6
-border_width_right = 10
-border_width_bottom = 12
-border_color = Color(0.42, 0.55, 0.68, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 190
-corner_radius_bottom_left = 190
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ladle_cup"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_blade"]
 bg_color = Color(0.72, 0.74, 0.78, 1)
 border_width_left = 4
 border_width_top = 4
@@ -35,15 +50,8 @@ border_width_bottom = 4
 border_color = Color(0.45, 0.47, 0.52, 1)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
-corner_radius_bottom_right = 50
-corner_radius_bottom_left = 50
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dot"]
-bg_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 20
-corner_radius_top_right = 20
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 20
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [node name="PlateMinigame" type="Control"]
 layout_mode = 3
@@ -81,155 +89,83 @@ text = "요리 담기"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Bowl" type="Panel" parent="."]
+[node name="Plate" type="Panel" parent="."]
 unique_name_in_owner = true
-clip_children = 2
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -290.0
+offset_left = -340.0
+offset_top = -200.0
+offset_right = 340.0
+offset_bottom = 220.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_plate")
+
+[node name="PlateInner" type="Panel" parent="Plate"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 60.0
+offset_top = 50.0
+offset_right = 620.0
+offset_bottom = 370.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_inner")
+
+[node name="Slots" type="Control" parent="Plate"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 60.0
+offset_top = 50.0
+offset_right = 620.0
+offset_bottom = 370.0
+mouse_filter = 2
+
+[node name="TargetMarker" type="ColorRect" parent="Plate/Slots"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 96.0
+offset_bottom = 72.0
+mouse_filter = 2
+color = Color(1, 0.84, 0.25, 0.45)
+
+[node name="Tool" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 96.0
+offset_bottom = 72.0
+mouse_filter = 2
+
+[node name="Handle" type="ColorRect" parent="Tool"]
+layout_mode = 0
+offset_left = 40.0
 offset_top = -150.0
-offset_right = 290.0
-offset_bottom = 170.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_bowl")
-
-[node name="BowlInner" type="Control" parent="Bowl"]
-unique_name_in_owner = true
-clip_contents = true
-layout_mode = 0
-offset_left = 10.0
-offset_top = 6.0
-offset_right = 570.0
-offset_bottom = 308.0
-mouse_filter = 2
-
-[node name="Fill" type="Panel" parent="Bowl/BowlInner"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_top = 302.0
-offset_right = 560.0
-offset_bottom = 302.0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_food")
-
-[node name="TargetBand" type="ColorRect" parent="Bowl/BowlInner"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_top = 100.0
-offset_right = 560.0
-offset_bottom = 135.0
-mouse_filter = 2
-color = Color(1, 0.84, 0.25, 0.5)
-
-[node name="BowlRim" type="Panel" parent="Bowl"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_bowl_rim")
-
-[node name="Stream" type="ColorRect" parent="."]
-unique_name_in_owner = true
-visible = false
-layout_mode = 0
-offset_left = 947.0
-offset_top = 330.0
-offset_right = 973.0
-offset_bottom = 400.0
-mouse_filter = 2
-
-[node name="Splash" type="CPUParticles2D" parent="."]
-unique_name_in_owner = true
-position = Vector2(960, 600)
-emitting = false
-amount = 30
-lifetime = 0.3
-direction = Vector2(0, -1)
-spread = 70.0
-gravity = Vector2(0, 900)
-initial_velocity_min = 120.0
-initial_velocity_max = 240.0
-scale_amount_min = 6.0
-scale_amount_max = 11.0
-
-[node name="Ladle" type="Control" parent="."]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -10.0
-offset_top = -270.0
-offset_right = 290.0
-offset_bottom = -190.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-
-[node name="LadleLip" type="Control" parent="Ladle"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 8.0
-offset_top = 30.0
-offset_right = 12.0
-offset_bottom = 34.0
-mouse_filter = 2
-
-[node name="Handle" type="ColorRect" parent="Ladle"]
-layout_mode = 0
-offset_left = 120.0
-offset_top = 6.0
-offset_right = 300.0
-offset_bottom = 20.0
+offset_right = 56.0
+offset_bottom = -10.0
 mouse_filter = 2
 color = Color(0.55, 0.38, 0.22, 1)
 
-[node name="Cup" type="Panel" parent="Ladle"]
+[node name="Blade" type="Panel" parent="Tool"]
 layout_mode = 0
-offset_left = 8.0
-offset_right = 140.0
-offset_bottom = 80.0
+offset_left = -6.0
+offset_top = -14.0
+offset_right = 102.0
+offset_bottom = 6.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ladle_cup")
+theme_override_styles/panel = SubResource("StyleBoxFlat_blade")
 
-[node name="BowlDots" type="HBoxContainer" parent="."]
+[node name="HeldPiece" type="Panel" parent="Tool"]
 unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = 190.0
-offset_right = 200.0
-offset_bottom = 230.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = 16
-alignment = 1
-
-[node name="BowlDotTemplate" type="Panel" parent="."]
-unique_name_in_owner = true
-visible = false
-custom_minimum_size = Vector2(40, 40)
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_top = 6.0
+offset_right = 96.0
+offset_bottom = 78.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_dot")
+theme_override_styles/panel = SubResource("StyleBoxFlat_piece")
 
 [node name="PerfectStreakLabel" type="Label" parent="."]
 unique_name_in_owner = true
@@ -271,6 +207,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="HintLabel" type="Label" parent="."]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -284,7 +221,7 @@ offset_bottom = -100.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_font_sizes/font_size = 36
-text = "꾹 누르고 있다가 금색 띠에서 손을 떼요 (클릭 / 스페이스 / Ⓐ)"
+text = "뒤집개가 금색 자리 위에 오면 눌러요 (클릭 / 스페이스 / Ⓐ)"
 horizontal_alignment = 1
 vertical_alignment = 1
 

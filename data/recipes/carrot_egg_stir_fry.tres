@@ -23,7 +23,7 @@ secret_end = 1.0
 [sub_resource type="Resource" id="CookStep_3"]
 script = ExtResource("14_cook_step")
 type = 2
-count = 2
+count = 4
 
 [resource]
 script = ExtResource("1_recipe")

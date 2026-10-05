@@ -6,10 +6,9 @@
 script = ExtResource("1_request")
 id = &"big_portion"
 line = "넉넉하게 담아 주세요!"
-guide_text = "넉넉하게 (금색 띠 위쪽에서 멈추기)"
+guide_text = "넉넉하게 (조각을 더 많이 담기)"
 thanks_line = "와, 한가득이다!"
 casual_line = "넉넉하게 담아 줘!"
 casual_thanks_line = "와, 한가득이다!"
 step_type = 2
-zone_start = 0.6
-zone_end = 1.0
+count_bonus = 2

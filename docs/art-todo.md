@@ -17,9 +17,8 @@
 | scenes/kitchen/minigames/chop_minigame.tscn (Ingredient, Slices) | 썰기 전 재료 / 썬 조각 (재료마다) | 420x160 / 24x120 | 할 일 |
 | scenes/kitchen/minigames/chop_minigame.tscn (Knife, TargetZone) | 칼 / 썰 자리 표시 | 10x300 / 50x240 | 할 일 |
 | scenes/kitchen/minigames/chop_minigame.tscn (PerfectStamp) | 완벽 도장 (지금은 금색 글자) | 900x200 | 선택 |
-| scenes/kitchen/minigames/plate_minigame.tscn (Bowl) | 그릇 | 400x480 | 할 일 |
-| scenes/kitchen/minigames/plate_minigame.tscn (Fill) | 그릇에 차오르는 음식 (레시피마다) | 340x420 | 할 일 |
-| scenes/kitchen/minigames/plate_minigame.tscn (BowlDotTemplate) | 완성한 그릇 표시 | 40x40 | 선택 |
+| scenes/kitchen/minigames/plate_minigame.tscn (Plate) | 담기: 위에서 본 접시 / 국물 그릇 (Recipe.serve_in_bowl, 묵밥) | 680x420 (원본 227x140) | 할 일 |
+| scenes/kitchen/minigames/plate_minigame.tscn (Tool, HeldPiece) | 담기: 뒤집개 / 요리 한 조각 (레시피마다, 지금은 재료 색 둥근 조각) | 108x168 / 96x72 (원본 36x56 / 32x24) | 할 일 |
 | scenes/kitchen/minigames/stir_fry_minigame.tscn (Pan, Handle) | 팬 | 520x70 + 손잡이 | 할 일 |
 | scenes/kitchen/minigames/stir_fry_minigame.tscn (Flame) | 불꽃 | 340x60 | 할 일 |
 | scenes/kitchen/minigames/stir_fry_minigame.tscn (FoodTemplate) | 볶는 재료 조각 (재료마다) | 36x36 | 할 일 |

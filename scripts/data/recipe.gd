@@ -33,6 +33,8 @@ const DEFAULT_ACTION_NAMES: Dictionary[MinigameType, String] = {
 @export var minigame_ingredient_name: String = ""
 ## 완성된 요리 그림. 비워 두면 임시 도형으로 표시한다.
 @export var finished_image: Texture2D
+## 국물 요리면 담기 미니게임에서 접시 대신 그릇(국물 색)에 담는다 (예: 묵밥)
+@export var serve_in_bowl: bool = false
 ## 버무리기 미니게임에서 묻히는 양념 (data/coatings/). 버무리기가 없는 레시피는 비워 둔다.
 @export var mix_coating: Coating
 ## 버무리기 미니게임에서 양념을 묻힐 재료. 비워 두면 첫 번째 재료를 쓴다.

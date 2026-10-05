@@ -1,79 +1,70 @@
 class_name PlateMinigame
 extends Minigame
-## 담기 미니게임. 버튼을 꾹 누르고 있으면 국자가 기울어 음식이 흘러내리며 그릇에 차오르고,
-## 금색 띠("딱 좋을 만큼")에서 손을 떼면 한 그릇이 완성된다. 그릇 여러 개를 차례로 채운다.
-## 모자라거나 많거나 넘치면 그릇을 비우고 다시 담는다. 벌칙은 없다.
-## 누르기/손 떼기 입력, 연타 방지, 완벽 표시는 공통 틀(Minigame)이 맡는다.
+## 담기 미니게임. 위에서 내려다본 접시(국물 요리는 그릇)에 점선 자리가 몇 개 있다.
+## 뒤집개가 요리 한 조각을 들고 접시 위를 좌우로 오가고, 금색 자리 위에 왔을 때 누르면 그 자리에 톡 놓인다.
+## 자리 가운데에 가까울수록 반듯하게 놓인다. 자리를 벗어나면 조각이 미끄러져 다시 집는다 (벌칙 없음).
+## 조각 색은 그 요리 재료 색 (그림이 생기기 전 임시). 누르기 입력, 연타 방지, 완벽 표시는 공통 틀(Minigame)이 맡는다.
 
 const READY_FORMAT: String = "0 / %d"
-const HIT_FORMAT: String = "쏙! %d / %d"
-const UNDER_FORMAT: String = "조금 모자라요… 다시 담아요 %d / %d"
-const OVER_FORMAT: String = "조금 많아요… 다시 담아요 %d / %d"
-const OVERFLOW_FORMAT: String = "넘쳤어요! 다시 담아요 %d / %d"
-const DONE_TEXT: String = "예쁘게 완성했어요!"
+const HIT_FORMAT: String = "톡! %d / %d"
+const MISS_FORMAT: String = "앗, 미끄러졌어요. 다시 놓아요 %d / %d"
+const DONE_TEXT: String = "예쁘게 담았어요!"
 
-## 채울 그릇 수
-@export var bowl_count: int = 3
-## 꾹 누르고 있을 때 차오르는 속도 (1초에 그릇의 몇 배만큼. 0.5면 2초에 가득)
-@export var fill_speed: float = 0.5
-## 금색 띠의 높이 (그릇 높이에 대한 비율). 클수록 쉽다.
-@export var target_band_height: float = 0.12
-## 판정을 후하게 해 주는 여유 (그릇 높이에 대한 비율). 금색 띠 위아래로 이만큼 벗어나도 맞은 것으로 친다. 화면에는 안 보인다.
-@export var judge_margin: float = 0.02
-## 그릇마다 금색 띠 가운데가 놓이는 높이의 범위 (그릇 높이에 대한 비율)
-@export var target_level_min: float = 0.5
-@export var target_level_max: float = 0.85
-## 이보다 적게 채우고 손을 떼면 실수로 살짝 누른 것으로 보고 빗나감으로 치지 않는다.
-@export var accidental_tap_level: float = 0.05
-## 빗나갔을 때 그릇이 비워지는 시간(초)
-@export var empty_duration: float = 0.35
-## 한 그릇 완성했을 때 그릇이 살짝 커졌다 돌아오는 정도와 시간(초)
-@export var bounce_scale: float = 1.05
-@export var bounce_duration: float = 0.1
-@export var bowl_done_color: Color = Color(1, 0.84, 0.25)
-@export var bowl_pending_color: Color = Color(1, 1, 1, 0.3)
-## 그릇에 담기는 음식 색 (그림이 생기기 전 임시 색). 흘러내리는 줄기와 튀는 알갱이도 이 색이다.
-@export var food_color: Color = Color(0.97, 0.93, 0.82)
-## 국자가 기울어지는 각도(라디안, 음수 = 손잡이가 올라감)와 시간(초)
-@export var ladle_pour_angle: float = -0.6
-@export var ladle_tilt_duration: float = 0.12
-@export var stream_width: float = 26.0
-## 튀는 알갱이가 음식 위에서도 보이도록 음식 색보다 이만큼 어둡게 한다 (0 ~ 1)
-@export var splash_darken: float = 0.25
+## 놓을 조각 수 (요리 단계의 횟수가 없을 때)
+@export var piece_count: int = 4
+## 한 줄에 놓는 자리 수
+@export var slots_per_row: int = 4
+## 자리(조각) 크기와 자리 사이 간격
+@export var slot_size: Vector2 = Vector2(96, 72)
+@export var slot_gap: Vector2 = Vector2(24, 36)
+## 맞는 폭 (자리 폭에 대한 배율). 클수록 쉽다. 큰 국자(조리도구)가 있으면 넓어진다.
+@export var hit_width_ratio: float = 1.0
+## 판정을 후하게 해 주는 여유(픽셀). 화면에는 안 보인다.
+@export var judge_margin: float = 8.0
+## 뒤집개가 좌우로 오가는 빠르기(1초에 픽셀)와, 접시 가장자리에서 돌아서는 여백
+@export var tool_speed: float = 450.0
+@export var tool_edge_padding: float = 70.0
+## 뒤집개가 자리 위로 떠 있는 높이(픽셀)
+@export var tool_hover_height: float = 90.0
+## 조각이 내려앉는 시간, 빗나간 조각이 미끄러져 사라지는 시간(초)
+@export var drop_duration: float = 0.12
+@export var slip_duration: float = 0.3
+## 다 놓았을 때 접시가 살짝 커졌다 돌아오는 정도와 시간(초)
+@export var bounce_scale: float = 1.04
+@export var bounce_duration: float = 0.12
+## 조각 색이 재료 색보다 조금 밝게, 테두리는 진하게
+@export var piece_lighten: float = 0.1
+@export var piece_outline_darken: float = 0.45
+## 재료 색을 알 수 없을 때 조각 색
+@export var default_piece_color: Color = Color(0.9, 0.6, 0.35)
+@export var empty_slot_color: Color = Color(0.55, 0.5, 0.45, 0.35)
+@export var target_slot_color: Color = Color(1, 0.84, 0.25, 0.55)
+## 국물 요리(Recipe.serve_in_bowl)일 때 그릇 안쪽 색 (국물)
+@export var broth_color: Color = Color(0.78, 0.62, 0.42)
 
-## 이번 단계의 그릇 수와 차오르는 빠르기 (요리 단계에서 정한 값, 없으면 위의 기본값)
-var _bowl_count: int = 0
-## 이번에 쓰는 금색 띠 높이 (큰 국자가 있으면 넓어진다)
-var _band_height: float = 0.12
-var _fill_speed: float = 0.5
-var _bowls_done: int = 0
-## 지금 그릇에 찬 양 (0 = 빈 그릇, 1 = 가득)
-var _fill_level: float = 0.0
-var _target_level: float = 0.0
-var _is_holding: bool = false
-var _is_emptying: bool = false
+var _piece_total: int = 0
+var _pieces_done: int = 0
+## 자리마다 접시 안 위치 (자리의 왼쪽 위)
+var _slot_positions: Array[Vector2] = []
+var _slot_nodes: Array[Panel] = []
+var _piece_colors: Array[Color] = []
+var _tool_direction: float = 1.0
+var _tool_speed: float = 520.0
+var _hit_width: float = 96.0
+var _is_dropping: bool = false
 
-@onready var _bowl: Control = %Bowl
-@onready var _bowl_inner: Control = %BowlInner
-@onready var _fill: Control = %Fill
-@onready var _ladle: Control = %Ladle
-@onready var _ladle_lip: Control = %LadleLip
-@onready var _stream: ColorRect = %Stream
-@onready var _splash: CPUParticles2D = %Splash
-@onready var _target_band: ColorRect = %TargetBand
-@onready var _bowl_dots: HBoxContainer = %BowlDots
-@onready var _bowl_dot_template: Control = %BowlDotTemplate
+@onready var _plate: Panel = %Plate
+@onready var _plate_inner: Panel = %PlateInner
+@onready var _slots: Control = %Slots
+@onready var _target_marker: Control = %TargetMarker
+@onready var _tool: Control = %Tool
+@onready var _held_piece: Panel = %HeldPiece
+@onready var _hint_label: Label = %HintLabel
 
 
 func _ready() -> void:
 	super()
-	_bowl.pivot_offset = _bowl.size / 2.0
-	_bowl_dot_template.hide()
-	# 국자는 따르는 입구(LadleLip)를 중심으로 기울어진다.
-	_ladle.pivot_offset = _ladle_lip.position
-	_fill.self_modulate = food_color
-	_stream.color = food_color
-	_splash.color = food_color.darkened(splash_darken)
+	_plate.pivot_offset = _plate.size / 2.0
 
 
 func _get_minigame_type() -> Recipe.MinigameType:
@@ -81,127 +72,191 @@ func _get_minigame_type() -> Recipe.MinigameType:
 
 
 func _on_start(recipe: Recipe) -> void:
-	_bowl_count = _step_count(bowl_count)
-	_band_height = target_band_height * _window_scale
-	_fill_speed = fill_speed * _speed
-	_bowls_done = 0
-	for dot: Node in _bowl_dots.get_children():
-		dot.queue_free()
-	for i: int in _bowl_count:
-		var dot: Control = _bowl_dot_template.duplicate()
-		dot.modulate = bowl_pending_color
-		dot.show()
-		_bowl_dots.add_child(dot)
-	_is_holding = false
-	_is_emptying = false
-	_ladle.rotation = 0.0
-	_stream.hide()
-	_splash.emitting = false
-	_start_new_bowl()
-	_clear_zones(_target_band)
+	_piece_total = maxi(_step_count(piece_count), 1)
+	_pieces_done = 0
+	_tool_speed = tool_speed * _speed
+	_hit_width = slot_size.x * hit_width_ratio * _window_scale
+	_is_dropping = false
+	_piece_colors = _recipe_colors(recipe)
+	_set_bowl_style(recipe.serve_in_bowl)
+	_build_slots()
+	_clear_zones(_target_marker)
+	_target_marker.size = Vector2(_hit_width, slot_size.y)
+	_move_target_to(0)
+	_tool_direction = 1.0
+	_tool.position.x = _plate.position.x + tool_edge_padding
+	_prepare_next_piece()
 	_title_label.text = _step_title(Recipe.MinigameType.PLATE, recipe.display_name)
-	_progress_label.text = READY_FORMAT % _bowl_count
+	_progress_label.text = READY_FORMAT % _piece_total
 
 
 func _process(delta: float) -> void:
 	super(delta)
-	if not _is_playing or not _is_holding:
+	if not _is_playing:
 		return
-	_set_fill_level(_fill_level + _fill_speed * delta)
-	_update_stream()
-	if _fill_level >= 1.0:
-		_is_holding = false
-		_set_pouring(false)
-		_miss(OVERFLOW_FORMAT)
+	var left: float = _plate.position.x + tool_edge_padding
+	var right: float = _plate.position.x + _plate.size.x - tool_edge_padding
+	_tool.position.x += _tool_direction * _tool_speed * delta
+	if _tool.position.x >= right:
+		_tool.position.x = right
+		_tool_direction = -1.0
+	elif _tool.position.x <= left:
+		_tool.position.x = left
+		_tool_direction = 1.0
 
 
 func _on_press() -> void:
-	if not _is_emptying:
-		_is_holding = true
-		_set_pouring(true)
-
-
-func _on_release() -> void:
-	if not _is_holding:
+	if _is_dropping or _pieces_done >= _piece_total:
 		return
-	_is_holding = false
-	_set_pouring(false)
-	if _fill_level < accidental_tap_level:
-		_set_fill_level(0.0)
-		return
-	if is_fill_on_target():
-		# 금색 띠 아래 = 0, 위 = 1
-		_register_hit((_fill_level - (_target_level - _band_height / 2.0)) / _band_height)
-		_finish_bowl()
-	elif _fill_level < _target_level:
-		_miss(UNDER_FORMAT)
+	var offset: float = _tool_tip_x() - _slot_center_x(_pieces_done)
+	if absf(offset) <= _hit_width / 2.0 + judge_margin:
+		# 맞는 폭의 왼쪽 끝 = 0, 오른쪽 끝 = 1
+		_register_hit((offset + _hit_width / 2.0) / _hit_width)
+		_drop_piece(offset)
 	else:
-		_miss(OVER_FORMAT)
+		_register_miss()
+		_progress_label.text = MISS_FORMAT % [_pieces_done, _piece_total]
+		_slip_piece()
 
 
-## 금색 띠 안에 비법 자리나 부탁 자리를 그린다. 아래쪽이 0, 위쪽이 1. 띠가 옮겨 가면 함께 옮겨 간다.
+## 금색 자리 안에 비법 자리나 부탁 자리를 그린다. 왼쪽이 0, 오른쪽이 1. 자리가 옮겨 가면 함께 옮겨 간다.
 func _show_zone(start: float, end: float, color: Color, zone_name: String) -> void:
-	var band_height: float = _target_band.size.y
-	_make_zone(_target_band, Rect2(0.0, band_height * (1.0 - end), _target_band.size.x, band_height * (end - start)),
-			color, zone_name)
+	_make_zone(_target_marker, Rect2(_hit_width * start, 0.0, _hit_width * (end - start), slot_size.y), color, zone_name)
 
 
-func is_fill_on_target() -> bool:
-	return absf(_fill_level - _target_level) <= _band_height / 2.0 + judge_margin
+## 뒤집개 끝(들고 있는 조각 가운데)의 x (이 미니게임 화면 기준)
+func _tool_tip_x() -> float:
+	return _tool.position.x + _held_piece.position.x + _held_piece.size.x / 2.0
 
 
-func _finish_bowl() -> void:
-	_bowl_dots.get_child(_bowls_done).modulate = bowl_done_color
-	_bowls_done += 1
-	_progress_label.text = HIT_FORMAT % [_bowls_done, _bowl_count]
-	_bowl.scale = Vector2.ONE * bounce_scale
+func _slot_center_x(index: int) -> float:
+	return _plate.position.x + _slots.position.x + _slot_positions[index].x + slot_size.x / 2.0
+
+
+## 맞힌 조각: 들고 있던 자리(가운데에서 offset 만큼 비껴서)로 톡 내려앉는다.
+func _drop_piece(offset: float) -> void:
+	_is_dropping = true
+	var index: int = _pieces_done
+	var piece: Panel = _make_piece(_piece_colors[index % _piece_colors.size()])
+	_slots.add_child(piece)
+	piece.global_position = _held_piece.global_position
+	_held_piece.hide()
+	var landing: Vector2 = _slot_positions[index] + Vector2(clampf(offset, -slot_size.x / 3.0, slot_size.x / 3.0), 0.0)
 	var tween: Tween = create_tween()
-	tween.tween_property(_bowl, "scale", Vector2.ONE, bounce_duration)
-	if _bowls_done >= _bowl_count:
+	tween.tween_property(piece, "position", landing, drop_duration).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	await tween.finished
+	_slot_nodes[index].hide()
+	_pieces_done += 1
+	_progress_label.text = HIT_FORMAT % [_pieces_done, _piece_total]
+	if _pieces_done >= _piece_total:
+		_target_marker.hide()
+		_plate.scale = Vector2.ONE * bounce_scale
+		create_tween().tween_property(_plate, "scale", Vector2.ONE, bounce_duration)
 		_complete(DONE_TEXT)
-	else:
-		tween.tween_callback(_start_new_bowl)
+		return
+	_move_target_to(_pieces_done)
+	_prepare_next_piece()
+	_is_dropping = false
 
 
-func _miss(text_format: String) -> void:
-	_register_miss()
-	_progress_label.text = text_format % [_bowls_done, _bowl_count]
-	_is_emptying = true
-	var tween: Tween = create_tween()
-	tween.tween_method(_set_fill_level, _fill_level, 0.0, empty_duration)
-	tween.tween_callback(func() -> void: _is_emptying = false)
+## 빗나간 조각: 미끄러지며 사라지고, 뒤집개가 새 조각을 집는다.
+func _slip_piece() -> void:
+	_is_dropping = true
+	var piece: Panel = _make_piece(_held_piece.self_modulate)
+	add_child(piece)
+	piece.global_position = _held_piece.global_position
+	_held_piece.hide()
+	var tween: Tween = create_tween().set_parallel()
+	tween.tween_property(piece, "position", piece.position + Vector2(_tool_direction * 60.0, 50.0), slip_duration)
+	tween.tween_property(piece, "rotation", _tool_direction * 0.6, slip_duration)
+	tween.tween_property(piece, "modulate:a", 0.0, slip_duration)
+	await tween.finished
+	piece.queue_free()
+	_prepare_next_piece()
+	_is_dropping = false
 
 
-## 따르기 시작/멈춤: 국자를 기울이거나 세우고, 흘러내리는 줄기와 튀는 알갱이를 켜고 끈다.
-func _set_pouring(is_pouring: bool) -> void:
-	var tween: Tween = create_tween()
-	tween.tween_property(_ladle, "rotation", ladle_pour_angle if is_pouring else 0.0, ladle_tilt_duration)
-	_stream.visible = is_pouring
-	_splash.emitting = is_pouring
-	if is_pouring:
-		_update_stream()
+func _prepare_next_piece() -> void:
+	_held_piece.self_modulate = _piece_colors[_pieces_done % _piece_colors.size()]
+	_held_piece.show()
+	# 뒤집개는 지금 놓을 자리 줄 위에 떠 있다.
+	_tool.position.y = _plate.position.y + _slots.position.y + _slot_positions[_pieces_done].y - tool_hover_height
 
 
-## 줄기는 국자 입구에서 음식 윗면까지 이어지고, 알갱이는 윗면에서 튄다.
-func _update_stream() -> void:
-	var lip: Vector2 = _ladle_lip.get_global_rect().get_center() - global_position
-	var inner_rect: Rect2 = _bowl_inner.get_global_rect()
-	var surface_y: float = inner_rect.end.y - _fill.size.y - global_position.y
-	_stream.position = Vector2(lip.x - stream_width / 2.0, lip.y)
-	_stream.size = Vector2(stream_width, maxf(surface_y - lip.y, 0.0))
-	_splash.position = Vector2(lip.x, surface_y)
+func _move_target_to(index: int) -> void:
+	_target_marker.show()
+	_target_marker.position = _slot_positions[index] + Vector2((slot_size.x - _hit_width) / 2.0, 0.0)
 
 
-func _start_new_bowl() -> void:
-	_set_fill_level(0.0)
-	_target_level = randf_range(target_level_min, target_level_max)
-	var inner_height: float = _bowl_inner.size.y
-	_target_band.size.y = inner_height * _band_height
-	_target_band.position.y = inner_height * (1.0 - _target_level - _band_height / 2.0)
+## 자리들을 접시 가운데에 줄지어 놓는다 (한 줄에 slots_per_row 개).
+func _build_slots() -> void:
+	for child: Node in _slots.get_children():
+		if child != _target_marker:
+			child.queue_free()
+	_slot_positions.clear()
+	_slot_nodes.clear()
+	var rows: int = ceili(float(_piece_total) / slots_per_row)
+	var total_height: float = rows * slot_size.y + (rows - 1) * slot_gap.y
+	var area: Vector2 = _slots.size
+	for i: int in _piece_total:
+		var row: int = i / slots_per_row
+		var in_row: int = mini(slots_per_row, _piece_total - row * slots_per_row)
+		var column: int = i % slots_per_row
+		var row_width: float = in_row * slot_size.x + (in_row - 1) * slot_gap.x
+		var slot_position: Vector2 = Vector2((area.x - row_width) / 2.0 + column * (slot_size.x + slot_gap.x),
+				(area.y - total_height) / 2.0 + row * (slot_size.y + slot_gap.y))
+		_slot_positions.append(slot_position)
+		var slot: Panel = Panel.new()
+		slot.position = slot_position
+		slot.size = slot_size
+		slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var style: StyleBoxFlat = StyleBoxFlat.new()
+		style.draw_center = false
+		style.border_color = empty_slot_color
+		style.set_border_width_all(4)
+		style.set_corner_radius_all(24)
+		slot.add_theme_stylebox_override("panel", style)
+		_slots.add_child(slot)
+		_slot_nodes.append(slot)
+	_slots.move_child(_target_marker, -1)
 
 
-func _set_fill_level(level: float) -> void:
-	_fill_level = clampf(level, 0.0, 1.0)
-	var inner_height: float = _bowl_inner.size.y
-	_fill.size.y = inner_height * _fill_level
-	_fill.position.y = inner_height - _fill.size.y
+## 요리 조각 하나 (그림이 생기기 전: 재료 색 둥근 조각 + 진한 테두리)
+func _make_piece(color: Color) -> Panel:
+	var piece: Panel = Panel.new()
+	piece.size = slot_size
+	piece.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var style: StyleBoxFlat = StyleBoxFlat.new()
+	style.bg_color = color
+	style.border_color = color.darkened(piece_outline_darken)
+	style.set_border_width_all(4)
+	style.set_corner_radius_all(24)
+	piece.add_theme_stylebox_override("panel", style)
+	return piece
+
+
+## 조각 색: 레시피 재료마다 한 색씩 (겹치는 재료는 한 번). 요리 단계에 임시 색이 있으면 그것.
+func _recipe_colors(recipe: Recipe) -> Array[Color]:
+	var colors: Array[Color] = []
+	if _step != null and _step.placeholder_color.a > 0.0:
+		colors.append(_step.placeholder_color)
+		return colors
+	for ingredient: Ingredient in recipe.ingredients:
+		if ingredient == null:
+			continue
+		var color: Color = ingredient.placeholder_color.lightened(piece_lighten)
+		if color not in colors:
+			colors.append(color)
+	if colors.is_empty():
+		colors.append(default_piece_color)
+	return colors
+
+
+## 국물 요리는 그릇 안에 국물 색을 깔고 테두리를 두껍게, 아니면 납작한 흰 접시
+func _set_bowl_style(is_bowl: bool) -> void:
+	var inner: StyleBoxFlat = _plate_inner.get_theme_stylebox("panel").duplicate()
+	inner.bg_color = broth_color if is_bowl else Color(0.98, 0.97, 0.94)
+	_plate_inner.add_theme_stylebox_override("panel", inner)
+	var rim: StyleBoxFlat = _plate.get_theme_stylebox("panel").duplicate()
+	rim.set_border_width_all(36 if is_bowl else 18)
+	_plate.add_theme_stylebox_override("panel", rim)
