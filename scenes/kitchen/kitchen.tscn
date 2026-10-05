@@ -16,6 +16,7 @@
 [ext_resource type="PackedScene" path="res://scenes/kitchen/result_board.tscn" id="16_result"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/simmer_minigame.tscn" id="13_simmer"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/kitchen_door.tscn" id="20_door"]
+[ext_resource type="PackedScene" path="res://scenes/ui/notebook_button.tscn" id="90_notebook_button"]
 
 [node name="Kitchen" type="Control"]
 layout_mode = 3
@@ -222,15 +223,13 @@ layout_mode = 1
 unique_name_in_owner = true
 layout_mode = 1
 
-[node name="NotebookButton" type="Button" parent="."]
+[node name="NotebookButton" parent="." instance=ExtResource("90_notebook_button")]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 48.0
 offset_top = 170.0
 offset_right = 288.0
-offset_bottom = 230.0
-theme_override_font_sizes/font_size = 24
-text = "손님 수첩"
+offset_bottom = 278.0
 
 [node name="GuestNotebook" parent="." instance=ExtResource("8_notebook")]
 unique_name_in_owner = true

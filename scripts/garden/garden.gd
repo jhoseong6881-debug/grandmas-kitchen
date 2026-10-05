@@ -35,7 +35,7 @@ const RUSTLE_SOUND: StringName = &"rustle"
 @export_file("*.tscn") var market_scene_path: String = "res://scenes/garden/market.tscn"
 ## 목표판 (노트, 소문, 장날, 봄 잔치)과 놓을 자리 (손님 수첩 버튼 아래)
 @export var goal_board_scene: PackedScene = preload("res://scenes/ui/goal_board.tscn")
-@export var goal_board_position: Vector2 = Vector2(48, 190)
+@export var goal_board_position: Vector2 = Vector2(48, 238)
 ## 이웃이 바구니에 두고 가는 재료 개수
 @export var gift_amount: int = 1
 ## 거둘 때 "+1 당근"이 떠오르는 높이(픽셀)와 시간(초)

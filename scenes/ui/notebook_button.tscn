@@ -1,0 +1,11 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/notebook_button.gd" id="1_button"]
+
+[node name="NotebookButton" type="Button"]
+offset_right = 240.0
+offset_bottom = 108.0
+theme_override_constants/h_separation = 6
+theme_override_font_sizes/font_size = 24
+text = "손님 수첩"
+script = ExtResource("1_button")

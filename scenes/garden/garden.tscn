@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" path="res://scenes/garden/plant_picker.tscn" id="6_picker"]
 [ext_resource type="PackedScene" path="res://scenes/garden/feast_prep_panel.tscn" id="7_feast"]
 [ext_resource type="PackedScene" path="res://scenes/garden/basket_note.tscn" id="8_note"]
+[ext_resource type="PackedScene" path="res://scenes/ui/notebook_button.tscn" id="90_notebook_button"]
 
 [node name="Garden" type="Control" unique_id=1678010223]
 layout_mode = 3
@@ -128,15 +129,13 @@ grow_vertical = 0
 theme_override_font_sizes/font_size = 36
 text = "부엌으로 가기"
 
-[node name="NotebookButton" type="Button" parent="." unique_id=781287375]
+[node name="NotebookButton" parent="." unique_id=781287375 instance=ExtResource("90_notebook_button")]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 48.0
 offset_top = 110.0
 offset_right = 288.0
-offset_bottom = 170.0
-theme_override_font_sizes/font_size = 24
-text = "손님 수첩"
+offset_bottom = 218.0
 
 [node name="PlaceLabel" type="Label" parent="."]
 layout_mode = 1
