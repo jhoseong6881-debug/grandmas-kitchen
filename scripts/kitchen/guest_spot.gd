@@ -58,6 +58,28 @@ var _walk_tween: Tween
 var _raincoat: RaincoatShape = RaincoatShape.new()
 
 
+## 말풍선을 닫고 옆으로 걸어 나가며 흐려진다 (to_left 가 false 면 오른쪽으로). 끝나면 숨고 제자리로 돌아간다. 기다리려면 await.
+func walk_out(to_left: bool = true) -> void:
+	_kill_walk()
+	if _home_position == Vector2.ZERO:
+		_home_position = position
+	_bubble.hide()
+	_name_label.hide()
+	_walk_tween = create_tween()
+	var step_time: float = walk_duration / walk_steps
+	for i: int in walk_steps:
+		var step_end: Vector2 = _home_position + Vector2((-1.0 if to_left else 1.0) * walk_distance * float(i + 1) / walk_steps, 0.0)
+		_walk_tween.tween_callback(Sound.play.bind(WALK_SOUND))
+		_walk_tween.tween_property(self, "position", step_end + Vector2(0.0, -walk_bob_height), step_time / 2.0)
+		_walk_tween.tween_property(self, "position:y", step_end.y, step_time / 2.0)
+	_walk_tween.parallel().tween_property(self, "modulate:a", 0.0, step_time)
+	await _walk_tween.finished
+	hide()
+	position = _home_position
+	modulate.a = 1.0
+	_name_label.show()
+
+
 ## 제자리에서 스르륵 나타난다. 다 나타나면 이름과 말풍선이 보인다. show_guest 를 먼저 불러 둔다. 기다리려면 await.
 ## show_bubble 이 false 면 말풍선은 건드리지 않는다 (부르는 쪽이 set_bubble_shown 으로 정한다).
 func fade_in(show_bubble: bool = true) -> void:
@@ -117,18 +139,26 @@ func _kill_walk() -> void:
 		_walk_tween.kill()
 
 
-func walk_in() -> void:
+## 지금 보여 주는 손님 (없으면 null)
+func get_guest() -> AnimalGuest:
+	return _guest if visible else null
+
+
+## 옆에서 걸어와 제자리에 선다. from_offset: 제자리에서 얼마나 떨어진 곳에서 걷기 시작하는지 (비우면 오른쪽 walk_distance).
+func walk_in(from_offset: Vector2 = Vector2.INF) -> void:
 	if _walk_tween != null and _walk_tween.is_valid():
 		_walk_tween.kill()
 	if _home_position == Vector2.ZERO:
 		_home_position = position
-	position = _home_position + Vector2(walk_distance, 0.0)
+	var start: Vector2 = from_offset if from_offset != Vector2.INF else Vector2(walk_distance, 0.0)
+	position = _home_position + start
+	modulate.a = 1.0
 	_bubble.hide()
 	show()
 	_walk_tween = create_tween()
 	var step_time: float = walk_duration / walk_steps
 	for i: int in walk_steps:
-		var step_end: Vector2 = _home_position + Vector2(walk_distance * (1.0 - float(i + 1) / walk_steps), 0.0)
+		var step_end: Vector2 = _home_position + start * (1.0 - float(i + 1) / walk_steps)
 		_walk_tween.tween_callback(Sound.play.bind(WALK_SOUND))
 		_walk_tween.tween_property(self, "position", step_end + Vector2(0.0, -walk_bob_height), step_time / 2.0)
 		_walk_tween.tween_property(self, "position:y", step_end.y, step_time / 2.0)

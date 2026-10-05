@@ -59,6 +59,9 @@ var _promise_talk: EveningTalk
 var _promise_guest: AnimalGuest
 var _promise_recipe: Recipe
 
+## 손님이 바뀔 때: 앞 손님이 걸어 나가고 다음 손님이 걸어오기 전까지 쉬는 시간(초)
+@export var guest_switch_pause: float = 0.7
+
 @onready var _day_label: Label = %DayLabel
 @onready var _guest_spot: GuestSpot = %GuestSpot
 ## 손님끼리 대화할 때 옆에 와 앉는 손님 자리 (말풍선이 머리 위)
@@ -164,7 +167,7 @@ func _add_guest_beats(guest: AnimalGuest, is_first: bool) -> void:
 				_tell_talk(_promise_talk))
 	var first_beat: Callable = guest_beats[0]
 	guest_beats[0] = func() -> void:
-		_switch_guest(guest)
+		await _switch_guest(guest)
 		first_beat.call()
 	_beats.append_array(guest_beats)
 
@@ -187,7 +190,7 @@ func _add_feast_announcement_beats() -> void:
 			var line: String = lines[i]
 			if i == 0:
 				_beats.append(func() -> void:
-					_switch_guest(announcer)
+					await _switch_guest(announcer)
 					_guest_spot.show_guest(announcer, line))
 			else:
 				_beats.append(_guest_spot.say.bind(line))
@@ -198,18 +201,37 @@ func _add_feast_announcement_beats() -> void:
 		_status_label.text = prep.announced_status_text)
 
 
-## 다음 손님으로 바꾼다. 앞 손님이 남긴 아래 글과 노트 카드는 치운다. 옆에 서 있던 손님은 사라진다.
+## 다음 손님으로 바꾼다. 앞 손님이 남긴 아래 글과 노트 카드는 치운다.
+## 앞 손님이 있으면 먼저 마을 길로 걸어 나가고, 잠깐 쉰 뒤 다음 손님이 걸어온다 (갑자기 바뀌지 않게).
+## 다음 손님이 이미 옆에 서 있던 손님(손님끼리 대화 상대)이면 나갔다 다시 오지 않고 가운데로 옮겨 선다.
+## 다음 손님이 걷기 시작하면 돌아온다 (그 뒤에 부르는 쪽이 show_guest 로 그림과 말을 바꾼다).
 func _switch_guest(guest: AnimalGuest) -> void:
-	if _side_spot.visible:
+	_next_button.hide()
+	_status_label.text = ""
+	_note_card.hide()
+	var from_side: bool = _side_spot.get_guest() == guest
+	if _guest_spot.visible:
+		if _side_spot.visible and not from_side:
+			_side_spot.fade_out()
+		# 옆 손님이 가운데로 올 때는 그 손님과 엇갈리지 않게 반대쪽(오른쪽)으로 나간다.
+		await _guest_spot.walk_out(not from_side)
+		if not from_side:
+			await get_tree().create_timer(guest_switch_pause, false).timeout
+	elif _side_spot.visible and not from_side:
 		_side_spot.fade_out()
 	_evening_guest = guest
 	if guest.id not in _met_tonight_ids:
 		_met_tonight_ids.append(guest.id)
-	_status_label.text = ""
-	_note_card.hide()
 	if guest.id not in GameState.porch_met_guest_ids:
 		GameState.porch_met_guest_ids.append(guest.id)
-	_guest_spot.walk_in()
+	if from_side:
+		# 옆자리에서 가운데로: 옆 손님을 숨기고 가운데 자리가 그 자리에서부터 걸어온다.
+		var offset: Vector2 = _side_spot.position - _guest_spot.position
+		_side_spot.hide()
+		_guest_spot.show_guest(guest, "")
+		_guest_spot.walk_in(offset)
+	else:
+		_guest_spot.walk_in()
 	_wait_until_seated()
 
 
