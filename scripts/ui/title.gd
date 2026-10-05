@@ -5,6 +5,10 @@ extends Control
 const CONTINUE_FORMAT: String = "이어 하기 (%s %d일째 아침)"
 const SPRING_COMPLETED_TEXT: String = "봄 완료 (여름은 준비 중)"
 const LOAD_FAILED_TEXT: String = "저장된 게임을 불러오지 못했어요. 새 게임으로 시작해 주세요."
+## 이어 하기 요약: 노트 수, 그날 있는 일 (DayPreview)
+const SUMMARY_NOTES_FORMAT: String = "할머니 노트 %d / %d"
+const SUMMARY_TODAY_FORMAT: String = "오늘은   %s"
+const SUMMARY_SEPARATOR: String = "\n"
 
 ## 이 장면의 배경음악. 비워 두면 앞 장면의 음악을 서서히 끈다.
 @export var music: AudioStream
@@ -22,6 +26,8 @@ var _can_continue: bool = false
 @onready var _quit_button: Button = %QuitButton
 @onready var _settings_panel: SettingsPanel = %SettingsPanel
 @onready var _message_label: Label = %MessageLabel
+## 이어 하기 버튼 아래: 지난번 이어 갈 실마리 (노트 수, 오늘 있는 일)
+@onready var _summary_label: Label = %SummaryLabel
 @onready var _confirm_panel: Control = %ConfirmPanel
 @onready var _confirm_yes_button: Button = %ConfirmYesButton
 @onready var _confirm_no_button: Button = %ConfirmNoButton
@@ -38,6 +44,7 @@ func _ready() -> void:
 	_confirm_yes_button.pressed.connect(_start_new_game)
 	_confirm_no_button.pressed.connect(_close_confirm)
 	_message_label.text = ""
+	_summary_label.text = ""
 	_confirm_panel.hide()
 	var summary: Dictionary = GameState.read_save_summary()
 	if summary.is_empty():
@@ -65,11 +72,27 @@ func _ready() -> void:
 		_continue_button.text = CONTINUE_FORMAT % [season.display_name if season != null else "", day]
 		_continue_button.show()
 		_continue_button.grab_focus()
+		_show_summary()
+
+
+## 세이브를 미리 불러와서, 이어 하면 오늘 무엇이 있는지 보여 준다 (며칠 만에 켜도 바로 이어 가게).
+## 새 게임을 고르면 GameState.start_new_game 이 다시 비우므로 미리 불러 둬도 괜찮다.
+func _show_summary() -> void:
+	if not GameState.load_game():
+		return
+	var season_recipes: Array[Recipe] = GameData.get_all_recipes().filter(
+			func(recipe: Recipe) -> bool: return recipe.note_season == GameState.current_season)
+	var parts: PackedStringArray = [SUMMARY_NOTES_FORMAT % [GameState.count_found_notes(), season_recipes.size()]]
+	var today: String = DayPreview.get_text(GameState.current_day, false)
+	if not today.is_empty():
+		parts.append(SUMMARY_TODAY_FORMAT % today)
+	_summary_label.text = SUMMARY_SEPARATOR.join(parts)
 
 
 func _on_continue_button_pressed() -> void:
 	if not GameState.load_game():
 		_message_label.text = LOAD_FAILED_TEXT
+		_summary_label.text = ""
 		_continue_button.hide()
 		_new_game_button.grab_focus()
 		return
