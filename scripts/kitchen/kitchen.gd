@@ -248,6 +248,12 @@ func _start_lunch() -> void:
 	_take_promise()
 	_special = GameData.get_special_lunch(GameState.current_day)
 	_picnic_host = GameData.get_guest(_special.host_id) if _special != null else null
+	# 특별한 점심 날의 주인 손님은 늘 첫 손님이다 (이 기능이 생기기 전에 정해 둔 오늘 손님이면 맨 앞에 넣고 맨 뒤를 뺀다).
+	if _picnic_host != null and _picnic_host not in _todays_guests:
+		_todays_guests.push_front(_picnic_host)
+		if _todays_guests.size() > maxi(_guests_today, 1):
+			_todays_guests.pop_back()
+		_guests_today = _todays_guests.size()
 	_is_picnic = _special != null and _special.kind == SpecialLunch.Kind.PICNIC and _picnic_host != null \
 			and not _todays_guests.is_empty()
 	_picnic_dishes.clear()
@@ -547,6 +553,8 @@ func _on_evening_button_pressed() -> void:
 
 ## 주인 손님이 들어와서 오늘 손님 모두의 도시락을 주문한다.
 func _start_picnic() -> void:
+	# 주인 손님이 들어오는 동안 평소 버튼(요리하기 등)이 눌리지 않게 모두 숨긴다.
+	_show_only_button(null)
 	var others: PackedStringArray = []
 	for guest: AnimalGuest in _todays_guests:
 		if guest != _picnic_host:
