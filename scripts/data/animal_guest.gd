@@ -52,6 +52,8 @@ const EXPRESSION_SAD: StringName = &"sad"
 @export var perfect_line: String = "와, 정말 맛있어요!"
 ## 저녁 평상 대화. 찾아올 때마다 하나씩 순서대로 나누고, 다 나누면 처음부터 다시.
 @export var evening_talks: Array[EveningTalk] = []
+## 계절 동안 이어지는 사연. 막 순서대로 넣는다 (GuestStoryChapter). 열린 막이 있으면 저녁 평상에서 평소 이야기 대신 한다.
+@export var story_chapters: Array[GuestStoryChapter] = []
 ## 저녁 평상에서 돌려주는 할머니 레시피 노트 페이지. 찾아올 때마다 아직 안 돌려준 첫 페이지를 준다.
 @export var note_recipes: Array[Recipe] = []
 ## 계절 마무리 잔치에서 하는 인사
@@ -72,6 +74,23 @@ const EXPRESSION_SAD: StringName = &"sad"
 func get_regular_reward(tier: int) -> RegularReward:
 	var index: int = tier - 1
 	return regular_rewards[index] if index >= 0 and index < regular_rewards.size() else null
+
+
+## 지금 할 사연 막: 이 계절 막 중 아직 안 본 첫 막이 day 에 열렸으면 그 막, 아니면 null (앞 막을 봐야 다음 막).
+func get_next_story_chapter(season: Season.Id, day: int, seen_ids: Array[StringName]) -> GuestStoryChapter:
+	for chapter: GuestStoryChapter in story_chapters:
+		if chapter == null or chapter.season != season or chapter.id in seen_ids:
+			continue
+		return chapter if day >= chapter.open_day else null
+	return null
+
+
+## 이 계절 사연을 끝까지 봤는지 (사연이 없으면 false)
+func has_finished_story(season: Season.Id, seen_ids: Array[StringName]) -> bool:
+	var chapters: Array[GuestStoryChapter] = story_chapters.filter(
+			func(chapter: GuestStoryChapter) -> bool: return chapter != null and chapter.season == season)
+	return not chapters.is_empty() and chapters.all(
+			func(chapter: GuestStoryChapter) -> bool: return chapter.id in seen_ids)
 
 
 ## 이 표정의 그림. 우비를 입었으면 우비 그림, 그 표정 그림이 없으면 기본 그림. 둘 다 없으면 null (임시 도형).
