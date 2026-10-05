@@ -13,6 +13,7 @@
 [ext_resource type="Script" uid="uid://dyen15kduraty" path="res://scripts/data/regular_reward.gd" id="30_reward"]
 [ext_resource type="Resource" path="res://data/ingredients/mushroom.tres" id="31_gift"]
 [ext_resource type="Resource" path="res://data/keepsakes/mushroom_basket.tres" id="32_keepsake"]
+[ext_resource type="Script" path="res://scripts/data/guest_story_chapter.gd" id="40_chapter"]
 
 [sub_resource type="Resource" id="EveningTalk_1"]
 script = ExtResource("10_talk")
@@ -69,6 +70,63 @@ talk = SubResource("TierTalk_3")
 gift_line = "…네 할머니랑 쓰던 바구니다. …이제 네 거다."
 keepsake = ExtResource("32_keepsake")
 
+[sub_resource type="Resource" id="StoryTalk_1"]
+script = ExtResource("10_talk")
+line = "…네 할머니가 끝내 못 가 본 자리가 하나 있다."
+replies = Array[String](["어떤 자리인데?", "왜 못 가셨어?"])
+reactions = Array[String](["…버섯이 동그랗게 나는 자리다. 숲 깊은 데. 내가 언젠가 보여 준다고 했었지.", "…다리가 아팠다. 내가 너무 늦게 말했다."])
+reaction_expressions = Array[StringName]([&"", &"sad"])
+
+[sub_resource type="Resource" id="StoryTalk_2"]
+script = ExtResource("10_talk")
+line = "…할머니는 그랬다. 동그랗게 난 버섯은 누가 오래 기다린 자리라고. …흥, 그런 걸 믿는 사람이었다."
+
+[sub_resource type="Resource" id="StoryChapter_1"]
+script = ExtResource("40_chapter")
+id = &"hedgehog_spring_1"
+open_day = 4
+talks = Array[ExtResource("10_talk")]([SubResource("StoryTalk_1"), SubResource("StoryTalk_2")])
+
+[sub_resource type="Resource" id="StoryTalk_3"]
+script = ExtResource("10_talk")
+line = "…오늘 새벽, 거기 다녀왔다. 비 그친 다음이라 딱 좋았지."
+replies = Array[String](["버섯 있었어?", "혼자 갔어?"])
+reactions = Array[String](["…있었다. 이끼 위에 동그랗게. 할머니 말대로.", "…혼자 갔다. …원래 둘이 가기로 한 데였는데."])
+reaction_expressions = Array[StringName]([&"surprised", &"sad"])
+
+[sub_resource type="Resource" id="StoryTalk_4"]
+script = ExtResource("10_talk")
+line = "(가시 사이에서 작은 버섯 하나를 꺼낸다) …이건 먹는 거 아니다. 그냥… 보라고 가져왔다."
+replies = Array[String](["예쁘다. 할머니도 보셨으면", "고마워, 잘 둘게"])
+reactions = Array[String](["…그러니까 너한테 가져온 거다. …눈매가 닮았으니까.", "…흥. 말리면 오래 간다. 부엌 창가에 둬라."])
+reaction_expressions = Array[StringName]([&"sad", &""])
+
+[sub_resource type="Resource" id="StoryChapter_2"]
+script = ExtResource("40_chapter")
+id = &"hedgehog_spring_2"
+open_day = 9
+talks = Array[ExtResource("10_talk")]([SubResource("StoryTalk_3"), SubResource("StoryTalk_4")])
+
+[sub_resource type="Resource" id="StoryTalk_5"]
+script = ExtResource("10_talk")
+line = "…이거. (낡은 가죽 장갑 한 켤레를 내민다) 네 할머니가 나랑 악수할 때 끼던 거다."
+replies = Array[String](["할머니 장갑이구나", "이걸 왜 나한테?"])
+reactions = Array[String](["…가시에 긁혀서 구멍투성이다. 그래도 끝까지 이걸 꼈지.", "…이제 필요 없어서다."])
+reaction_expressions = Array[StringName]([&"", &""])
+
+[sub_resource type="Resource" id="StoryTalk_6"]
+script = ExtResource("10_talk")
+line = "…(가시를 착 눕힌다) 손 내밀어 봐라. …장갑 없이."
+replies = Array[String](["(손을 내민다)", "따끔해도 괜찮아"])
+reactions = Array[String](["…봐라. 안 따갑지. …다정한 사람한테는 안 세운다고 했잖냐.", "…안 따끔하게 할 거다. …식구한테는."])
+reaction_expressions = Array[StringName]([&"happy", &"happy"])
+
+[sub_resource type="Resource" id="StoryChapter_3"]
+script = ExtResource("40_chapter")
+id = &"hedgehog_spring_3"
+open_day = 12
+talks = Array[ExtResource("10_talk")]([SubResource("StoryTalk_5"), SubResource("StoryTalk_6")])
+
 [resource]
 script = ExtResource("1_guest")
 id = &"hedgehog"
@@ -90,6 +148,7 @@ porch_greeting_line = "…평상이군. 네 할머니는 여기서 내 가시 �
 thanks_line = "…잘 먹었어. 버섯, 두고 간다."
 perfect_line = "흠… 완벽하군. 제일 좋은 버섯으로 더 주지."
 evening_talks = Array[ExtResource("10_talk")]([SubResource("EveningTalk_1"), SubResource("EveningTalk_2"), SubResource("EveningTalk_3")])
+story_chapters = Array[ExtResource("40_chapter")]([SubResource("StoryChapter_1"), SubResource("StoryChapter_2"), SubResource("StoryChapter_3")])
 note_recipes = Array[ExtResource("2_recipe")]([ExtResource("5_forest_mushroom_stir_fry"), ExtResource("6_mushroom_egg_jeon")])
 feast_line = "…흠. 이런 날도 나쁘지 않군. 다음 계절에도 들르지."
 note_line = "할머니가 내게 맡겨 둔 거다. 「{recipe}」. 돌려줄 때가 됐군."

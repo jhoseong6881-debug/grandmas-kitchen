@@ -14,6 +14,7 @@
 [ext_resource type="Script" path="res://scripts/data/regular_reward.gd" id="30_reward"]
 [ext_resource type="Resource" path="res://data/ingredients/acorn.tres" id="31_gift"]
 [ext_resource type="Resource" path="res://data/keepsakes/acorn_spinning_top.tres" id="32_keepsake"]
+[ext_resource type="Script" path="res://scripts/data/guest_story_chapter.gd" id="40_chapter"]
 
 [sub_resource type="Resource" id="EveningTalk_1"]
 script = ExtResource("10_talk")
@@ -71,6 +72,71 @@ talk = SubResource("TierTalk_3")
 gift_line = "…할머니가 깎아 준 팽이예요. …같이 돌려요."
 keepsake = ExtResource("32_keepsake")
 
+[sub_resource type="Resource" id="StoryTalk_1"]
+script = ExtResource("10_talk")
+line = "…없어요. 아무리 파도 없어요."
+expression = &"sad"
+replies = Array[String](["뭐가 없어?", "천천히 말해 봐"])
+reactions = Array[String](["…할머니 마지막 겨울에 묻어 둔 도토리요. 할머니 드리려고 따로 묻은 거.", "…할머니 드리려고 묻어 둔 도토리요. 마지막 겨울에요."])
+reaction_expressions = Array[StringName]([&"sad", &"sad"])
+
+[sub_resource type="Resource" id="StoryTalk_2"]
+script = ExtResource("10_talk")
+line = "…어디 묻었는지 기억이 안 나요. 저는 늘 까먹어요. 할머니가 같이 찾아 주셨는데."
+expression = &"sad"
+replies = Array[String](["이번엔 내가 같이 찾을게", "어느 나무 근처였어?"])
+reactions = Array[String](["…정말요? …그럼 내일부터 뒷산 갈 때마다 기억해 볼게요.", "…큰 나무요. 평상에서 보이는. …그것만 생각나요."])
+reaction_expressions = Array[StringName]([&"surprised", &""])
+
+[sub_resource type="Resource" id="StoryChapter_1"]
+script = ExtResource("40_chapter")
+id = &"squirrel_spring_1"
+open_day = 4
+talks = Array[ExtResource("10_talk")]([SubResource("StoryTalk_1"), SubResource("StoryTalk_2")])
+
+[sub_resource type="Resource" id="StoryTalk_3"]
+script = ExtResource("10_talk")
+line = "…찾았어요. 평상에서 보이는 그 나무 아래요."
+expression = &"surprised"
+replies = Array[String](["다행이다!", "도토리는 무사했어?"])
+reactions = Array[String](["…근데 도토리가 없었어요.", "…아뇨. 도토리가 없었어요."])
+reaction_expressions = Array[StringName]([&"sad", &"sad"])
+
+[sub_resource type="Resource" id="StoryTalk_4"]
+script = ExtResource("10_talk")
+line = "…대신 싹이 나 있었어요. 손가락만 한 거. 잎이 두 장."
+replies = Array[String](["도토리가 싹을 틔웠구나", "할머니 몫 도토리가?"])
+reactions = Array[String](["…네. 겨울 동안 혼자 기다렸나 봐요. …봄 오기를.", "…네. 할머니 못 드린 건데. …나무가 되려나 봐요."])
+reaction_expressions = Array[StringName]([&"happy", &"sad"])
+
+[sub_resource type="Resource" id="StoryChapter_2"]
+script = ExtResource("40_chapter")
+id = &"squirrel_spring_2"
+open_day = 8
+talks = Array[ExtResource("10_talk")]([SubResource("StoryTalk_3"), SubResource("StoryTalk_4")])
+
+[sub_resource type="Resource" id="StoryTalk_5"]
+script = ExtResource("10_talk")
+line = "…그 싹, 저기 두면 큰 나무 그늘에 가려서 잘 못 자란대요."
+expression = &"sad"
+replies = Array[String](["그럼 옮겨 심자", "어디가 좋을까?"])
+reactions = Array[String](["…평상 옆이요. 해 잘 드는 데. …제가 정해 놨어요.", "…평상 옆이요. 해 잘 들고, 할머니 자리 옆이에요."])
+reaction_expressions = Array[StringName]([&"happy", &"happy"])
+
+[sub_resource type="Resource" id="StoryTalk_6"]
+script = ExtResource("10_talk")
+line = "(흙 묻은 앞발로 싹을 꾹꾹 눌러 준다) …다 됐어요. 할머니 나무예요."
+expression = &"happy"
+replies = Array[String](["이름표도 달아 주자", "다람쥐 나무이기도 해"])
+reactions = Array[String](["…네. …크면 도토리 열리겠죠? 그럼 그건 {name} 몫이에요.", "…! …그럼 우리 둘 나무예요. …아니, 할머니까지 셋."])
+reaction_expressions = Array[StringName]([&"happy", &"surprised"])
+
+[sub_resource type="Resource" id="StoryChapter_3"]
+script = ExtResource("40_chapter")
+id = &"squirrel_spring_3"
+open_day = 12
+talks = Array[ExtResource("10_talk")]([SubResource("StoryTalk_5"), SubResource("StoryTalk_6")])
+
 [resource]
 script = ExtResource("1_guest")
 id = &"squirrel"
@@ -91,6 +157,7 @@ porch_greeting_line = "…저, 여기 앉아도 돼요? …할머니 옆자리, 
 thanks_line = "…맛있어요. 도토리, 두고 갈게요."
 perfect_line = "…! 진짜 맛있어요! 제일 동글동글한 도토리로 더 드릴게요."
 evening_talks = Array[ExtResource("10_talk")]([SubResource("EveningTalk_1"), SubResource("EveningTalk_2"), SubResource("EveningTalk_3")])
+story_chapters = Array[ExtResource("40_chapter")]([SubResource("StoryChapter_1"), SubResource("StoryChapter_2"), SubResource("StoryChapter_3")])
 note_recipes = Array[ExtResource("2_recipe")]([ExtResource("4_acorn_jelly"), ExtResource("7_mukbap")])
 feast_line = "…오늘은, 하나도 안 무서워요. 도토리 많이 가져왔어요."
 note_line = "…이거, 할머니가 주신 거예요. 「{recipe}」… 돌려드릴게요."

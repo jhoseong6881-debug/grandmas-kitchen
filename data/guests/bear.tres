@@ -13,6 +13,7 @@
 [ext_resource type="Script" uid="uid://dyen15kduraty" path="res://scripts/data/regular_reward.gd" id="30_reward"]
 [ext_resource type="Resource" path="res://data/ingredients/honey.tres" id="31_gift"]
 [ext_resource type="Resource" path="res://data/keepsakes/grandma_honey_jar.tres" id="32_keepsake"]
+[ext_resource type="Script" path="res://scripts/data/guest_story_chapter.gd" id="40_chapter"]
 
 [sub_resource type="Resource" id="EveningTalk_1"]
 script = ExtResource("10_talk")
@@ -70,6 +71,68 @@ talk = SubResource("TierTalk_3")
 gift_line = "할머니 꿀단지야. 꿀은 계속 채워 줄게."
 keepsake = ExtResource("32_keepsake")
 
+[sub_resource type="Resource" id="StoryTalk_1"]
+script = ExtResource("10_talk")
+line = "음~ 잘 잤어? 어젯밤에 혹시… 무슨 소리 못 들었어?"
+replies = Array[String](["평상 쪽에서 쿵쿵 소리 났어", "아니, 푹 잤는데"])
+reactions = Array[String](["쿠, 쿵쿵? 음… 바람 소리겠지. 봄바람이 원래 좀 쿵쿵거려.", "다행이다! …아, 아니. 푹 잤다니 다행이라고."])
+reaction_expressions = Array[StringName]([&"surprised", &"happy"])
+
+[sub_resource type="Resource" id="StoryTalk_2"]
+script = ExtResource("10_talk")
+line = "(평상 다리를 슬쩍 앞발로 가린다) 음~ 오늘은 평상에 너무 세게 앉지 마. 그냥… 그래야 할 것 같아서."
+expression = &"surprised"
+
+[sub_resource type="Resource" id="StoryChapter_1"]
+script = ExtResource("40_chapter")
+id = &"bear_spring_1"
+open_day = 5
+talks = Array[ExtResource("10_talk")]([SubResource("StoryTalk_1"), SubResource("StoryTalk_2")])
+
+[sub_resource type="Resource" id="StoryTalk_3"]
+script = ExtResource("10_talk")
+line = "…들켰구나. 그 쿵쿵 소리, 나였어."
+expression = &"sad"
+replies = Array[String](["밤에 뭐 했어?", "평상 고쳤구나"])
+reactions = Array[String](["평상 다리가 삭아서 흔들리더라. 할머니가 늘 여기 앉으셨는데, 부러지면 안 되잖아.", "응… 다리 하나가 삭았더라. 밤에 몰래 고치려고 했지."])
+reaction_expressions = Array[StringName]([&"sad", &"sad"])
+
+[sub_resource type="Resource" id="StoryTalk_4"]
+script = ExtResource("10_talk")
+line = "할머니 계실 땐 평상 고치는 게 내 일이었어. 밥 얻어먹는 값으로. 음~ 이제 다시 내 일이야."
+expression = &"happy"
+replies = Array[String](["고마워, 곰", "다음엔 같이 고치자"])
+reactions = Array[String](["고맙긴. 밥값이지. 꿀 반찬 한 접시면 충분해.", "좋아! 둘이 하면 쿵쿵 소리도 반만 나겠다."])
+reaction_expressions = Array[StringName]([&"happy", &"happy"])
+
+[sub_resource type="Resource" id="StoryChapter_2"]
+script = ExtResource("40_chapter")
+id = &"bear_spring_2"
+open_day = 9
+talks = Array[ExtResource("10_talk")]([SubResource("StoryTalk_3"), SubResource("StoryTalk_4")])
+
+[sub_resource type="Resource" id="StoryTalk_5"]
+script = ExtResource("10_talk")
+line = "{name}, 이리 와 봐. 평상 밑에 고개 넣어 봐. 음~ 보여?"
+expression = &"happy"
+replies = Array[String](["금이 잔뜩 그어져 있네", "이게 뭐야?"])
+reactions = Array[String](["키 잰 자국이야. 할머니가 손님들 키를 여기다 쟀어. 이건 토끼, 이건 다람쥐…", "할머니가 새긴 거야. 손님들 키 자국. 이건 토끼, 이건 다람쥐…"])
+reaction_expressions = Array[StringName]([&"", &""])
+
+[sub_resource type="Resource" id="StoryTalk_6"]
+script = ExtResource("10_talk")
+line = "맨 끝에 제일 작은 거 보여? 옆에 이름도 있어. …{name}, 너야. 여기 놀러 왔던 어린 너."
+expression = &"happy"
+replies = Array[String](["…나도 여기 있었구나", "할머니가 이걸 남겨 두셨구나"])
+reactions = Array[String](["응. 할머니가 그 금 볼 때마다 웃으셨어. 음~ 이제 여기 금 하나 더 그어야지. 지금 네 키로.", "응. 평상 고치다가 처음 봤어. 그래서 더 꼼꼼히 고쳤지. 음~"])
+reaction_expressions = Array[StringName]([&"happy", &"sad"])
+
+[sub_resource type="Resource" id="StoryChapter_3"]
+script = ExtResource("40_chapter")
+id = &"bear_spring_3"
+open_day = 13
+talks = Array[ExtResource("10_talk")]([SubResource("StoryTalk_5"), SubResource("StoryTalk_6")])
+
 [resource]
 script = ExtResource("1_guest")
 id = &"bear"
@@ -91,6 +154,7 @@ porch_greeting_line = "음~ 배부르니 평상에 눕고 싶다. 할머니는 �
 thanks_line = "음~ 든든하다. 꿀 두고 갈게."
 perfect_line = "우와… 이 맛이야! 할머니 생각난다. 꿀 듬뿍 줄게."
 evening_talks = Array[ExtResource("10_talk")]([SubResource("EveningTalk_1"), SubResource("EveningTalk_2"), SubResource("EveningTalk_3")])
+story_chapters = Array[ExtResource("40_chapter")]([SubResource("StoryChapter_1"), SubResource("StoryChapter_2"), SubResource("StoryChapter_3")])
 note_recipes = Array[ExtResource("2_recipe")]([ExtResource("5_honey_carrot_jorim"), ExtResource("6_acorn_honey_gangjeong")])
 feast_line = "음~ 겨울잠 깨길 정말 잘했다. 이 밥집 덕분에."
 note_line = "할머니가 겨울잠 자기 전에 주신 쪽지야. 「{recipe}」… 이제 네 거야."
