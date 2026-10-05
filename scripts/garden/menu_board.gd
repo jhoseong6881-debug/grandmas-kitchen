@@ -13,6 +13,8 @@ const UNSELECTED_FORMAT: String = "○ %s"
 const COUNT_FORMAT: String = "%d / %d"
 const LIMIT_TEXT: String = "메뉴는 %d개까지 고를 수 있어요."
 const PICK_ONE_TEXT: String = "메뉴를 하나 이상 골라 주세요."
+const SHORT_BLOCK_FORMAT: String = "재료가 부족해요: %s"
+const NAME_SEPARATOR: String = ", "
 const SHORT_TEXT: String = "  재료 부족"
 const INGREDIENT_FORMAT: String = "×%d  "
 const PROMISE_FORMAT: String = "★ %s%s 약속"
@@ -217,6 +219,16 @@ func _refresh() -> void:
 func _on_start_button_pressed() -> void:
 	if _selected_ids.is_empty():
 		_message_label.text = PICK_ONE_TEXT
+		return
+	# 재료가 모자란 요리를 골라 두면 부엌으로 가지 않는다 (손님이 시켜도 만들 수 없으니까).
+	var short_names: PackedStringArray = []
+	for recipe_id: StringName in _selected_ids:
+		var recipe: Recipe = GameData.get_recipe(recipe_id)
+		if recipe != null and not GameState.has_ingredients(recipe.get_ingredient_counts()):
+			short_names.append(recipe.display_name)
+	if not short_names.is_empty():
+		_message_label.text = SHORT_BLOCK_FORMAT % NAME_SEPARATOR.join(short_names)
+		Wiggle.shake(_start_button)
 		return
 	hide()
 	confirmed.emit(_selected_ids.duplicate())

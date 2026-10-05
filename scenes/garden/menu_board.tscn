@@ -97,11 +97,11 @@ layout_mode = 0
 offset_left = 924.0
 offset_top = 114.0
 offset_right = 1488.0
-offset_bottom = 150.0
+offset_bottom = 176.0
 theme_override_colors/font_color = Color(1, 0.65, 0.55, 1)
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 2
-vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="InventoryRow" type="HBoxContainer" parent="Board"]
 layout_mode = 0
