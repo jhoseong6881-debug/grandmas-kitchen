@@ -94,6 +94,8 @@ offset_right = 460.0
 offset_bottom = 800.0
 theme_override_font_sizes/font_size = 24
 text = "이웃 바구니"
+icon_alignment = 1
+vertical_icon_alignment = 0
 
 [node name="PlotRow" type="HBoxContainer" parent="." unique_id=1044653342 node_paths=PackedStringArray("plant_picker")]
 unique_name_in_owner = true

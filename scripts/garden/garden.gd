@@ -45,6 +45,10 @@ const RUSTLE_SOUND: StringName = &"rustle"
 @export var harvest_pop_font_size: int = 36
 @export var harvest_pop_color: Color = Color(1, 0.84, 0.25)
 
+## 이웃 바구니 아이콘 그림 (원본 32×32, 배경 투명): 뭔가 들어 있을 때 / 비었을 때. 비워 두면 임시 도트 그림.
+@export var basket_full_icon: Texture2D
+@export var basket_empty_icon: Texture2D
+
 @onready var _day_label: Label = %DayLabel
 @onready var _sun: ColorRect = $Sun
 @onready var _plot_row: PlotRow = %PlotRow
@@ -240,6 +244,17 @@ func _update_basket() -> void:
 	var is_empty: bool = GameState.basket_guest_ids.is_empty()
 	_basket_button.disabled = is_empty
 	_basket_button.text = GIFT_EMPTY_TEXT if is_empty else GIFT_READY_TEXT
+	_basket_button.icon = _basket_icon(not is_empty)
+
+
+## 바구니 아이콘 (원본 32×32를 3배로). 그림이 있으면 그 그림, 없으면 BasketIcon 이 그린 임시 그림.
+func _basket_icon(is_full: bool) -> ImageTexture:
+	var texture: Texture2D = basket_full_icon if is_full else basket_empty_icon
+	var image: Image = texture.get_image().duplicate() if texture != null else BasketIcon.draw(is_full)
+	if image.is_compressed():
+		image.decompress()
+	image.resize(image.get_width() * 3, image.get_height() * 3, Image.INTERPOLATE_NEAREST)
+	return ImageTexture.create_from_image(image)
 
 
 ## 부엌으로 가기 전에 오늘의 메뉴부터 고른다.
