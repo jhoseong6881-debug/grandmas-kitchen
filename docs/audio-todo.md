@@ -39,6 +39,7 @@
 | sfx/happy_beeps_perfect.wav | 미니게임 "완벽!" (perfect) | Freesound "Achievement Happy Beeps Jingle" by CogFireStudios — https://freesound.org/s/619838/ | **CC0** | 2026-10-04 |
 | sfx/phone_buzz.wav | 잠드는 장면 휴대폰 진동 (phone_buzz) | 코드로 직접 만든 소리 (사인파 두 번 부르르, 임시). 더 좋은 진동 소리로 바꿔도 됨 | 직접 만듦 (권리 문제 없음) | 2026-10-05 |
 | sfx/dish_slide.wav | 대접할 때 접시가 조리대 위를 드윽 미끄러지는 소리 (dish_slide) | 코드로 직접 만든 소리 (걸러 낸 잡음 + 낮은 소리, 임시). 더 좋은 소리로 바꿔도 됨 | 직접 만듦 (권리 문제 없음) | 2026-10-05 |
+| sfx/zone_secret.wav, zone_request.wav | 미니게임에서 할머니 비법 자리(주황) / 손님 부탁 자리(파랑)에 딱 맞혔을 때 "띠링" (zone_secret, zone_request) | 코드로 직접 만든 소리 (두 음 차임, 임시) | 직접 만듦 (권리 문제 없음) | 2026-10-05 |
 | sfx/rain_light_loop.wav | 봄비 오는 날 낮 내내 깔리는 빗소리 (rain) | Freesound "Rain light 2 (rural)" by jmbphilmes — https://freesound.org/s/200273/ | **CC0** | 2026-10-04 |
 | sfx/mix_toss_1~5.wav | 버무리기에서 맞힐 때 (hit_mix) | Freesound "Potato salad" by 14G_Panska_Kaminkova_A — https://freesound.org/s/419992/ | **CC0** | 2026-10-04 |
 

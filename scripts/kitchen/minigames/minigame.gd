@@ -47,6 +47,9 @@ const GO_SOUND: StringName = &"go"
 const DONE_SOUND: StringName = &"done"
 const PERFECT_SOUND: StringName = &"perfect"
 const GRANDMA_TASTE_SOUND: StringName = &"grandma_taste"
+## 할머니 비법 자리(주황) / 손님 부탁 자리(파랑)에 딱 맞혔을 때 맞히는 소리에 더하는 "띠링"
+const SECRET_ZONE_SOUND: StringName = &"zone_secret"
+const REQUEST_ZONE_SOUND: StringName = &"zone_request"
 
 ## 한 번 누른 뒤 다음 입력을 받기까지 쉬는 시간(초). 마구 눌러 통과하는 것을 막는다.
 @export var press_cooldown: float = 0.15
@@ -314,8 +317,10 @@ func _register_hit(position: float) -> void:
 	var clamped: float = clampf(position, 0.0, 1.0)
 	if _step != null and not _is_converted and _step.is_in_secret(clamped):
 		_secret_hit_count += 1
+		Sound.play(SECRET_ZONE_SOUND)
 	if _request != null and _request.is_in_zone(clamped):
 		_request_hit_count += 1
+		Sound.play(REQUEST_ZONE_SOUND)
 
 
 ## 부탁 자리가 있으면 모든 동작을 그 자리에서, 없으면 한 번도 안 틀렸으면 부탁을 들어준 것
