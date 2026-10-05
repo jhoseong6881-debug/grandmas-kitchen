@@ -11,6 +11,9 @@ const SAVED_TEXT: String = "저장했어요"
 const SAVE_FAILED_TEXT: String = "저장하지 못했어요. 다음 밤에 다시 저장해요."
 const MORNING_FORMAT: String = "%s %d일째 아침"
 const PHONE_SOUND: StringName = &"phone_buzz"
+## 내일 있을 일 (DayPreview) 앞에 붙는 말과 일 사이
+const TOMORROW_PREFIX: String = "내일은   "
+const TOMORROW_SEPARATOR: String = "  ·  "
 
 ## 꿈 문구 모음
 @export var dream_book: DreamBook = preload("res://data/story/dreams.tres")
@@ -61,6 +64,8 @@ var _is_saving: bool = false
 @onready var _sender_label: Label = %SenderLabel
 @onready var _bubbles: VBoxContainer = %Bubbles
 @onready var _draft_label: Label = %DraftLabel
+## 꿈 글 아래 "내일은 …" (내일 있을 일이 없으면 비운다)
+@onready var _tomorrow_label: Label = %TomorrowLabel
 
 
 func _ready() -> void:
@@ -71,7 +76,9 @@ func _ready() -> void:
 ## night: 몇째 날 밤인지 (꿈 문구를 고르는 데 쓴다). next_day: 아침에 보여 줄 날짜.
 ## save: 저장하는 함수. 성공하면 true 를 돌려준다 (예: GameState.save_game).
 ## dream_text: 꿈 한 줄 대신 보여 줄 글 (할머니 회상이 있는 밤). show_morning: false 면 아침으로 밝아지기 전에 끝낸다.
-func play(night: int, next_day: int, save: Callable, dream_text: String = "", show_morning: bool = true) -> void:
+## tomorrow_lines: 꿈 글 아래 보여 줄 내일 있을 일 (DayPreview). 비우면 안 보인다.
+func play(night: int, next_day: int, save: Callable, dream_text: String = "", show_morning: bool = true,
+		tomorrow_lines: Array[String] = []) -> void:
 	_is_skipping = false
 	_sky.color = night_color
 	var phone_message: PhoneMessage = phone_book.get_message(GameState.current_season, night) \
@@ -83,6 +90,8 @@ func play(night: int, next_day: int, save: Callable, dream_text: String = "", sh
 	else:
 		_dream_label.text = _with_name(dream_book.get_line(night)) if dream_book != null else ""
 	_phone.hide()
+	_tomorrow_label.text = TOMORROW_PREFIX + TOMORROW_SEPARATOR.join(tomorrow_lines) if not tomorrow_lines.is_empty() else ""
+	_tomorrow_label.modulate.a = 0.0
 	_dream_label.modulate.a = 0.0
 	_night_content.modulate.a = 1.0
 	_save_icon.hide()
@@ -102,6 +111,7 @@ func play(night: int, next_day: int, save: Callable, dream_text: String = "", sh
 		await _show_phone(phone_message)
 	tween = create_tween()
 	tween.tween_property(_dream_label, "modulate:a", 1.0, dream_fade_duration)
+	tween.tween_property(_tomorrow_label, "modulate:a", 1.0, dream_fade_duration)
 	await tween.finished
 
 	_save_icon.show()

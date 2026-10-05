@@ -419,6 +419,8 @@ func _go_to_sleep() -> void:
 	# 잠드는 동안 버튼이 또 눌려 두 번 잠들지 않게 막는다.
 	_next_button.disabled = true
 	var night: int = GameState.current_day
+	# 날짜를 넘기기 전에 내일 있을 일을 모아 둔다 (작물은 "하루 남은 칸"을 센다).
+	var tomorrow_lines: Array[String] = DayPreview.get_lines(night + 1, true)
 	# 오늘 저녁 평상에 온 손님들이 내일 아침 이웃 바구니에 재료를 두고 간다.
 	GameState.basket_guest_ids.append_array(_met_tonight_ids)
 	GameState.advance_day()
@@ -434,7 +436,7 @@ func _go_to_sleep() -> void:
 	var transition: SleepTransition = sleep_transition_scene.instantiate()
 	add_child(transition)
 	await transition.play(night, GameState.current_day, GameState.save_game,
-			memory_book.dream_text if memory_story != null else "", memory_story == null)
+			memory_book.dream_text if memory_story != null else "", memory_story == null, tomorrow_lines)
 	if memory_story != null:
 		StoryScene.play_story(get_tree(), memory_story, morning_scene_path)
 	else:
