@@ -19,25 +19,25 @@
 [sub_resource type="Resource" id="EveningTalk_1"]
 script = ExtResource("10_talk")
 line = "…할머니가 도토리묵 해 주셨었어요."
-replies = Array[String](["어떤 맛이었어?", "다음엔 내가 해 줄게."])
+replies = Array[String](["어떤 맛이었어요?", "다음엔 제가 해 드릴게요."])
 reactions = Array[String](["…쌉싸름한데, 마지막엔 고소했어요. 할머니 같았어요.", "…! 정말요? …도토리, 많이 모아 올게요."])
 
 [sub_resource type="Resource" id="EveningTalk_2"]
 script = ExtResource("10_talk")
 line = "…뒷산 도토리나무, 올해 많이 열렸어요."
-replies = Array[String](["같이 주우러 갈까?", "다람쥐 덕분에 겨울 걱정 없겠다."])
+replies = Array[String](["같이 주우러 갈까요?", "다람쥐 덕분에 겨울 걱정 없겠어요."])
 reactions = Array[String](["…다, 다음에요. 제일 좋은 나무는 비밀이에요.", "…헤헤. 겨울엔 묵 많이 해 주세요."])
 
 [sub_resource type="Resource" id="EveningTalk_3"]
 script = ExtResource("10_talk")
 line = "…사람은 조금 무서웠는데, 당신은 괜찮아요."
-replies = Array[String](["고마워. 천천히 친해지자.", "할머니한테도 그랬어?"])
+replies = Array[String](["고마워요. 천천히 친해져요.", "할머니한테도 그랬어요?"])
 reactions = Array[String](["…네. 천천히요.", "…네. 할머니가 처음이었고, 당신이 두 번째예요."])
 
 [sub_resource type="Resource" id="TierTalk_1"]
 script = ExtResource("10_talk")
 line = "…저, 겨울마다 도토리 묻은 데를 까먹어요."
-replies = Array[String](["같이 찾아 줄까?", "그럼 겨울엔 어떡해?"])
+replies = Array[String](["같이 찾아 드릴까요?", "그럼 겨울엔 어떡해요?"])
 reactions = Array[String](["…네. …할머니도 그렇게 말해 줬어요.", "…할머니가 묵 쒀서 나눠 줬어요. 까먹은 도토리까지 다 찾아서요."])
 
 [sub_resource type="Resource" id="Reward_1"]
@@ -50,7 +50,7 @@ gift_amount = 3
 [sub_resource type="Resource" id="TierTalk_2"]
 script = ExtResource("10_talk")
 line = "…할머니 마지막 겨울에, 제가 도토리를 제일 많이 가져다 드렸어요. 묵 많이 쑤시라고."
-replies = Array[String](["할머니가 기뻐하셨겠다", "고마워, 할머니 대신"])
+replies = Array[String](["할머니가 기뻐하셨겠어요", "할머니 대신 고마워요"])
 reactions = Array[String](["…웃으셨어요. 근데 묵은 다 저한테 다시 주셨어요.", "…! …천만에요. …{name}도 많이 먹어요."])
 
 [sub_resource type="Resource" id="Reward_2"]
@@ -63,7 +63,7 @@ gift_amount = 5
 [sub_resource type="Resource" id="TierTalk_3"]
 script = ExtResource("10_talk")
 line = "…이제 숨겨 둔 데 알려 줄게요. 제일 좋은 도토리나무."
-replies = Array[String](["비밀 아니었어?", "고마워, 꼭 지킬게"])
+replies = Array[String](["비밀 아니었어요?", "고마워요, 꼭 지킬게요"])
 reactions = Array[String](["…식구한테는 비밀 아니에요.", "…네. 우리 둘만 알아요."])
 
 [sub_resource type="Resource" id="Reward_3"]
@@ -76,7 +76,7 @@ keepsake = ExtResource("32_keepsake")
 script = ExtResource("10_talk")
 line = "…없어요. 아무리 파도 없어요."
 expression = &"sad"
-replies = Array[String](["뭐가 없어?", "천천히 말해 봐"])
+replies = Array[String](["뭐가 없어요?", "천천히 말해 봐요"])
 reactions = Array[String](["…할머니 마지막 겨울에 묻어 둔 도토리요. 할머니 드리려고 따로 묻은 거.", "…할머니 드리려고 묻어 둔 도토리요. 마지막 겨울에요."])
 reaction_expressions = Array[StringName]([&"sad", &"sad"])
 
@@ -84,7 +84,7 @@ reaction_expressions = Array[StringName]([&"sad", &"sad"])
 script = ExtResource("10_talk")
 line = "…어디 묻었는지 기억이 안 나요. 저는 늘 까먹어요. 할머니가 같이 찾아 주셨는데."
 expression = &"sad"
-replies = Array[String](["이번엔 내가 같이 찾을게", "어느 나무 근처였어?"])
+replies = Array[String](["이번엔 제가 같이 찾을게요", "어느 나무 근처였어요?"])
 reactions = Array[String](["…정말요? …그럼 내일부터 뒷산 갈 때마다 기억해 볼게요.", "…큰 나무요. 평상에서 보이는. …그것만 생각나요."])
 reaction_expressions = Array[StringName]([&"surprised", &""])
 
@@ -99,14 +99,14 @@ talks = Array[ExtResource("10_talk")]([SubResource("StoryTalk_1"), SubResource("
 script = ExtResource("10_talk")
 line = "…찾았어요. 평상에서 보이는 그 나무 아래요."
 expression = &"surprised"
-replies = Array[String](["다행이다!", "도토리는 무사했어?"])
+replies = Array[String](["다행이에요!", "도토리는 무사했어요?"])
 reactions = Array[String](["…근데 도토리가 없었어요.", "…아뇨. 도토리가 없었어요."])
 reaction_expressions = Array[StringName]([&"sad", &"sad"])
 
 [sub_resource type="Resource" id="StoryTalk_4"]
 script = ExtResource("10_talk")
 line = "…대신 싹이 나 있었어요. 손가락만 한 거. 잎이 두 장."
-replies = Array[String](["도토리가 싹을 틔웠구나", "할머니 몫 도토리가?"])
+replies = Array[String](["도토리가 싹을 틔웠군요", "할머니 몫 도토리가요?"])
 reactions = Array[String](["…네. 겨울 동안 혼자 기다렸나 봐요. …봄 오기를.", "…네. 할머니 못 드린 건데. …나무가 되려나 봐요."])
 reaction_expressions = Array[StringName]([&"happy", &"sad"])
 
@@ -121,7 +121,7 @@ talks = Array[ExtResource("10_talk")]([SubResource("StoryTalk_3"), SubResource("
 script = ExtResource("10_talk")
 line = "…그 싹, 저기 두면 큰 나무 그늘에 가려서 잘 못 자란대요."
 expression = &"sad"
-replies = Array[String](["그럼 옮겨 심자", "어디가 좋을까?"])
+replies = Array[String](["그럼 옮겨 심어요", "어디가 좋을까요?"])
 reactions = Array[String](["…평상 옆이요. 해 잘 드는 데. …제가 정해 놨어요.", "…평상 옆이요. 해 잘 들고, 할머니 자리 옆이에요."])
 reaction_expressions = Array[StringName]([&"happy", &"happy"])
 
@@ -129,7 +129,7 @@ reaction_expressions = Array[StringName]([&"happy", &"happy"])
 script = ExtResource("10_talk")
 line = "(흙 묻은 앞발로 싹을 꾹꾹 눌러 준다) …다 됐어요. 할머니 나무예요."
 expression = &"happy"
-replies = Array[String](["이름표도 달아 주자", "다람쥐 나무이기도 해"])
+replies = Array[String](["이름표도 달아 줘요", "다람쥐 나무이기도 해요"])
 reactions = Array[String](["…네. …크면 도토리 열리겠죠? 그럼 그건 {name} 몫이에요.", "…! …그럼 우리 둘 나무예요. …아니, 할머니까지 셋."])
 reaction_expressions = Array[StringName]([&"happy", &"surprised"])
 

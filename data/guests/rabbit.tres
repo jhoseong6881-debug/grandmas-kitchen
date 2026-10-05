@@ -18,25 +18,25 @@
 [sub_resource type="Resource" id="EveningTalk_1"]
 script = ExtResource("9_talk")
 line = "비 오는 날이면 할머니가 당근전을 부쳐 주셨어요. 고소한 냄새가 우리 집까지 났어요."
-replies = Array[String](["그 냄새, 나도 기억날 것 같아.", "비 오는 날 또 놀러 와."])
+replies = Array[String](["그 냄새, 저도 기억날 것 같아요.", "비 오는 날 또 놀러 와요."])
 reactions = Array[String](["정말요? …그럼 우리, 같은 냄새를 기억하는 거네요.", "네! 비 오는 날만 기다릴게요… 아, 아니 맑은 날도요."])
 
 [sub_resource type="Resource" id="EveningTalk_2"]
 script = ExtResource("9_talk")
 line = "안녕하세요... 여기 밥집 다시 연 거 맞죠?"
-replies = Array[String](["응, 이제 매일 열어.", "할머니만큼 잘할 수 있을지 모르겠어."])
+replies = Array[String](["네, 이제 매일 열어요.", "할머니만큼 잘할 수 있을지 모르겠어요."])
 reactions = Array[String](["다행이다… 매일 올게요. 정말로요.", "저, 저는… 벌써 할머니만큼 맛있다고 생각해요."])
 
 [sub_resource type="Resource" id="EveningTalk_3"]
 script = ExtResource("9_talk")
 line = "할머니 김밥, 정말 그리웠어요."
-replies = Array[String](["내일도 김밥 싸 줄게.", "할머니 김밥은 뭐가 특별했어?"])
+replies = Array[String](["내일도 김밥 싸 드릴게요.", "할머니 김밥은 뭐가 특별했어요?"])
 reactions = Array[String](["와… 내일은 당근 제일 예쁜 걸로 가져올게요.", "음… 당근을 아주 가늘게, 정성껏 썰었어요. 지금 당신처럼요."])
 
 [sub_resource type="Resource" id="TierTalk_1"]
 script = ExtResource("9_talk")
 line = "사실… 저 처음 할머니 만났을 때, 밭에서 당근 훔쳐 먹다 걸렸어요."
-replies = Array[String](["할머니가 화내셨어?", "그래서 당근을 좋아하는구나"])
+replies = Array[String](["할머니가 화내셨어요?", "그래서 당근을 좋아하는군요"])
 reactions = Array[String](["아뇨. 다음 날 제 몫으로 한 줄을 따로 심어 주셨어요. 그게… 지금 그 밭이에요.", "헤헤… 맞아요. 그날부터 당근은 할머니 맛이에요."])
 
 [sub_resource type="Resource" id="Reward_1"]
@@ -49,7 +49,7 @@ gift_amount = 3
 [sub_resource type="Resource" id="TierTalk_2"]
 script = ExtResource("9_talk")
 line = "할머니 가시던 날… 저 문 앞에서 밤새 기다렸어요. 불이 다시 켜질까 봐."
-replies = Array[String](["이제 매일 켜져 있을 거야", "많이 무서웠겠다"])
+replies = Array[String](["이제 매일 켜져 있을 거예요", "많이 무서웠겠어요"])
 reactions = Array[String](["…네. 그래서 {name} 오던 날, 저 울 뻔했어요.", "조금요. 근데 지금은 괜찮아요. 여기 따뜻하니까."])
 
 [sub_resource type="Resource" id="Reward_2"]
@@ -61,7 +61,7 @@ extra_plot_place_id = &"carrot_field"
 [sub_resource type="Resource" id="TierTalk_3"]
 script = ExtResource("9_talk")
 line = "{name}… 한 달 지나면, 도시로 돌아가요?"
-replies = Array[String](["아직 모르겠어", "여기 있을까 생각 중이야"])
+replies = Array[String](["아직 모르겠어요", "여기 있을까 생각 중이에요"])
 reactions = Array[String](["…그렇구나. 그래도 오늘은 여기 있으니까 괜찮아요.", "정말요?! …아, 아니에요. 그냥 좋아서요."])
 
 [sub_resource type="Resource" id="Reward_3"]
@@ -74,14 +74,14 @@ keepsake = ExtResource("32_keepsake")
 script = ExtResource("9_talk")
 line = "(앞발을 등 뒤로 쏙 감춘다) 아, 아무것도 아니에요!"
 expression = &"surprised"
-replies = Array[String](["발 다쳤어?", "뭐 숨겼어?"])
+replies = Array[String](["발 다쳤어요?", "뭐 숨겼어요?"])
 reactions = Array[String](["그, 그냥… 당근 캐다가요. 정말이에요.", "아, 아무것도요! …진짜로요."])
 reaction_expressions = Array[StringName]([&"sad", &"surprised"])
 
 [sub_resource type="Resource" id="StoryTalk_2"]
 script = ExtResource("9_talk")
 line = "…{name}, 칼 쓸 때 손 안 다치는 법 있어요? 그, 그냥 궁금해서요."
-replies = Array[String](["손가락을 고양이 손처럼 말아", "천천히 하면 돼"])
+replies = Array[String](["손가락을 고양이 손처럼 말아요", "천천히 하면 돼요"])
 reactions = Array[String](["고양이 손… 고양이 손. (붕대 감은 앞발을 꼭 말아 본다)", "천천히… 네, 천천히요."])
 reaction_expressions = Array[StringName]([&"", &""])
 
@@ -89,7 +89,7 @@ reaction_expressions = Array[StringName]([&"", &""])
 script = ExtResource("9_talk")
 line = "…들켰다. 붕대, 사실 칼 때문이었어요."
 expression = &"sad"
-replies = Array[String](["뭘 썰고 있었어?", "괜찮아, 화 안 내"])
+replies = Array[String](["뭘 썰고 있었어요?", "괜찮아요, 화 안 내요"])
 reactions = Array[String](["김밥 연습이요. 할머니한테 배우다가… 다 못 배웠거든요.", "…다행이다. 사실 김밥 연습했어요. 할머니한테 배우다 만 거요."])
 reaction_expressions = Array[StringName]([&"sad", &"happy"])
 
@@ -107,14 +107,14 @@ expression = &"happy"
 script = ExtResource("9_talk")
 line = "(은박지 뭉치를 꼭 쥐고) 이, 이거… {name} 먹으라고요."
 expression = &"surprised"
-replies = Array[String](["와, 김밥이네!", "직접 싼 거야?"])
+replies = Array[String](["와, 김밥이네요!", "직접 싼 거예요?"])
 reactions = Array[String](["모양은… 엉망이에요. 당근이 굵었다 가늘었다 해요.", "네… 당근이 굵었다 가늘었다 엉망이지만요."])
 reaction_expressions = Array[StringName]([&"sad", &"sad"])
 
 [sub_resource type="Resource" id="StoryTalk_7"]
 script = ExtResource("9_talk")
 line = "…어때요?"
-replies = Array[String](["모양이 제각각이니 씹는 맛이 있네", "할머니 김밥 맛이 나"])
+replies = Array[String](["모양이 제각각이니 씹는 맛이 있네요", "할머니 김밥 맛이 나요"])
 reactions = Array[String](["…! 할머니도 똑같이 말씀하셨어요. 제가 처음 썬 당근 보고요.", "(귀가 빨개진다) …그럼 또 싸 올게요. 매일은 말고, 가끔요."])
 reaction_expressions = Array[StringName]([&"surprised", &"happy"])
 

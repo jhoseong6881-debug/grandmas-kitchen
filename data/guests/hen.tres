@@ -17,7 +17,7 @@
 [sub_resource type="Resource" id="EveningTalk_1"]
 script = ExtResource("9_talk")
 line = "오늘 아침엔 해가 일찍 떴지 뭐야."
-replies = Array[String](["암탉님 덕분에 일찍 일어났어요.", "그래서 텃밭 당근이 반짝였구나."])
+replies = Array[String](["암탉님 덕분에 일찍 일어났어요.", "그래서 텃밭 당근이 반짝였군요."])
 reactions = Array[String](["꼬꼬! 그게 내 일이지. 내일도 깨워 줄게!", "어머, 텃밭까지 챙기는구나. 할머니 닮았네!"])
 
 [sub_resource type="Resource" id="EveningTalk_2"]
@@ -35,7 +35,7 @@ reactions = Array[String](["고맙긴! 우리가 고맙지. 꼬꼬!", "싫긴! �
 [sub_resource type="Resource" id="TierTalk_1"]
 script = ExtResource("9_talk")
 line = "나는 원래 장터 닭이었어. 팔려 갈 뻔했는데, 네 할머니가 나를 사서 그냥 풀어 줬지."
-replies = Array[String](["할머니답다", "그래서 숲에 살게 됐구나"])
+replies = Array[String](["할머니다워요", "그래서 숲에 살게 됐군요"])
 reactions = Array[String](["그렇지? 대신 매일 계란 하나씩 갖다 주기로 약속했어. 지금까지 지키는 중!", "응! 그날부터 아침마다 제일 먼저 우는 게 내 일이야. 꼬꼬!"])
 
 [sub_resource type="Resource" id="Reward_1"]
@@ -48,7 +48,7 @@ gift_amount = 3
 [sub_resource type="Resource" id="TierTalk_2"]
 script = ExtResource("9_talk")
 line = "네 할머니 젊었을 땐 말이야, 이 숲에서 제일 목소리 큰 사람이었어."
-replies = Array[String](["정말? 상상이 안 돼", "나는 할머니 닮았어?"])
+replies = Array[String](["정말요? 상상이 안 돼요", "저는 할머니 닮았어요?"])
 reactions = Array[String](["호호! 밥 먹으라고 부르는 소리가 산 너머까지 들렸다니까.", "음… 웃을 때 눈이 똑같아. 꼬꼬."])
 
 [sub_resource type="Resource" id="Reward_2"]
@@ -61,7 +61,7 @@ gift_amount = 5
 [sub_resource type="Resource" id="TierTalk_3"]
 script = ExtResource("9_talk")
 line = "아침에 네 부엌에서 밥 냄새가 나면, 나 그거 맡고 일어나. 해보다 먼저."
-replies = Array[String](["내가 깨워 주는 거네", "이제 서로 깨워 주자"])
+replies = Array[String](["제가 깨워 드리는 거네요", "이제 서로 깨워 줘요"])
 reactions = Array[String](["그래! 이제 우리 둘이 이 숲의 아침 당번이야!", "좋아, 약속! 꼬꼬!"])
 
 [sub_resource type="Resource" id="Reward_3"]
@@ -74,7 +74,7 @@ keepsake = ExtResource("32_keepsake")
 script = ExtResource("9_talk")
 line = "꼬꼬… 오늘 아침에 나 늦게 울었지? 미안해."
 expression = &"sad"
-replies = Array[String](["무슨 일 있어?", "푹 잤나 보다"])
+replies = Array[String](["무슨 일 있어요?", "푹 주무셨나 봐요"])
 reactions = Array[String](["사실… 요즘 알을 품고 있거든. 꼼짝 않고 앉아 있으려니 아침이 오는 줄도 몰랐지 뭐야.", "푹은커녕! 알 품느라 밤새 꼼짝도 못 했어. 꼬꼬."])
 reaction_expressions = Array[StringName]([&"happy", &"surprised"])
 
@@ -94,7 +94,7 @@ talks = Array[ExtResource("9_talk")]([SubResource("StoryTalk_1"), SubResource("S
 script = ExtResource("9_talk")
 line = "꼬꼬꼬! 들었니? 비 오던 그 밤에, 알이 깨졌어! 병아리가 나왔다고!"
 expression = &"surprised"
-replies = Array[String](["축하해!", "몇 마리야?"])
+replies = Array[String](["축하해요!", "몇 마리예요?"])
 reactions = Array[String](["고마워! 근데 이게 말이야…", "다섯! 그런데 말이야…"])
 reaction_expressions = Array[StringName]([&"happy", &"happy"])
 
@@ -102,7 +102,7 @@ reaction_expressions = Array[StringName]([&"happy", &"happy"])
 script = ExtResource("9_talk")
 line = "막내 하나가 너무 작아. 삐약 소리도 제일 작고, 모이도 제일 늦게 먹어."
 expression = &"sad"
-replies = Array[String](["막내는 원래 천천히 커", "내가 뭐 도와줄까?"])
+replies = Array[String](["막내는 원래 천천히 커요", "제가 뭐 도와드릴까요?"])
 reactions = Array[String](["…그렇겠지? 네 할머니도 똑같이 말씀하셨을 거야.", "그럼 내일 쌀 한 줌만 줄래? 제일 고운 걸로. 꼬꼬."])
 reaction_expressions = Array[StringName]([&"happy", &"happy"])
 
@@ -117,14 +117,14 @@ talks = Array[ExtResource("9_talk")]([SubResource("StoryTalk_3"), SubResource("S
 script = ExtResource("9_talk")
 line = "(날개 밑에서 병아리들이 고개를 쏙쏙 내민다) 꼬꼬! 오늘은 애들 데리고 왔어. 저 끝에 막내 봐, 제일 시끄럽지?"
 expression = &"happy"
-replies = Array[String](["많이 컸다!", "목소리가 엄마 닮았네"])
+replies = Array[String](["많이 컸네요!", "목소리가 엄마 닮았네요"])
 reactions = Array[String](["네 밥집 앞에 떨어진 밥알 주워 먹고 이렇게 컸어. 이젠 형들보다 먼저 먹는다니까!", "호호! 그러게, 벌써 새벽마다 같이 울어."])
 reaction_expressions = Array[StringName]([&"happy", &"happy"])
 
 [sub_resource type="Resource" id="StoryTalk_6"]
 script = ExtResource("9_talk")
 line = "그래서 말인데… 막내 이름을 네 할머니 이름으로 지어도 될까?"
-replies = Array[String](["물론이지. 할머니도 좋아하실 거야", "대신 할머니처럼 목소리 크게 키워 줘"])
+replies = Array[String](["물론이죠. 할머니도 좋아하실 거예요", "대신 할머니처럼 목소리 크게 키워 주세요"])
 reactions = Array[String](["…고마워. 이제 이 숲에서 할머니 이름이 매일 아침 불리겠네. 꼬꼬.", "걱정 마! 밥 먹으라는 소리가 산 너머까지 들리게 키울게!"])
 reaction_expressions = Array[StringName]([&"happy", &"happy"])
 
