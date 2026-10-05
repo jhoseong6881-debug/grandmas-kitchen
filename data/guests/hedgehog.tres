@@ -151,6 +151,7 @@ evening_talks = Array[ExtResource("10_talk")]([SubResource("EveningTalk_1"), Sub
 story_chapters = Array[ExtResource("40_chapter")]([SubResource("StoryChapter_1"), SubResource("StoryChapter_2"), SubResource("StoryChapter_3")])
 note_recipes = Array[ExtResource("2_recipe")]([ExtResource("5_forest_mushroom_stir_fry"), ExtResource("6_mushroom_egg_jeon")])
 feast_line = "…흠. 이런 날도 나쁘지 않군. 다음 계절에도 들르지."
+story_feast_line = "…(장갑 없이 앞발을 내민다) 잔치 날엔 악수하는 거다. …네 할머니가 정한 규칙이다."
 note_line = "할머니가 내게 맡겨 둔 거다. 「{recipe}」. 돌려줄 때가 됐군."
 favorite_garnish = ExtResource("20_garnish")
 taste_miss_line = "…나쁘지 않군. …좀 더 화끈해도 된다."

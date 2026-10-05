@@ -159,6 +159,7 @@ evening_talks = Array[ExtResource("9_talk")]([SubResource("EveningTalk_1"), SubR
 story_chapters = Array[ExtResource("40_chapter")]([SubResource("StoryChapter_1"), SubResource("StoryChapter_2"), SubResource("StoryChapter_3")])
 note_recipes = Array[ExtResource("2_recipe")]([ExtResource("6_jeon")])
 feast_line = "저… 이렇게 다 같이 모이니까, 할머니 계실 때 같아요."
+story_feast_line = "(삐뚤빼뚤한 김밥 한 접시를 상에 올린다) 저… 이것도 올려도 되죠? 이번엔 당근을 조금 더 고르게 썰었어요. 조금요."
 note_line = "그때 할머니가 적어 주신 레시피예요. 「{recipe}」… 이제 여기 있어야 할 것 같아서요."
 favorite_garnish = ExtResource("20_garnish")
 taste_miss_line = "음… 저는 당근 본맛이 좋은데. 아무것도 안 올려도 돼요."

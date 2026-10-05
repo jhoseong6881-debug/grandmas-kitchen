@@ -58,6 +58,8 @@ const EXPRESSION_SAD: StringName = &"sad"
 @export var note_recipes: Array[Recipe] = []
 ## 계절 마무리 잔치에서 하는 인사
 @export var feast_line: String = "잔치, 정말 즐거워요!"
+## 이 계절 사연(story_chapters)을 끝까지 봤을 때 잔치에서 하는 인사. 비워 두면 feast_line. {name} 은 주인공 이름.
+@export_multiline var story_feast_line: String = ""
 ## 레시피 노트를 건넬 때 하는 말. {recipe} 자리에 요리 이름이 들어간다.
 @export var note_line: String = "이거, 할머니가 주셨던 레시피예요. 「{recipe}」 돌려드릴게요."
 ## 좋아하는 마무리 고명 (data/garnishes/). 이걸 올려 대접하면 단골도가 더 오른다.
@@ -91,6 +93,13 @@ func has_finished_story(season: Season.Id, seen_ids: Array[StringName]) -> bool:
 			func(chapter: GuestStoryChapter) -> bool: return chapter != null and chapter.season == season)
 	return not chapters.is_empty() and chapters.all(
 			func(chapter: GuestStoryChapter) -> bool: return chapter.id in seen_ids)
+
+
+## 계절 잔치 인사: 이 계절 사연을 끝까지 봤으면 story_feast_line, 아니면 feast_line
+func get_feast_line(season: Season.Id, seen_ids: Array[StringName]) -> String:
+	if not story_feast_line.is_empty() and has_finished_story(season, seen_ids):
+		return story_feast_line
+	return feast_line
 
 
 ## 이 표정의 그림. 우비를 입었으면 우비 그림, 그 표정 그림이 없으면 기본 그림. 둘 다 없으면 null (임시 도형).

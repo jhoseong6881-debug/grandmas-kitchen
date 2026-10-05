@@ -70,7 +70,9 @@ func _ready() -> void:
 	var intro: String = tier.intro_text if tier != null and not tier.intro_text.is_empty() else _ending.feast_intro_text
 	_beats.append(func() -> void: _say("", intro, &""))
 	for guest: AnimalGuest in guests:
-		_beats.append(func() -> void: _say(guest.display_name, guest.feast_line, guest.id))
+		# 사연을 끝까지 본 손님은 사연에 맞는 인사를 한다.
+		var line: String = guest.get_feast_line(GameState.current_season, GameState.seen_story_chapter_ids)
+		_beats.append(func() -> void: _say(guest.display_name, line.format({"name": GameState.player_name}), guest.id))
 	if tier != null and not tier.announcer_line.is_empty():
 		var announcer: AnimalGuest = GameData.get_guest(prep.announcer_id)
 		if announcer != null:
