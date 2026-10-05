@@ -164,7 +164,8 @@ func show_guest(guest: AnimalGuest, text: String, in_raincoat: bool = false,
 	_guest = guest
 	_in_raincoat = in_raincoat
 	set_listening(false)
-	_raincoat.visible = in_raincoat and guest.raincoat_portrait == null
+	# 임시 우비 도형은 임시 손님 그림 위에만 씌운다 (진짜 그림이 있으면 그림을 가리니까, 우비 그림이 생길 때까지 평소 모습).
+	_raincoat.visible = in_raincoat and guest.raincoat_portrait == null and guest.portrait == null
 	if _raincoat.visible:
 		_raincoat.color = GameData.get_rain_settings().raincoat_color
 	_name_label.text = guest.display_name
