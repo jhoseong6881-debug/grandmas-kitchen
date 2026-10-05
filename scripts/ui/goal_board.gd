@@ -24,6 +24,8 @@ const FEAST_PREP_DONE_TEXT: String = "잔치 준비 끝! 상다리가 휘어지�
 ## 판 그림 (원본, 배경 투명). 가장자리 board_margin 칸은 그대로 두고 가운데만 늘어난다 (9칸 늘이기). 비워 두면 임시 판.
 @export var board_texture: Texture2D
 @export var board_margin: int = 9
+## 글자 크기 (버튼으로 열어 크게 볼 때는 36). 픽셀 글꼴이라 12의 배수로.
+@export var font_size: int = 24
 ## 도트 그림을 화면에서 키우는 배수
 @export var pixel_scale: int = 3
 ## 임시 판 색: 바깥 테두리, 나무, 나무 밝은 쪽, 나무 어두운 쪽, 종이, 종이 가장자리
@@ -47,6 +49,8 @@ const FEAST_PREP_DONE_TEXT: String = "잔치 준비 끝! 상다리가 휘어지�
 
 func _ready() -> void:
 	_apply_board_style()
+	for label: Node in find_children("*", "Label", true, false):
+		(label as Label).add_theme_font_size_override("font_size", font_size)
 	GameState.recipe_unlocked.connect(_refresh.unbind(1))
 	GameState.reputation_changed.connect(_refresh.unbind(1))
 	GameState.day_changed.connect(_refresh.unbind(1))

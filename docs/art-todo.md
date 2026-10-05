@@ -102,3 +102,4 @@
 | scenes/porch/recipe_note_book.tscn (Book Texture) | 저녁 평상에서 레시피 노트를 되찾을 때 뜨는 펼친 할머니 노트 (왼쪽 쪽에 완성 요리 그림, 오른쪽 쪽에 글을 게임이 올림). 지금은 밤색 표지 + 크림색 두 쪽 임시 모양 | 840x480 (원본 280x160, 배경 투명) | 할 일 |
 | data/recipes/*.tres (Finished Image) | 완성 요리 그림 (접시 / 국물 요리는 그릇에 담긴 모습). "완성~!" 장면(4배), 대접할 때 미끄러지는 접시(3배), 레시피 노트에 같이 쓴다. 지금은 DishArt 가 재료 색으로 그린 임시 그림 | 원본 64x64 | 할 일 |
 | scenes/ui/goal_board.tscn → scripts/ui/goal_board.gd (Board Texture) | 목표판: 나무 틀 안 크림색 종이 (9칸 늘이기, 가장자리 Board Margin 칸 그대로). 지금은 코드로 그린 도트 판 | 원본 약 26x26 이상, 배경 투명 | 할 일 |
+| scenes/ui/goal_button.tscn → scripts/ui/goal_button.gd (Board Icon) | 계절 목표 버튼 아이콘: 과녁에 화살 (누르면 목표판이 크게 뜸). 지금은 코드로 그린 도트 과녁 | 96x96 (원본 32x32, 배경 투명) | 할 일 |
