@@ -28,7 +28,7 @@ static func get_lines(day: int, for_tomorrow: bool, max_lines: int = 3) -> Array
 		var chapter: GuestStoryChapter = guest.get_next_story_chapter(GameState.current_season, day,
 				GameState.seen_story_chapter_ids)
 		# 그날 새로 열리는 막만 (열려 있는데 아직 못 본 막을 매일 되풀이해 알리지 않게). 아직 못 만난 손님 이름은 밝히지 않는다.
-		if chapter != null and chapter.open_day == day and GameState.has_met_guest(guest.id):
+		if chapter != null and chapter.open_day == day and GameState.has_seen_guest(guest.id):
 			lines.append(STORY_FORMAT % guest.display_name)
 	if GameData.get_market_settings().is_market_day(day):
 		lines.append(MARKET_TEXT)

@@ -174,8 +174,8 @@ func _fill_today_guests() -> void:
 		var guest: AnimalGuest = GameData.get_guest(guest_id)
 		if guest == null:
 			continue
-		# 아직 만나지 못한 손님은 누군지 모르게 "?" 만 (만나는 재미는 점심에).
-		if not GameState.has_met_guest(guest_id):
+		# 아직 얼굴을 못 본 손님은 누군지 모르게 "?" 만 (만나는 재미는 점심에).
+		if not GameState.has_seen_guest(guest_id):
 			_today_guests.add_child(_make_guest_label(UNMET_GUEST_TEXT, guest_text_color))
 			continue
 		var icon: TextureRect = TextureRect.new()

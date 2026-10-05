@@ -4,10 +4,12 @@ extends Control
 ## 입맛은 고명을 맞춰 대접해서 알아낸 뒤에만 보인다.
 ## 비법은 아직 모르면 ●●●●, 알면 비법 한 줄, 할머니 손맛으로 대접한 적이 있으면 도장(♥)이 붙는다.
 ## 한 번도 대접하지 않은 손님과 아직 노트로 되찾지 못한 요리는 "???"로 가린다.
+## 점심에 왔다가 대접받지 못하고 돌아간 손님은 이름만 보이고 기록은 비어 있다.
 ## open() 으로 열고, 닫기 버튼이나 Esc/게임패드 B(ui_cancel)로 닫는다.
 
 const UNKNOWN_TEXT: String = "???"
 const UNMET_GUEST_TEXT: String = "아직 만나지 못한 손님이에요. 대접하면 수첩에 적혀요."
+const UNSERVED_GUEST_TEXT: String = "아직 대접하지 못했어요. 대접하면 수첩에 적혀요."
 const LIKES_FORMAT: String = "좋아하는 요리: %s"
 const DISLIKES_FORMAT: String = "싫어하는 요리: %s"
 const PAYMENT_FORMAT: String = "밥값으로 가져오는 것: %s"
@@ -57,7 +59,7 @@ func open() -> void:
 	var buttons: Array[Button] = []
 	for guest: AnimalGuest in GameData.get_all_guests():
 		var button: Button = Button.new()
-		button.text = guest.display_name if GameState.has_met_guest(guest.id) else UNKNOWN_TEXT
+		button.text = guest.display_name if GameState.has_seen_guest(guest.id) else UNKNOWN_TEXT
 		button.custom_minimum_size.y = guest_button_height
 		button.add_theme_font_size_override("font_size", guest_button_font_size)
 		# 방향키로 옮기기만 해도 오른쪽 내용이 바뀌게 한다.
@@ -111,8 +113,9 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _show_guest(guest: AnimalGuest) -> void:
 	if not GameState.has_met_guest(guest.id):
-		_name_label.text = UNKNOWN_TEXT
-		_personality_label.text = UNMET_GUEST_TEXT
+		var is_seen: bool = GameState.has_seen_guest(guest.id)
+		_name_label.text = guest.display_name if is_seen else UNKNOWN_TEXT
+		_personality_label.text = UNSERVED_GUEST_TEXT if is_seen else UNMET_GUEST_TEXT
 		for label: Label in [_likes_label, _dislikes_label, _payment_label, _regular_label, _note_label, _secret_label]:
 			label.text = ""
 		return

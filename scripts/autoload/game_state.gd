@@ -50,6 +50,8 @@ var has_visited_market_today: bool = false
 var menu_recipe_ids: Array[StringName] = []
 ## 한 번이라도 대접한 손님 id. 손님 수첩에 그 손님 정보를 보여 줄 때 쓴다.
 var met_guest_ids: Array[StringName] = []
+## 점심에 왔다가 먹을 게 없어 대접받지 못하고 돌아간 손님 id. 얼굴을 봤으니 이름만 알고, 수첩 기록은 대접해야 적힌다.
+var seen_guest_ids: Array[StringName] = []
 ## 손님 id → 저녁 평상에서 지금까지 들려준 이야기 수
 var guest_story_progress: Dictionary[StringName, int] = {}
 ## 저녁 평상에서 이미 본 손님 사연 막 id (GuestStoryChapter)
@@ -181,6 +183,17 @@ func count_found_notes() -> int:
 
 func has_met_guest(guest_id: StringName) -> bool:
 	return guest_id in met_guest_ids
+
+
+## 점심에 얼굴을 본 손님으로 적는다 (대접은 못 했을 때).
+func see_guest(guest_id: StringName) -> void:
+	if guest_id not in seen_guest_ids:
+		seen_guest_ids.append(guest_id)
+
+
+## 이름을 아는 손님인지: 대접했거나, 왔다가 돌아가는 걸 봤거나
+func has_seen_guest(guest_id: StringName) -> bool:
+	return has_met_guest(guest_id) or guest_id in seen_guest_ids
 
 
 ## 오늘의 메뉴에 있는 요리인지. 메뉴를 아직 안 골랐으면(비어 있으면) 모든 요리를 낼 수 있다.
@@ -626,6 +639,7 @@ func new_game() -> void:
 	plot_crop_ids.clear()
 	plot_days_left.clear()
 	met_guest_ids.clear()
+	seen_guest_ids.clear()
 	menu_recipe_ids.clear()
 	learned_secret_ids.clear()
 	grandma_taste_recipe_ids.clear()
@@ -730,6 +744,7 @@ func _to_save_data() -> Dictionary:
 		"guest_story_progress": story_data,
 		"garden": _garden_save_data(),
 		"met_guest_ids": Array(met_guest_ids).map(func(guest_id: StringName) -> String: return String(guest_id)),
+		"seen_guest_ids": Array(seen_guest_ids).map(func(guest_id: StringName) -> String: return String(guest_id)),
 		"menu_recipe_ids": Array(menu_recipe_ids).map(func(recipe_id: StringName) -> String: return String(recipe_id)),
 		"learned_secret_ids": Array(learned_secret_ids).map(func(recipe_id: StringName) -> String: return String(recipe_id)),
 		"grandma_taste_recipe_ids": Array(grandma_taste_recipe_ids).map(func(recipe_id: StringName) -> String: return String(recipe_id)),
@@ -787,6 +802,8 @@ func _from_save_data(data: Dictionary) -> void:
 		for guest_id: StringName in guest_story_progress:
 			if guest_story_progress[guest_id] > 0 and guest_id not in porch_met_guest_ids:
 				porch_met_guest_ids.append(guest_id)
+	for guest_id: Variant in data.get("seen_guest_ids", []):
+		seen_guest_ids.append(StringName(str(guest_id)))
 	var met_data: Array = data.get("met_guest_ids", [])
 	for guest_id: Variant in met_data:
 		met_guest_ids.append(StringName(str(guest_id)))

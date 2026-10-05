@@ -316,6 +316,8 @@ func _send_guest_home(guest: AnimalGuest, promised_recipe: Recipe) -> void:
 		var values: Dictionary = {"recipe": promised_recipe.display_name, "name": GameState.player_name}
 		line = guest.promise_missed_line.format(values) + " " + line
 	current_guest = guest
+	# 얼굴을 봤으니 이름은 안다 (수첩과 메뉴판에 이름만). 수첩 기록은 대접해야 적힌다.
+	GameState.see_guest(guest.id)
 	_guest_spot.show_guest(guest, line, GameState.is_raining_today, AnimalGuest.EXPRESSION_SAD)
 	await _guest_enters()
 	_guests_served += 1
