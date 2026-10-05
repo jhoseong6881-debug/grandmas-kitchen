@@ -39,6 +39,6 @@
 1. ✅ 사연 데이터 (손님마다 사연 막 목록, 열리는 날) + 평상에서 보여 주기 + 세이브 — scripts/data/guest_story_chapter.gd, 토끼 사연 3막 먼저 넣음
 2. ✅ 다섯 손님 사연 글 쓰기 (대답 고르기, 표정 포함)
 3. ✅ 잔치 인사 바꾸기 (AnimalGuest.story_feast_line)
-4. 잠드는 장면 휴대폰 글 (주인공 이야기)
+4. ✅ 잠드는 장면 휴대폰 글 (주인공 이야기) — data/story/phone_messages.tres, 잔치 마무리 한 줄은 spring_ending.tres 의 closing_text
 5. (고르면) 넷째 회상
 6. 자동 플레이로 15일 안에 다 보이는지 점검

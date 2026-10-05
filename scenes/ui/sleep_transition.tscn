@@ -24,6 +24,29 @@ corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_phone"]
+bg_color = Color(0.13, 0.13, 0.16, 1)
+border_width_left = 12
+border_width_top = 12
+border_width_right = 12
+border_width_bottom = 12
+border_color = Color(0.05, 0.05, 0.07, 1)
+corner_radius_top_left = 36
+corner_radius_top_right = 36
+corner_radius_bottom_right = 36
+corner_radius_bottom_left = 36
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_draft"]
+bg_color = Color(0.22, 0.22, 0.26, 1)
+content_margin_left = 18.0
+content_margin_top = 9.0
+content_margin_right = 18.0
+content_margin_bottom = 9.0
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
 [node name="SleepTransition" type="Control"]
 z_index = 2
 layout_mode = 3
@@ -146,6 +169,74 @@ grow_horizontal = 0
 grow_vertical = 0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_save")
+
+[node name="Phone" type="Panel" parent="NightContent"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -384.0
+offset_right = 300.0
+offset_bottom = 384.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_phone")
+
+[node name="SenderLabel" type="Label" parent="NightContent/Phone"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 36.0
+offset_top = 36.0
+offset_right = -36.0
+offset_bottom = 96.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.98, 0.94, 0.84, 1)
+theme_override_font_sizes/font_size = 36
+text = "엄마"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Bubbles" type="VBoxContainer" parent="NightContent/Phone"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 36.0
+offset_top = 120.0
+offset_right = -36.0
+offset_bottom = -132.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 18
+
+[node name="DraftLabel" type="Label" parent="NightContent/Phone"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 36.0
+offset_top = -108.0
+offset_right = -36.0
+offset_bottom = -42.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.98, 0.94, 0.84, 1)
+theme_override_font_sizes/font_size = 36
+theme_override_styles/normal = SubResource("StyleBoxFlat_draft")
+vertical_alignment = 1
+clip_text = true
 
 [node name="MorningLabel" type="Label" parent="."]
 unique_name_in_owner = true

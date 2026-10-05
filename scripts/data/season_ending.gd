@@ -22,6 +22,8 @@ extends Resource
 ## 할머니 편지 제목과 내용
 @export var letter_title: String = ""
 @export_multiline var letter_text: String = ""
+## 잔치가 끝난 뒤 다음 계절 예고 전에 나오는 마무리 한 줄 (주인공 이야기). 비워 두면 건너뛴다.
+@export_multiline var closing_text: String = ""
 ## 마지막에 나오는 다음 계절 예고
 @export_multiline var next_season_teaser: String = ""
 ## 마지막 버튼 글자

@@ -82,6 +82,8 @@ func _ready() -> void:
 	_beats.append(_show_notes)
 	if _ending.show_letter:
 		_beats.append(_show_letter)
+	if not _ending.closing_text.is_empty():
+		_beats.append(_show_closing)
 	_beats.append(_show_teaser)
 	_run_next_beat()
 	_next_button.grab_focus()
@@ -141,6 +143,14 @@ func _show_letter() -> void:
 	_letter_title_label.text = _ending.letter_title
 	_letter_label.text = _ending.letter_text
 	_pop_in(_letter)
+
+
+## 잔치가 끝난 뒤 마무리 한 줄. 노트 카드와 편지를 치우고 대화 상자에 보여 준다.
+func _show_closing() -> void:
+	_note_card.hide()
+	_letter.hide()
+	_dialogue_box.show()
+	_say("", _ending.closing_text.format({"name": GameState.player_name}), &"")
 
 
 func _show_teaser() -> void:
