@@ -11,6 +11,10 @@ const TITLE_TEXT: String = "어떻게 마무리할까요?"
 const GARNISH_FORMAT: String = "%s  ·  %s  ·  %s"
 const FREE_TEXT: String = "공짜"
 const COST_FORMAT: String = "%s %d개 필요 (가진 것 %d)"
+## 제목 아래 손님 줄: "[얼굴] 곰 · 꿀 당근 조림 주문"
+const GUEST_FORMAT: String = " %s  ·  %s 주문"
+## 손님 얼굴 아이콘 크기
+@export var guest_icon_size: int = 36
 
 var _garnishes: Array[Garnish] = []
 
@@ -21,7 +25,16 @@ func _ready() -> void:
 
 
 ## hint: 제목 아래에 보여 줄 손님의 입맛 힌트 (없으면 빈 글)
-func open(hint: String = "") -> void:
+## guest, recipe: 누구의 어떤 주문인지 (제목 아래 한 줄. 없으면 안 보인다)
+func open(hint: String = "", guest: AnimalGuest = null, recipe: Recipe = null) -> void:
+	var guest_label: RichTextLabel = %GuestLabel
+	guest_label.clear()
+	guest_label.visible = guest != null
+	if guest != null:
+		guest_label.push_paragraph(HORIZONTAL_ALIGNMENT_CENTER)
+		guest_label.add_image(guest.get_icon_texture(), guest_icon_size, guest_icon_size, Color.WHITE, INLINE_ALIGNMENT_CENTER)
+		guest_label.add_text(GUEST_FORMAT % [guest.display_name, recipe.display_name if recipe != null else ""])
+		guest_label.pop()
 	var hint_label: Label = %HintLabel
 	hint_label.text = hint
 	hint_label.visible = not hint.is_empty()

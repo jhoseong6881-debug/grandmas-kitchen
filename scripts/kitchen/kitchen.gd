@@ -560,7 +560,8 @@ func _run_next_step() -> void:
 ## 대접하기 전에 마무리 고명을 고른다. 그만두면 다시 대접하기 버튼으로 돌아간다.
 func _on_serve_button_pressed() -> void:
 	var hint: String = _taste_hint(current_guest)
-	_garnish_picker.open(TASTE_HINT_REMINDER_FORMAT % [current_guest.display_name, hint] if hint != "" else "")
+	_garnish_picker.open(TASTE_HINT_REMINDER_FORMAT % [current_guest.display_name, hint] if hint != "" else "",
+			current_guest, current_order)
 	var garnish: Garnish = await _garnish_picker.closed
 	if garnish == null:
 		_serve_button.grab_focus()

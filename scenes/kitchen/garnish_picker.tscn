@@ -62,14 +62,33 @@ text = "어떻게 마무리할까요?"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="GuestLabel" type="RichTextLabel" parent="Board"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 112.0
+offset_bottom = 156.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_colors/default_color = Color(1, 0.96, 0.88, 1)
+theme_override_font_sizes/normal_font_size = 36
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="HintLabel" type="Label" parent="Board"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 104.0
-offset_bottom = 144.0
+offset_top = 160.0
+offset_bottom = 196.0
 grow_horizontal = 2
 theme_override_colors/font_color = Color(1, 0.84, 0.25, 1)
 theme_override_font_sizes/font_size = 24
@@ -84,9 +103,9 @@ anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 60.0
-offset_top = 154.0
+offset_top = 206.0
 offset_right = -60.0
-offset_bottom = -140.0
+offset_bottom = -132.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 16
