@@ -189,10 +189,10 @@ mouse_filter = 2
 
 [node name="Icon" type="TextureRect" parent="PieceTemplate"]
 layout_mode = 0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 56.0
-offset_bottom = 56.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 52.0
+offset_bottom = 52.0
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5

@@ -7,7 +7,7 @@
 
 | 위치 (씬/노드) | 필요한 그림 | 크기 | 상태 |
 |---|---|---|---|
-| data/ingredients/carrot.tres (icon) | 당근 아이콘 | 미정 | 할 일 |
+| data/ingredients/carrot.tres (icon) | 당근 아이콘 — assets/art/ingredients/carrot.png | 원본 16x16 (가진 재료·메뉴판·결과판 32, 밥값 48) | 완료 (2026-10-06) |
 | data/recipes/carrot_kimbop.tres (finished_image) | 할머니표 당근 김밥 완성 그림 | 미정 | 할 일 |
 | scenes/kitchen/kitchen.tscn (Background) | 부엌 배경 | 1920x1080 | 할 일 |
 | scenes/kitchen/kitchen.tscn (Counter) | 조리대 | 1920x300 | 할 일 |

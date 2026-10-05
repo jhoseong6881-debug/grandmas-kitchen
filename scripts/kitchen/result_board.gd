@@ -32,7 +32,7 @@ const SHOP_UP_SOUND: StringName = &"shop_up"
 @export var line_fade_duration: float = 0.2
 ## 소문 숫자와 게이지가 올라가는 시간(초)
 @export var count_duration: float = 0.8
-@export var payment_icon_size: int = 36
+@export var payment_icon_size: int = 32
 ## 손님 이름 옆 작은 얼굴 아이콘 크기
 @export var guest_icon_size: int = 36
 

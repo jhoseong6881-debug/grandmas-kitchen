@@ -31,7 +31,7 @@ const UNMET_GUEST_TEXT: String = "?"
 @export var dish_button_width: float = 480.0
 @export var ingredients_width: float = 360.0
 @export var row_height: float = 60.0
-@export var ingredient_icon_size: int = 24
+@export var ingredient_icon_size: int = 32
 ## 오늘 손님 줄의 얼굴 아이콘 크기(픽셀, 원본 16×16 의 배수)와 글자 색
 @export var guest_icon_size: int = 48
 @export var guest_text_color: Color = Color(0.97, 0.95, 0.88)

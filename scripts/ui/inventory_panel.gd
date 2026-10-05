@@ -5,7 +5,7 @@ extends PanelContainer
 const ROW_TEXT_FORMAT: String = "%s ×%d"
 const EMPTY_TEXT: String = "아직 재료가 없어요"
 
-@export var icon_size: Vector2 = Vector2(36, 36)
+@export var icon_size: Vector2 = Vector2(32, 32)
 ## data/ 에 없는 재료(알 수 없는 id)에 쓰는 임시 사각형 색
 @export var unknown_icon_color: Color = Color(0.5, 0.5, 0.5)
 @export var row_font_size: int = 24

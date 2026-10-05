@@ -1,12 +1,14 @@
 [gd_resource type="Resource" script_class="Ingredient" format=3 uid="uid://cbhyfvk1vplmf"]
 
 [ext_resource type="Script" uid="uid://jdo3q781e21o" path="res://scripts/data/ingredient.gd" id="1_u2dq7"]
+[ext_resource type="Texture2D" path="res://assets/art/ingredients/carrot.png" id="2_icon"]
 
 [resource]
 script = ExtResource("1_u2dq7")
 id = &"carrot"
 display_name = "당근"
+icon = ExtResource("2_icon")
 placeholder_color = Color(0.93, 0.55, 0.25, 1)
-description = "당근 그림 그려줘요.."
+description = "텃밭에서 이틀이면 자라는 당근. 토끼가 제일 좋아한다."
 chop_sound = &"chop_carrot"
 metadata/_custom_type_script = "uid://jdo3q781e21o"
