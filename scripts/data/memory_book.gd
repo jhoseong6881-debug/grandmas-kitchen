@@ -9,10 +9,12 @@ extends Resource
 
 
 ## 지금 보여 줄 회상. 없으면 null.
-## found_notes: 이번 계절에 되찾은 노트 수, seen_ids: 이미 본 회상 id
-func get_next(season: Season.Id, found_notes: int, seen_ids: Array[StringName]) -> GrandmaMemory:
+## found_notes: 이번 계절에 되찾은 노트 수, seen_ids: 이미 본 회상 id, stories_finished: 이번 계절 손님 사연을 다 봤는지
+func get_next(season: Season.Id, found_notes: int, seen_ids: Array[StringName],
+		stories_finished: bool = false) -> GrandmaMemory:
 	for memory: GrandmaMemory in memories:
 		if memory != null and memory.story != null and memory.season == season \
-				and found_notes >= memory.notes_needed and memory.id not in seen_ids:
+				and found_notes >= memory.notes_needed and memory.id not in seen_ids \
+				and (stories_finished or not memory.needs_all_stories):
 			return memory
 	return null

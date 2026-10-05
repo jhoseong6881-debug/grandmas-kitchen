@@ -40,5 +40,5 @@
 2. ✅ 다섯 손님 사연 글 쓰기 (대답 고르기, 표정 포함)
 3. ✅ 잔치 인사 바꾸기 (AnimalGuest.story_feast_line)
 4. ✅ 잠드는 장면 휴대폰 글 (주인공 이야기) — data/story/phone_messages.tres, 잔치 마무리 한 줄은 spring_ending.tres 의 closing_text
-5. (고르면) 넷째 회상
+5. ✅ 넷째 회상 (data/story/memories.tres 의 porch_guests, GrandmaMemory.needs_all_stories)
 6. 자동 플레이로 15일 안에 다 보이는지 점검

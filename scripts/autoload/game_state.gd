@@ -266,6 +266,18 @@ func get_next_story_chapter(guest: AnimalGuest) -> GuestStoryChapter:
 	return guest.get_next_story_chapter(current_season, current_day, seen_story_chapter_ids)
 
 
+## 지금 계절에 사연이 있는 손님들의 사연을 모두 끝까지 봤는지 (사연이 하나도 없으면 false)
+func are_season_stories_finished() -> bool:
+	var has_story: bool = false
+	for guest: AnimalGuest in GameData.get_all_guests():
+		if guest.story_chapters.any(func(chapter: GuestStoryChapter) -> bool:
+				return chapter != null and chapter.season == current_season):
+			has_story = true
+			if not guest.has_finished_story(current_season, seen_story_chapter_ids):
+				return false
+	return has_story
+
+
 func see_story_chapter(chapter_id: StringName) -> void:
 	if chapter_id not in seen_story_chapter_ids:
 		seen_story_chapter_ids.append(chapter_id)

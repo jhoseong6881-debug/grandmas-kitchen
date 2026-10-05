@@ -53,7 +53,24 @@ id = &"next_time"
 notes_needed = 9
 story = SubResource("Story_3")
 
+[sub_resource type="Resource" id="Chapter_4"]
+script = ExtResource("4_chapter")
+title = "기억 넷. 평상의 손님들"
+background_color = Color(0.12, 0.14, 0.26, 1)
+lines = Array[String](["여덟 살 여름밤, 평상. 할머니 무릎을 베고 누워 별을 셌다.", "나: \"할머니, 저 동물들은 다 할머니 친구야?\"", "할머니: \"친구는 무슨. 다 밥 먹으러 온 손님들이지.\"", "할머니: \"토끼는 우리 밭 당근 서리하다 걸렸어. 그래서 지 몫으로 한 줄 따로 심어 줬지.\"", "할머니: \"암탉은 장터에서 팔려 가길래 데려왔고, 다람쥐는… 처음엔 내 그림자만 봐도 도망갔어.\"", "할머니: \"곰은 벌에 쏘여 엉엉 울면서 왔고, 고슴도치는 가시 세우고 버섯만 휙 던져 놓고 가더라.\"", "할머니: \"그래도 밥 한 그릇씩 먹이고 나니까, 다들 저녁마다 여기 와서 앉더라고.\"", "할머니: \"나 없으면… 이 평상은 누가 지키려나.\"", "나는 그 말을 끝까지 못 듣고 잠이 들었다.", "…이제 평상 위 다섯 자리가 누구 자리인지 다 안다. 할머니, 이 평상은 제가 지킬게요."])
+
+[sub_resource type="Resource" id="Story_4"]
+script = ExtResource("3_story")
+chapters = Array[ExtResource("4_chapter")]([SubResource("Chapter_4")])
+
+[sub_resource type="Resource" id="Memory_4"]
+script = ExtResource("2_memory")
+id = &"porch_guests"
+notes_needed = 0
+needs_all_stories = true
+story = SubResource("Story_4")
+
 [resource]
 script = ExtResource("1_book")
-memories = Array[ExtResource("2_memory")]([SubResource("Memory_1"), SubResource("Memory_2"), SubResource("Memory_3")])
+memories = Array[ExtResource("2_memory")]([SubResource("Memory_1"), SubResource("Memory_2"), SubResource("Memory_3"), SubResource("Memory_4")])
 dream_text = "…잠결에, 오래된 기억 하나가 떠올랐다."
