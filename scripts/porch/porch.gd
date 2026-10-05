@@ -5,6 +5,7 @@ extends Control
 ## 손님은 옆에서 걸어 들어와 평상에 앉고, 평상에 처음 온 손님은 인사(porch_greeting_line)부터 한다.
 ## 단골 단계가 오른 손님이면 그 단계의 새 이야기를 나누고 단골 선물을 건넨다.
 ## 사연(AnimalGuest.story_chapters)의 다음 막이 열렸으면 평소 이야기 대신 그 막을 한다.
+## 단골이면 가끔 "내일 점심에 ○○ 먹으러 와도 돼요?" 하고 약속 주문을 묻는다 (받으면 내일 점심에 제일 먼저 온다).
 ## 손님끼리 대화(DuoTalkBook)가 열렸으면 첫 손님 이야기 뒤에 다른 손님이 옆에 와 앉아 둘이 이야기한다 (주인공은 듣기만).
 ## 이미 되찾은 레시피의 할머니 비법을 아는 손님이면 비법을 알려 준다.
 ## 돌려줄 할머니 레시피 노트 페이지가 있으면 건네준다. 다 듣고 나면 잠자리에 들어 다음 날 아침 텃밭으로 간다.
@@ -13,6 +14,7 @@ extends Control
 const DAY_TEXT_FORMAT: String = "%s %d일째 저녁"
 const QUIET_EVENING_TEXT: String = "오늘 저녁은 조용하네요. 별이 참 많아요."
 const NOTE_FOUND_TEXT: String = "할머니 레시피 노트 한 장을 되찾았어요!"
+const PROMISE_MADE_FORMAT: String = "약속했어요!  내일 점심: %s · %s"
 const MENU_SLOT_UP_FORMAT: String = "  ·  메뉴 칸이 늘었어요 (%d칸)"
 const SECRET_LEARNED_FORMAT: String = "할머니 비법을 알았어요!  ★ %s"
 const GIFT_INGREDIENT_FORMAT: String = "단골 선물을 받았어요!  %s ×%d"
@@ -51,6 +53,10 @@ var _evening_guest: AnimalGuest
 var _met_tonight_ids: Array[StringName] = []
 ## 지금 대답을 기다리는 대화 (없으면 null)
 var _current_talk: EveningTalk
+## 오늘 저녁 약속 주문을 묻는 대화와 그 손님, 요리 (묻지 않으면 null). 첫 대답(받기)을 고르면 약속한다.
+var _promise_talk: EveningTalk
+var _promise_guest: AnimalGuest
+var _promise_recipe: Recipe
 
 @onready var _day_label: Label = %DayLabel
 @onready var _guest_spot: GuestSpot = %GuestSpot
@@ -145,6 +151,16 @@ func _add_guest_beats(guest: AnimalGuest, is_first: bool) -> void:
 		if page != null:
 			guest_beats.append(func() -> void: _guest_spot.say(guest.note_line.format({"recipe": page.display_name}), AnimalGuest.EXPRESSION_HAPPY))
 			guest_beats.append(func() -> void: _receive_note_page(page))
+		var promise_recipe: Recipe = _choose_promise_recipe(guest)
+		if promise_recipe != null:
+			_promise_guest = guest
+			_promise_recipe = promise_recipe
+			_promise_talk = _make_promise_talk(guest, promise_recipe)
+			guest_beats.append(func() -> void:
+				_note_card.hide()
+				_status_label.text = ""
+				_guest_spot.set_bubble_shown(true)
+				_tell_talk(_promise_talk))
 	var first_beat: Callable = guest_beats[0]
 	guest_beats[0] = func() -> void:
 		_switch_guest(guest)
@@ -193,6 +209,32 @@ func _switch_guest(guest: AnimalGuest) -> void:
 	if guest.id not in GameState.porch_met_guest_ids:
 		GameState.porch_met_guest_ids.append(guest.id)
 	_guest_spot.walk_in()
+
+
+## 약속 주문을 물을지와 그 요리: 이웃 이상 단골이고, 내일이 계절 안이고, 내일 약속이 아직 없을 때 가끔(promise_chance).
+## 요리는 그 손님이 좋아하는 요리 중 되찾은 것. 없으면 null.
+func _choose_promise_recipe(guest: AnimalGuest) -> Recipe:
+	var settings: RegularSettings = GameData.get_regular_settings()
+	var tomorrow: int = GameState.current_day + 1
+	var ending: SeasonEnding = GameData.get_season_ending()
+	if guest.promise_ask_line.is_empty() or GameState.has_promise_on(tomorrow) \
+			or (ending != null and tomorrow > ending.last_day) \
+			or GameState.get_regular_tier(guest.id) < settings.promise_min_tier or randf() >= settings.promise_chance:
+		return null
+	var possible: Array[Recipe] = guest.favorite_recipes.filter(
+			func(recipe: Recipe) -> bool: return recipe != null and GameState.is_recipe_unlocked(recipe.id))
+	return possible.pick_random() if not possible.is_empty() else null
+
+
+func _make_promise_talk(guest: AnimalGuest, recipe: Recipe) -> EveningTalk:
+	var settings: RegularSettings = GameData.get_regular_settings()
+	var talk: EveningTalk = EveningTalk.new()
+	var values: Dictionary = {"recipe": recipe.display_name, "name": GameState.player_name}
+	talk.line = guest.promise_ask_line.format(values)
+	talk.replies = settings.promise_replies.duplicate()
+	talk.reactions = [guest.promise_accept_line.format(values), guest.promise_decline_line.format(values)]
+	talk.reaction_expressions = [AnimalGuest.EXPRESSION_HAPPY, AnimalGuest.EXPRESSION_DEFAULT]
+	return talk
 
 
 ## 오늘 저녁 손님끼리 대화: 첫 손님이 낀 대화 중, 다른 손님도 오늘 대접했고 평상에 와 본 적 있는 손님인 것. 없으면 null.
@@ -389,6 +431,9 @@ func _show_replies(replies: Array[String]) -> void:
 
 ## 고른 대답에 손님이 반응한다. 반응이 없으면 마지막 반응을 쓴다.
 func _on_reply_chosen(reply_index: int) -> void:
+	if _current_talk == _promise_talk and _promise_talk != null and reply_index == 0:
+		GameState.make_promise(_promise_guest.id, _promise_recipe.id, GameState.current_day + 1)
+		_status_label.text = PROMISE_MADE_FORMAT % [_promise_guest.display_name, _promise_recipe.display_name]
 	var reactions: Array[String] = _current_talk.reactions
 	if not reactions.is_empty():
 		var index: int = mini(reply_index, reactions.size() - 1)

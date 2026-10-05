@@ -13,6 +13,8 @@ const TASTE_MATCH_POP_TEXT: String = "♥ 입맛 딱!"
 const TIER_UP_FORMAT: String = "%s%s 더 가까워졌어요 · %s"
 const REQUEST_JOIN: String = " "
 const REQUEST_DONE_POP_TEXT: String = "♪ 부탁을 들어줬어요!"
+const PROMISE_KEPT_POP_TEXT: String = "★ 약속을 지켰어요!"
+const PROMISE_BONUS_FORMAT: String = "  약속 덤 +%d"
 const REQUEST_MISSED_LINE: String = "부탁한 대로는 아니지만… 그래도 맛있어요!"
 const REQUEST_BONUS_FORMAT: String = " (부탁 +%d)"
 const PAYMENT_PREFIX: String = "밥값으로 "
@@ -85,6 +87,8 @@ var current_guest: AnimalGuest
 var current_order: Recipe
 ## 지금 주문이 좋아하는 요리 대신 고른 요리인지
 var _is_fallback_order: bool = false
+## 지금 손님이 어젯밤 약속한 요리를 주문했는지 (단골의 약속 주문)
+var _is_promise_order: bool = false
 ## 지금 손님의 오늘의 부탁 (없으면 null), 부탁을 미니게임 단계에 이미 걸었는지, 부탁을 들어줬는지
 var current_request: GuestRequest
 var _is_request_assigned: bool = false
@@ -218,8 +222,12 @@ func _call_next_guest() -> void:
 		_end_lunch(LUNCH_DONE_TEXT)
 		return
 	var guest_count: int = GameData.get_season_guests().size()
+	# 어젯밤 약속한 손님이 있으면 오늘 첫 손님으로 온다.
+	var promised_guest: AnimalGuest = _take_promised_guest()
+	var promised_recipe: Recipe = _promised_recipe
+	_is_promise_order = false
 	for i: int in guest_count:
-		var guest: AnimalGuest = _pop_next_guest()
+		var guest: AnimalGuest = promised_guest if i == 0 and promised_guest != null else _pop_next_guest()
 		var order: Recipe = _choose_order(guest)
 		_is_fallback_order = order == null
 		if _is_fallback_order:
@@ -255,9 +263,25 @@ func _call_next_guest() -> void:
 			if not GameState.has_met_guest(guest.id) and not guest.first_order_line.is_empty():
 				order_text = guest.first_order_line.format({"recipe": order.display_name})
 				order_expression = AnimalGuest.EXPRESSION_HAPPY
+			# 약속한 손님: 약속한 요리를 낼 수 있으면 그걸, 없으면 아쉬운 말 한마디 뒤 평소처럼 주문한다.
+			if guest == promised_guest and promised_recipe != null:
+				var values: Dictionary = {"recipe": promised_recipe.display_name, "name": GameState.player_name}
+				if _can_cook(promised_recipe):
+					_orders_today[order.id] = _orders_today.get(order.id, 1) - 1
+					order = promised_recipe
+					current_order = order
+					_orders_today[order.id] = _orders_today.get(order.id, 0) + 1
+					_is_fallback_order = false
+					_is_promise_order = true
+					order_text = guest.promise_order_line.format(values)
+					order_expression = AnimalGuest.EXPRESSION_HAPPY
+				else:
+					order_text = guest.promise_missed_line.format(values) + " " + order_text
+					order_expression = AnimalGuest.EXPRESSION_SAD
 			if _taste_hint(guest) != "":
 				order_text += TASTE_HINT_JOIN + _taste_hint(guest)
-			current_request = _choose_request(guest, order)
+			# 약속 주문에는 오늘의 부탁을 덧붙이지 않는다.
+			current_request = _choose_request(guest, order) if not _is_promise_order else null
 			if current_request != null:
 				order_text += REQUEST_JOIN + current_request.get_line(guest)
 			_guest_spot.show_guest(guest, order_text, GameState.is_raining_today, order_expression)
@@ -320,6 +344,26 @@ func _choose_request(guest: AnimalGuest, order: Recipe) -> GuestRequest:
 				return request.applies_to(order) and (not request.is_garnish_request()
 						or guest.favorite_garnish == null or request.garnish == guest.favorite_garnish))
 	return possible.pick_random() if not possible.is_empty() else null
+
+
+## 오늘 약속한 손님 (없으면 null). 약속은 여기서 끝낸다 (지키든 못 지키든). 오늘 손님 차례에서는 빼서 두 번 오지 않게 한다.
+var _promised_recipe: Recipe
+
+
+func _take_promised_guest() -> AnimalGuest:
+	_promised_recipe = null
+	if not GameState.has_promise_on(GameState.current_day):
+		return null
+	var guest: AnimalGuest = GameData.get_guest(GameState.promise_guest_id)
+	_promised_recipe = GameData.get_recipe(GameState.promise_recipe_id)
+	GameState.clear_promise()
+	if guest == null:
+		return null
+	if _guest_queue.is_empty():
+		_guest_queue = GameData.get_season_guests()
+		_guest_queue.shuffle()
+	_guest_queue.erase(guest)
+	return guest
 
 
 ## 손님 차례에서 한 명을 꺼낸다. 차례가 비면 손님 목록을 섞어서 다시 채운다.
@@ -507,6 +551,9 @@ func _serve(garnish: Garnish) -> void:
 	if is_request_met and settings.request_payment_bonus > 0 and not payment.is_empty():
 		payment[payment.keys()[0]] += settings.request_payment_bonus
 		bonus_text += REQUEST_BONUS_FORMAT % settings.request_payment_bonus
+	if _is_promise_order and settings.promise_payment_bonus > 0 and not payment.is_empty():
+		payment[payment.keys()[0]] += settings.promise_payment_bonus
+		bonus_text += PROMISE_BONUS_FORMAT % settings.promise_payment_bonus
 	for ingredient_id: StringName in payment:
 		GameState.add_ingredient(ingredient_id, payment[ingredient_id])
 
@@ -520,6 +567,9 @@ func _serve(garnish: Garnish) -> void:
 		var missed_line: String = guest.request_missed_line if not guest.request_missed_line.is_empty() else REQUEST_MISSED_LINE
 		line = current_request.get_thanks_line(guest) if is_request_met else missed_line
 		expression = AnimalGuest.EXPRESSION_HAPPY if is_request_met else AnimalGuest.EXPRESSION_SAD
+	if _is_promise_order and not guest.promise_kept_line.is_empty():
+		line = guest.promise_kept_line.format({"name": GameState.player_name})
+		expression = AnimalGuest.EXPRESSION_HAPPY
 	if is_grandma_taste:
 		# 비법을 알려 준 손님은 그 요리만의 말을, 다른 손님은 자기 말투의 말을 한다.
 		var taste_line: String = current_order.grandma_taste_line
@@ -543,6 +593,11 @@ func _serve(garnish: Garnish) -> void:
 		pops.append(REQUEST_DONE_POP_TEXT)
 		pop_sounds.append(POP_SOUND)
 		points += settings.request_points
+	if _is_promise_order:
+		pops.append(PROMISE_KEPT_POP_TEXT)
+		pop_sounds.append(POP_SOUND)
+		points += settings.promise_points
+		_is_promise_order = false
 	if is_taste_match:
 		GameState.learn_taste(guest.id)
 		pops.append(TASTE_MATCH_POP_TEXT)

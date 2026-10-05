@@ -19,6 +19,14 @@ extends Resource
 ## 부탁을 들어줬을 때 더 오르는 단골도와 더 받는 밥값
 @export var request_points: int = 2
 @export var request_payment_bonus: int = 1
+## 단골의 약속 주문: 저녁 평상에서 첫 손님이 "내일 점심에 ○○ 먹으러 와도 돼요?" 하고 물을 확률 (0 ~ 1)과
+## 물어볼 수 있는 단골 단계 (1 = 이웃부터). 약속을 지키면 더 오르는 단골도와 더 받는 밥값.
+@export_range(0.0, 1.0) var promise_chance: float = 0.35
+@export var promise_min_tier: int = 1
+@export var promise_points: int = 2
+@export var promise_payment_bonus: int = 1
+## 약속을 물을 때 주인공이 고르는 대답 (받기, 거절). 거절해도 벌은 없다.
+@export var promise_replies: Array[String] = ["좋아요, 준비해 둘게요", "내일은 어려울 것 같아요"]
 ## 단계마다 밥값에 더해 주는 덤 (첫 번째 밥값 재료에 더한다). 길이는 tier_names 와 같게.
 @export var tier_payment_bonus: Array[int] = [0, 1, 1, 2]
 

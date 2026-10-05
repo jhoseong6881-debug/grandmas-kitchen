@@ -15,6 +15,7 @@ const NOTES_DONE_FORMAT: String = "올%s 노트를 다 모았어요!"
 const SHOP_FORMAT: String = "%s까지 소문 %d"
 const SHOP_MAX_FORMAT: String = "%s!"
 const MARKET_TODAY_TEXT: String = "오늘은 장날!"
+const PROMISE_FORMAT: String = "★ 오늘 약속: %s · %s"
 const MARKET_FORMAT: String = "장날까지 %d일"
 const FEAST_TODAY_FORMAT: String = "오늘 저녁 %s!"
 const FEAST_FORMAT: String = "%s까지 %d일"
@@ -25,6 +26,8 @@ const FEAST_PREP_DONE_TEXT: String = "잔치 준비 끝! 상다리가 휘어지�
 
 @onready var _title_label: Label = %Title
 @onready var _notes_label: Label = %NotesLabel
+## 오늘 점심 단골과의 약속 주문 (있을 때만)
+@onready var _promise_label: Label = %PromiseLabel
 @onready var _holder_label: Label = %HolderLabel
 @onready var _shop_label: Label = %ShopLabel
 @onready var _market_label: Label = %MarketLabel
@@ -43,9 +46,18 @@ func _ready() -> void:
 
 
 func _refresh() -> void:
+	_refresh_promise()
 	_refresh_notes()
 	_refresh_shop()
 	_refresh_market_and_feast()
+
+
+func _refresh_promise() -> void:
+	var guest: AnimalGuest = GameData.get_guest(GameState.promise_guest_id)
+	var recipe: Recipe = GameData.get_recipe(GameState.promise_recipe_id)
+	_promise_label.visible = GameState.has_promise_on(GameState.current_day) and guest != null and recipe != null
+	if _promise_label.visible:
+		_promise_label.text = PROMISE_FORMAT % [guest.display_name, recipe.display_name]
 
 
 ## 이번 계절 노트 수와, 아직 노트를 가진 손님 (만난 손님만 이름으로)

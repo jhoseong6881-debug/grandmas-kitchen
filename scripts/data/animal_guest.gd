@@ -55,6 +55,14 @@ const PLACEHOLDER_ICON_PIXELS: int = 12
 ## 이웃 바구니 쪽지 (평소). 저녁 평상에 왔던 다음 날 아침, 바구니 재료와 함께 이 중 하나를 남긴다 (날마다 돌아가며).
 ## {ingredient} 는 두고 간 재료 이름, {name} 은 주인공 이름. 사연 막 다음 날에는 그 막의 쪽지(GuestStoryChapter.basket_note)를 먼저 남긴다.
 @export_multiline var basket_notes: Array[String] = []
+## 단골의 약속 주문 (RegularSettings.promise_*). {recipe} 는 요리 이름.
+## 저녁 평상에서 묻는 말 / 받아 줬을 때 / 거절했을 때 / 다음 날 점심에 와서 주문하는 말 / 약속대로 대접받았을 때 / 메뉴에 없어서 못 먹을 때
+@export_multiline var promise_ask_line: String = ""
+@export_multiline var promise_accept_line: String = ""
+@export_multiline var promise_decline_line: String = ""
+@export_multiline var promise_order_line: String = ""
+@export_multiline var promise_kept_line: String = ""
+@export_multiline var promise_missed_line: String = ""
 ## 대접받고 하는 말
 @export var thanks_line: String = "잘 먹었어요!"
 ## 미니게임을 한 번도 안 틀리고 대접받았을 때 하는 말

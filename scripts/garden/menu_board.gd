@@ -16,6 +16,7 @@ const PICK_ONE_TEXT: String = "메뉴를 하나 이상 골라 주세요."
 const SHORT_TEXT: String = "  재료 부족"
 const INGREDIENT_FORMAT: String = "×%d  "
 const LIKES_FORMAT: String = "좋아해요: %s"
+const PROMISE_FORMAT: String = "★ %s%s 약속"
 const INVENTORY_ITEM_FORMAT: String = "%s ×%d"
 const INVENTORY_EMPTY_TEXT: String = "없어요"
 const LIKES_UNKNOWN_TEXT: String = "좋아해요: ???"
@@ -85,8 +86,12 @@ func open() -> void:
 ## 메뉴 칸이 늘어서 자리가 남으면 어제 메뉴에 없던 레시피로 채운다 (새로 되찾은 레시피가 바로 메뉴에 오르게, 뒤에 되찾은 것부터).
 func _initial_selection(recipes: Array[Recipe]) -> Array[StringName]:
 	var ids: Array[StringName] = []
+	# 오늘 약속한 요리는 처음부터 골라 둔다.
 	for recipe: Recipe in recipes:
-		if recipes.size() <= _max_dishes() or recipe.id in GameState.menu_recipe_ids:
+		if _is_promised(recipe.id):
+			ids.append(recipe.id)
+	for recipe: Recipe in recipes:
+		if (recipes.size() <= _max_dishes() or recipe.id in GameState.menu_recipe_ids) and recipe.id not in ids:
 			ids.append(recipe.id)
 	for i: int in range(GameState.unlocked_recipe_ids.size() - 1, -1, -1):
 		if ids.size() >= _max_dishes():
@@ -111,6 +116,12 @@ func _make_row(recipe: Recipe) -> HBoxContainer:
 	var likes: Label = Label.new()
 	likes.text = _likes_text(recipe)
 	likes.add_theme_font_size_override("font_size", detail_font_size)
+	# 오늘 점심 약속한 요리면 좋아하는 손님 대신 약속을 알려 준다.
+	if _is_promised(recipe.id):
+		var guest: AnimalGuest = GameData.get_guest(GameState.promise_guest_id)
+		var guest_name: String = guest.display_name if guest != null else ""
+		likes.text = PROMISE_FORMAT % [guest_name, Korean.with_particle(guest_name)]
+		likes.add_theme_color_override("font_color", selected_color)
 	likes.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	row.add_child(likes)
 	return row
@@ -174,6 +185,11 @@ func _make_ingredients_label(recipe: Recipe) -> RichTextLabel:
 		label.add_text(SHORT_TEXT)
 		label.pop()
 	return label
+
+
+## 오늘 점심 약속한 요리인지
+func _is_promised(recipe_id: StringName) -> bool:
+	return GameState.has_promise_on(GameState.current_day) and GameState.promise_recipe_id == recipe_id
 
 
 ## 좋아하는 손님 중 만나 본 손님 이름. 아무도 못 만났으면 ???.
