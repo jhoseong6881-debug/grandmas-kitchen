@@ -256,11 +256,16 @@ func _start_lunch() -> void:
 	_take_promise()
 	_special = GameData.get_special_lunch(GameState.current_day)
 	_picnic_host = GameData.get_guest(_special.host_id) if _special != null else null
-	# 특별한 점심 날의 주인 손님은 늘 첫 손님이다 (이 기능이 생기기 전에 정해 둔 오늘 손님이면 맨 앞에 넣고 맨 뒤를 뺀다).
-	if _picnic_host != null and _picnic_host not in _todays_guests:
-		_todays_guests.push_front(_picnic_host)
-		if _todays_guests.size() > maxi(_guests_today, 1):
-			_todays_guests.pop_back()
+	# 특별한 점심 날의 주인 손님은 늘 첫 손님이다 (이 기능이 생기기 전에 정해 둔 오늘 손님이면 맨 앞에 넣고 맨 뒤를 뺀다.
+	# 이미 오늘 손님 중간에 있으면 맨 앞으로 옮긴다).
+	if _picnic_host != null and _todays_guests.find(_picnic_host) != 0:
+		if _picnic_host in _todays_guests:
+			_todays_guests.erase(_picnic_host)
+			_todays_guests.push_front(_picnic_host)
+		else:
+			_todays_guests.push_front(_picnic_host)
+			if _todays_guests.size() > maxi(_guests_today, 1):
+				_todays_guests.pop_back()
 		_guests_today = _todays_guests.size()
 	_is_picnic = _special != null and _special.kind == SpecialLunch.Kind.PICNIC and _picnic_host != null \
 			and not _todays_guests.is_empty()
@@ -302,6 +307,9 @@ func _call_next_guest() -> void:
 	_is_fallback_order = order == null
 	if _is_fallback_order:
 		order = _choose_fallback_order(guest)
+	# "아무거나 맛있는 거" 날에는 낼 요리를 내가 고르므로, 싫어하는 요리뿐이어도 낼 수 있는 요리가 있으면 손님을 받는다.
+	if order == null and _is_chef_day:
+		order = _choose_any_order()
 	# 봄비 오는 날에는 따뜻한 요리를 먼저 찾는다. 밥값은 좋아하는 요리와 똑같이 받는다.
 	var warm_order: Recipe = _choose_warm_order(guest)
 	if warm_order != null:
@@ -530,6 +538,12 @@ func _choose_fallback_order(guest: AnimalGuest) -> Recipe:
 	return possible.pick_random() if not possible.is_empty() else null
 
 
+## 지금 낼 수 있는 아무 요리 하나 (싫어하는 요리도 포함). 없으면 null.
+func _choose_any_order() -> Recipe:
+	var possible: Array[Recipe] = GameData.get_all_recipes().filter(_can_cook)
+	return possible.pick_random() if not possible.is_empty() else null
+
+
 ## 레시피 노트로 되찾았고, 오늘의 메뉴에 있고, 지금 재료로 만들 수 있는지
 func _can_cook(recipe: Recipe) -> bool:
 	return GameState.is_recipe_unlocked(recipe.id) and GameState.is_on_menu(recipe.id) \
@@ -673,7 +687,9 @@ func _choose_chef_dish() -> void:
 	var served: Array[String] = []
 	for recipe_id: StringName in _orders_today:
 		var served_recipe: Recipe = GameData.get_recipe(recipe_id)
-		if served_recipe != null and _orders_today[recipe_id] > 0 and served_recipe != current_order:
+		# 지금 손님 몫으로 미리 세어 둔 요리(current_order) 한 번은 아직 낸 게 아니라서 뺀다.
+		var served_count: int = _orders_today[recipe_id] - (1 if served_recipe == current_order else 0)
+		if served_recipe != null and served_count > 0:
 			served.append(served_recipe.display_name)
 	var recipe: Recipe = null
 	while recipe == null:
