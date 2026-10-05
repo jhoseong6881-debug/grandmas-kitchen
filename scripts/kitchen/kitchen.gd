@@ -62,8 +62,11 @@ const TIER_UP_SOUND: StringName = &"tier_up"
 @export var fallback_payment_amount: int = 1
 ## 미니게임을 한 번도 안 틀리면 밥값 재료마다 이만큼 더 받는다.
 @export var perfect_bonus_amount: int = 1
-## 손님이 들어올 때, 문이 열리고 나서 다시 닫히기까지 기다리는 시간(초)
-@export var door_close_delay: float = 0.4
+## 손님이 들어올 때: 문이 다 열리고 손님이 쏙 올라오기까지 기다리는 시간(초), 올라오기 시작하고 문이 닫히기까지 시간(초)
+@export var guest_appear_delay: float = 0.35
+@export var door_close_delay: float = 0.5
+## 앞 손님이 나가고 문이 닫힌 뒤, 다음 손님이 문을 열기까지 쉬는 시간(초)
+@export var next_guest_delay: float = 1.0
 ## 밥값 문구에서 재료 아이콘 크기(픽셀). 픽셀 글꼴에 맞춰 12의 배수로.
 @export var payment_icon_size: int = 48
 ## true: "아이콘 당근 ×2", false: "아이콘 ×2". 재료 그림이 다 생기면 false로 바꿔도 된다.
@@ -202,9 +205,11 @@ func _start_lunch() -> void:
 func _call_next_guest() -> void:
 	_show_only_button(null)
 	_set_status("", false)
-	# 앞 손님은 문으로 걸어 나간다.
+	# 앞 손님은 문으로 나간다. 문이 닫히고 조금 쉬었다가 다음 손님이 온다.
 	if current_guest != null and _guest_spot.visible:
 		await _guest_leaves()
+		if _guests_served < _guests_today:
+			await get_tree().create_timer(next_guest_delay, false).timeout
 	_guest_spot.clear()
 	current_guest = null
 	current_order = null
@@ -265,14 +270,17 @@ func _call_next_guest() -> void:
 ## 오늘 메뉴 수 + extra_guests_over_menu + 가게 단계의 손님 보너스. 최대는 가게 단계의 max_guests
 ## (가게 단계 데이터가 없으면 guests_per_lunch). 소문이 퍼질수록 손님이 는다.
 ## 메뉴를 안 정했으면(메뉴가 비어 있으면 되찾은 레시피 전부를 낼 수 있다) 되찾은 레시피 수로 센다.
-## 문이 열리고, 손님이 카운터 앞에 스르륵 나타난 뒤 문이 닫힌다. (문 장면이 없으면 바로 나타난다)
+## 문이 열리고 잠깐 뒤, 손님이 조리대 아래에서 쏙 올라오고 문이 닫힌다. (문 장면이 없으면 바로 나타난다)
 func _guest_enters() -> void:
 	if _door == null:
 		Sound.play(GUEST_ARRIVE_SOUND)
 		return
+	# show_guest 가 손님을 보이게 해 두므로, 문이 열리는 동안은 숨겨 둔다.
+	_guest_spot.hide()
 	await _door.open()
+	await get_tree().create_timer(guest_appear_delay, false).timeout
 	_close_door_after(door_close_delay)
-	await _guest_spot.fade_in()
+	await _guest_spot.pop_up()
 
 
 func _close_door_after(delay: float) -> void:

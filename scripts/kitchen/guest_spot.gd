@@ -3,7 +3,8 @@ extends Control
 ## 손님 자리. 손님 모습과 말풍선을 보여 준다. 부엌 조리대 앞과 저녁 평상에서 쓴다.
 ## 누가 무엇을 말할지는 정하지 않는다. 부엌이나 평상이 정해서 show_order / show_guest 로 알려 준다.
 ## walk_in() 을 부르면 옆에서 통통 걸어 들어와 앉은 뒤에 말풍선이 보인다 (저녁 평상).
-## fade_in() / fade_out() 은 제자리에서 스르륵 나타나고 사라진다 (점심, 부엌 문이 열리고 닫힐 때).
+## fade_in() / fade_out() 은 제자리에서 스르륵 나타나고 사라진다.
+## pop_up() 은 아래에서 쏙 올라온다 (점심, 부엌 문이 열린 뒤. 부엌에서는 손님을 조리대 뒤에 그려서 조리대 뒤에서 올라오는 것처럼 보인다).
 ## 봄비 오는 날에는 우비를 입은 모습으로 보여 준다 (우비 그림이 없으면 임시 우비 도형을 씌운다).
 ## 대사마다 표정(AnimalGuest.EXPRESSION_*)을 바꿀 수 있다. 그림이 없으면 임시 도형 위에 표정 이름을 작게 보여 준다.
 ## bubble_above 를 켜면 이름과 말풍선이 오른쪽 대신 머리 위에 뜬다 (평상에서 옆에 같이 앉은 손님).
@@ -26,6 +27,10 @@ const WALK_SOUND: StringName = &"walk"
 @export var sit_duration: float = 0.15
 ## 제자리에서 나타나고 사라지는 시간(초)
 @export var fade_duration: float = 0.35
+## 아래에서 쏙 올라오는 거리(픽셀)와 시간(초). 처음 조금 동안은 투명에서 또렷해진다.
+@export var pop_distance: float = 360.0
+@export var pop_duration: float = 0.45
+@export var pop_fade_duration: float = 0.12
 ## 켜면 이름과 말풍선을 머리 위에 띄운다. 말풍선 위치(손님 그림 왼쪽 위 기준)와 폭, 높이, 이름 칸 높이
 @export var bubble_above: bool = false
 @export var above_bubble_offset: Vector2 = Vector2(0.0, -150.0)
@@ -64,6 +69,25 @@ func fade_in(show_bubble: bool = true) -> void:
 	await _walk_tween.finished
 	if show_bubble:
 		_bubble.show()
+	_name_label.show()
+
+
+## 아래에서 쏙 올라온다 (살짝 튀어 올랐다 자리 잡기). 다 올라오면 이름과 말풍선이 보인다. show_guest 를 먼저 불러 둔다.
+func pop_up() -> void:
+	_kill_walk()
+	if _home_position == Vector2.ZERO:
+		_home_position = position
+	_bubble.hide()
+	_name_label.hide()
+	position = _home_position + Vector2(0.0, pop_distance)
+	modulate.a = 0.0
+	show()
+	_walk_tween = create_tween().set_parallel()
+	_walk_tween.tween_property(self, "position", _home_position, pop_duration) \
+			.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	_walk_tween.tween_property(self, "modulate:a", 1.0, pop_fade_duration)
+	await _walk_tween.finished
+	_bubble.show()
 	_name_label.show()
 
 

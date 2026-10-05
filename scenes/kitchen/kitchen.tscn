@@ -36,6 +36,14 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.93, 0.86, 0.72, 1)
 
+[node name="GuestSpot" parent="." instance=ExtResource("4_guest_spot")]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 760.0
+offset_top = 300.0
+offset_right = 1800.0
+offset_bottom = 780.0
+
 [node name="Counter" type="ColorRect" parent="."]
 layout_mode = 1
 anchors_preset = 12
@@ -53,14 +61,6 @@ layout_mode = 0
 offset_left = 1460.0
 offset_top = 520.0
 offset_right = 1660.0
-offset_bottom = 780.0
-
-[node name="GuestSpot" parent="." instance=ExtResource("4_guest_spot")]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 760.0
-offset_top = 300.0
-offset_right = 1800.0
 offset_bottom = 780.0
 
 [node name="DayLabel" type="Label" parent="."]
