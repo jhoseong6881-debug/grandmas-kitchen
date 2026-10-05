@@ -154,6 +154,7 @@ curious_order_line = "저, 저기… 오늘은 {recipe}도 궁금해서요… �
 request_missed_line = "부탁한 대로는 아니지만… 그래도 맛있어요!"
 grandma_taste_line = "…할머니 맛이에요. 눈물 날 것 같아요."
 fallback_order_line = "저, 저기… 오늘은 {recipe}… 그거라도 괜찮아요."
+no_dish_line = "저… 오늘은 제가 먹을 수 있는 게 없네요. 다음에 또 올게요!"
 first_order_line = "와, 진짜 밥집 문이 열렸네요! 할머니 계실 때도 제가 첫 손님이었어요. …{recipe} 하나 주실 수 있나요?"
 taste_hint_line = "아, 저는 양념 없이 담백한 게 좋아요."
 porch_greeting_line = "저… 저녁에도 와도 돼요? 할머니 계실 땐 이 평상에서 같이 별을 봤거든요."

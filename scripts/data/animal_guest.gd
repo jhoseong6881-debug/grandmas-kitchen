@@ -34,6 +34,8 @@ const PLACEHOLDER_ICON_PIXELS: int = 12
 @export var order_line: String = "{recipe} 주세요!"
 ## 좋아하는 요리를 못 만드는 날, 싫어하지 않는 다른 요리를 대신 주문할 때 하는 말. {recipe} 자리에 요리 이름이 들어간다.
 @export var fallback_order_line: String = "음… 오늘은 그냥 {recipe}, 그거 주세요."
+## 오늘의 메뉴에 먹을 수 있는 요리가 하나도 없어서 그냥 돌아갈 때 하는 말. 비워 두면 부엌의 기본 문장을 쓴다.
+@export var no_dish_line: String = ""
 ## 좋아하는 요리가 오늘 이미 나가서, 메뉴의 다른 요리가 궁금해 시킬 때 하는 말. 비워 두면 부엌의 기본 문장을 쓴다.
 @export var curious_order_line: String = ""
 ## 봄비 오는 날 따뜻한 요리(RainSettings.warm_recipes)를 시킬 때 하는 말. 비워 두면 평소 주문 말을 쓴다.

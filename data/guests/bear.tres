@@ -152,6 +152,7 @@ speaks_casually = true
 request_missed_line = "음… 부탁한 거랑은 다르지만… 맛있으니까 괜찮아."
 grandma_taste_line = "음… 이 맛… 할머니 밥집 맛이다…"
 fallback_order_line = "음… 아무거나 좋아… {recipe}, 그거 줄래?"
+no_dish_line = "음… 오늘은 내가 먹을 게 없네. 괜찮아, 다음에 또 올게. 음~"
 first_order_line = "음… 이 냄새, 할머니 밥집이다! 겨울잠 자는 동안 문 닫은 줄 알고 얼마나 섭섭했는데. 네가 손주구나, 반갑다. {recipe} 하나 줄 수 있니?"
 taste_hint_line = "음… 달달하면 더 좋겠다."
 porch_greeting_line = "음~ 배부르니 평상에 눕고 싶다. 할머니는 저녁마다 여기서 나랑 차를 마셨지."

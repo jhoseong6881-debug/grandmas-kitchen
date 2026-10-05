@@ -7,3 +7,4 @@ script = ExtResource("1_settings")
 base_dishes = 3
 recipes_per_extra_dish = 5
 max_dishes = 8
+extra_guests_over_menu = 1

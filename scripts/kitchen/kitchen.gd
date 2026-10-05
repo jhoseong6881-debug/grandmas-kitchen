@@ -1,7 +1,9 @@
 extends Control
 ## 부엌 화면. 점심 장사를 한다.
 ## 손님이 한 명씩 와서 주문하면 요리(미니게임)를 하고, 대접한 뒤 밥값으로 재료를 받는다.
-## 정해진 수만큼 대접하거나, 재료가 떨어져 아무도 주문할 수 없으면 점심 장사가 끝나고 저녁 평상으로 간다.
+## 오늘 올 손님은 아침에 정해져 있다 (GameState.get_todays_guest_ids, 메뉴판에 미리 보인다).
+## 메뉴에 먹을 수 있는 요리가 없는 손님은 아쉬워하며 그냥 돌아간다 (호감도는 깎이지 않는다).
+## 오늘 손님을 다 맞으면 점심 장사가 끝나고 저녁 평상으로 간다.
 
 const DAY_TEXT_FORMAT: String = "%s %d일째"
 const LUNCH_PROGRESS_FORMAT: String = "점심 손님 %d / %d"
@@ -25,12 +27,13 @@ const PAYMENT_ITEM_SEPARATOR: String = ", "
 const PERFECT_BONUS_FORMAT: String = " (완벽 +%d)"
 const REGULAR_BONUS_FORMAT: String = " (%s 덤 +%d)"
 const LUNCH_DONE_TEXT: String = "오늘 점심 장사 끝! 수고했어요."
-const OUT_OF_INGREDIENTS_TEXT: String = "재료가 다 떨어져서 오늘 장사는 여기까지예요."
 ## 입맛 힌트를 주문 뒤에 붙일 때 사이에 넣는 글, 고명 창에 다시 보여 줄 때의 모양
 const TASTE_HINT_JOIN: String = " "
 const TASTE_HINT_REMINDER_FORMAT: String = "%s: \"%s\""
 ## 호기심 주문 기본 문장 (손님 데이터의 curious_order_line 이 비어 있을 때)
 const DEFAULT_CURIOUS_ORDER_LINE: String = "아까 그 냄새가 궁금했어요. {recipe} 주세요!"
+## 먹을 게 없어서 돌아갈 때 기본 문장 (손님 데이터의 no_dish_line 이 비어 있을 때)
+const DEFAULT_NO_DISH_LINE: String = "오늘은 먹을 게 없네요… 다음에 또 올게요."
 ## 효과음 이름 (data/sounds/ 의 id)
 const GUEST_ARRIVE_SOUND: StringName = &"guest_arrive"
 const SERVE_SOUND: StringName = &"serve"
@@ -43,11 +46,6 @@ const TIER_UP_SOUND: StringName = &"tier_up"
 ## 날마다 바뀌는 배경음악 (하루 동안은 한 곡. 텃밭·원목·부엌·평상이 같은 곡이라 장면이 바뀌어도 끊기지 않는다).
 ## 비워 두면 지금 계절의 곡 목록(SeasonData.daily_music)을 쓴다. 장터와 계절 마무리는 따로 곡이 있다.
 @export var daily_music: DailyMusic
-## 점심 한 번에 받는 손님 수의 최대값 (가게 단계 데이터가 없을 때만 쓴다. 보통은 ShopLevel.max_guests)
-@export var guests_per_lunch: int = 3
-## 오늘 손님 수 = 오늘 메뉴 수 + 이 값 (최대 guests_per_lunch).
-## 메뉴가 하나뿐인 첫날에 같은 요리만 여러 번 하지 않도록, 메뉴가 늘수록 손님도 는다.
-@export var extra_guests_over_menu: int = 1
 ## 이 화면을 켤 때 게임이 아직 시작 전이면 새 게임을 시작한다 (시작 재료와 레시피를 받는다).
 ## 타이틀 화면과 불러오기가 생기면 그쪽에서 새 게임을 시작하고 이 값은 끈다.
 @export var start_new_game_on_ready: bool = true
@@ -103,15 +101,12 @@ var _is_request_met: bool = false
 
 ## 오늘 점심 장사 기록 (장사가 끝나면 장사 결과판에 보여 준다)
 var _report: LunchReport = LunchReport.new()
-## 오늘 점심에 대접을 마친 손님 수와 받을 손님 수
+## 오늘 점심에 맞은 손님 수 (먹을 게 없어 돌아간 손님도 센다)와 오늘 올 손님 (오는 차례대로)
 var _guests_served: int = 0
+var _todays_guests: Array[AnimalGuest] = []
 ## 오늘 주문받은 요리 id → 횟수. 손님이 오늘 덜 나간 요리를 먼저 시키게 할 때 쓴다 (같은 요리만 반복되지 않게).
 var _orders_today: Dictionary[StringName, int] = {}
 var _guests_today: int = 0
-## 다음에 올 손님 차례. 비면 손님 목록을 섞어서 다시 채운다.
-var _guest_queue: Array[AnimalGuest] = []
-## 바로 앞에 왔던 손님 (같은 손님이 연달아 오지 않게 할 때 쓴다)
-var _last_guest: AnimalGuest
 ## 요리 중에 아직 남은 미니게임 단계
 var _remaining_steps: Array[CookStep] = []
 ## 이번 요리의 미니게임을 지금까지 전부 한 번도 안 틀렸는지
@@ -219,13 +214,18 @@ func _start_lunch() -> void:
 	_report = LunchReport.new()
 	_guests_served = 0
 	_orders_today.clear()
-	_guests_today = _count_guests_today()
-	_guest_queue.clear()
+	_todays_guests.clear()
+	for guest_id: StringName in GameState.get_todays_guest_ids():
+		var guest: AnimalGuest = GameData.get_guest(guest_id)
+		if guest != null:
+			_todays_guests.append(guest)
+	_guests_today = _todays_guests.size()
+	_take_promise()
 	_update_lunch_label()
 	_call_next_guest()
 
 
-## 다음 손님을 부른다. 지금 재료로 만들 수 있는 요리를 주문할 손님이 올 때까지 차례를 넘긴다.
+## 오늘 손님 차례에서 다음 손님을 부른다. 메뉴에 먹을 수 있는 요리가 없으면 아쉬워하며 돌아간다.
 func _call_next_guest() -> void:
 	_show_only_button(null)
 	_set_status("", false)
@@ -241,79 +241,88 @@ func _call_next_guest() -> void:
 	if _guests_served >= _guests_today:
 		_end_lunch(LUNCH_DONE_TEXT)
 		return
-	var guest_count: int = GameData.get_season_guests().size()
-	# 어젯밤 약속한 손님이 있으면 오늘 첫 손님으로 온다.
-	var promised_guest: AnimalGuest = _take_promised_guest()
+	# 어젯밤 약속한 손님은 오늘 손님 차례 맨 앞에 있다 (GameState._choose_todays_guests).
+	var promised_guest: AnimalGuest = _promised_guest
 	var promised_recipe: Recipe = _promised_recipe
 	_is_promise_order = false
-	for i: int in guest_count:
-		var guest: AnimalGuest = promised_guest if i == 0 and promised_guest != null else _pop_next_guest()
-		var order: Recipe = _choose_order(guest)
-		_is_fallback_order = order == null
+	var guest: AnimalGuest = _todays_guests[_guests_served]
+	var order: Recipe = _choose_order(guest)
+	_is_fallback_order = order == null
+	if _is_fallback_order:
+		order = _choose_fallback_order(guest)
+	# 봄비 오는 날에는 따뜻한 요리를 먼저 찾는다. 밥값은 좋아하는 요리와 똑같이 받는다.
+	var warm_order: Recipe = _choose_warm_order(guest)
+	if warm_order != null:
+		order = warm_order
+		_is_fallback_order = false
+	var curious_order: Recipe = _choose_curious_order(guest, order) \
+			if not _is_fallback_order and warm_order == null else null
+	if curious_order != null:
+		order = curious_order
+	if order != null:
+		current_guest = guest
+		current_order = order
+		_orders_today[order.id] = _orders_today.get(order.id, 0) + 1
+		var order_text: String = guest.order_line.format({"recipe": order.display_name})
+		# 주문할 때 표정: 좋아하는 걸 못 시키면 시무룩, 궁금한 요리는 놀람, 처음 만나면 반가움(웃음)
+		var order_expression: StringName = AnimalGuest.EXPRESSION_DEFAULT
 		if _is_fallback_order:
-			order = _choose_fallback_order(guest)
-		# 봄비 오는 날에는 따뜻한 요리를 먼저 찾는다. 밥값은 좋아하는 요리와 똑같이 받는다.
-		var warm_order: Recipe = _choose_warm_order(guest)
-		if warm_order != null:
-			order = warm_order
-			_is_fallback_order = false
-		var curious_order: Recipe = _choose_curious_order(guest, order) \
-				if not _is_fallback_order and warm_order == null else null
-		if curious_order != null:
-			order = curious_order
-		if order != null:
-			current_guest = guest
-			current_order = order
-			_orders_today[order.id] = _orders_today.get(order.id, 0) + 1
-			_last_guest = guest
-			var order_text: String = guest.order_line.format({"recipe": order.display_name})
-			# 주문할 때 표정: 좋아하는 걸 못 시키면 시무룩, 궁금한 요리는 놀람, 처음 만나면 반가움(웃음)
-			var order_expression: StringName = AnimalGuest.EXPRESSION_DEFAULT
-			if _is_fallback_order:
-				order_text = guest.fallback_order_line.format({"recipe": order.display_name})
-				order_expression = AnimalGuest.EXPRESSION_SAD
-			elif warm_order != null and not guest.rain_order_line.is_empty():
-				order_text = guest.rain_order_line.format({"recipe": order.display_name})
-			elif curious_order != null:
-				var curious_line: String = guest.curious_order_line if not guest.curious_order_line.is_empty() \
-						else DEFAULT_CURIOUS_ORDER_LINE
-				order_text = curious_line.format({"recipe": order.display_name})
-				order_expression = AnimalGuest.EXPRESSION_SURPRISED
-			# 처음 온 손님은 할머니 밥집 단골이었다는 인사와 함께 주문한다.
-			if not GameState.has_met_guest(guest.id) and not guest.first_order_line.is_empty():
-				order_text = guest.first_order_line.format({"recipe": order.display_name})
+			order_text = guest.fallback_order_line.format({"recipe": order.display_name})
+			order_expression = AnimalGuest.EXPRESSION_SAD
+		elif warm_order != null and not guest.rain_order_line.is_empty():
+			order_text = guest.rain_order_line.format({"recipe": order.display_name})
+		elif curious_order != null:
+			var curious_line: String = guest.curious_order_line if not guest.curious_order_line.is_empty() \
+					else DEFAULT_CURIOUS_ORDER_LINE
+			order_text = curious_line.format({"recipe": order.display_name})
+			order_expression = AnimalGuest.EXPRESSION_SURPRISED
+		# 처음 온 손님은 할머니 밥집 단골이었다는 인사와 함께 주문한다.
+		if not GameState.has_met_guest(guest.id) and not guest.first_order_line.is_empty():
+			order_text = guest.first_order_line.format({"recipe": order.display_name})
+			order_expression = AnimalGuest.EXPRESSION_HAPPY
+		# 약속한 손님: 약속한 요리를 낼 수 있으면 그걸, 없으면 아쉬운 말 한마디 뒤 평소처럼 주문한다.
+		if guest == promised_guest and promised_recipe != null:
+			var values: Dictionary = {"recipe": promised_recipe.display_name, "name": GameState.player_name}
+			if _can_cook(promised_recipe):
+				_orders_today[order.id] = _orders_today.get(order.id, 1) - 1
+				order = promised_recipe
+				current_order = order
+				_orders_today[order.id] = _orders_today.get(order.id, 0) + 1
+				_is_fallback_order = false
+				_is_promise_order = true
+				order_text = guest.promise_order_line.format(values)
 				order_expression = AnimalGuest.EXPRESSION_HAPPY
-			# 약속한 손님: 약속한 요리를 낼 수 있으면 그걸, 없으면 아쉬운 말 한마디 뒤 평소처럼 주문한다.
-			if guest == promised_guest and promised_recipe != null:
-				var values: Dictionary = {"recipe": promised_recipe.display_name, "name": GameState.player_name}
-				if _can_cook(promised_recipe):
-					_orders_today[order.id] = _orders_today.get(order.id, 1) - 1
-					order = promised_recipe
-					current_order = order
-					_orders_today[order.id] = _orders_today.get(order.id, 0) + 1
-					_is_fallback_order = false
-					_is_promise_order = true
-					order_text = guest.promise_order_line.format(values)
-					order_expression = AnimalGuest.EXPRESSION_HAPPY
-				else:
-					order_text = guest.promise_missed_line.format(values) + " " + order_text
-					order_expression = AnimalGuest.EXPRESSION_SAD
-			if _taste_hint(guest) != "":
-				order_text += TASTE_HINT_JOIN + _taste_hint(guest)
-			# 약속 주문에는 오늘의 부탁을 덧붙이지 않는다.
-			current_request = _choose_request(guest, order) if not _is_promise_order else null
-			if current_request != null:
-				order_text += REQUEST_JOIN + current_request.get_line(guest)
-			_guest_spot.show_guest(guest, order_text, GameState.is_raining_today, order_expression)
-			await _guest_enters()
-			_show_only_button(_cook_button)
-			return
-	_end_lunch(OUT_OF_INGREDIENTS_TEXT)
+			else:
+				order_text = guest.promise_missed_line.format(values) + " " + order_text
+				order_expression = AnimalGuest.EXPRESSION_SAD
+		if _taste_hint(guest) != "":
+			order_text += TASTE_HINT_JOIN + _taste_hint(guest)
+		# 약속 주문에는 오늘의 부탁을 덧붙이지 않는다.
+		current_request = _choose_request(guest, order) if not _is_promise_order else null
+		if current_request != null:
+			order_text += REQUEST_JOIN + current_request.get_line(guest)
+		_guest_spot.show_guest(guest, order_text, GameState.is_raining_today, order_expression)
+		await _guest_enters()
+		_show_only_button(_cook_button)
+		return
+	await _send_guest_home(guest, promised_recipe if guest == promised_guest else null)
 
 
-## 오늘 메뉴 수 + extra_guests_over_menu + 가게 단계의 손님 보너스. 최대는 가게 단계의 max_guests
-## (가게 단계 데이터가 없으면 guests_per_lunch). 소문이 퍼질수록 손님이 는다.
-## 메뉴를 안 정했으면(메뉴가 비어 있으면 되찾은 레시피 전부를 낼 수 있다) 되찾은 레시피 수로 센다.
+## 메뉴에 먹을 수 있는 요리가 없는 손님: 아쉬운 말을 하고 다음 손님 버튼을 띄운다. 호감도와 소문은 그대로 (깎지 않는다).
+## 약속한 손님이면 약속한 요리가 없다는 말을 앞에 붙인다.
+func _send_guest_home(guest: AnimalGuest, promised_recipe: Recipe) -> void:
+	var line: String = guest.no_dish_line if not guest.no_dish_line.is_empty() else DEFAULT_NO_DISH_LINE
+	if promised_recipe != null:
+		var values: Dictionary = {"recipe": promised_recipe.display_name, "name": GameState.player_name}
+		line = guest.promise_missed_line.format(values) + " " + line
+	current_guest = guest
+	_guest_spot.show_guest(guest, line, GameState.is_raining_today, AnimalGuest.EXPRESSION_SAD)
+	await _guest_enters()
+	_guests_served += 1
+	_update_lunch_label()
+	_show_only_button(_next_guest_button)
+
+
 ## 완성한 요리 접시가 내 쪽(화면 아래)에서 조리대 위를 드윽 미끄러져 손님 앞에 놓인다.
 func _slide_dish_to_guest() -> void:
 	var home: Vector2 = _served_dish.position
@@ -362,17 +371,6 @@ func _guest_leaves() -> void:
 	await _door.close()
 
 
-func _count_guests_today() -> int:
-	var menu_count: int = GameState.menu_recipe_ids.size()
-	if menu_count == 0:
-		menu_count = GameData.get_all_recipes().filter(
-				func(recipe: Recipe) -> bool: return GameState.is_recipe_unlocked(recipe.id)).size()
-	var level: ShopLevel = GameState.get_shop_level()
-	var bonus: int = level.extra_guests if level != null else 0
-	var max_guests: int = level.max_guests if level != null else guests_per_lunch
-	return clampi(menu_count + extra_guests_over_menu + bonus, 1, max_guests)
-
-
 ## 가끔(request_chance) 이 요리에 나올 수 있는 오늘의 부탁 하나를 고른다. request_start_day 전에는 부탁하지 않는다. 없으면 null.
 ## 고명 부탁은 손님 입맛(좋아하는 고명)과 같은 것만 한다 (꿀을 좋아하는 곰이 "고소하게"를 부탁하지 않게).
 func _choose_request(guest: AnimalGuest, order: Recipe) -> GuestRequest:
@@ -386,35 +384,20 @@ func _choose_request(guest: AnimalGuest, order: Recipe) -> GuestRequest:
 	return possible.pick_random() if not possible.is_empty() else null
 
 
-## 오늘 약속한 손님 (없으면 null). 약속은 여기서 끝낸다 (지키든 못 지키든). 오늘 손님 차례에서는 빼서 두 번 오지 않게 한다.
+## 오늘 약속한 손님과 요리 (없으면 null). 약속은 점심을 시작할 때 끝낸다 (지키든 못 지키든).
+## 약속한 손님은 오늘 손님 차례 맨 앞에 이미 들어 있다.
+var _promised_guest: AnimalGuest
 var _promised_recipe: Recipe
 
 
-func _take_promised_guest() -> AnimalGuest:
+func _take_promise() -> void:
+	_promised_guest = null
 	_promised_recipe = null
 	if not GameState.has_promise_on(GameState.current_day):
-		return null
-	var guest: AnimalGuest = GameData.get_guest(GameState.promise_guest_id)
+		return
+	_promised_guest = GameData.get_guest(GameState.promise_guest_id)
 	_promised_recipe = GameData.get_recipe(GameState.promise_recipe_id)
 	GameState.clear_promise()
-	if guest == null:
-		return null
-	if _guest_queue.is_empty():
-		_guest_queue = GameData.get_season_guests()
-		_guest_queue.shuffle()
-	_guest_queue.erase(guest)
-	return guest
-
-
-## 손님 차례에서 한 명을 꺼낸다. 차례가 비면 손님 목록을 섞어서 다시 채운다.
-## 같은 손님이 연달아 오지 않도록, 새로 섞은 차례의 첫 손님이 방금 손님이면 뒤로 보낸다.
-func _pop_next_guest() -> AnimalGuest:
-	if _guest_queue.is_empty():
-		_guest_queue = GameData.get_season_guests()
-		_guest_queue.shuffle()
-		if _guest_queue.size() > 1 and _guest_queue[0] == _last_guest:
-			_guest_queue.push_back(_guest_queue.pop_front())
-	return _guest_queue.pop_front()
 
 
 ## 손님이 좋아하는 요리 중, 지금 낼 수 있는(_can_cook) 것 하나. 없으면 null.

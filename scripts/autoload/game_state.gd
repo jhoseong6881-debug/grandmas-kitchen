@@ -18,6 +18,8 @@ const EMPTY_PLOT: StringName = &""
 ## 옛 세이브(버전 1)의 텃밭 칸이 속한 밭
 const LEGACY_GARDEN_PLACE_ID: StringName = &"carrot_field"
 const STARTING_DAY: int = 1
+## 가게 단계 데이터가 없을 때 점심 손님 수의 최대값
+const DEFAULT_MAX_GUESTS: int = 3
 
 var current_day: int = STARTING_DAY
 ## 프롤로그에서 지은 주인공 이름 (할머니의 손주). 아직 안 지었으면 빈 문자열.
@@ -56,6 +58,10 @@ var seen_story_chapter_ids: Array[StringName] = []
 var promise_guest_id: StringName = &""
 var promise_recipe_id: StringName = &""
 var promise_day: int = 0
+## 오늘 점심에 올 손님 id (오는 차례대로, 약속한 손님이 맨 앞)와 그 날짜. 아침에 메뉴판이나 부엌이 처음 물을 때 정해서 저장한다.
+## 메뉴판에 미리 보여 주므로, 불러오기를 해도 다시 뽑지 않는다.
+var todays_guest_ids: Array[StringName] = []
+var todays_guests_day: int = 0
 ## 이웃 바구니 쪽지로 이미 남긴 사연 막 id (같은 사연 쪽지를 두 번 남기지 않게)
 var used_basket_note_ids: Array[StringName] = []
 ## 저녁 평상에서 이미 본 손님끼리 대화 id (GuestDuoTalk)
@@ -293,6 +299,44 @@ func get_next_story_chapter(guest: AnimalGuest) -> GuestStoryChapter:
 	return guest.get_next_story_chapter(current_season, current_day, seen_story_chapter_ids)
 
 
+# --- 오늘 올 손님 ---
+
+## 오늘 점심에 올 손님 id (차례대로). 오늘 아직 안 정했으면 지금 정한다.
+func get_todays_guest_ids() -> Array[StringName]:
+	if todays_guests_day != current_day:
+		_choose_todays_guests()
+	return todays_guest_ids
+
+
+## 오늘 손님 수 = min(되찾은 레시피 수, 메뉴 칸 수) + 메뉴보다 더 오는 손님 + 가게 단계 보너스. 최대는 가게 단계의 max_guests.
+## 메뉴를 고르기 전에 정하므로, 고른 메뉴 수 대신 낼 수 있는 최대 메뉴 수로 센다.
+func get_todays_guest_count() -> int:
+	var dishes: int = mini(unlocked_recipe_ids.size(), get_menu_slots())
+	var level: ShopLevel = get_shop_level()
+	var bonus: int = level.extra_guests if level != null else 0
+	var max_guests: int = level.max_guests if level != null else DEFAULT_MAX_GUESTS
+	return clampi(dishes + GameData.get_menu_settings().extra_guests_over_menu + bonus, 1, max_guests)
+
+
+## 약속한 손님을 맨 앞에 두고, 나머지는 이번 계절 손님을 섞어서 채운다 (손님이 모자랄 때만 같은 손님이 또 온다).
+func _choose_todays_guests() -> void:
+	todays_guests_day = current_day
+	todays_guest_ids.clear()
+	var count: int = get_todays_guest_count()
+	if has_promise_on(current_day) and GameData.get_guest(promise_guest_id) != null:
+		todays_guest_ids.append(promise_guest_id)
+	var pool: Array[AnimalGuest] = []
+	while todays_guest_ids.size() < count:
+		if pool.is_empty():
+			pool = GameData.get_season_guests()
+			if pool.is_empty():
+				return
+			pool.shuffle()
+		var guest: AnimalGuest = pool.pop_front()
+		if guest.id not in todays_guest_ids or pool.is_empty():
+			todays_guest_ids.append(guest.id)
+
+
 ## 지금 계절에 사연이 있는 손님들의 사연을 모두 끝까지 봤는지 (사연이 하나도 없으면 false)
 func are_season_stories_finished() -> bool:
 	var has_story: bool = false
@@ -345,6 +389,8 @@ func start_next_season() -> bool:
 	todays_served_guests.clear()
 	todays_market_trades.clear()
 	clear_promise()
+	todays_guest_ids.clear()
+	todays_guests_day = 0
 	has_visited_market_today = false
 	is_feast_prep_announced = false
 	feast_prep_delivered.clear()
@@ -566,6 +612,8 @@ func new_game() -> void:
 	seen_duo_talk_ids.clear()
 	used_basket_note_ids.clear()
 	clear_promise()
+	todays_guest_ids.clear()
+	todays_guests_day = 0
 	todays_served_guests.clear()
 	plot_crop_ids.clear()
 	plot_days_left.clear()
@@ -694,6 +742,8 @@ func _to_save_data() -> Dictionary:
 		"promise_guest_id": String(promise_guest_id),
 		"promise_recipe_id": String(promise_recipe_id),
 		"promise_day": promise_day,
+		"todays_guest_ids": Array(todays_guest_ids).map(func(guest_id: StringName) -> String: return String(guest_id)),
+		"todays_guests_day": todays_guests_day,
 		"is_feast_prep_announced": is_feast_prep_announced,
 		"feast_prep_delivered": _string_keys(feast_prep_delivered),
 	}
@@ -764,6 +814,9 @@ func _from_save_data(data: Dictionary) -> void:
 	promise_guest_id = StringName(str(data.get("promise_guest_id", "")))
 	promise_recipe_id = StringName(str(data.get("promise_recipe_id", "")))
 	promise_day = int(data.get("promise_day", 0))
+	for guest_id: Variant in data.get("todays_guest_ids", []):
+		todays_guest_ids.append(StringName(str(guest_id)))
+	todays_guests_day = int(data.get("todays_guests_day", 0))
 	_unlock_places_from_state()
 	is_feast_prep_announced = bool(data.get("is_feast_prep_announced", false))
 	var feast_data: Dictionary = data.get("feast_prep_delivered", {})

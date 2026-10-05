@@ -2,7 +2,8 @@ class_name MenuBoard
 extends Control
 ## 오늘의 메뉴판. 아침에 부엌으로 가기 전에 열려서, 되찾은 레시피 중 오늘 낼 요리를 메뉴 칸 수만큼 고른다.
 ## 메뉴 칸 수는 되찾은 레시피가 늘수록 는다 (GameState.get_menu_slots, data/menu_settings.tres).
-## 요리마다 필요한 재료(아이콘 ×개수, 모자라면 "재료 부족")와 좋아하는 손님(만나 본 손님만)을 보여 준다.
+## 요리마다 필요한 재료(아이콘 ×개수, 모자라면 "재료 부족")와, 위쪽에 오늘 점심에 올 손님(GameState.get_todays_guest_ids)을 보여 준다.
+## 누가 무엇을 좋아하는지는 보여 주지 않는다 (손님 수첩에서 찾아보게).
 ## 다 고르면 confirmed 시그널로 고른 레시피 id 들을 알려 준다. 돌아가기를 누르면 cancelled.
 
 signal confirmed(recipe_ids: Array[StringName])
@@ -20,6 +21,10 @@ const INGREDIENT_FORMAT: String = "×%d  "
 const PROMISE_FORMAT: String = "★ %s%s 약속"
 const INVENTORY_ITEM_FORMAT: String = "%s ×%d"
 const INVENTORY_EMPTY_TEXT: String = "없어요"
+const TODAY_GUESTS_TITLE: String = "오늘 손님"
+## 약속한 손님 이름 앞에 붙는 표시, 아직 만나지 못한 손님의 이름 자리
+const PROMISE_MARK: String = "★"
+const UNMET_GUEST_TEXT: String = "?"
 
 @export var row_font_size: int = 36
 @export var detail_font_size: int = 24
@@ -27,6 +32,9 @@ const INVENTORY_EMPTY_TEXT: String = "없어요"
 @export var ingredients_width: float = 360.0
 @export var row_height: float = 60.0
 @export var ingredient_icon_size: int = 24
+## 오늘 손님 줄의 얼굴 아이콘 크기(픽셀, 원본 16×16 의 배수)와 글자 색
+@export var guest_icon_size: int = 48
+@export var guest_text_color: Color = Color(0.97, 0.95, 0.88)
 ## 왼쪽 아래 가진 재료 줄에 한 줄로 놓는 재료 수
 @export var inventory_items_per_line: int = 3
 @export var inventory_text_color: Color = Color(0.92, 0.9, 0.82)
@@ -44,6 +52,8 @@ var _previous_focus: Control
 @onready var _message_label: Label = %MessageLabel
 ## 왼쪽 아래: 지금 가진 재료 (아이콘 + 이름 ×개수)
 @onready var _inventory_grid: GridContainer = %InventoryGrid
+## 위쪽: 오늘 점심에 올 손님 (얼굴 + 이름, 약속한 손님은 ★, 처음 오는 손님은 ?)
+@onready var _today_guests: HBoxContainer = %TodayGuests
 @onready var _start_button: Button = %StartButton
 @onready var _back_button: Button = %BackButton
 
@@ -74,6 +84,7 @@ func open() -> void:
 		buttons.append(_dish_buttons[recipe.id])
 	_message_label.text = ""
 	_fill_inventory()
+	_fill_today_guests()
 	_refresh()
 	_keep_focus_inside(buttons)
 	show()
@@ -152,6 +163,43 @@ func _fill_inventory() -> void:
 	# 지운 칸은 이번 프레임 끝까지 남아 있으므로 자식 수 대신 직접 센다.
 	if shown == 0:
 		_inventory_grid.add_child(_make_inventory_label(INVENTORY_EMPTY_TEXT))
+
+
+func _fill_today_guests() -> void:
+	for child: Node in _today_guests.get_children():
+		child.queue_free()
+	_today_guests.add_child(_make_guest_label(TODAY_GUESTS_TITLE, inventory_text_color))
+	var promised: bool = GameState.has_promise_on(GameState.current_day)
+	for guest_id: StringName in GameState.get_todays_guest_ids():
+		var guest: AnimalGuest = GameData.get_guest(guest_id)
+		if guest == null:
+			continue
+		# 아직 만나지 못한 손님은 누군지 모르게 "?" 만 (만나는 재미는 점심에).
+		if not GameState.has_met_guest(guest_id):
+			_today_guests.add_child(_make_guest_label(UNMET_GUEST_TEXT, guest_text_color))
+			continue
+		var icon: TextureRect = TextureRect.new()
+		icon.texture = guest.get_icon_texture()
+		icon.custom_minimum_size = Vector2(guest_icon_size, guest_icon_size)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		_today_guests.add_child(icon)
+		var is_promise_guest: bool = promised and guest_id == GameState.promise_guest_id
+		_today_guests.add_child(_make_guest_label(
+				(PROMISE_MARK if is_promise_guest else "") + guest.display_name,
+				selected_color if is_promise_guest else guest_text_color))
+
+
+func _make_guest_label(text: String, color: Color) -> Label:
+	var label: Label = Label.new()
+	label.text = text
+	label.add_theme_font_size_override("font_size", detail_font_size)
+	label.add_theme_color_override("font_color", color)
+	label.size_flags_vertical = Control.SIZE_FILL
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	return label
 
 
 func _make_inventory_label(text: String) -> Label:

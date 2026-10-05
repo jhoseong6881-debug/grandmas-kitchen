@@ -146,6 +146,7 @@ speaks_casually = true
 request_missed_line = "…부탁한 거랑은 다르군. 뭐, 맛은 있다."
 grandma_taste_line = "…이건 그 사람 손맛이군."
 fallback_order_line = "없나. …그럼 {recipe}. 그걸로 하지."
+no_dish_line = "…먹을 게 없군. …다음에 오지."
 first_order_line = "…할머니 밥집 단골이었다. 손주가 문을 열었다길래 와 봤지. …{recipe}. 따뜻하게 부탁해."
 taste_hint_line = "…맵싸하게 해 주면 좋겠군."
 porch_greeting_line = "…평상이군. 네 할머니는 여기서 내 가시 사이 낙엽을 떼어 주곤 했다."
