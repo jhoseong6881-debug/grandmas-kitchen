@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/guest_notebook.tscn" id="3_notebook"]
 [ext_resource type="PackedScene" path="res://scenes/ui/notebook_button.tscn" id="90_notebook_button"]
 [ext_resource type="PackedScene" path="res://scenes/porch/recipe_note_book.tscn" id="91_note_book"]
+[ext_resource type="Script" path="res://scripts/porch/porch_scenery.gd" id="4_scenery"]
 
 [node name="Porch" type="Control"]
 layout_mode = 3
@@ -24,39 +25,15 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.2, 0.2, 0.34, 1)
 
-[node name="Sunset" type="ColorRect" parent="."]
+[node name="Backdrop" type="TextureRect" parent="."]
 layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_top = 420.0
-offset_bottom = 640.0
-grow_horizontal = 2
-color = Color(0.78, 0.47, 0.42, 0.55)
-
-[node name="Ground" type="ColorRect" parent="."]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -440.0
 grow_horizontal = 2
-grow_vertical = 0
-color = Color(0.22, 0.27, 0.2, 1)
-
-[node name="Pyeongsang" type="ColorRect" parent="."]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 360.0
-offset_top = -360.0
-offset_right = -360.0
-offset_bottom = -240.0
-grow_horizontal = 2
-grow_vertical = 0
-color = Color(0.62, 0.45, 0.28, 1)
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("4_scenery")
 
 [node name="GuestSpot" parent="." instance=ExtResource("2_guest_spot")]
 unique_name_in_owner = true
@@ -65,6 +42,7 @@ offset_left = 760.0
 offset_top = 300.0
 offset_right = 1800.0
 offset_bottom = 780.0
+sit_drop = 0.0
 
 [node name="SideGuestSpot" parent="." instance=ExtResource("2_guest_spot")]
 unique_name_in_owner = true
@@ -74,6 +52,31 @@ offset_top = 300.0
 offset_right = 1400.0
 offset_bottom = 780.0
 bubble_above = true
+sit_drop = 0.0
+
+[node name="Wall" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 630.0
+offset_bottom = 960.0
+grow_horizontal = 2
+mouse_filter = 2
+script = ExtResource("4_scenery")
+kind = 1
+
+[node name="Bench" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -120.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+script = ExtResource("4_scenery")
+kind = 2
 
 [node name="DayLabel" type="Label" parent="."]
 unique_name_in_owner = true

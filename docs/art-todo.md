@@ -42,8 +42,9 @@
 | data/recipes/carrot_egg_stir_fry.tres (finished_image) | 당근 계란 볶음 완성 그림 | 미정 | 할 일 |
 | data/guests/hen.tres (portrait) | 암탉 손님 (기본 표정) | 360x480 (원본 120x160) | 할 일 |
 | data/guests/squirrel.tres (portrait) | 다람쥐 손님 (기본 표정) | 360x480 (원본 120x160) | 할 일 |
-| scenes/porch/porch.tscn (Sky, Sunset, Ground) | 저녁 마당 배경 (노을, 마당) | 1920x1080 | 할 일 |
-| scenes/porch/porch.tscn (Pyeongsang) | 평상 | 1200x120 | 할 일 |
+| scenes/porch/porch.tscn (Backdrop → Picture) | 저녁 배경: 밤하늘(아래는 노을빛), 별, 먼 산과 숲, 담 너머 마을 길. 구도: 평상에 앉은 내 눈높이 (지금은 PorchScenery 임시 도트) | 1920x1080 (원본 640x360) | 할 일 |
+| scenes/porch/porch.tscn (Wall → Picture) | 등불 달린 낮은 돌담. 손님이 담 너머에 서서 이야기하고, 담이 손님 아랫몸을 가린다 (점심 조리대처럼). 위쪽은 투명, 담은 아래 약 73칸, 왼쪽에 등불 기둥 | 1920x330 (원본 640x110, 배경 투명) | 할 일 |
+| scenes/porch/porch.tscn (Bench → Picture) | 화면 맨 아래 평상 끝 (내가 평상에 앉아 있다는 표시, 나무판) | 1920x120 (원본 640x40) | 할 일 |
 | scenes/porch/porch.tscn (NoteCard) | 할머니 레시피 노트 종이 | 720x360 | 할 일 |
 | data/recipes/carrot_acorn_jeon.tres (finished_image) | 할머니표 당근 도토리전 완성 그림 | 미정 | 할 일 |
 | scenes/garden/garden.tscn (Sky, Sun, Ground) | 아침 텃밭 배경 | 1920x1080 | 할 일 |

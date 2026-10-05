@@ -2,11 +2,12 @@ extends Control
 ## 저녁 평상 장면. 오늘 대접한 손님 중 한 명이 찾아와 이야기를 하고, 대답을 골라 주면 손님이 반응한다.
 ## 단골 보상이나 사연 막을 기다리는 손님이 더 있으면 max_evening_guests 명까지 이어서 찾아온다.
 ## 계절 잔치 준비를 알려 주는 날(FeastPrep.announce_day)에는 알려 줄 손님이 맨 먼저 와서 장보기 목록을 준다.
-## 손님은 옆에서 걸어 들어와 평상에 앉고, 평상에 처음 온 손님은 인사(porch_greeting_line)부터 한다.
+## 구도: 나는 평상에 앉아 있고, 손님은 낮은 돌담 너머 마을 길을 걸어와 멈춰 서서 이야기한다 (그림은 PorchScenery).
+## 손님은 옆에서 걸어 들어와 담 너머에 서고, 평상에 처음 온 손님은 인사(porch_greeting_line)부터 한다.
 ## 단골 단계가 오른 손님이면 그 단계의 새 이야기를 나누고 단골 선물을 건넨다.
 ## 사연(AnimalGuest.story_chapters)의 다음 막이 열렸으면 평소 이야기 대신 그 막을 한다.
 ## 단골이면 가끔 "내일 점심에 ○○ 먹으러 와도 돼요?" 하고 약속 주문을 묻는다 (받으면 내일 점심에 제일 먼저 온다).
-## 손님끼리 대화(DuoTalkBook)가 열렸으면 첫 손님 이야기 뒤에 다른 손님이 옆에 와 앉아 둘이 이야기한다 (주인공은 듣기만).
+## 손님끼리 대화(DuoTalkBook)가 열렸으면 첫 손님 이야기 뒤에 다른 손님이 옆에 와 서서 둘이 이야기한다 (주인공은 듣기만).
 ## 이미 되찾은 레시피의 할머니 비법을 아는 손님이면 비법을 알려 준다.
 ## 돌려줄 할머니 레시피 노트 페이지가 있으면 건네준다. 다 듣고 나면 잠자리에 들어 다음 날 아침 텃밭으로 간다.
 ## 장면은 "다음" 버튼을 누를 때마다 한 단계씩 진행한다. 대답을 고르는 동안에는 "다음" 버튼이 숨는다.
@@ -197,7 +198,7 @@ func _add_feast_announcement_beats() -> void:
 		_status_label.text = prep.announced_status_text)
 
 
-## 다음 손님으로 바꾼다. 앞 손님이 남긴 아래 글과 노트 카드는 치운다. 옆에 앉았던 손님은 사라진다.
+## 다음 손님으로 바꾼다. 앞 손님이 남긴 아래 글과 노트 카드는 치운다. 옆에 서 있던 손님은 사라진다.
 func _switch_guest(guest: AnimalGuest) -> void:
 	if _side_spot.visible:
 		_side_spot.fade_out()
@@ -212,7 +213,7 @@ func _switch_guest(guest: AnimalGuest) -> void:
 	_wait_until_seated()
 
 
-## 손님이 걸어 들어오는 동안은 "다음"을 숨겨 둔다 (앉기 전에 말이 넘어가지 않게). 앉으면 다시 보인다.
+## 손님이 걸어 들어오는 동안은 "다음"을 숨겨 둔다 (멈춰 서기 전에 말이 넘어가지 않게). 멈춰 서면 다시 보인다.
 func _wait_until_seated() -> void:
 	if not _guest_spot.is_walking():
 		return
@@ -265,7 +266,7 @@ func _choose_duo_talk(first_guest: AnimalGuest) -> GuestDuoTalk:
 			GameState.seen_duo_talk_ids, GameState.seen_story_chapter_ids)
 
 
-## 손님끼리 대화: 다른 손님이 옆에 스르륵 와 앉고, 한 줄씩 번갈아 말한다. 말하는 손님만 말풍선이 뜨고 듣는 손님은 조금 어두워진다.
+## 손님끼리 대화: 다른 손님이 옆에 스르륵 와 서고, 한 줄씩 번갈아 말한다. 말하는 손님만 말풍선이 뜨고 듣는 손님은 조금 어두워진다.
 func _add_duo_beats(duo: GuestDuoTalk, first_guest: AnimalGuest, partner: AnimalGuest) -> void:
 	for i: int in duo.lines.size():
 		var line: DuoLine = duo.lines[i]
@@ -390,7 +391,7 @@ func _tell_talk(talk: EveningTalk) -> void:
 	_current_talk = talk
 	_guest_spot.show_guest(_evening_guest, _with_name(talk.line), false, talk.expression)
 	if not talk.replies.is_empty():
-		# 손님이 아직 걸어오는 중이면 앉고 말풍선이 뜬 다음에 대답을 고르게 한다.
+		# 손님이 아직 걸어오는 중이면 멈춰 서고 말풍선이 뜬 다음에 대답을 고르게 한다.
 		if _guest_spot.is_walking():
 			await _guest_spot.arrived
 		_show_replies(talk.replies)

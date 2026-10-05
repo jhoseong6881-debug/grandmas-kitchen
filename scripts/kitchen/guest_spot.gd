@@ -132,7 +132,7 @@ func walk_in() -> void:
 		_walk_tween.tween_callback(Sound.play.bind(WALK_SOUND))
 		_walk_tween.tween_property(self, "position", step_end + Vector2(0.0, -walk_bob_height), step_time / 2.0)
 		_walk_tween.tween_property(self, "position:y", step_end.y, step_time / 2.0)
-	# 평상에 앉기: 살짝 내려앉았다가 제자리
+	# 멈춰 서기: 살짝 내려앉았다가 제자리 (sit_drop 이 0 이면 그냥 선다)
 	_walk_tween.tween_property(self, "position:y", _home_position.y + sit_drop, sit_duration)
 	_walk_tween.tween_property(self, "position:y", _home_position.y, sit_duration)
 	_walk_tween.tween_callback(_bubble.show)
