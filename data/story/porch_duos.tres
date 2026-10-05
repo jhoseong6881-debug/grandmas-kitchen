@@ -48,7 +48,7 @@ lines = Array[ExtResource("3_line")]([SubResource("Line_1"), SubResource("Line_2
 script = ExtResource("3_line")
 speaker = &"bear"
 expression = &"surprised"
-text = "토끼야, 앞발 왜 그래? 붕대 감았네."
+text = "토끼야, 손 왜 그래? 붕대 감았네."
 
 [sub_resource type="Resource" id="Line_8"]
 script = ExtResource("3_line")

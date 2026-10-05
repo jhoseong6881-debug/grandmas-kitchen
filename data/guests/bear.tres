@@ -80,7 +80,7 @@ reaction_expressions = Array[StringName]([&"surprised", &"happy"])
 
 [sub_resource type="Resource" id="StoryTalk_2"]
 script = ExtResource("10_talk")
-line = "(평상 다리를 슬쩍 앞발로 가린다) 음~ 오늘은 평상에 너무 세게 앉지 마. 그냥… 그래야 할 것 같아서."
+line = "(평상 다리를 슬쩍 손으로 가린다) 음~ 오늘은 평상에 너무 세게 앉지 마. 그냥… 그래야 할 것 같아서."
 expression = &"surprised"
 
 [sub_resource type="Resource" id="StoryChapter_1"]

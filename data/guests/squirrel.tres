@@ -127,7 +127,7 @@ reaction_expressions = Array[StringName]([&"happy", &"happy"])
 
 [sub_resource type="Resource" id="StoryTalk_6"]
 script = ExtResource("10_talk")
-line = "(흙 묻은 앞발로 싹을 꾹꾹 눌러 준다) …다 됐어요. 할머니 나무예요."
+line = "(흙 묻은 손으로 싹을 꾹꾹 눌러 준다) …다 됐어요. 할머니 나무예요."
 expression = &"happy"
 replies = Array[String](["이름표도 달아 줘요", "다람쥐 나무이기도 해요"])
 reactions = Array[String](["…네. …크면 도토리 열리겠죠? 그럼 그건 {name} 몫이에요.", "…! …그럼 우리 둘 나무예요. …아니, 할머니까지 셋."])
