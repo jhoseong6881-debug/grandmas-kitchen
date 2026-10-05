@@ -9,3 +9,4 @@ id = &"rain"
 streams = Array[AudioStream]([ExtResource("2_stream")])
 volume_db = -8.0
 pitch_variation = 0.0
+bus = &"Weather"

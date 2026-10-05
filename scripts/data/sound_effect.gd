@@ -12,6 +12,9 @@ extends Resource
 @export_range(-40.0, 12.0, 0.5) var volume_db: float = 0.0
 ## 부를 때마다 높낮이를 이 정도까지 무작위로 바꾼다 (0 = 그대로, 0.1 = 위아래로 10%)
 @export_range(0.0, 0.5, 0.01) var pitch_variation: float = 0.05
+## 이 소리를 보낼 버스 (설정 창에서 크기를 따로 조절하는 묶음). 보통은 효과음 "SFX",
+## 빗소리 같은 날씨 소리는 "Weather" (설정 창의 "날씨 소리" 막대로 조절한다).
+@export var bus: StringName = &"SFX"
 
 
 func pick_stream() -> AudioStream:

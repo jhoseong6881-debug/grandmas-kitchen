@@ -1,7 +1,7 @@
 extends Node
 ## 효과음을 내는 오토로드. 프로젝트 설정 > 전역 > 오토로드 에 "Sound" 이름으로 등록해서 쓴다.
 ## data/sounds/ 의 SoundEffect(.tres)를 게임 시작 때 모두 읽고, 코드에서는 Sound.play(&"id") 로 부른다.
-## 효과음은 "SFX" 버스로, 배경음악은 "Music" 버스로 보낸다 (버스 = 소리를 모아 크기를 한 번에 조절하는 통로.
+## 효과음은 "SFX" 버스로(빗소리 같은 날씨 소리는 SoundEffect.bus 에 적은 "Weather" 버스로), 배경음악은 "Music" 버스로 보낸다 (버스 = 소리를 모아 크기를 한 번에 조절하는 통로.
 ## 화면 아래 "오디오" 탭이나 default_bus_layout.tres 에서 볼 수 있다). 나중에 설정 메뉴에서 버스마다 크기를 조절한다.
 ## 모든 버튼은 눌리면 저절로 click 소리를 낸다 (장면마다 따로 연결하지 않아도 된다).
 ## 소리 파일이 없거나 id가 없으면 조용히 넘어간다 (경고는 한 번만 띄운다).
@@ -79,6 +79,7 @@ func play(id: StringName) -> void:
 	var player: AudioStreamPlayer = _players[_next_player]
 	_next_player = (_next_player + 1) % _players.size()
 	player.stream = stream
+	player.bus = _bus_of(effect)
 	player.volume_db = effect.volume_db
 	player.pitch_scale = effect.pick_pitch()
 	player.play()
@@ -124,7 +125,7 @@ func start_loop(id: StringName, offset_db: float = 0.0) -> void:
 	if effect == null or effect.pick_stream() == null:
 		return
 	var player: AudioStreamPlayer = AudioStreamPlayer.new()
-	player.bus = SFX_BUS
+	player.bus = _bus_of(effect)
 	# 이 오토로드는 일시 정지에도 돌지만, 깔리는 소리는 게임과 같이 멈춰야 한다.
 	player.process_mode = Node.PROCESS_MODE_PAUSABLE
 	player.stream = _make_looping(effect.pick_stream())
@@ -135,6 +136,11 @@ func start_loop(id: StringName, offset_db: float = 0.0) -> void:
 	_loop_players[id] = player
 	var tween: Tween = create_tween()
 	tween.tween_property(player, "volume_db", effect.volume_db + offset_db, loop_fade_duration)
+
+
+## 소리를 보낼 버스: 소리 데이터에 적힌 버스, 비어 있으면 효과음 버스
+func _bus_of(effect: SoundEffect) -> StringName:
+	return effect.bus if not effect.bus.is_empty() else SFX_BUS
 
 
 ## 깔리는 소리 크기를 바로 바꾼다 (매 프레임 불러도 된다). offset_db 는 start_loop 와 같다.
