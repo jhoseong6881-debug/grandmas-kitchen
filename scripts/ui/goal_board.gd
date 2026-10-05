@@ -1,16 +1,12 @@
 class_name GoalBoard
 extends PanelContainer
 ## 목표판. 아침 텃밭과 점심 부엌 왼쪽에 늘 떠 있으면서 "다음에 무엇이 있는지"를 보여 준다:
-## 이번 계절 할머니 노트 수와 노트를 가진 손님, 다음 가게 단계까지 남은 소문, 다음 장날,
+## 오늘 약속, 이번 계절 할머니 노트 수 (다 모으면 한 줄 더), 다음 가게 단계까지 남은 소문, 다음 장날,
 ## 잔치 준비 (장보기 목록을 받은 뒤), 계절 잔치까지 남은 날.
 ## GameState 의 시그널(노트, 소문, 날짜, 잔치 준비)을 듣고 스스로 다시 쓴다. 누를 수 없는 판이라 입력은 지나간다.
 
 const TITLE_FORMAT: String = "%s 목표"
 const NOTES_FORMAT: String = "할머니 노트  %d / %d"
-const HOLDER_FORMAT: String = "  노트를 가진 손님: %s"
-const HOLDER_SEPARATOR: String = " · "
-## 아직 만나지 않은 손님은 이름 대신 이렇게 묶어서 보여 준다 (예: "??? 3")
-const UNKNOWN_HOLDER_FORMAT: String = "??? %d"
 const NOTES_DONE_FORMAT: String = "올%s 노트를 다 모았어요!"
 const SHOP_FORMAT: String = "%s까지 소문 %d"
 const SHOP_MAX_FORMAT: String = "%s!"
@@ -73,25 +69,10 @@ func _refresh_notes() -> void:
 	_notes_label.text = NOTES_FORMAT % [found, total]
 	# 노트가 없는 계절(만드는 중)에는 노트 줄을 숨긴다.
 	_notes_label.visible = total > 0
-	var holders: PackedStringArray = []
-	var unknown_count: int = 0
-	for guest: AnimalGuest in GameData.get_all_guests():
-		var has_page: bool = guest.note_recipes.any(func(recipe: Recipe) -> bool:
-				return recipe.note_season == GameState.current_season and not GameState.is_recipe_unlocked(recipe.id))
-		if not has_page:
-			continue
-		if GameState.has_met_guest(guest.id):
-			holders.append(guest.display_name)
-		else:
-			unknown_count += 1
-	if unknown_count > 0:
-		holders.append(UNKNOWN_HOLDER_FORMAT % unknown_count)
-	if found >= total:
-		var season: SeasonData = GameData.get_current_season()
-		_holder_label.text = NOTES_DONE_FORMAT % (season.display_name if season != null else "")
-	else:
-		_holder_label.text = HOLDER_FORMAT % HOLDER_SEPARATOR.join(holders)
-	_holder_label.visible = total > 0 and (found >= total or not holders.is_empty())
+	# 누가 노트를 가졌는지는 알려 주지 않는다 (손님 수첩과 저녁 이야기로 알아 가게). 다 모았을 때만 한 줄.
+	var season: SeasonData = GameData.get_current_season()
+	_holder_label.text = NOTES_DONE_FORMAT % (season.display_name if season != null else "")
+	_holder_label.visible = total > 0 and found >= total
 
 
 func _refresh_shop() -> void:

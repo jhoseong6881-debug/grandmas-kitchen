@@ -43,10 +43,11 @@ text = "할머니 노트  3 / 10"
 
 [node name="HolderLabel" type="Label" parent="Margin/Rows"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.84, 0.25, 1)
 theme_override_font_sizes/font_size = 24
-text = "  노트를 가진 손님: 곰 · 토끼"
+text = "올봄 노트를 다 모았어요!"
 
 [node name="ShopLabel" type="Label" parent="Margin/Rows"]
 unique_name_in_owner = true
