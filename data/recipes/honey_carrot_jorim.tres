@@ -22,17 +22,12 @@ speed = 0.85
 secret_start = 0.3
 secret_end = 0.7
 
-[sub_resource type="Resource" id="CookStep_3"]
-script = ExtResource("15_cook_step")
-type = 2
-count = 4
-
 [resource]
 script = ExtResource("1_recipe")
 id = &"honey_carrot_jorim"
 display_name = "꿀 당근 조림"
 ingredients = Array[ExtResource("2_ingredient")]([ExtResource("3_carrot"), ExtResource("4_honey")])
-cook_steps = Array[ExtResource("15_cook_step")]([SubResource("CookStep_1"), SubResource("CookStep_2"), SubResource("CookStep_3")])
+cook_steps = Array[ExtResource("15_cook_step")]([SubResource("CookStep_1"), SubResource("CookStep_2")])
 secret_hint = "조림은 박자에 딱 맞춰 젓기"
 secret_teller_id = &"bear"
 secret_reveal_line = "할머니는 조림 저을 때 노래를 흥얼거리셨어. 박자에 딱딱 맞춰서. 그래야 윤기가 고르게 돈대."

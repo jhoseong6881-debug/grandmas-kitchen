@@ -4,7 +4,6 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/inventory_panel.tscn" id="2_inventory"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/guest_spot.tscn" id="4_guest_spot"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/chop_minigame.tscn" id="5_chop"]
-[ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/plate_minigame.tscn" id="6_plate"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/stir_fry_minigame.tscn" id="7_stir_fry"]
 [ext_resource type="PackedScene" path="res://scenes/ui/guest_notebook.tscn" id="8_notebook"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/pan_fry_minigame.tscn" id="9_pan_fry"]
@@ -17,6 +16,7 @@
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/simmer_minigame.tscn" id="13_simmer"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/kitchen_door.tscn" id="20_door"]
 [ext_resource type="PackedScene" path="res://scenes/ui/notebook_button.tscn" id="90_notebook_button"]
+[ext_resource type="PackedScene" path="res://scenes/kitchen/dish_showcase.tscn" id="92_showcase"]
 
 [node name="Kitchen" type="Control"]
 layout_mode = 3
@@ -62,6 +62,17 @@ offset_left = 1460.0
 offset_top = 520.0
 offset_right = 1660.0
 offset_bottom = 780.0
+
+[node name="ServedDish" type="TextureRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 844.0
+offset_top = 640.0
+offset_right = 1036.0
+offset_bottom = 832.0
+mouse_filter = 2
+stretch_mode = 5
 
 [node name="DayLabel" type="Label" parent="."]
 unique_name_in_owner = true
@@ -191,10 +202,6 @@ vertical_alignment = 1
 unique_name_in_owner = true
 layout_mode = 1
 
-[node name="PlateMinigame" parent="." instance=ExtResource("6_plate")]
-unique_name_in_owner = true
-layout_mode = 1
-
 [node name="StirFryMinigame" parent="." instance=ExtResource("7_stir_fry")]
 unique_name_in_owner = true
 layout_mode = 1
@@ -236,6 +243,10 @@ unique_name_in_owner = true
 layout_mode = 1
 
 [node name="GarnishPicker" parent="." instance=ExtResource("14_garnish")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="DishShowcase" parent="." instance=ExtResource("92_showcase")]
 unique_name_in_owner = true
 layout_mode = 1
 

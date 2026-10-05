@@ -17,8 +17,6 @@
 | scenes/kitchen/minigames/chop_minigame.tscn (Ingredient, Slices) | 썰기 전 재료 / 썬 조각 (재료마다) | 420x160 / 24x120 | 할 일 |
 | scenes/kitchen/minigames/chop_minigame.tscn (Knife, TargetZone) | 칼 / 썰 자리 표시 | 10x300 / 50x240 | 할 일 |
 | scenes/kitchen/minigames/chop_minigame.tscn (PerfectStamp) | 완벽 도장 (지금은 금색 글자) | 900x200 | 선택 |
-| scenes/kitchen/minigames/plate_minigame.tscn (Plate) | 담기: 위에서 본 접시 / 국물 그릇 (Recipe.serve_in_bowl, 묵밥) | 680x420 (원본 227x140) | 할 일 |
-| scenes/kitchen/minigames/plate_minigame.tscn (Tool, HeldPiece) | 담기: 뒤집개 / 요리 한 조각 (레시피마다, 지금은 재료 색 둥근 조각) | 108x168 / 96x72 (원본 36x56 / 32x24) | 할 일 |
 | scenes/kitchen/minigames/stir_fry_minigame.tscn (Pan, Handle) | 팬 | 520x70 + 손잡이 | 할 일 |
 | scenes/kitchen/minigames/stir_fry_minigame.tscn (Flame) | 불꽃 | 340x60 | 할 일 |
 | scenes/kitchen/minigames/stir_fry_minigame.tscn (FoodTemplate) | 볶는 재료 조각 (재료마다) | 36x36 | 할 일 |
@@ -102,3 +100,4 @@
 | data/guests/*.tres (Icon) | 손님 작은 얼굴 아이콘 (장사 결과판 손님 줄 이름 옆, 손님 수첩에도 쓸 수 있음). 지금은 손님마다 다른 색 네모 | 48x48 (원본 16x16) | 할 일 |
 | scenes/ui/notebook_button.tscn (Book Icon) | 손님 수첩 버튼 책 아이콘 (펼친 책). 텃밭·부엌·평상 왼쪽 위 버튼 세 개가 함께 바뀜. 지금은 코드로 그린 임시 책 | 96x96 (원본 32x32, 배경 투명) | 할 일 |
 | scenes/porch/recipe_note_book.tscn (Book Texture) | 저녁 평상에서 레시피 노트를 되찾을 때 뜨는 펼친 할머니 노트 (왼쪽 쪽에 완성 요리 그림, 오른쪽 쪽에 글을 게임이 올림). 지금은 밤색 표지 + 크림색 두 쪽 임시 모양 | 840x480 (원본 280x160, 배경 투명) | 할 일 |
+| data/recipes/*.tres (Finished Image) | 완성 요리 그림 (접시 / 국물 요리는 그릇에 담긴 모습). "완성~!" 장면(4배), 대접할 때 미끄러지는 접시(3배), 레시피 노트에 같이 쓴다. 지금은 DishArt 가 재료 색으로 그린 임시 그림 | 원본 64x64 | 할 일 |

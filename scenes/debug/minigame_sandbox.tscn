@@ -5,7 +5,6 @@
 [ext_resource type="Resource" path="res://data/requests/fine_chop.tres" id="3_request"]
 [ext_resource type="PackedScene" uid="uid://x3ef510qot4e" path="res://scenes/kitchen/minigames/chop_minigame.tscn" id="10_chop"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/stir_fry_minigame.tscn" id="11_stir_fry"]
-[ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/plate_minigame.tscn" id="12_plate"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/pan_fry_minigame.tscn" id="13_pan_fry"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/roll_minigame.tscn" id="14_roll"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/rice_minigame.tscn" id="15_rice"]
@@ -26,7 +25,6 @@ request = ExtResource("3_request")
 minigame_scenes = Dictionary[int, PackedScene]({
 0: ExtResource("10_chop"),
 1: ExtResource("11_stir_fry"),
-2: ExtResource("12_plate"),
 3: ExtResource("13_pan_fry"),
 4: ExtResource("14_roll"),
 5: ExtResource("15_rice"),

@@ -6,6 +6,6 @@
 script = ExtResource("1_tool")
 id = &"big_ladle"
 display_name = "큰 국자"
-effect_text = "금색 띠가 넓어졌어요"
-minigame_types = Array[int]([2])
+effect_text = "젓는 박자가 넉넉해졌어요"
+minigame_types = Array[int]([7])
 window_scale = 1.3

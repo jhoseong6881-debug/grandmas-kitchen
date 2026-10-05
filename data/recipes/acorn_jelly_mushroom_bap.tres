@@ -26,18 +26,13 @@ count = 4
 speed = 0.6
 placeholder_color = Color(0.5, 0.34, 0.24, 1)
 
-[sub_resource type="Resource" id="CookStep_4"]
-script = ExtResource("14_cook_step")
-type = 2
-count = 4
-
 [resource]
 script = ExtResource("1_recipe")
 id = &"acorn_jelly_mushroom_bap"
 serve_in_bowl = true
 display_name = "버섯 도토리묵밥"
 ingredients = Array[ExtResource("2_ingredient")]([ExtResource("3_acorn"), ExtResource("4_mushroom")])
-cook_steps = Array[ExtResource("14_cook_step")]([SubResource("CookStep_1"), SubResource("CookStep_2"), SubResource("CookStep_3"), SubResource("CookStep_4")])
+cook_steps = Array[ExtResource("14_cook_step")]([SubResource("CookStep_1"), SubResource("CookStep_2"), SubResource("CookStep_3")])
 minigame_ingredient_name = "도토리묵"
 secret_hint = "쌀은 손이 자리 한가운데 올 때 씻기"
 secret_teller_id = &"squirrel"

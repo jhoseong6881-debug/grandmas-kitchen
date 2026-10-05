@@ -22,17 +22,12 @@ speed = 0.9
 placeholder_color = Color(0.98, 0.8, 0.36, 1)
 hit_sound = &"chop_omelette"
 
-[sub_resource type="Resource" id="CookStep_3"]
-script = ExtResource("14_cook_step")
-type = 2
-count = 3
-
 [resource]
 script = ExtResource("1_recipe")
 id = &"honey_egg_roll"
 display_name = "꿀 계란말이"
 ingredients = Array[ExtResource("2_ingredient")]([ExtResource("3_egg"), ExtResource("3_egg"), ExtResource("4_honey")])
-cook_steps = Array[ExtResource("14_cook_step")]([SubResource("CookStep_1"), SubResource("CookStep_2"), SubResource("CookStep_3")])
+cook_steps = Array[ExtResource("14_cook_step")]([SubResource("CookStep_1"), SubResource("CookStep_2")])
 minigame_ingredient_name = "계란"
 secret_hint = "계란말이는 끝에 닿기 직전에 말기"
 secret_teller_id = &"hen"

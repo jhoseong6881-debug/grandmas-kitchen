@@ -22,6 +22,8 @@ const DONE_TEXT: String = "윤기 나게 졸였어요!"
 @export var lead_in: float = 0.6
 ## 박자 앞뒤로 이 시간(초) 안에 누르면 맞은 것. 클수록 쉽다.
 @export var hit_window: float = 0.12
+## 이번에 쓰는 판정 시간 (큰 국자가 있으면 넓어진다)
+var _hit_window: float = 0.12
 ## 판정을 후하게 해 주는 여유(초). 화면에는 안 보인다.
 @export var judge_margin: float = 0.03
 ## 하얀 원이 처음 나올 때 크기 (금색 원의 몇 배)
@@ -83,6 +85,8 @@ func _get_minigame_type() -> Recipe.MinigameType:
 
 
 func _on_start(recipe: Recipe) -> void:
+	# 큰 국자(조리도구)가 있으면 박자 판정이 넉넉해진다.
+	_hit_window = hit_window * _window_scale
 	_stirs_needed = maxi(roundi(_step_count(stirs_needed) * _duration_scale), 1)
 	_beat_interval = beat_interval / _speed
 	_time = 0.0
@@ -131,7 +135,7 @@ func _process(delta: float) -> void:
 	if not visible or not _is_playing:
 		return
 	_time += delta
-	if _time > _beat_time + hit_window + judge_margin:
+	if _time > _beat_time + _hit_window + judge_margin:
 		_register_miss()
 		_progress_label.text = MISSED_TEXT
 		_next_beat()
@@ -139,9 +143,9 @@ func _process(delta: float) -> void:
 
 
 func _on_press() -> void:
-	if absf(_time - _beat_time) <= hit_window + judge_margin:
-		# 박자보다 hit_window 만큼 이르게 = 0, 딱 박자 = 0.5, hit_window 만큼 늦게 = 1
-		_register_hit((_time - (_beat_time - hit_window)) / (2.0 * hit_window))
+	if absf(_time - _beat_time) <= _hit_window + judge_margin:
+		# 박자보다 _hit_window 만큼 이르게 = 0, 딱 박자 = 0.5, _hit_window 만큼 늦게 = 1
+		_register_hit((_time - (_beat_time - _hit_window)) / (2.0 * _hit_window))
 		_stir()
 	else:
 		_register_miss()
@@ -194,6 +198,6 @@ func _update_ring() -> void:
 		_beat_ring.scale = Vector2.ONE * lerpf(ring_start_scale, 1.0, p)
 		_beat_ring.modulate.a = 1.0
 	else:
-		var after: float = (p - 1.0) * _beat_interval / (hit_window + judge_margin)
+		var after: float = (p - 1.0) * _beat_interval / (_hit_window + judge_margin)
 		_beat_ring.scale = Vector2.ONE * lerpf(1.0, ring_after_scale, after)
 		_beat_ring.modulate.a = 1.0 - after

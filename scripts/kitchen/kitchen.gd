@@ -34,6 +34,8 @@ const DEFAULT_CURIOUS_ORDER_LINE: String = "아까 그 냄새가 궁금했어요
 ## 효과음 이름 (data/sounds/ 의 id)
 const GUEST_ARRIVE_SOUND: StringName = &"guest_arrive"
 const SERVE_SOUND: StringName = &"serve"
+## 대접할 때 접시가 조리대 위를 미끄러지는 소리
+const SERVE_SLIDE_SOUND: StringName = &"dish_slide"
 const RECEIVE_SOUND: StringName = &"receive"
 const POP_SOUND: StringName = &"pop"
 const TIER_UP_SOUND: StringName = &"tier_up"
@@ -69,6 +71,10 @@ const TIER_UP_SOUND: StringName = &"tier_up"
 @export var door_close_delay: float = 0.5
 ## 앞 손님이 나가고 문이 닫힌 뒤, 다음 손님이 문을 열기까지 쉬는 시간(초)
 @export var next_guest_delay: float = 1.0
+## 대접할 때 접시가 조리대 위를 드윽 미끄러져 손님 앞으로 가는 시간(초)과, 내 쪽(화면 아래)에서 출발하는 거리(픽셀), 처음 크기
+@export var serve_slide_duration: float = 0.5
+@export var serve_slide_distance: float = 360.0
+@export var serve_slide_start_scale: float = 1.35
 ## 밥값 문구에서 재료 아이콘 크기(픽셀). 픽셀 글꼴에 맞춰 12의 배수로.
 @export var payment_icon_size: int = 48
 ## true: "아이콘 당근 ×2", false: "아이콘 ×2". 재료 그림이 다 생기면 false로 바꿔도 된다.
@@ -129,9 +135,11 @@ var _status_default_color: Color
 @onready var _notebook_button: Button = %NotebookButton
 @onready var _garnish_picker: GarnishPicker = %GarnishPicker
 @onready var _result_board: ResultBoard = %ResultBoard
+## 요리 완성 장면 ("완성~!")과 대접한 접시 (손님 앞 조리대 위)
+@onready var _dish_showcase: DishShowcase = %DishShowcase
+@onready var _served_dish: TextureRect = %ServedDish
 @onready var _chop_minigame: ChopMinigame = %ChopMinigame
 @onready var _stir_fry_minigame: StirFryMinigame = %StirFryMinigame
-@onready var _plate_minigame: PlateMinigame = %PlateMinigame
 @onready var _pan_fry_minigame: PanFryMinigame = %PanFryMinigame
 @onready var _roll_minigame: RollMinigame = %RollMinigame
 @onready var _rice_minigame: RiceMinigame = %RiceMinigame
@@ -142,7 +150,6 @@ var _status_default_color: Color
 @onready var _minigames: Dictionary[Recipe.MinigameType, Minigame] = {
 	Recipe.MinigameType.CHOP: _chop_minigame,
 	Recipe.MinigameType.STIR_FRY: _stir_fry_minigame,
-	Recipe.MinigameType.PLATE: _plate_minigame,
 	Recipe.MinigameType.PAN_FRY: _pan_fry_minigame,
 	Recipe.MinigameType.ROLL: _roll_minigame,
 	Recipe.MinigameType.COOK_RICE: _rice_minigame,
@@ -294,6 +301,25 @@ func _call_next_guest() -> void:
 ## 오늘 메뉴 수 + extra_guests_over_menu + 가게 단계의 손님 보너스. 최대는 가게 단계의 max_guests
 ## (가게 단계 데이터가 없으면 guests_per_lunch). 소문이 퍼질수록 손님이 는다.
 ## 메뉴를 안 정했으면(메뉴가 비어 있으면 되찾은 레시피 전부를 낼 수 있다) 되찾은 레시피 수로 센다.
+## 완성한 요리 접시가 내 쪽(화면 아래)에서 조리대 위를 드윽 미끄러져 손님 앞에 놓인다.
+func _slide_dish_to_guest() -> void:
+	var home: Vector2 = _served_dish.position
+	if _served_dish.has_meta(&"home"):
+		home = _served_dish.get_meta(&"home")
+	else:
+		_served_dish.set_meta(&"home", home)
+	_served_dish.texture = DishArt.get_texture(current_order)
+	_served_dish.pivot_offset = _served_dish.size / 2.0
+	_served_dish.position = home + Vector2(0.0, serve_slide_distance)
+	_served_dish.scale = Vector2.ONE * serve_slide_start_scale
+	_served_dish.show()
+	Sound.play(SERVE_SLIDE_SOUND)
+	var tween: Tween = create_tween().set_parallel()
+	tween.tween_property(_served_dish, "position", home, serve_slide_duration).set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)
+	tween.tween_property(_served_dish, "scale", Vector2.ONE, serve_slide_duration).set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)
+	await tween.finished
+
+
 ## 문이 열리고 잠깐 뒤, 손님이 조리대 아래에서 쏙 올라오고 문이 닫힌다. (문 장면이 없으면 바로 나타난다)
 func _guest_enters() -> void:
 	if _door == null:
@@ -315,6 +341,7 @@ func _close_door_after(delay: float) -> void:
 
 ## 문이 열리고, 손님이 스르륵 사라진 뒤 문이 닫힌다.
 func _guest_leaves() -> void:
+	_served_dish.hide()
 	if _door == null:
 		return
 	await _door.open()
@@ -493,6 +520,7 @@ func _is_grandma_cook() -> bool:
 ## 레시피의 요리 단계(cook_steps)를 순서대로 하나씩 진행한다. 다 끝나면 요리 완성.
 func _run_next_step() -> void:
 	if _remaining_steps.is_empty():
+		await _dish_showcase.show_dish(current_order, _is_perfect_cook, _is_grandma_cook())
 		var format: String = PERFECT_COOKED_TEXT_FORMAT if _is_perfect_cook else COOKED_TEXT_FORMAT
 		if _is_grandma_cook():
 			format = GRANDMA_COOKED_TEXT_FORMAT
@@ -529,6 +557,8 @@ func _on_serve_button_pressed() -> void:
 ## 고명이 손님 입맛에 맞거나, 할머니 손맛이거나, 부탁을 들어줬으면 단골도가 더 오르고 손님 말도 달라진다.
 func _serve(garnish: Garnish) -> void:
 	GameState.remove_ingredients(garnish.get_cost())
+	_show_only_button(null)
+	await _slide_dish_to_guest()
 	var guest: AnimalGuest = current_guest
 	var settings: RegularSettings = GameData.get_regular_settings()
 	var tier: int = GameState.get_regular_tier(guest.id)

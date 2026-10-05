@@ -23,17 +23,12 @@ count = 6
 secret_start = 0.3
 secret_end = 0.7
 
-[sub_resource type="Resource" id="CookStep_3"]
-script = ExtResource("13_cook_step")
-type = 2
-count = 3
-
 [resource]
 script = ExtResource("1_recipe")
 id = &"acorn_jelly_muchim"
 display_name = "도토리묵 무침"
 ingredients = Array[ExtResource("2_ingredient")]([ExtResource("3_acorn")])
-cook_steps = Array[ExtResource("13_cook_step")]([SubResource("CookStep_1"), SubResource("CookStep_2"), SubResource("CookStep_3")])
+cook_steps = Array[ExtResource("13_cook_step")]([SubResource("CookStep_1"), SubResource("CookStep_2")])
 minigame_ingredient_name = "도토리묵"
 mix_coating = ExtResource("14_seasoning")
 secret_hint = "양념은 묵 한가운데에 살살"
