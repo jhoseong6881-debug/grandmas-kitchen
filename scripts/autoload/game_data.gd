@@ -186,6 +186,12 @@ func get_season_ending() -> SeasonEnding:
 	return season.ending if season != null else null
 
 
+## 이 계절 잔치에서 데모가 끝나는지 (계절 마무리 데이터의 is_demo_end). 끝나면 다음 계절로 넘어가지 않는다.
+func is_demo_end_season(season_id: Season.Id) -> bool:
+	var season: SeasonData = get_season(season_id)
+	return season != null and season.ending != null and season.ending.is_demo_end
+
+
 ## 지금 계절 day 날의 특별한 점심 (없으면 null)
 func get_special_lunch(day: int) -> SpecialLunch:
 	var season: SeasonData = get_current_season()

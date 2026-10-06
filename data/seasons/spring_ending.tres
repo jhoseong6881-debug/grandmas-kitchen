@@ -17,3 +17,6 @@ letter_text = "우리 강아지에게.\n\n이 노트를 다 모았다면, 숲속
 closing_text = "잔치가 끝난 밤. 휴대폰을 엎어 둔 채, 내일 장 볼 거리를 적었다."
 next_season_teaser = "봄이 지나갑니다…\n숲에 초록이 짙어지고, 여름이 다가와요."
 finish_button_text = "여름으로"
+is_demo_end = true
+demo_end_text = "숲속의 할매식당, 봄 이야기는 여기까지예요.\n끝까지 함께해 주셔서 고마워요.\n\n여름 이야기는 지금 정성껏 짓고 있어요."
+demo_end_button_text = "처음 화면으로"

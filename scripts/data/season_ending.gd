@@ -28,3 +28,12 @@ extends Resource
 @export_multiline var next_season_teaser: String = ""
 ## 마지막 버튼 글자
 @export var finish_button_text: String = "타이틀로"
+
+@export_group("데모 끝")
+## 켜면 이 계절 잔치에서 데모가 끝난다: 다음 계절 예고 뒤 고마움 인사를 보여 주고, 다음 계절로 넘어가지 않고
+## "봄 완료"로 저장한 뒤 처음 화면으로 돌아간다. 다음 계절을 다 만들면 끈다 (그러면 지금처럼 다음 계절 1일째로 이어진다).
+@export var is_demo_end: bool = false
+## 데모 끝 인사 (다음 계절 예고 다음 화면)
+@export_multiline var demo_end_text: String = ""
+## 데모 끝 인사 화면의 버튼 글자
+@export var demo_end_button_text: String = "처음 화면으로"

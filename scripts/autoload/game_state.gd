@@ -773,7 +773,8 @@ func load_game() -> bool:
 	_from_save_data(data)
 	is_game_started = true
 	# 예전 세이브: 봄을 마치고 타이틀로 돌아갔던 세이브는 여름이 생겼으니 여름 1일째부터 이어 간다.
-	if is_spring_completed and current_season == Season.Id.SPRING:
+	# 봄 잔치에서 데모가 끝나는 동안(봄 마무리 데이터의 is_demo_end)은 봄 완료 그대로 둔다.
+	if is_spring_completed and current_season == Season.Id.SPRING and not GameData.is_demo_end_season(current_season):
 		start_next_season()
 	return true
 

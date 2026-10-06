@@ -62,8 +62,8 @@ func _ready() -> void:
 		if bool(summary.get("is_spring_completed", false)) and season_id == Season.Id.SPRING:
 			var spring: SeasonData = GameData.get_season(Season.Id.SPRING)
 			var next: SeasonData = GameData.get_season(spring.next_season) if spring != null else null
-			if next == null:
-				# 다음 계절이 아직 없으면 봄 완료 세이브는 남겨 두기만 한다.
+			if next == null or GameData.is_demo_end_season(Season.Id.SPRING):
+				# 다음 계절이 아직 없거나 봄 잔치에서 데모가 끝나면, 봄 완료 세이브는 남겨 두기만 한다.
 				_continue_button.text = SPRING_COMPLETED_TEXT
 				_continue_button.disabled = true
 				_continue_button.focus_mode = Control.FOCUS_NONE

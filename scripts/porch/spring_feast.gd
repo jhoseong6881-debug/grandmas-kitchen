@@ -3,6 +3,7 @@ extends Control
 ## 손님들이 모두 모여 한마디씩 하고, 완성된 노트 맨 뒷장의 할머니 편지를 읽은 뒤 다음 계절 예고를 보여 준다.
 ## 마지막 버튼을 누르면 다음 계절(여름) 1일째로 넘어가 저장하고, 계절 시작 장면을 보여 준 뒤 아침 텃밭으로 간다.
 ## 다음 계절 데이터가 없으면 "봄 완료"로 저장하고 타이틀로 돌아간다. 글은 data/seasons/ 의 SeasonEnding 에서 가져온다.
+## 데모 끝(SeasonEnding.is_demo_end)이면 다음 계절 예고 뒤 고마움 인사를 보여 주고, 다음 계절로 넘어가지 않고 "봄 완료"로 저장해 타이틀로 돌아간다.
 
 const NEXT_TEXT: String = "다음"
 const RECIPE_ITEM_FORMAT: String = "· %s"
@@ -85,6 +86,8 @@ func _ready() -> void:
 	if not _ending.closing_text.is_empty():
 		_beats.append(_show_closing)
 	_beats.append(_show_teaser)
+	if _ending.is_demo_end and not _ending.demo_end_text.is_empty():
+		_beats.append(_show_demo_end)
 	_run_next_beat()
 	_next_button.grab_focus()
 
@@ -99,7 +102,12 @@ func _on_next_button_pressed() -> void:
 func _run_next_beat() -> void:
 	var beat: Callable = _beats.pop_front()
 	beat.call()
-	_next_button.text = _ending.finish_button_text if _beats.is_empty() else NEXT_TEXT
+	_next_button.text = _finish_text() if _beats.is_empty() else NEXT_TEXT
+
+
+## 마지막 버튼 글자: 데모가 끝나면 "처음 화면으로", 아니면 "여름으로" 같은 계절 마무리 글자
+func _finish_text() -> String:
+	return _ending.demo_end_button_text if _ending.is_demo_end else _ending.finish_button_text
 
 
 ## 대화 상자에 말을 띄운다. speaker_id 가 있으면 그 손님만 밝게, 나머지는 어둡게 보인다.
@@ -163,9 +171,18 @@ func _show_teaser() -> void:
 	tween.tween_property(_teaser, "modulate:a", 1.0, pop_duration * 4.0)
 
 
-## 다음 계절 1일째로 넘어가 저장하고, 계절 시작 장면(있으면) 뒤 아침 텃밭으로 간다. 다음 계절이 없으면 봄 완료로 저장하고 타이틀로.
+## 데모 끝 인사. 다음 계절 예고와 같은 자리에 서서히 바꿔 보여 준다.
+func _show_demo_end() -> void:
+	_teaser_label.text = _ending.demo_end_text.format({"name": GameState.player_name})
+	_teaser_label.modulate.a = 0.0
+	var tween: Tween = create_tween()
+	tween.tween_property(_teaser_label, "modulate:a", 1.0, pop_duration * 4.0)
+
+
+## 다음 계절 1일째로 넘어가 저장하고, 계절 시작 장면(있으면) 뒤 아침 텃밭으로 간다.
+## 다음 계절이 없거나 이 계절에서 데모가 끝나면 봄 완료로 저장하고 타이틀로.
 func _finish_spring() -> void:
-	if not GameState.start_next_season():
+	if _ending.is_demo_end or not GameState.start_next_season():
 		GameState.is_spring_completed = true
 		GameState.save_game()
 		get_tree().change_scene_to_file(title_scene_path)
