@@ -5,6 +5,10 @@
 **픽셀 배율: 3배 (2026-10-04, 디자이너님과 결정).** 그리는 판 640×360. 아래 표의 크기는 화면 크기이고, 디자이너님은 1/3 크기로 그린다
 (디자이너용 원본 크기 목록: docs/discord/art-list.md). 게임은 기본 텍스처 필터 Nearest 로 또렷하게 키운다. 그림이 들어올 때 칸 크기를 3의 배수로 맞춘다.
 
+**그림이 들어오면 검사하기**: 프로젝트 폴더에서 `python3 tools/check_art.py` — 연결된 그림이 규격 크기인지, 표정·우비 그림이 기본 그림과
+크기가 같은지(다르면 표정이 바뀔 때 흔들림), 배경이 투명한지, 가져오기 설정(손실 압축·밉맵)이 괜찮은지, 연결 안 된 그림이 있는지 알려 준다.
+그림 파일은 읽기만 하고 바꾸지 않는다.
+
 | 위치 (씬/노드) | 필요한 그림 | 크기 | 상태 |
 |---|---|---|---|
 | data/ingredients/carrot.tres (icon) | 당근 아이콘 — assets/art/ingredients/carrot.png | 원본 16x16 (가진 재료·메뉴판·결과판 32, 밥값 48) | 완료 (2026-10-06) |
@@ -63,7 +67,7 @@
 | data/recipes/acorn_jelly_mushroom_bap.tres (finished_image) | 버섯 도토리묵밥 완성 그림 | 미정 | 할 일 |
 | scenes/ui/guest_notebook.tscn (Book) | 손님 수첩 종이 (+ 손님 얼굴 작은 그림) | 1440x840 | 할 일 |
 | scenes/porch/spring_feast.tscn (Sky, Lanterns, Ground, Pyeongsang) | 봄 잔치 밤 배경 (등불, 잔칫상 차린 평상) | 1920x1080 | 할 일 |
-| scenes/porch/spring_feast.tscn (손님 그림) | 잔치에 앉은 손님 다섯 (앉은 모습) | 180x240 | 할 일 |
+| data/guests/*.tres (feast_portrait) | 잔치에 앉은 손님 다섯 (앉은 모습). 비워 두면 손님 그림(portrait)을 대신 쓰고, 그것도 없으면 임시 사각형 | 180x240 (원본 60x80) | 할 일 |
 | scenes/porch/spring_feast.tscn (Letter, NoteCard) | 할머니 편지지 / 완성된 노트 | 1240x820 | 할 일 |
 | scenes/porch/spring_feast.tscn (Teaser) | 여름 예고 그림 | 1920x1080 | 선택 |
 | scenes/ui/pause_menu.tscn (Box) | 일시 정지 메뉴 판 | 840x660 | 선택 |

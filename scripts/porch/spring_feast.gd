@@ -190,9 +190,10 @@ func _pop_in(panel: Control) -> void:
 func _make_figure(guest: AnimalGuest) -> Control:
 	var figure: VBoxContainer = VBoxContainer.new()
 	figure.alignment = BoxContainer.ALIGNMENT_END
-	if guest.portrait != null:
+	# 잔치용 앉은 모습(feast_portrait)이 있으면 그것, 없으면 손님 그림 (AnimalGuest.get_feast_portrait)
+	if guest.get_feast_portrait() != null:
 		var portrait: TextureRect = TextureRect.new()
-		portrait.texture = guest.portrait
+		portrait.texture = guest.get_feast_portrait()
 		portrait.custom_minimum_size = figure_size
 		portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED

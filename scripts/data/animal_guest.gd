@@ -22,8 +22,10 @@ const PLACEHOLDER_ICON_PIXELS: int = 12
 @export var portrait: Texture2D
 ## 표정 그림: happy(웃음), surprised(놀람), sad(시무룩) 를 이름으로 넣는다. 없는 표정은 기본 그림을 쓴다.
 @export var expression_portraits: Dictionary[StringName, Texture2D] = {}
-## 봄비 오는 날 우비를 입은 그림. 비워 두면 손님 그림 위에 임시 우비 도형을 씌운다.
+## 봄비 오는 날 우비를 입은 그림. 비워 두면 임시 그림일 때만 우비 도형을 씌우고, 진짜 그림이 있으면 평소 모습.
 @export var raincoat_portrait: Texture2D
+## 봄 잔치에서 평상에 앉은 모습 (원본 60×80 · 화면 180×240). 비워 두면 손님 그림(portrait)을, 그것도 없으면 임시 사각형.
+@export var feast_portrait: Texture2D
 @export_multiline var personality: String = ""
 @export var favorite_recipes: Array[Recipe] = []
 ## 싫어하는 요리. 좋아하는 요리를 못 만드는 날 대신 주문할 때도 이 요리는 절대 주문하지 않는다.
@@ -137,6 +139,11 @@ func get_feast_line(season: Season.Id, seen_ids: Array[StringName]) -> String:
 
 
 ## 이 표정의 그림. 우비를 입었으면 우비 그림, 그 표정 그림이 없으면 기본 그림. 둘 다 없으면 null (임시 도형).
+## 잔치에 앉은 모습: 잔치용 그림이 있으면 그것, 없으면 손님 그림 (둘 다 없으면 null).
+func get_feast_portrait() -> Texture2D:
+	return feast_portrait if feast_portrait != null else portrait
+
+
 func get_portrait(expression: StringName = EXPRESSION_DEFAULT, in_raincoat: bool = false) -> Texture2D:
 	if in_raincoat and raincoat_portrait != null:
 		return raincoat_portrait
