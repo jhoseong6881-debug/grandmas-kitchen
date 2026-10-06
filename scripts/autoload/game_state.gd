@@ -10,6 +10,20 @@ signal reputation_changed(new_reputation: int)
 signal feast_prep_changed
 
 const SAVE_PATH: String = "user://save.json"
+## 안전하게 저장하려고 먼저 써 보는 임시 파일, 바로 앞 저장을 남겨 두는 백업 파일.
+## 저장하다 꺼지거나 세이브가 상해도 백업(하루 전 밤 저장)으로 이어 할 수 있다.
+const SAVE_TEMP_PATH: String = "user://save.json.tmp"
+const SAVE_BACKUP_PATH: String = "user://save.json.bak"
+## 세이브의 각 값이 가져야 할 모양 (모양이 틀린 세이브는 상한 것으로 보고 백업을 쓴다)
+const SAVE_DICTIONARY_KEYS: PackedStringArray = ["inventory", "extra_plots", "feast_prep_delivered", "guest_affection",
+		"guest_story_progress", "pending_reward_tiers", "garden"]
+const SAVE_ARRAY_KEYS: PackedStringArray = ["basket_guest_ids", "grandma_taste_recipe_ids", "keepsake_ids",
+		"known_taste_guest_ids", "learned_secret_ids", "menu_recipe_ids", "met_guest_ids", "porch_met_guest_ids",
+		"seen_duo_talk_ids", "seen_guest_ids", "seen_memory_ids", "seen_story_chapter_ids", "todays_guest_ids",
+		"unlocked_place_ids", "unlocked_recipe_ids", "used_basket_note_ids", "garden_days_left"]
+const SAVE_NUMBER_KEYS: PackedStringArray = ["version", "current_day", "current_season", "promise_day", "reputation", "todays_guests_day"]
+const SAVE_BOOL_KEYS: PackedStringArray = ["has_met_merchant", "is_feast_prep_announced", "is_raining_today", "is_spring_completed"]
+const SAVE_STRING_KEYS: PackedStringArray = ["player_name", "promise_guest_id", "promise_recipe_id"]
 ## 세이브 파일 구조가 바뀌면 숫자를 올린다. 옛 세이브를 읽을 때 구분하는 데 쓴다.
 ## 2: 텃밭이 여러 곳(GardenPlace)이 되고 칸마다 심은 작물을 저장한다.
 const SAVE_VERSION: int = 2
@@ -685,43 +699,110 @@ func start_new_game() -> void:
 
 
 func has_save() -> bool:
-	return FileAccess.file_exists(SAVE_PATH)
+	return FileAccess.file_exists(SAVE_PATH) or FileAccess.file_exists(SAVE_BACKUP_PATH)
 
 
 ## 세이브 파일을 불러오지 않고 내용만 읽는다. 타이틀 화면에서 "N일째"를 보여 줄 때 쓴다. 못 읽으면 빈 Dictionary.
+## 세이브가 상했으면 백업의 내용을 읽는다 (load_game 이 이어 할 것과 같게).
 func read_save_summary() -> Dictionary:
-	if not has_save():
-		return {}
-	var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(SAVE_PATH))
-	return data if data is Dictionary else {}
+	return _read_usable_save()
 
 
 func delete_save() -> void:
-	if has_save():
-		DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
+	for path: String in [SAVE_PATH, SAVE_TEMP_PATH, SAVE_BACKUP_PATH]:
+		if FileAccess.file_exists(path):
+			DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 
 
+## 안전하게 저장한다: 임시 파일에 먼저 쓰고 다시 읽어 확인한 뒤, 지금 세이브를 백업으로 옮기고 임시 파일을 세이브로 바꾼다.
+## 저장하다 꺼져도 세이브나 백업 중 하나는 멀쩡하게 남는다.
 func save_game() -> bool:
-	var file: FileAccess = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	var file: FileAccess = FileAccess.open(SAVE_TEMP_PATH, FileAccess.WRITE)
 	if file == null:
 		push_error("세이브 실패: %s" % error_string(FileAccess.get_open_error()))
 		return false
-	file.store_string(JSON.stringify(_to_save_data(), "\t"))
+	var is_written: bool = file.store_string(JSON.stringify(_to_save_data(), "\t"))
+	file.close()
+	if not is_written or not _is_usable_save(_parse_save(SAVE_TEMP_PATH)):
+		push_error("세이브 실패: 임시 파일을 다시 읽을 수 없습니다 (%s)" % SAVE_TEMP_PATH)
+		return false
+	if _is_usable_save(_parse_save(SAVE_PATH)):
+		DirAccess.rename_absolute(ProjectSettings.globalize_path(SAVE_PATH), ProjectSettings.globalize_path(SAVE_BACKUP_PATH))
+	var error: Error = DirAccess.rename_absolute(ProjectSettings.globalize_path(SAVE_TEMP_PATH),
+			ProjectSettings.globalize_path(SAVE_PATH))
+	if error != OK:
+		push_error("세이브 실패: %s" % error_string(error))
+		return false
 	return true
 
 
 func load_game() -> bool:
-	if not has_save():
-		return false
-	var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(SAVE_PATH))
-	if not data is Dictionary:
-		push_error("세이브 파일을 읽을 수 없습니다: %s" % SAVE_PATH)
+	var data: Dictionary = _read_usable_save()
+	if data.is_empty():
+		push_error("세이브 파일과 백업을 모두 읽을 수 없습니다: %s" % SAVE_PATH)
 		return false
 	_from_save_data(data)
 	is_game_started = true
 	# 예전 세이브: 봄을 마치고 타이틀로 돌아갔던 세이브는 여름이 생겼으니 여름 1일째부터 이어 간다.
 	if is_spring_completed and current_season == Season.Id.SPRING:
 		start_next_season()
+	return true
+
+
+## 쓸 수 있는 세이브 내용: 세이브가 멀쩡하면 그것, 상했으면 백업, 둘 다 안 되면 빈 Dictionary.
+func _read_usable_save() -> Dictionary:
+	for path: String in [SAVE_PATH, SAVE_BACKUP_PATH]:
+		var data: Variant = _parse_save(path)
+		if _is_usable_save(data):
+			if path == SAVE_BACKUP_PATH:
+				push_warning("세이브가 상해서 백업으로 이어 합니다: %s" % SAVE_BACKUP_PATH)
+			return data
+	return {}
+
+
+## 파일을 JSON 으로 읽는다. 없거나 비었거나 읽을 수 없으면 null.
+func _parse_save(path: String) -> Variant:
+	if not FileAccess.file_exists(path):
+		return null
+	var text: String = FileAccess.get_file_as_string(path)
+	if text.strip_edges().is_empty():
+		return null
+	var json: JSON = JSON.new()
+	if json.parse(text) != OK:
+		return null
+	return json.data
+
+
+## 불러와도 되는 세이브인지: Dictionary 이고, 들어 있는 값들이 저마다 맞는 모양인지 (없는 값은 괜찮다, 기본값을 쓴다).
+func _is_usable_save(data: Variant) -> bool:
+	if not data is Dictionary:
+		return false
+	var save: Dictionary = data
+	if not save.has("current_day"):
+		return false
+	for key: String in SAVE_DICTIONARY_KEYS:
+		if save.has(key) and not save[key] is Dictionary:
+			return false
+	for key: String in SAVE_ARRAY_KEYS:
+		if save.has(key) and not save[key] is Array:
+			return false
+	for key: String in SAVE_NUMBER_KEYS:
+		if save.has(key) and not (save[key] is float or save[key] is int):
+			return false
+	for key: String in SAVE_BOOL_KEYS:
+		if save.has(key) and not save[key] is bool:
+			return false
+	for key: String in SAVE_STRING_KEYS:
+		if save.has(key) and not save[key] is String:
+			return false
+	# 텃밭: {밭 id: [{"crop": ..., "days_left": ...}, ...]}
+	var garden: Dictionary = save.get("garden", {})
+	for place_id: Variant in garden:
+		if not garden[place_id] is Array:
+			return false
+		for plot: Variant in garden[place_id]:
+			if not plot is Dictionary:
+				return false
 	return true
 
 
