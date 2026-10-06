@@ -43,6 +43,7 @@
 | sfx/rain_light_loop.wav | 봄비 오는 날 낮 내내 깔리는 빗소리 (rain) | Freesound "Rain light 2 (rural)" by jmbphilmes — https://freesound.org/s/200273/ | **CC0** | 2026-10-04 |
 | sfx/mix_toss_1~5.wav | 버무리기에서 맞힐 때 (hit_mix) | Freesound "Potato salad" by 14G_Panska_Kaminkova_A — https://freesound.org/s/419992/ | **CC0** | 2026-10-04 |
 | sfx/porch_crickets_loop.wav | 저녁 평상 내내 작게 깔리는 풀벌레 소리 (porch_night) | Freesound "Night Crickets Back Porch.aiff" by hdfreema — https://freesound.org/s/333221/ | **CC0** | 2026-10-07 |
+| sfx/guest_sad.wav | 먹을 게 없어 손님이 아쉬워하며 돌아갈 때 "띵~동" 내려가는 두 음 (guest_sad) | 코드로 직접 만든 소리 (레→라 종소리 두 음, 임시). 벌칙 느낌이 안 나게 작고 부드럽게 | 직접 만듦 (권리 문제 없음) | 2026-10-07 |
 | sfx/morning_birds.wav | 맑은 날 아침 텃밭에 그날 처음 나왔을 때 새소리 한 번 (morning_birds) | Freesound "Birds In Spring (Scotland)" by BurghRecords — https://freesound.org/s/463903/ | **CC0** | 2026-10-07 |
 
 - mix_toss 조각은 원본(8.5초, audio_source/potato_salad.wav)에서 촉촉하게 섞는 0.53·2.75·3.40·4.78·5.32초 부분을 0.35~0.55초씩 자른 것.
@@ -89,6 +90,8 @@
 | book | 손님 수첩 펼치기 |
 | note_page, secret, gift | 평상: 레시피 노트 / 할머니 비법 / 단골 선물 |
 | special_day | 특별한 점심 날(소풍, 생일, 아무거나)에 부엌이 열릴 때 (Kenney jingles_PIZZI04) |
+| door_close | 가게 문이 다 닫힐 때 작은 "툭" (Kenney impactSoft_medium 세 개 번갈아) |
+| miss (메뉴판) | 메뉴판에서 장사를 시작할 수 없을 때 (재료 부족, 아무것도 안 고름). 장터의 "재료 부족"과 같은 소리 |
 | result_line, shop_up | 장사 결과판 줄이 나올 때 / 가게 이름이 바뀔 때 |
 
 ## 미니게임마다 맞히는 소리
@@ -104,12 +107,13 @@
 봄비 오는 날에는 낮 장면(텃밭, 버섯 원목, 장터, 부엌) 내내 빗소리 `rain` 이 배경음악 아래에 깔리고, 해 지는 장면에서 서서히 꺼진다.
 소리 크기는 `data/sounds/rain.tres` 의 Volume Db (지금 -8).
 
-저녁 평상에는 풀벌레 소리 `porch_night` 가 내내 깔리고(크기 -6), 평상을 떠나면 1.5초 동안 서서히 꺼진다 (porch 의 Night Sound Fade).
+풀벌레 소리 `porch_night` 는 해 질 녘 장면에서 2.5초 동안 서서히 커지며 깔리기 시작해(kitchen 의 Evening Sound Fade In) 저녁 평상 내내 이어지고(크기 -6),
+평상을 떠나면 1.5초 동안 서서히 꺼진다 (porch 의 Night Sound Fade). 계절 잔치로 가는 날의 해 질 녘에는 깔지 않는다. 처음 화면으로 나가면 꺼진다.
 맑은 날 아침 텃밭에 그날 처음 나오면 새소리 `morning_birds` 가 한 번 난다(크기 -8). 장터·버섯 원목에서 돌아올 때는 다시 나지 않는다.
 빗소리, 풀벌레, 새소리는 모두 "Weather" 버스로 보내서 설정 창의 **자연 소리** 막대로 함께 조절한다.
 
-### 아직 소리가 비어 있는 순간 (2026-10-07 점검)
-해 질 녘 장면, 먹을 게 없어 손님이 돌아갈 때, 메뉴판에서 재료가 모자라 장사 시작이 막힐 때, 가게 문이 닫힐 때.
+### 소리가 비어 있던 순간 (2026-10-07 점검)
+2026-10-07 점검에서 찾은 빈 곳 7개(저녁 평상, 해 질 녘, 아침, 특별한 날, 손님이 그냥 돌아갈 때, 메뉴판 막힘, 문 닫힘)를 모두 채웠다.
 
 ## 배경음악
 봄 낮·저녁 장면(텃밭, 버섯 원목, 부엌, 평상)은 날마다 곡이 바뀐다: data/music/spring_daily_music.tres 의 Tracks 를 1일째부터 차례로, 하루 동안은 한 곡. 곡을 더하려면 Tracks 칸에 넣기만 하면 된다.

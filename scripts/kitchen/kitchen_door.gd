@@ -6,6 +6,8 @@ extends Control
 
 ## 문을 열 때 나는 소리 (data/sounds/ 의 id)
 const OPEN_SOUND: StringName = &"guest_arrive"
+## 문이 다 닫힐 때 나는 작은 "툭" 소리
+const CLOSE_SOUND: StringName = &"door_close"
 
 ## 문이 열리고 닫히는 시간(초), 열렸을 때 문짝이 남는 폭(비율. 0.15 = 경첩 쪽에 15%만 보인다)
 @export var open_duration: float = 0.25
@@ -32,4 +34,5 @@ func close() -> void:
 	var tween: Tween = create_tween()
 	tween.tween_property(_leaf, "scale:x", 1.0, close_duration).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	await tween.finished
+	Sound.play(CLOSE_SOUND)
 

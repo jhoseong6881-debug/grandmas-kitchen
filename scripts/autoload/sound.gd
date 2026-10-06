@@ -118,7 +118,8 @@ func _on_music_finished(player: AudioStreamPlayer) -> void:
 
 ## 깔리는 소리를 켠다 (서서히 커진다). 이미 켜져 있으면 그대로 둔다. 없는 id면 조용히 넘어간다 (깔리는 소리가 없는 미니게임이 더 많다).
 ## offset_db: 소리 파일에 정한 크기(Volume Db)에서 더하거나 뺄 크기 (0 = 그대로)
-func start_loop(id: StringName, offset_db: float = 0.0) -> void:
+## fade_duration: 서서히 커지는 시간(초), 0보다 작으면 loop_fade_duration.
+func start_loop(id: StringName, offset_db: float = 0.0, fade_duration: float = -1.0) -> void:
 	if _loop_players.has(id):
 		return
 	var effect: SoundEffect = _effects.get(id)
@@ -135,7 +136,8 @@ func start_loop(id: StringName, offset_db: float = 0.0) -> void:
 	player.play()
 	_loop_players[id] = player
 	var tween: Tween = create_tween()
-	tween.tween_property(player, "volume_db", effect.volume_db + offset_db, loop_fade_duration)
+	tween.tween_property(player, "volume_db", effect.volume_db + offset_db,
+			fade_duration if fade_duration >= 0.0 else loop_fade_duration)
 
 
 ## 소리를 보낼 버스: 소리 데이터에 적힌 버스, 비어 있으면 효과음 버스

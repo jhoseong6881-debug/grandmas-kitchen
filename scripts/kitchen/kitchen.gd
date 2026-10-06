@@ -56,6 +56,10 @@ const POP_SOUND: StringName = &"pop"
 const TIER_UP_SOUND: StringName = &"tier_up"
 ## 특별한 점심 날(소풍, 생일, 아무거나)에 부엌이 열릴 때 한 번 나는 축하 소리
 const SPECIAL_DAY_SOUND: StringName = &"special_day"
+## 먹을 게 없어 손님이 아쉬워하며 돌아갈 때 나는 작고 부드러운 소리 (벌칙 느낌이 안 나게)
+const GUEST_SAD_SOUND: StringName = &"guest_sad"
+## 해 질 녘부터 저녁 평상까지 이어지는 풀벌레 소리 (평상 porch.gd 의 NIGHT_SOUND 와 같은 id)
+const EVENING_SOUND: StringName = &"porch_night"
 
 ## 날마다 바뀌는 배경음악 (하루 동안은 한 곡. 텃밭·원목·부엌·평상이 같은 곡이라 장면이 바뀌어도 끊기지 않는다).
 ## 비워 두면 지금 계절의 곡 목록(SeasonData.daily_music)을 쓴다. 장터와 계절 마무리는 따로 곡이 있다.
@@ -82,6 +86,8 @@ const SPECIAL_DAY_SOUND: StringName = &"special_day"
 ## 손님이 들어올 때: 문이 다 열리고 손님이 쏙 올라오기까지 기다리는 시간(초), 올라오기 시작하고 문이 닫히기까지 시간(초)
 @export var guest_appear_delay: float = 0.35
 @export var door_close_delay: float = 0.5
+## 해 질 녘에 풀벌레 소리가 서서히 커지는 시간(초)
+@export var evening_sound_fade_in: float = 2.5
 ## 앞 손님이 나가고 문이 닫힌 뒤, 다음 손님이 문을 열기까지 쉬는 시간(초)
 @export var next_guest_delay: float = 1.0
 ## 소풍 도시락 날 "○○ 도시락에 넣을 요리" 창
@@ -402,6 +408,7 @@ func _send_guest_home(guest: AnimalGuest, promised_recipe: Recipe) -> void:
 	GameState.see_guest(guest.id)
 	_guest_spot.show_guest(guest, line, GameState.is_raining_today, AnimalGuest.EXPRESSION_SAD)
 	await _guest_enters()
+	Sound.play(GUEST_SAD_SOUND)
 	_guests_served += 1
 	_update_lunch_label()
 	_show_only_button(_next_guest_button)
@@ -567,6 +574,9 @@ func _on_evening_button_pressed() -> void:
 			var rain: RainSettings = GameData.get_rain_settings()
 			Sound.stop_loop(rain.rain_sound, rain.rain_sound_fade)
 			sunset_text = rain.sunset_text
+		# 해가 지면서 풀벌레 소리가 서서히 깔리기 시작해 저녁 평상까지 이어진다 (계절 잔치로 가는 날은 잔치 음악만).
+		if not GameState.is_season_end_day():
+			Sound.start_loop(EVENING_SOUND, 0.0, evening_sound_fade_in)
 		await sunset.play(GameState.current_day, sunset_text)
 	get_tree().change_scene_to_file(feast_scene_path if GameState.is_season_end_day() else porch_scene_path)
 

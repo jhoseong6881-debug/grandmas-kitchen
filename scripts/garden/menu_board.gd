@@ -19,6 +19,8 @@ const NAME_SEPARATOR: String = ", "
 const SHORT_TEXT: String = "  재료 부족"
 const INGREDIENT_FORMAT: String = "×%d  "
 const PROMISE_FORMAT: String = "★ %s%s 약속"
+## 장사를 시작할 수 없을 때(재료 부족, 아무것도 안 고름) 나는 작고 부드러운 소리 (장터의 "재료 부족"과 같은 소리)
+const BLOCKED_SOUND: StringName = &"miss"
 const INVENTORY_ITEM_FORMAT: String = "%s ×%d"
 const INVENTORY_EMPTY_TEXT: String = "없어요"
 const TODAY_GUESTS_TITLE: String = "오늘 손님"
@@ -289,6 +291,7 @@ func _refresh() -> void:
 func _on_start_button_pressed() -> void:
 	if _selected_ids.is_empty():
 		_message_label.text = PICK_ONE_TEXT
+		Sound.play(BLOCKED_SOUND)
 		return
 	# 재료가 모자란 요리를 골라 두면 부엌으로 가지 않는다 (손님이 시켜도 만들 수 없으니까).
 	var short_names: PackedStringArray = []
@@ -299,6 +302,7 @@ func _on_start_button_pressed() -> void:
 	if not short_names.is_empty():
 		_message_label.text = SHORT_BLOCK_FORMAT % NAME_SEPARATOR.join(short_names)
 		Wiggle.shake(_start_button)
+		Sound.play(BLOCKED_SOUND)
 		return
 	hide()
 	confirmed.emit(_selected_ids.duplicate())

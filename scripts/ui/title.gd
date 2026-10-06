@@ -2,6 +2,9 @@ extends Control
 ## 타이틀 화면. 저장된 게임이 있으면 이어 하기, 없으면 새 게임으로 시작한다. 설정 창도 여기서 연다.
 ## 새 게임을 고를 때 저장된 게임이 있으면 지워도 되는지 한 번 묻는다. 새 게임은 프롤로그부터 시작한다.
 
+## 해 질 녘부터 저녁 평상까지 깔리는 풀벌레 소리 (data/sounds/ 의 id)
+const EVENING_SOUND: StringName = &"porch_night"
+
 const CONTINUE_FORMAT: String = "이어 하기 (%s %d일째 아침)"
 const SPRING_COMPLETED_TEXT: String = "봄 완료 (여름은 준비 중)"
 const LOAD_FAILED_TEXT: String = "저장된 게임을 불러오지 못했어요. 새 게임으로 시작해 주세요."
@@ -37,6 +40,8 @@ func _ready() -> void:
 	Sound.play_music(music)
 	# 낮에 깔리던 빗소리가 남아 있으면 끈다 (봄비는 해 질 녘에 그친다).
 	Sound.stop_loop(GameData.get_rain_settings().rain_sound)
+	# 해 질 녘에 깔리기 시작한 풀벌레 소리도 (해 지는 중에 처음 화면으로 나온 경우) 끈다.
+	Sound.stop_loop(EVENING_SOUND)
 	_continue_button.pressed.connect(_on_continue_button_pressed)
 	_new_game_button.pressed.connect(_on_new_game_button_pressed)
 	_settings_button.pressed.connect(_on_settings_button_pressed)
