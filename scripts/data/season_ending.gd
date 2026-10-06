@@ -27,7 +27,7 @@ extends Resource
 ## 마지막에 나오는 다음 계절 예고
 @export_multiline var next_season_teaser: String = ""
 ## 마지막 버튼 글자
-@export var finish_button_text: String = "타이틀로"
+@export var finish_button_text: String = "처음 화면으로"
 
 @export_group("데모 끝")
 ## 켜면 이 계절 잔치에서 데모가 끝난다: 다음 계절 예고 뒤 고마움 인사를 보여 주고, 다음 계절로 넘어가지 않고

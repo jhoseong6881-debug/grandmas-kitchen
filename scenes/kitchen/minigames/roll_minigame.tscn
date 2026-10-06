@@ -181,7 +181,7 @@ offset_bottom = -100.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_font_sizes/font_size = 36
-text = "꾹 눌러 붓고 금색 칸에서 떼요 → 굴러가는 계란이 금색 칸에 닿으면 눌러요 (Ⓐ)"
+text = "꾹 눌러 붓고 금색 칸에서 떼요 → 굴러가는 계란이 금색 칸에 닿으면 눌러요 (클릭 / 스페이스 / Ⓐ)"
 horizontal_alignment = 1
 vertical_alignment = 1
 

@@ -7,4 +7,4 @@ script = ExtResource("1_ingredient")
 id = &"egg"
 display_name = "계란"
 placeholder_color = Color(0.98, 0.9, 0.6, 1)
-description = "암탉네서 갓 낳은 따끈한 계란."
+description = "암탉네에서 갓 낳은 따끈한 계란."

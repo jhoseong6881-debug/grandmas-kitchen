@@ -24,13 +24,13 @@ reactions = Array[String](["…버섯 철마다 왔다. 비 온 다음 날 새�
 [sub_resource type="Resource" id="EveningTalk_2"]
 script = ExtResource("10_talk")
 line = "할머니는 내 가시를 무서워하지 않았어."
-replies = Array[String](["저도 안 무서워요.", "가시가 따갑진 않아요?"])
+replies = Array[String](["저도 안 무서워요", "가시가 따갑진 않아요?"])
 reactions = Array[String](["…그런가. …그래.", "…다정한 사람한테는 안 세운다. 지금처럼."])
 
 [sub_resource type="Resource" id="EveningTalk_3"]
 script = ExtResource("10_talk")
 line = "숲속 길은 내가 다 알아. 길 잃으면 불러."
-replies = Array[String](["든든해요. 고마워요.", "길 잃으면 꼭 부를게요."])
+replies = Array[String](["든든해요. 고마워요", "길 잃으면 꼭 부를게요"])
 reactions = Array[String](["…흥. 밥값이다.", "…부르기 전에 찾아갈 거다."])
 
 [sub_resource type="Resource" id="TierTalk_1"]
@@ -99,7 +99,7 @@ reaction_expressions = Array[StringName]([&"surprised", &"sad"])
 script = ExtResource("10_talk")
 line = "(가시 사이에서 작은 버섯 하나를 꺼낸다) …이건 먹는 거 아니다. 그냥… 보라고 가져왔다."
 replies = Array[String](["예뻐요. 할머니도 보셨으면", "고마워요, 잘 둘게요"])
-reactions = Array[String](["…그러니까 너한테 가져온 거다. …눈매가 닮았으니까.", "…흥. 말리면 오래 간다. 부엌 창가에 둬라."])
+reactions = Array[String](["…그러니까 너한테 가져온 거다. …눈매가 닮았으니까.", "…흥. 말리면 오래간다. 부엌 창가에 둬라."])
 reaction_expressions = Array[StringName]([&"sad", &""])
 
 [sub_resource type="Resource" id="StoryChapter_2"]

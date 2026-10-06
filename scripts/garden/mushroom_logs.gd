@@ -3,7 +3,7 @@ extends Control
 ## 칸을 다루는 일은 PlotRow 가 맡는다. 다 둘러보면 당근 텃밭으로 돌아가서 부엌으로 간다.
 
 const DAY_TEXT_FORMAT: String = "%s %d일째 아침"
-const WELCOME_TEXT: String = "숲 그늘의 버섯 원목이에요. 버섯 하나를 종균으로 심으면 며칠 뒤 여러 개가 나요."
+const WELCOME_TEXT: String = "숲 그늘의 버섯 원목이에요. 버섯 하나를 씨앗 삼아 심으면 며칠 뒤 여러 개가 나요."
 const PLANTED_FORMAT: String = "%s%s 심었어요. %d일 뒤에 거둘 수 있어요."
 const HARVEST_POP_FORMAT: String = "+%d %s"
 

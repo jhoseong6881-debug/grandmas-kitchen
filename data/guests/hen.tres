@@ -17,19 +17,19 @@
 [sub_resource type="Resource" id="EveningTalk_1"]
 script = ExtResource("9_talk")
 line = "오늘 아침엔 해가 일찍 떴지 뭐야."
-replies = Array[String](["암탉님 덕분에 일찍 일어났어요.", "그래서 텃밭 당근이 반짝였군요."])
+replies = Array[String](["암탉님 덕분에 일찍 일어났어요", "그래서 텃밭 당근이 반짝였군요"])
 reactions = Array[String](["꼬꼬! 그게 내 일이지. 내일도 깨워 줄게!", "어머, 텃밭까지 챙기는구나. 할머니 닮았네!"])
 
 [sub_resource type="Resource" id="EveningTalk_2"]
 script = ExtResource("9_talk")
 line = "네 할머니는 계란말이를 참 잘하셨어."
-replies = Array[String](["비결이 뭐였을까요?", "저도 언젠가 꼭 배워 볼게요."])
+replies = Array[String](["비결이 뭐였을까요?", "저도 언젠가 꼭 배워 볼게요"])
 reactions = Array[String](["불은 약하게, 마음은 넉넉하게. 그게 다였어.", "그럼 내가 계란은 넉넉히 대 줄게!"])
 
 [sub_resource type="Resource" id="EveningTalk_3"]
 script = ExtResource("9_talk")
 line = "요즘 숲이 좀 시끌벅적해졌어. 다 네 밥집 덕이야."
-replies = Array[String](["다들 와 줘서 고마워요.", "시끄러워서 싫으세요?"])
+replies = Array[String](["다들 와 줘서 고마워요", "시끄러워서 싫으세요?"])
 reactions = Array[String](["고맙긴! 우리가 고맙지. 꼬꼬!", "싫긴! 나야 수다 떨 이웃이 늘어서 신나지!"])
 
 [sub_resource type="Resource" id="TierTalk_1"]
