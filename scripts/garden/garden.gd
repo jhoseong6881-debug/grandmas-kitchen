@@ -94,6 +94,10 @@ func _ready() -> void:
 	_market_button.visible = GameData.get_market_settings().is_market_day(GameState.current_day)
 	if _market_button.visible:
 		_set_status(morning_text + "\n" + MARKET_DAY_TEXT)
+	# 첫 봄 며칠은 안내 한 줄 (손님 수첩, 봄 목표 등). 두 번째 봄부터는 안 나온다.
+	if setup != null and setup.morning_tips.has(GameState.current_day) and GameState.current_season == Season.Id.SPRING \
+			and not GameState.is_spring_completed:
+		_set_status(_status_text + "\n" + setup.morning_tips[GameState.current_day])
 	_show_unlock_notice()
 	_market_button.pressed.connect(get_tree().change_scene_to_file.bind(market_scene_path))
 	_feast_button.pressed.connect(_on_feast_button_pressed)

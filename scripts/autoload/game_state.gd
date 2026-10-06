@@ -8,6 +8,8 @@ signal day_changed(new_day: int)
 signal recipe_unlocked(recipe_id: StringName)
 signal reputation_changed(new_reputation: int)
 signal feast_prep_changed
+## 손님 수첩에 새로 적힌 것(새 손님, 알아낸 입맛)이 생기거나 수첩을 봤을 때
+signal notebook_changed
 
 const SAVE_PATH: String = "user://save.json"
 ## 안전하게 저장하려고 먼저 써 보는 임시 파일, 바로 앞 저장을 남겨 두는 백업 파일.
@@ -20,7 +22,7 @@ const SAVE_DICTIONARY_KEYS: PackedStringArray = ["inventory", "extra_plots", "fe
 const SAVE_ARRAY_KEYS: PackedStringArray = ["basket_guest_ids", "grandma_taste_recipe_ids", "keepsake_ids",
 		"known_taste_guest_ids", "learned_secret_ids", "menu_recipe_ids", "met_guest_ids", "porch_met_guest_ids",
 		"seen_duo_talk_ids", "seen_guest_ids", "seen_memory_ids", "seen_story_chapter_ids", "todays_guest_ids",
-		"unlocked_place_ids", "unlocked_recipe_ids", "used_basket_note_ids", "garden_days_left"]
+		"unlocked_place_ids", "unlocked_recipe_ids", "used_basket_note_ids", "garden_days_left", "notebook_viewed_keys"]
 const SAVE_NUMBER_KEYS: PackedStringArray = ["version", "current_day", "current_season", "promise_day", "reputation", "todays_guests_day"]
 const SAVE_BOOL_KEYS: PackedStringArray = ["has_met_merchant", "is_feast_prep_announced", "is_raining_today", "is_spring_completed"]
 const SAVE_STRING_KEYS: PackedStringArray = ["player_name", "promise_guest_id", "promise_recipe_id"]
@@ -90,6 +92,8 @@ var grandma_taste_recipe_ids: Array[StringName] = []
 var guest_affection: Dictionary[StringName, int] = {}
 ## 입맛(좋아하는 고명)을 알아낸 손님 id. 손님 수첩에 입맛을 보여 줄 때 쓴다.
 var known_taste_guest_ids: Array[StringName] = []
+## 손님 수첩에서 이미 본 기록 ("guest:토끼 id", "taste:토끼 id"). 아직 안 본 기록이 있으면 수첩 버튼에 ● 표시.
+var notebook_viewed_keys: Array[String] = []
 ## 손님 id → 단계는 올랐지만 아직 저녁에 보상(새 이야기, 선물)을 받지 않은 단골 단계들
 var pending_reward_tiers: Dictionary[StringName, Array] = {}
 ## 손님에게 받은 할머니 기념품 id
@@ -187,6 +191,29 @@ func record_served_guest(guest_id: StringName, is_perfect: bool) -> void:
 	todays_served_guests[guest_id] = todays_served_guests.get(guest_id, false) or is_perfect
 	if guest_id not in met_guest_ids:
 		met_guest_ids.append(guest_id)
+		notebook_changed.emit()
+
+
+## 손님 수첩에 아직 안 본 기록(처음 대접한 손님, 새로 알아낸 입맛)이 있는지
+func has_unviewed_notebook_entries() -> bool:
+	return _notebook_keys().any(func(key: String) -> bool: return key not in notebook_viewed_keys)
+
+
+## 손님 수첩을 열었다: 지금 있는 기록을 모두 본 것으로 적는다.
+func mark_notebook_viewed() -> void:
+	for key: String in _notebook_keys():
+		if key not in notebook_viewed_keys:
+			notebook_viewed_keys.append(key)
+	notebook_changed.emit()
+
+
+func _notebook_keys() -> Array[String]:
+	var keys: Array[String] = []
+	for guest_id: StringName in met_guest_ids:
+		keys.append("guest:" + guest_id)
+	for guest_id: StringName in known_taste_guest_ids:
+		keys.append("taste:" + guest_id)
+	return keys
 
 
 ## 이번 계절 레시피 노트 중 되찾은 장 수 (처음부터 가진 레시피도 센다)
@@ -559,6 +586,7 @@ func knows_taste(guest_id: StringName) -> bool:
 func learn_taste(guest_id: StringName) -> void:
 	if guest_id not in known_taste_guest_ids:
 		known_taste_guest_ids.append(guest_id)
+		notebook_changed.emit()
 
 
 # --- 숲속 장터 ---
@@ -662,6 +690,7 @@ func new_game() -> void:
 	grandma_taste_recipe_ids.clear()
 	guest_affection.clear()
 	known_taste_guest_ids.clear()
+	notebook_viewed_keys.clear()
 	pending_reward_tiers.clear()
 	keepsake_ids.clear()
 	extra_plots.clear()
@@ -834,6 +863,7 @@ func _to_save_data() -> Dictionary:
 		"grandma_taste_recipe_ids": Array(grandma_taste_recipe_ids).map(func(recipe_id: StringName) -> String: return String(recipe_id)),
 		"guest_affection": _string_keys(guest_affection),
 		"known_taste_guest_ids": Array(known_taste_guest_ids).map(func(guest_id: StringName) -> String: return String(guest_id)),
+		"notebook_viewed_keys": notebook_viewed_keys.duplicate(),
 		"pending_reward_tiers": _string_keys(pending_reward_tiers),
 		"keepsake_ids": Array(keepsake_ids).map(func(keepsake_id: StringName) -> String: return String(keepsake_id)),
 		"extra_plots": _string_keys(extra_plots),
@@ -903,6 +933,8 @@ func _from_save_data(data: Dictionary) -> void:
 		guest_affection[StringName(guest_id)] = int(affection_data[guest_id])
 	for guest_id: Variant in data.get("known_taste_guest_ids", []):
 		known_taste_guest_ids.append(StringName(str(guest_id)))
+	for key: Variant in data.get("notebook_viewed_keys", []):
+		notebook_viewed_keys.append(str(key))
 	var pending_data: Dictionary = data.get("pending_reward_tiers", {})
 	for guest_id: String in pending_data:
 		pending_reward_tiers[StringName(guest_id)] = Array(pending_data[guest_id]).map(func(tier: Variant) -> int: return int(tier))

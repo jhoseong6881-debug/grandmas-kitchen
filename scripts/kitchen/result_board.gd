@@ -13,7 +13,15 @@ const GUEST_SEPARATOR: String = "   "
 const PAYMENT_PREFIX: String = "받은 밥값   "
 const PAYMENT_ITEM_FORMAT: String = " %s ×%d    "
 const NONE_TEXT: String = "없음"
-const HIGHLIGHT_FORMAT: String = "완벽 %d   ·   할머니 손맛 %d   ·   부탁 %d/%d   ·   입맛 딱 %d"
+## 오늘 하이라이트: 완벽·입맛 딱은 늘, 할머니 손맛은 비법을 하나라도 알게 된 뒤, 부탁은 오늘 부탁을 받았을 때만 보여 준다
+## (처음 하는 사람이 아직 모르는 말을 먼저 보지 않게).
+const PERFECT_FORMAT: String = "완벽 %d"
+const GRANDMA_TASTE_FORMAT: String = "할머니 손맛 %d"
+const REQUEST_FORMAT: String = "부탁 %d/%d"
+const TASTE_MATCH_FORMAT: String = "입맛 딱 %d"
+const HIGHLIGHT_SEPARATOR: String = "   ·   "
+## 별 앞에 붙는 말
+const STARS_PREFIX: String = "오늘 평가 "
 const AFFECTION_PREFIX: String = "단골도   "
 const AFFECTION_ITEM_FORMAT: String = "%s ♥+%d   "
 const REPUTATION_FORMAT: String = "소문 +%d"
@@ -70,14 +78,19 @@ func open(report: LunchReport) -> void:
 	_title_label.text = TITLE_FORMAT % [GameData.get_season_name(), GameState.current_day]
 	_fill_guests(report.guests)
 	_fill_payment(report.payment)
-	_highlight_label.text = HIGHLIGHT_FORMAT % [report.perfect_count, report.grandma_taste_count,
-			report.request_met_count, report.request_count, report.taste_match_count]
+	var highlights: PackedStringArray = [PERFECT_FORMAT % report.perfect_count]
+	if not GameState.learned_secret_ids.is_empty() or report.grandma_taste_count > 0:
+		highlights.append(GRANDMA_TASTE_FORMAT % report.grandma_taste_count)
+	if report.request_count > 0:
+		highlights.append(REQUEST_FORMAT % [report.request_met_count, report.request_count])
+	highlights.append(TASTE_MATCH_FORMAT % report.taste_match_count)
+	_highlight_label.text = HIGHLIGHT_SEPARATOR.join(highlights)
 	var affection_text: String = AFFECTION_PREFIX
 	for guest_name: String in report.affection_gains:
 		affection_text += AFFECTION_ITEM_FORMAT % [guest_name, report.affection_gains[guest_name]]
 	_affection_label.text = affection_text if not report.affection_gains.is_empty() else AFFECTION_PREFIX + NONE_TEXT
 	var stars: int = settings.get_stars(report.reputation)
-	_stars_label.text = STAR_FULL.repeat(stars) + STAR_EMPTY.repeat(settings.star_thresholds.size() - stars)
+	_stars_label.text = STARS_PREFIX + STAR_FULL.repeat(stars) + STAR_EMPTY.repeat(settings.star_thresholds.size() - stars)
 	# 소문을 더하고, 게이지는 지금 가게 단계 안에서 전 → 후로 올라간다.
 	var before: int = GameState.reputation
 	_new_shop_tier = GameState.add_reputation(report.reputation)

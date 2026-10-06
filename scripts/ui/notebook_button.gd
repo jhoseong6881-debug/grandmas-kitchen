@@ -3,6 +3,9 @@ extends Button
 ## 손님 수첩 버튼 (텃밭, 부엌, 평상 왼쪽 위). 책 아이콘(원본 32×32, 화면 3배 = 96×96) 옆에 "손님 수첩" 글자.
 ## 아이콘 그림은 scenes/ui/notebook_button.tscn 의 Book Icon 칸에 넣으면 세 화면이 모두 바뀐다.
 ## 그림이 없으면 펼친 책 모양 임시 그림을 코드로 그린다.
+## 수첩에 아직 안 본 기록(처음 만난 손님, 알아낸 입맛)이 있으면 글자 뒤에 ● 를 붙인다. 누르면 본 것으로 적는다.
+
+const NEW_MARK: String = " ●"
 
 const PLACEHOLDER_PIXELS: int = 32
 
@@ -17,11 +20,26 @@ const PLACEHOLDER_PIXELS: int = 32
 @export var outline_color: Color = Color(0.27, 0.13, 0.08)
 
 
+var _base_text: String = ""
+
+
 func _ready() -> void:
+	_base_text = text
+	pressed.connect(_on_pressed)
+	GameState.notebook_changed.connect(_refresh_mark)
+	_refresh_mark()
 	var image: Image = book_icon.get_image() if book_icon != null else _draw_placeholder()
 	image = image.duplicate()
 	image.resize(image.get_width() * icon_scale, image.get_height() * icon_scale, Image.INTERPOLATE_NEAREST)
 	icon = ImageTexture.create_from_image(image)
+
+
+func _on_pressed() -> void:
+	GameState.mark_notebook_viewed()
+
+
+func _refresh_mark() -> void:
+	text = _base_text + (NEW_MARK if GameState.has_unviewed_notebook_entries() else "")
 
 
 ## 펼친 책 모양 (밤색 표지 위에 크림색 두 쪽, 가운데 책등, 쪽마다 줄 몇 개)
