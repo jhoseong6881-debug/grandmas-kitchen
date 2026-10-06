@@ -42,12 +42,19 @@
 | sfx/zone_secret.wav, zone_request.wav | 미니게임에서 할머니 비법 자리(주황) / 손님 부탁 자리(파랑)에 딱 맞혔을 때 "띠링" (zone_secret, zone_request) | 코드로 직접 만든 소리 (두 음 차임, 임시) | 직접 만듦 (권리 문제 없음) | 2026-10-05 |
 | sfx/rain_light_loop.wav | 봄비 오는 날 낮 내내 깔리는 빗소리 (rain) | Freesound "Rain light 2 (rural)" by jmbphilmes — https://freesound.org/s/200273/ | **CC0** | 2026-10-04 |
 | sfx/mix_toss_1~5.wav | 버무리기에서 맞힐 때 (hit_mix) | Freesound "Potato salad" by 14G_Panska_Kaminkova_A — https://freesound.org/s/419992/ | **CC0** | 2026-10-04 |
+| sfx/porch_crickets_loop.wav | 저녁 평상 내내 작게 깔리는 풀벌레 소리 (porch_night) | Freesound "Night Crickets Back Porch.aiff" by hdfreema — https://freesound.org/s/333221/ | **CC0** | 2026-10-07 |
+| sfx/morning_birds.wav | 맑은 날 아침 텃밭에 그날 처음 나왔을 때 새소리 한 번 (morning_birds) | Freesound "Birds In Spring (Scotland)" by BurghRecords — https://freesound.org/s/463903/ | **CC0** | 2026-10-07 |
 
 - mix_toss 조각은 원본(8.5초, audio_source/potato_salad.wav)에서 촉촉하게 섞는 0.53·2.75·3.40·4.78·5.32초 부분을 0.35~0.55초씩 자른 것.
   숟가락이 그릇에 부딪힌 듯한 큰 소리(2.50·4.40초)는 뺐다.
 - loop_sizzle 은 원본 0.5~7.5초, loop_rice_boil 은 원본 53~60초를 6초 길이로 자르고, 끝 1초를 처음과 겹쳐 되풀이해도 이음매가 안 들리게 한 것.
 - kalimba_ready 는 칼림바 "도" 한 음을 1초로 줄인 것, kalimba_go 는 같은 음을 다섯 음 올린 "솔"(0.9초).
 - happy_beeps_perfect 는 징글(3.5초) 중 소리가 나는 앞 2.5초만 쓰고 끝을 부드럽게 줄인 것. (나무 실로폰 가락은 들어 보고 뺐다)
+- porch_crickets_loop 는 원본 미리 듣기 파일(3분 40초, audio_source/night_crickets_porch.mp3 → .wav, 아주 작게 녹음됨)의 60~92초를 22dB 키우고,
+  끝 2초를 처음과 겹쳐 30초가 이음매 없이 되풀이되게 한 것. 평균 -30dB로 빗소리(-22dB)보다 작다. 원본 전체가 고르고 갑자기 커지는 잡음이 없다.
+- morning_birds 는 원본 미리 듣기 파일(2분 28초, audio_source/birds_in_spring.mp3 → .wav)에서 새가 활발한 25~30.5초를 잘라 최고점 -6dB로 맞추고,
+  앞 0.3초·뒤 1.5초를 서서히 키우고 줄인 것. 뒤에 강물 소리가 낮게 깔려 있다.
+- 두 소리는 Freesound 원본(로그인 필요) 대신 로그인 없이 받는 고음질 미리 듣기 mp3(128kbps)에서 만들었다. 더 좋은 음질이 필요하면 원본을 받아 같은 구간을 다시 자르면 된다.
 - rain_light_loop 는 원본(95초, audio_source/rain_light.wav, 아주 작게 녹음됨)의 34~66초를 30초로 자르고 끝 2초를 처음과 겹쳐 되풀이해도 이음매가 안 들리게 한 것. 소리를 36배 키웠다.
 - item_pop 은 0.07초짜리 게임용 "뽁" 소리 세 가지를 그대로 쓴다 (번갈아 나온다).
 - plant_soil 조각은 원본(4.8초, audio_source/planting_seeds.wav)에 1초 간격으로 들어 있는 심기 소리 다섯 개를 0.35초씩 나눈 것.
@@ -81,6 +88,7 @@
 | pop, tier_up | 손님 위로 뜨는 글 / 단골 단계가 오를 때 |
 | book | 손님 수첩 펼치기 |
 | note_page, secret, gift | 평상: 레시피 노트 / 할머니 비법 / 단골 선물 |
+| special_day | 특별한 점심 날(소풍, 생일, 아무거나)에 부엌이 열릴 때 (Kenney jingles_PIZZI04) |
 | result_line, shop_up | 장사 결과판 줄이 나올 때 / 가게 이름이 바뀔 때 |
 
 ## 미니게임마다 맞히는 소리
@@ -95,6 +103,13 @@
 
 봄비 오는 날에는 낮 장면(텃밭, 버섯 원목, 장터, 부엌) 내내 빗소리 `rain` 이 배경음악 아래에 깔리고, 해 지는 장면에서 서서히 꺼진다.
 소리 크기는 `data/sounds/rain.tres` 의 Volume Db (지금 -8).
+
+저녁 평상에는 풀벌레 소리 `porch_night` 가 내내 깔리고(크기 -6), 평상을 떠나면 1.5초 동안 서서히 꺼진다 (porch 의 Night Sound Fade).
+맑은 날 아침 텃밭에 그날 처음 나오면 새소리 `morning_birds` 가 한 번 난다(크기 -8). 장터·버섯 원목에서 돌아올 때는 다시 나지 않는다.
+빗소리, 풀벌레, 새소리는 모두 "Weather" 버스로 보내서 설정 창의 **자연 소리** 막대로 함께 조절한다.
+
+### 아직 소리가 비어 있는 순간 (2026-10-07 점검)
+해 질 녘 장면, 먹을 게 없어 손님이 돌아갈 때, 메뉴판에서 재료가 모자라 장사 시작이 막힐 때, 가게 문이 닫힐 때.
 
 ## 배경음악
 봄 낮·저녁 장면(텃밭, 버섯 원목, 부엌, 평상)은 날마다 곡이 바뀐다: data/music/spring_daily_music.tres 의 Tracks 를 1일째부터 차례로, 하루 동안은 한 곡. 곡을 더하려면 Tracks 칸에 넣기만 하면 된다.

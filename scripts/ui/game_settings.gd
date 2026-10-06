@@ -1,6 +1,6 @@
 class_name GameSettings
 extends RefCounted
-## 게임 설정 (효과음 크기, 음악 크기, 날씨 소리 크기, 전체 화면). 세이브 파일과 따로 user://settings.cfg 에 저장한다.
+## 게임 설정 (효과음 크기, 음악 크기, 자연 소리 크기, 전체 화면). 세이브 파일과 따로 user://settings.cfg 에 저장한다.
 ## 그래서 새 게임을 시작해도 설정은 그대로 남는다.
 ## 게임이 켜질 때 PauseMenu 오토로드가 load_and_apply() 를 한 번 부른다. 설정 창(SettingsPanel)이 값을 바꾸고 save() 한다.
 
@@ -8,7 +8,7 @@ const SETTINGS_PATH: String = "user://settings.cfg"
 const SECTION: String = "settings"
 const MUSIC_BUS: StringName = &"Music"
 const SFX_BUS: StringName = &"SFX"
-## 빗소리 같은 날씨 소리 (효과음과 따로 조절)
+## 빗소리, 풀벌레, 새소리 같은 자연 소리 (효과음과 따로 조절)
 const WEATHER_BUS: StringName = &"Weather"
 ## 처음 켰을 때 소리 크기 (0 ~ 1)
 const DEFAULT_SFX_VOLUME: float = 0.8

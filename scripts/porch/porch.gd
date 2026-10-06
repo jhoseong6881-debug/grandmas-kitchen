@@ -30,10 +30,14 @@ const SLEEP_TEXT: String = "잠자리에 들기"
 const SECRET_SOUND: StringName = &"secret"
 const GIFT_SOUND: StringName = &"gift"
 const NOTE_PAGE_SOUND: StringName = &"note_page"
+## 저녁 평상 내내 작게 깔리는 풀벌레 소리 (설정 창의 "자연 소리" 막대로 조절)
+const NIGHT_SOUND: StringName = &"porch_night"
 
 ## 날마다 바뀌는 배경음악 (하루 동안은 한 곡. 텃밭·원목·부엌·평상이 같은 곡이라 장면이 바뀌어도 끊기지 않는다).
 ## 비워 두면 지금 계절의 곡 목록(SeasonData.daily_music)을 쓴다. 장터와 계절 마무리는 따로 곡이 있다.
 @export var daily_music: DailyMusic
+## 평상을 떠날 때(잠들고 아침이 될 때 등) 풀벌레 소리가 서서히 작아지는 시간(초)
+@export var night_sound_fade: float = 1.5
 ## 잠자리에 든 뒤 넘어갈 다음 날 아침 장면
 @export_file("*.tscn") var morning_scene_path: String = "res://scenes/garden/garden.tscn"
 ## 잠드는 장면 (할머니 꿈 한 줄, 저장, 아침으로 밝아지기)
@@ -80,6 +84,7 @@ func _ready() -> void:
 	Sound.play_music(music.get_today_track(false) if music != null else null)
 	# 낮에 깔리던 빗소리가 남아 있으면 끈다 (봄비는 해 질 녘에 그친다).
 	Sound.stop_loop(GameData.get_rain_settings().rain_sound)
+	Sound.start_loop(NIGHT_SOUND)
 	_day_label.text = DAY_TEXT_FORMAT % [GameData.get_season_name(), GameState.current_day]
 	_note_card.hide()
 	_reply_box.hide()
@@ -495,6 +500,11 @@ func _receive_note_page(recipe: Recipe) -> void:
 	# 책이 손님 말풍선을 가리지 않게 말풍선은 잠깐 숨긴다 (다음 말을 할 때 다시 뜬다).
 	_guest_spot.set_bubble_shown(false)
 	_note_card.show_recipe(recipe)
+
+
+## 평상을 떠나면 (아침 장면, 할머니 회상, 처음 화면 어디로 가든) 풀벌레 소리를 끈다.
+func _exit_tree() -> void:
+	Sound.stop_loop(NIGHT_SOUND, night_sound_fade)
 
 
 ## 잠자리에 들면 날짜를 넘기고 자동 저장한다. 이어 하면 다음 날 아침부터 시작한다.

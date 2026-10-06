@@ -159,7 +159,7 @@ custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.3, 0.2, 0.12, 1)
 theme_override_font_sizes/font_size = 36
-text = "날씨 소리"
+text = "자연 소리"
 
 [node name="WeatherSlider" type="HSlider" parent="Box/Rows/WeatherRow/Row"]
 unique_name_in_owner = true

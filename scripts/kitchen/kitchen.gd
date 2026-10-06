@@ -54,6 +54,8 @@ const SERVE_SLIDE_SOUND: StringName = &"dish_slide"
 const RECEIVE_SOUND: StringName = &"receive"
 const POP_SOUND: StringName = &"pop"
 const TIER_UP_SOUND: StringName = &"tier_up"
+## 특별한 점심 날(소풍, 생일, 아무거나)에 부엌이 열릴 때 한 번 나는 축하 소리
+const SPECIAL_DAY_SOUND: StringName = &"special_day"
 
 ## 날마다 바뀌는 배경음악 (하루 동안은 한 곡. 텃밭·원목·부엌·평상이 같은 곡이라 장면이 바뀌어도 끊기지 않는다).
 ## 비워 두면 지금 계절의 곡 목록(SeasonData.daily_music)을 쓴다. 장터와 계절 마무리는 따로 곡이 있다.
@@ -269,6 +271,8 @@ func _start_lunch() -> void:
 	_is_birthday_order = false
 	_is_chef_day = _special != null and _special.kind == SpecialLunch.Kind.CHEF_CHOICE
 	_is_choosing_dish = false
+	if _special != null and not _todays_guests.is_empty():
+		Sound.play(SPECIAL_DAY_SOUND)
 	if _is_picnic:
 		_update_lunch_label()
 		_start_picnic()

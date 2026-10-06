@@ -21,6 +21,8 @@ const LOGS_PLACE_ID: StringName = &"mushroom_logs"
 ## 이웃 바구니에서 재료를 꺼낼 때 나는 소리, 바구니를 건드릴 때 부시럭 소리 (data/sounds/ 의 id)
 const RECEIVE_SOUND: StringName = &"receive"
 const RUSTLE_SOUND: StringName = &"rustle"
+## 아침 텃밭에 그날 처음 나왔을 때 한 번 나는 새소리 (비 오는 날은 안 난다)
+const MORNING_SOUND: StringName = &"morning_birds"
 
 ## 날마다 바뀌는 배경음악 (하루 동안은 한 곡. 텃밭·원목·부엌·평상이 같은 곡이라 장면이 바뀌어도 끊기지 않는다).
 ## 비워 두면 지금 계절의 곡 목록(SeasonData.daily_music)을 쓴다. 장터와 계절 마무리는 따로 곡이 있다.
@@ -66,6 +68,8 @@ const RUSTLE_SOUND: StringName = &"rustle"
 
 ## 아래 안내 글 (줄바꿈을 넣기 전 원래 글). 한 줄 더할 때 쓴다.
 var _status_text: String = ""
+## 새소리를 낸 아침 ("계절-날짜"). 장터나 버섯 원목에서 돌아와 텃밭이 다시 열릴 때는 새소리를 또 내지 않으려고 기억한다 (저장하지 않는다).
+static var _birds_morning: String = ""
 
 
 func _ready() -> void:
@@ -85,6 +89,10 @@ func _ready() -> void:
 	GameState.inventory_changed.connect(_update_logs_button.unbind(2))
 	var morning_text: String = WELCOME_TEXT
 	var rain: RainSettings = GameData.get_rain_settings()
+	var morning_key: String = "%d-%d" % [GameState.current_season, GameState.current_day]
+	if not GameState.is_raining_today and _birds_morning != morning_key:
+		_birds_morning = morning_key
+		Sound.play(MORNING_SOUND)
 	if GameState.is_raining_today:
 		# 비 오는 날은 해가 구름에 가려 안 보인다.
 		_sun.hide()

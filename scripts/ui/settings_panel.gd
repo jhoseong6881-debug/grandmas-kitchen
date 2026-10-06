@@ -1,7 +1,7 @@
 class_name SettingsPanel
 extends Control
 ## 설정 창. 타이틀 화면과 일시 정지 메뉴가 함께 쓴다. open() 으로 열고, 닫히면 closed 시그널을 보낸다.
-## 효과음 크기, 음악 크기, 날씨 소리(빗소리) 크기, 전체 화면을 바꾸면 바로 적용되고, 닫을 때 저장한다 (GameSettings).
+## 효과음 크기, 음악 크기, 자연 소리(빗소리, 풀벌레, 새소리) 크기, 전체 화면을 바꾸면 바로 적용되고, 닫을 때 저장한다 (GameSettings).
 ## 게임패드: 위아래로 줄 고르기, 좌우로 크기 조절(1%씩, 꾹 누르면 계속), B 버튼(ui_cancel)으로 닫기.
 
 signal closed
