@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://scripts/ui/title.gd" id="1_title"]
 [ext_resource type="FontFile" path="res://assets/fonts/KyoboHandwriting/KyoboHandwriting2025lyb.ttf" id="9_kyobo"]
 [ext_resource type="PackedScene" path="res://scenes/ui/settings_panel.tscn" id="10_settings"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/title_theme.mp3" id="11_music"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_confirm"]
 bg_color = Color(0.98, 0.94, 0.82, 1)
@@ -24,6 +25,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_title")
+music = ExtResource("11_music")
 
 [node name="Background" type="ColorRect" parent="."]
 layout_mode = 1
