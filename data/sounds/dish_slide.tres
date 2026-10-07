@@ -2,10 +2,12 @@
 
 [ext_resource type="Script" path="res://scripts/data/sound_effect.gd" id="1_sound"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/dish_slide.wav" id="2_stream"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/dish_slide_2.wav" id="3_stream"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/dish_slide_3.wav" id="4_stream"]
 
 [resource]
 script = ExtResource("1_sound")
 id = &"dish_slide"
-streams = Array[AudioStream]([ExtResource("2_stream")])
+streams = Array[AudioStream]([ExtResource("2_stream"), ExtResource("3_stream"), ExtResource("4_stream")])
 volume_db = -4.0
 pitch_variation = 0.06

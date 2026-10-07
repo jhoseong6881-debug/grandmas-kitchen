@@ -37,13 +37,13 @@
 | sfx/loop_rice_boil.wav | 밥 짓기 불 조절 동안 깔리는 보글보글 (loop_cook_rice) | Freesound 124584 (위 simmer_bubble 과 같은 원본) | **CC0** | 2026-10-04 |
 | sfx/kalimba_ready.wav, kalimba_go.wav | 미니게임 "준비~" / "시작!" (ready, go) | Freesound "Kalimba (C-note)" by foochie_foochie — https://freesound.org/s/331047/ | **CC0** | 2026-10-04 |
 | sfx/happy_beeps_perfect.wav | 미니게임 "완벽!" (perfect) | Freesound "Achievement Happy Beeps Jingle" by CogFireStudios — https://freesound.org/s/619838/ | **CC0** | 2026-10-04 |
-| sfx/phone_buzz.wav | 잠드는 장면 휴대폰 진동 (phone_buzz) | 코드로 직접 만든 소리 (사인파 두 번 부르르, 임시). 더 좋은 진동 소리로 바꿔도 됨 | 직접 만듦 (권리 문제 없음) | 2026-10-05 |
-| sfx/dish_slide.wav | 대접할 때 접시가 조리대 위를 드윽 미끄러지는 소리 (dish_slide) | 코드로 직접 만든 소리 (걸러 낸 잡음 + 낮은 소리, 임시). 더 좋은 소리로 바꿔도 됨 | 직접 만듦 (권리 문제 없음) | 2026-10-05 |
-| sfx/zone_secret.wav, zone_request.wav | 미니게임에서 할머니 비법 자리(주황) / 손님 부탁 자리(파랑)에 딱 맞혔을 때 "띠링" (zone_secret, zone_request) | 코드로 직접 만든 소리 (두 음 차임, 임시) | 직접 만듦 (권리 문제 없음) | 2026-10-05 |
+| sfx/phone_buzz.wav, phone_buzz_2.wav | 잠드는 장면 휴대폰 진동 (phone_buzz, 번갈아 나옴) | Freesound "iPhone Vibrate on Wood Table" by steeltowngaming — https://freesound.org/s/537738/ | **CC0** | 2026-10-07 |
+| sfx/dish_slide.wav, dish_slide_2.wav, dish_slide_3.wav | 대접할 때 접시가 조리대 위를 드윽 미끄러지는 소리 (dish_slide, 셋 중 하나) | Freesound "Plate Sliding on Counter.wav" by PVM — https://freesound.org/s/585634/ | **CC0** | 2026-10-07 |
+| sfx/zone_secret.wav, zone_request.wav | 미니게임에서 할머니 비법 자리(주황) / 손님 부탁 자리(파랑)에 딱 맞혔을 때 "띠링" (zone_secret, zone_request) | Freesound 331047 (위 kalimba 와 같은 원본)의 음 높이를 바꾼 두 음 | **CC0** | 2026-10-07 |
 | sfx/rain_light_loop.wav | 봄비 오는 날 낮 내내 깔리는 빗소리 (rain) | Freesound "Rain light 2 (rural)" by jmbphilmes — https://freesound.org/s/200273/ | **CC0** | 2026-10-04 |
 | sfx/mix_toss_1~5.wav | 버무리기에서 맞힐 때 (hit_mix) | Freesound "Potato salad" by 14G_Panska_Kaminkova_A — https://freesound.org/s/419992/ | **CC0** | 2026-10-04 |
 | sfx/porch_crickets_loop.wav | 저녁 평상 내내 작게 깔리는 풀벌레 소리 (porch_night) | Freesound "Night Crickets Back Porch.aiff" by hdfreema — https://freesound.org/s/333221/ | **CC0** | 2026-10-07 |
-| sfx/guest_sad.wav | 먹을 게 없어 손님이 아쉬워하며 돌아갈 때 "띵~동" 내려가는 두 음 (guest_sad) | 코드로 직접 만든 소리 (레→라 종소리 두 음, 임시). 벌칙 느낌이 안 나게 작고 부드럽게 | 직접 만듦 (권리 문제 없음) | 2026-10-07 |
+| sfx/guest_sad.wav | 먹을 게 없어 손님이 아쉬워하며 돌아갈 때 "띵~동" 내려가는 두 음 (guest_sad) | Freesound 331047 (위 kalimba 와 같은 원본)의 음 높이를 바꾼 두 음. 벌칙 느낌이 안 나게 작고 부드럽게 | **CC0** | 2026-10-07 |
 | sfx/morning_birds.wav | 맑은 날 아침 텃밭에 그날 처음 나왔을 때 새소리 한 번 (morning_birds) | Freesound "Birds In Spring (Scotland)" by BurghRecords — https://freesound.org/s/463903/ | **CC0** | 2026-10-07 |
 
 - mix_toss 조각은 원본(8.5초, audio_source/potato_salad.wav)에서 촉촉하게 섞는 0.53·2.75·3.40·4.78·5.32초 부분을 0.35~0.55초씩 자른 것.
@@ -51,6 +51,13 @@
 - loop_sizzle 은 원본 0.5~7.5초, loop_rice_boil 은 원본 53~60초를 6초 길이로 자르고, 끝 1초를 처음과 겹쳐 되풀이해도 이음매가 안 들리게 한 것.
 - kalimba_ready 는 칼림바 "도" 한 음을 1초로 줄인 것, kalimba_go 는 같은 음을 다섯 음 올린 "솔"(0.9초).
 - happy_beeps_perfect 는 징글(3.5초) 중 소리가 나는 앞 2.5초만 쓰고 끝을 부드럽게 줄인 것. (나무 실로폰 가락은 들어 보고 뺐다)
+- phone_buzz 두 개는 원본 미리 듣기 파일(9.9초, audio_source/phone_vibrate_wood.mp3 → .wav)에서 0.6초짜리 진동 "부르르"가 나는 0.98초·8.78초부터 0.68초씩 자른 것.
+  긴 진동(1초 넘는 것)과 아주 짧은 진동은 뺐다. 말풍선마다 한 번씩 나서 짧은 것을 골랐다.
+- dish_slide 세 개는 원본 미리 듣기 파일(12.6초, audio_source/plate_slide_counter.mp3 → .wav)의 미끄러짐 여덟 번 중, 시작이 "탁" 하고 세게 부딪히지 않고
+  부드러운 5.52·8.67·10.22초부터 0.73~0.88초씩 자른 것. 시작이 찌그러질 만큼 큰(최고 0dB) 세 번은 뺐다.
+- zone_secret 은 칼림바 "도"를 네 반음·아홉 반음 올린 "미→라", zone_request 는 일곱·열두 반음 올린 "솔→도"를 0.09초 간격으로 겹친 것 (0.6초).
+  guest_sad 는 두 반음 올린 "레"에서 세 반음 내린 "라"로 0.24초 뒤 내려가는 것 (1.2초). 음 높이는 원본을 빠르게·느리게 읽어서 바꿨다.
+- 새 소리 다섯 가지는 바꾸기 전 임시 소리와 소리 나는 부분의 평균 크기를 같게 맞춰서, 소리 데이터의 Volume Db 는 그대로 두었다.
 - porch_crickets_loop 는 원본 미리 듣기 파일(3분 40초, audio_source/night_crickets_porch.mp3 → .wav, 아주 작게 녹음됨)의 60~92초를 22dB 키우고,
   끝 2초를 처음과 겹쳐 30초가 이음매 없이 되풀이되게 한 것. 평균 -30dB로 빗소리(-22dB)보다 작다. 원본 전체가 고르고 갑자기 커지는 잡음이 없다.
 - morning_birds 는 원본 미리 듣기 파일(2분 28초, audio_source/birds_in_spring.mp3 → .wav)에서 새가 활발한 25~30.5초를 잘라 최고점 -6dB로 맞추고,

@@ -2,10 +2,11 @@
 
 [ext_resource type="Script" path="res://scripts/data/sound_effect.gd" id="1_sound"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/phone_buzz.wav" id="2_stream"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/phone_buzz_2.wav" id="3_stream"]
 
 [resource]
 script = ExtResource("1_sound")
 id = &"phone_buzz"
-streams = Array[AudioStream]([ExtResource("2_stream")])
+streams = Array[AudioStream]([ExtResource("2_stream"), ExtResource("3_stream")])
 volume_db = -8.0
 pitch_variation = 0.0
