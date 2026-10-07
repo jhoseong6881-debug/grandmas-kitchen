@@ -52,6 +52,9 @@ var _blink_time: float = 0.0
 ## play_story 로 맡겨 둔 이야기와 다음 장면. 이 장면이 열릴 때 한 번 쓰고 비운다.
 static var _queued_story: Story
 static var _queued_next_scene: String = ""
+static var _queued_is_replay: bool = false
+## 다시 보기 모드 (처음 화면의 "이야기 다시 보기"): 이름을 다시 묻지 않고, 게임 상태(이름·세이브)를 건드리지 않는다.
+var _is_replay: bool = false
 
 @onready var _background: ColorRect = %Background
 @onready var _background_image: TextureRect = %BackgroundImage
@@ -70,9 +73,10 @@ static var _queued_next_scene: String = ""
 
 
 ## 이 화면(프롤로그 장면)을 열어 queued_story 를 보여 주고, 다 보면 next_scene 으로 간다.
-static func play_story(tree: SceneTree, queued_story: Story, next_scene: String) -> void:
+static func play_story(tree: SceneTree, queued_story: Story, next_scene: String, is_replay: bool = false) -> void:
 	_queued_story = queued_story
 	_queued_next_scene = next_scene
+	_queued_is_replay = is_replay
 	tree.change_scene_to_file(PROLOGUE_SCENE_PATH)
 
 
@@ -80,7 +84,9 @@ func _ready() -> void:
 	if _queued_story != null:
 		story = _queued_story
 		next_scene_path = _queued_next_scene
+		_is_replay = _queued_is_replay
 		_queued_story = null
+		_queued_is_replay = false
 	Sound.play_music(music)
 	# 낮에 깔리던 빗소리가 남아 있으면 끈다 (봄비는 해 질 녘에 그친다).
 	Sound.stop_loop(GameData.get_rain_settings().rain_sound)
@@ -175,9 +181,14 @@ func _advance() -> void:
 		return
 	var line: String = chapter.lines[_line_index]
 	if line.strip_edges() == NAME_INPUT_LINE:
-		_ask_name()
+		# 다시 볼 때는 이름을 다시 묻지 않고 다음 줄로 넘어간다.
+		if _is_replay:
+			_advance()
+		else:
+			_ask_name()
 		return
-	line = line.replace(NAME_TOKEN, GameState.player_name)
+	var shown_name: String = GameState.player_name if not GameState.player_name.is_empty() else story.default_name
+	line = line.replace(NAME_TOKEN, shown_name)
 	if chapter.is_letter:
 		var start: int = _letter_label.get_total_character_count()
 		_letter_label.text += (LETTER_PARAGRAPH_GAP if not _letter_label.text.is_empty() else "") + line
@@ -246,7 +257,7 @@ func _skip() -> void:
 	_set_ambient(&"")
 	if _typing_label != null:
 		_stop_typing()
-	if GameState.player_name.is_empty():
+	if GameState.player_name.is_empty() and not _is_replay:
 		_text_box.hide()
 		_paper.hide()
 		_ask_name()
@@ -255,6 +266,6 @@ func _skip() -> void:
 
 
 func _finish() -> void:
-	if GameState.player_name.is_empty() and story != null:
+	if GameState.player_name.is_empty() and story != null and not _is_replay:
 		GameState.player_name = story.default_name
 	get_tree().change_scene_to_file(next_scene_path)

@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/settings_panel.tscn" id="10_settings"]
 [ext_resource type="AudioStream" path="res://assets/audio/music/title_theme.mp3" id="11_music"]
 [ext_resource type="PackedScene" path="res://scenes/ui/credits_panel.tscn" id="12_credits"]
+[ext_resource type="PackedScene" path="res://scenes/ui/story_replay_panel.tscn" id="13_replay"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_confirm"]
 bg_color = Color(0.98, 0.94, 0.82, 1)
@@ -109,6 +110,27 @@ custom_minimum_size = Vector2(0, 84)
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "끝내기"
+
+[node name="StoryButton" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -384.0
+offset_top = -316.0
+offset_right = -264.0
+offset_bottom = -196.0
+grow_horizontal = 0
+grow_vertical = 0
+tooltip_text = "이야기 다시 보기"
+theme_override_font_sizes/font_size = 24
+text = "이야기
+다시 보기"
+icon_alignment = 1
+expand_icon = true
 
 [node name="CreditsButton" type="Button" parent="."]
 unique_name_in_owner = true
@@ -255,6 +277,11 @@ visible = false
 layout_mode = 1
 
 [node name="CreditsPanel" parent="." instance=ExtResource("12_credits")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+
+[node name="StoryReplayPanel" parent="." instance=ExtResource("13_replay")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1

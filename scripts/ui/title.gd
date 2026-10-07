@@ -30,6 +30,8 @@ var _can_continue: bool = false
 @onready var _settings_panel: SettingsPanel = %SettingsPanel
 @onready var _credits_button: Button = %CreditsButton
 @onready var _credits_panel: CreditsPanel = %CreditsPanel
+@onready var _story_button: Button = %StoryButton
+@onready var _story_replay_panel: StoryReplayPanel = %StoryReplayPanel
 @onready var _message_label: Label = %MessageLabel
 ## 이어 하기 버튼 아래: 지난번 이어 갈 실마리 (노트 수, 오늘 있는 일)
 @onready var _summary_label: Label = %SummaryLabel
@@ -48,6 +50,9 @@ func _ready() -> void:
 	_new_game_button.pressed.connect(_on_new_game_button_pressed)
 	_settings_button.pressed.connect(_on_settings_button_pressed)
 	_credits_button.pressed.connect(_on_credits_button_pressed)
+	_story_button.pressed.connect(_on_story_button_pressed)
+	_story_replay_panel.story_chosen.connect(_on_replay_story_chosen)
+	_story_replay_panel.closed.connect(_on_replay_closed)
 	_connect_credits_focus()
 	_quit_button.pressed.connect(_on_quit_button_pressed)
 	_confirm_yes_button.pressed.connect(_start_new_game)
@@ -141,14 +146,34 @@ func _on_settings_button_pressed() -> void:
 	_settings_button.grab_focus()
 
 
-## 오른쪽 아래 "만든 사람들" 아이콘은 메뉴 밖에 있어서, 게임패드로 오갈 길을 정해 준다.
-## 메뉴 버튼에서 오른쪽 또는 "끝내기"에서 아래 → 아이콘, 아이콘에서 왼쪽·위 → "끝내기".
+## 오른쪽 아래 아이콘 두 개("이야기 다시 보기", "만든 사람들")는 메뉴 밖에 있어서, 게임패드로 오갈 길을 정해 준다.
+## 메뉴 버튼에서 오른쪽 또는 "끝내기"에서 아래 → 이야기 아이콘 → (오른쪽) 만든 사람들 아이콘.
+## 이야기 아이콘에서 왼쪽·위, 만든 사람들 아이콘에서 위 → "끝내기". 만든 사람들 아이콘에서 왼쪽 → 이야기 아이콘.
 func _connect_credits_focus() -> void:
 	for button: Button in [_continue_button, _new_game_button, _settings_button, _quit_button]:
-		button.focus_neighbor_right = button.get_path_to(_credits_button)
-	_quit_button.focus_neighbor_bottom = _quit_button.get_path_to(_credits_button)
-	_credits_button.focus_neighbor_left = _credits_button.get_path_to(_quit_button)
+		button.focus_neighbor_right = button.get_path_to(_story_button)
+	_quit_button.focus_neighbor_bottom = _quit_button.get_path_to(_story_button)
+	_story_button.focus_neighbor_left = _story_button.get_path_to(_quit_button)
+	_story_button.focus_neighbor_top = _story_button.get_path_to(_quit_button)
+	_story_button.focus_neighbor_right = _story_button.get_path_to(_credits_button)
+	_credits_button.focus_neighbor_left = _credits_button.get_path_to(_story_button)
 	_credits_button.focus_neighbor_top = _credits_button.get_path_to(_quit_button)
+
+
+## "이야기 다시 보기" 창: 세이브를 읽기만 해서 이미 본 할머니 회상을 고를 수 있게 한다.
+func _on_story_button_pressed() -> void:
+	_set_menu_enabled(false)
+	_story_replay_panel.open(GameState.read_save_summary().get("seen_memory_ids", []))
+
+
+## 고른 이야기를 다시 보기 모드로 보여 주고, 끝나면 이 처음 화면으로 돌아온다 (세이브를 건드리지 않는다).
+func _on_replay_story_chosen(story: Story) -> void:
+	StoryScene.play_story(get_tree(), story, scene_file_path, true)
+
+
+func _on_replay_closed() -> void:
+	_set_menu_enabled(true)
+	_story_button.grab_focus()
 
 
 ## "만든 사람들" 창 (글꼴·소리 출처와 라이선스 원문)
@@ -163,7 +188,7 @@ func _on_credits_button_pressed() -> void:
 ## 확인 창이나 설정 창이 떠 있는 동안 뒤의 버튼을 막는다. 비활성 버튼도 선택은 될 수 있어서 선택 자체를 끈다.
 ## 그래야 방향키로 뒤 버튼에 가지 않는다.
 func _set_menu_enabled(is_enabled: bool) -> void:
-	for button: Button in [_continue_button, _new_game_button, _settings_button, _credits_button, _quit_button]:
+	for button: Button in [_continue_button, _new_game_button, _settings_button, _story_button, _credits_button, _quit_button]:
 		var can_use: bool = is_enabled and (button != _continue_button or _can_continue)
 		button.disabled = not can_use
 		button.focus_mode = Control.FOCUS_ALL if can_use else Control.FOCUS_NONE
