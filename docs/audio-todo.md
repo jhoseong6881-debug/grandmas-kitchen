@@ -152,6 +152,7 @@
 
 **프롤로그 곡** → `story_theme.mp3` (scenes/story/prologue.tscn 의 Music). 프롤로그, 밤의 할머니 회상, 계절 시작 이야기에 모두 나온다 (StoryScene 이 같은 장면을 쓴다)
 - 바라는 느낌 (2026-10-07 사용자): 감동 쪽으로 너무 가지 않고, 이야기 글에 몰입하는 걸 방해하지 않는 잔잔한 배경. 할머니가 돌아가셨으니 아주 약간의 슬픔.
-- 프롬프트: japanese anime slice of life soundtrack, understated background music for reading a quiet story, unobtrusive and restrained, sparse soft piano with light warm strings and a little acoustic guitar, calm and reflective, a faint touch of wistful sadness, gently nostalgic but not sentimental, simple repeating melody that stays in the background, diatonic major key with a few soft minor chords, 72 BPM, loopable video game background music
-- 제외: vocals, singing, drums, EDM, rock, electric guitar, sentimental, emotional climax, swelling strings, choir, dramatic, epic, dark, scary, heavy
+  참고 곡: 스타듀밸리 "Night Market" 느낌 (느린 재즈 라운지, 색소폰). 프롬프트에는 게임·작곡가 이름을 넣지 않고 특징만 적는다.
+- 프롬프트: slow mellow jazz lounge instrumental for a quiet story scene at night, soft breathy saxophone melody, warm electric piano chords, gentle upright bass, dreamy and calm, slightly wistful, cozy late evening feeling, unobtrusive background that never pulls attention from reading, simple repeating melody, diatonic harmony with soft major seventh and minor seventh chords, 70 BPM, loopable video game background music
+- 제외: vocals, singing, drums, EDM, rock, electric guitar, upbeat, sentimental, emotional climax, swelling strings, choir, dramatic, epic, dark, scary, heavy
 프롬프트 쓸 때: 동양 전통 악기나 '등불 축제' 같은 말은 넣지 않는다 (중국풍으로 나옴). 제외 칸에도 그런 단어는 넣지 않는다. 장면마다 다른 곡을 원하면 그 장면의 Music 칸만 바꾸면 된다 (점심 부엌 2~3곡 돌려 틀기도 생각 중).
