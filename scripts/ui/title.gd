@@ -48,6 +48,7 @@ func _ready() -> void:
 	_new_game_button.pressed.connect(_on_new_game_button_pressed)
 	_settings_button.pressed.connect(_on_settings_button_pressed)
 	_credits_button.pressed.connect(_on_credits_button_pressed)
+	_connect_credits_focus()
 	_quit_button.pressed.connect(_on_quit_button_pressed)
 	_confirm_yes_button.pressed.connect(_start_new_game)
 	_confirm_no_button.pressed.connect(_close_confirm)
@@ -138,6 +139,16 @@ func _on_settings_button_pressed() -> void:
 	await _settings_panel.closed
 	_set_menu_enabled(true)
 	_settings_button.grab_focus()
+
+
+## 오른쪽 아래 "만든 사람들" 아이콘은 메뉴 밖에 있어서, 게임패드로 오갈 길을 정해 준다.
+## 메뉴 버튼에서 오른쪽 또는 "끝내기"에서 아래 → 아이콘, 아이콘에서 왼쪽·위 → "끝내기".
+func _connect_credits_focus() -> void:
+	for button: Button in [_continue_button, _new_game_button, _settings_button, _quit_button]:
+		button.focus_neighbor_right = button.get_path_to(_credits_button)
+	_quit_button.focus_neighbor_bottom = _quit_button.get_path_to(_credits_button)
+	_credits_button.focus_neighbor_left = _credits_button.get_path_to(_quit_button)
+	_credits_button.focus_neighbor_top = _credits_button.get_path_to(_quit_button)
 
 
 ## "만든 사람들" 창 (글꼴·소리 출처와 라이선스 원문)

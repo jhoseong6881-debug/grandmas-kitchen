@@ -76,46 +76,60 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -240.0
-offset_top = 440.0
+offset_top = 470.0
 offset_right = 240.0
-offset_bottom = 864.0
+offset_bottom = 878.0
 grow_horizontal = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 24
 
 [node name="ContinueButton" type="Button" parent="Menu"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 72)
+custom_minimum_size = Vector2(0, 84)
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "이어 하기"
 
 [node name="NewGameButton" type="Button" parent="Menu"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 72)
+custom_minimum_size = Vector2(0, 84)
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "새 게임"
 
 [node name="SettingsButton" type="Button" parent="Menu"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 72)
+custom_minimum_size = Vector2(0, 84)
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "설정"
 
-[node name="CreditsButton" type="Button" parent="Menu"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 72)
-layout_mode = 2
-theme_override_font_sizes/font_size = 36
-text = "만든 사람들"
-
 [node name="QuitButton" type="Button" parent="Menu"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 72)
+custom_minimum_size = Vector2(0, 84)
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "끝내기"
+
+[node name="CreditsButton" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -244.0
+offset_top = -316.0
+offset_right = -124.0
+offset_bottom = -196.0
+grow_horizontal = 0
+grow_vertical = 0
+tooltip_text = "만든 사람들"
+theme_override_font_sizes/font_size = 24
+text = "만든
+사람들"
+icon_alignment = 1
+expand_icon = true
 
 [node name="SummaryLabel" type="Label" parent="."]
 unique_name_in_owner = true
