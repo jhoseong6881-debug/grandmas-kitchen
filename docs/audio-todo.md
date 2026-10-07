@@ -143,5 +143,14 @@
 - 스팀 등록 때 "AI로 만든 콘텐츠"(배경음악)를 밝힌다.
 
 ### 아직 없는 곡
-타이틀 (직접 만들 예정), 프롤로그.
+타이틀 (직접 만들 예정), 프롤로그. 아래는 2026-10-07에 준비한 Suno 프롬프트 (Instrumental 켜기). 곡을 만들면 영어 이름으로
+`assets/audio/music/` 에 넣고 알려 주면 장면의 Music 칸에 연결한다.
+
+**처음 화면 곡** → `title_theme.mp3` (scenes/ui/title.tscn 의 Music)
+- 프롬프트: japanese anime slice of life soundtrack, warm and welcoming title screen theme for a cozy cooking game, a small grandmother's kitchen at the edge of a spring forest in soft morning light, gentle acoustic guitar fingerpicking and soft piano, tender clarinet melody, light pizzicato strings, delicate music box sparkles, homey and heartwarming, peaceful and inviting, diatonic major key, 92 BPM, loopable video game background music
+- 제외: vocals, singing, drums, EDM, rock, electric guitar, sad, minor key, dramatic, epic, orchestral swell
+
+**프롤로그 곡** → `story_theme.mp3` (scenes/story/prologue.tscn 의 Music). 프롤로그, 밤의 할머니 회상, 계절 시작 이야기에 모두 나온다 (StoryScene 이 같은 장면을 쓴다)
+- 프롬프트: japanese anime slice of life soundtrack, gentle storytelling theme for a heartfelt story scene, remembering childhood summers at grandmother's countryside home, soft solo piano with warm cello, light acoustic guitar, tender and nostalgic, calm and quietly hopeful, warm like an old photo album, diatonic major key, 76 BPM, loopable video game background music
+- 제외: vocals, singing, drums, EDM, rock, electric guitar, dramatic, epic, dark, scary, heavy
 프롬프트 쓸 때: 동양 전통 악기나 '등불 축제' 같은 말은 넣지 않는다 (중국풍으로 나옴). 제외 칸에도 그런 단어는 넣지 않는다. 장면마다 다른 곡을 원하면 그 장면의 Music 칸만 바꾸면 된다 (점심 부엌 2~3곡 돌려 틀기도 생각 중).
