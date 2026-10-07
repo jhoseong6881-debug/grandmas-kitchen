@@ -22,6 +22,8 @@
 | 위치 (씬/노드) | 필요한 그림 | 크기 | 상태 |
 |---|---|---|---|
 | scenes/ui/title.tscn (CreditsButton → Icon) | 처음 화면 오른쪽 아래 "만든 사람들" 아이콘 (그림이 오면 버튼 Icon 칸에 넣고 Text 를 지운다. 지금은 글자만 있는 임시 버튼) | 120x120 (원본 40x40) | 할 일 |
+| project.godot (config/icon), 내보내기 아이콘 | 게임 아이콘 (실행 파일·맥 앱·작업 표시줄). 지금은 Godot 기본 아이콘 | 원본 64x64 (256·1024로 정수배) | 할 일 |
+| 스팀 상점·라이브러리 (게임 밖) | 헤더·작은·메인·세로 캡슐, 라이브러리 캡슐·히어로·로고 — 크기와 규칙은 docs/steam-store.md | docs/steam-store.md 표 | 출시 준비 |
 | data/ingredients/carrot.tres (icon) | 당근 아이콘 — assets/art/ingredients/carrot.png | 원본 16x16 (가진 재료·메뉴판·결과판 32, 밥값 48) | 완료 (2026-10-06) |
 | data/ingredients/carrot.tres (cut_icon) | 깍둑 썬 당근 조각 (조리기 냄비·버무리기 그릇 안에 보임. 없으면 당근 색 네모) | 원본 16x16 | 할 일 |
 | data/recipes/carrot_kimbop.tres (finished_image) | 할머니표 당근 김밥 완성 그림 | 미정 | 할 일 |
