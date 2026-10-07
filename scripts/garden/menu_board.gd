@@ -15,6 +15,8 @@ const COUNT_FORMAT: String = "%d / %d"
 const LIMIT_TEXT: String = "메뉴는 %d개까지 고를 수 있어요."
 const PICK_ONE_TEXT: String = "메뉴를 하나 이상 골라 주세요."
 const SHORT_BLOCK_FORMAT: String = "재료가 부족해요: %s"
+## 재료가 모자라 만들 수 있는 요리가 하나도 없는 날: 메뉴 없이도 장사를 열 수 있다 (손님은 아쉬워하며 돌아간다). 아침에 갇히지 않게.
+const NOTHING_TO_COOK_TEXT: String = "오늘은 만들 수 있는 요리가 없어요.\n그래도 문을 열면 손님께 사정을 말해요."
 const NAME_SEPARATOR: String = ", "
 const SHORT_TEXT: String = "  재료 부족"
 const INGREDIENT_FORMAT: String = "×%d  "
@@ -90,7 +92,7 @@ func open() -> void:
 		var row: HBoxContainer = _make_row(recipe)
 		_rows.add_child(row)
 		buttons.append(_dish_buttons[recipe.id])
-	_message_label.text = ""
+	_message_label.text = "" if _can_make_any() else NOTHING_TO_COOK_TEXT
 	_fill_inventory()
 	_fill_today_guests()
 	var special: SpecialLunch = GameData.get_special_lunch(GameState.current_day)
@@ -101,6 +103,12 @@ func open() -> void:
 	show()
 	if not buttons.is_empty():
 		buttons[0].grab_focus()
+
+
+## 되찾은 레시피 중 지금 가진 재료로 만들 수 있는 것이 하나라도 있는지
+func _can_make_any() -> bool:
+	return GameData.get_all_recipes().any(func(recipe: Recipe) -> bool:
+		return GameState.is_recipe_unlocked(recipe.id) and GameState.has_ingredients(recipe.get_ingredient_counts()))
 
 
 ## 처음에 골라 둘 메뉴: 되찾은 레시피가 메뉴 칸 이하면 전부, 아니면 어제 메뉴.
@@ -289,6 +297,12 @@ func _refresh() -> void:
 
 
 func _on_start_button_pressed() -> void:
+	# 만들 수 있는 요리가 하나도 없으면 메뉴 없이 연다 (막아 두면 그날 아침에서 더 나아갈 수 없다).
+	if not _can_make_any():
+		var empty_menu: Array[StringName] = []
+		hide()
+		confirmed.emit(empty_menu)
+		return
 	if _selected_ids.is_empty():
 		_message_label.text = PICK_ONE_TEXT
 		Sound.play(BLOCKED_SOUND)

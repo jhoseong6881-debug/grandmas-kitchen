@@ -23,7 +23,12 @@ const SAVE_ARRAY_KEYS: PackedStringArray = ["basket_guest_ids", "grandma_taste_r
 		"known_taste_guest_ids", "learned_secret_ids", "menu_recipe_ids", "met_guest_ids", "porch_met_guest_ids",
 		"seen_duo_talk_ids", "seen_guest_ids", "seen_memory_ids", "seen_story_chapter_ids", "todays_guest_ids",
 		"unlocked_place_ids", "unlocked_recipe_ids", "used_basket_note_ids", "garden_days_left", "notebook_viewed_keys"]
-const SAVE_NUMBER_KEYS: PackedStringArray = ["version", "current_day", "current_season", "promise_day", "reputation", "todays_guests_day"]
+const SAVE_NUMBER_KEYS: PackedStringArray = ["version", "current_day", "current_season", "promise_day", "reputation", "todays_guests_day",
+		"rewarded_shop_tier"]
+## 2026-10-08 전 가게 단계 기준: 마지막 단계(소문난 할매식당)는 소문 220. 그 뒤 데모에서 보이게 150으로 낮췄다.
+## rewarded_shop_tier 가 없는 옛 세이브가 그때 이미 받은 단계 보상을 계산할 때만 쓴다.
+const OLD_FINAL_SHOP_TIER: int = 3
+const OLD_FINAL_SHOP_TIER_REPUTATION: int = 220
 const SAVE_BOOL_KEYS: PackedStringArray = ["has_met_merchant", "is_feast_prep_announced", "is_raining_today", "is_spring_completed"]
 const SAVE_STRING_KEYS: PackedStringArray = ["player_name", "promise_guest_id", "promise_recipe_id"]
 ## 세이브 파일 구조가 바뀌면 숫자를 올린다. 옛 세이브를 읽을 때 구분하는 데 쓴다.
@@ -42,6 +47,8 @@ var current_day: int = STARTING_DAY
 var player_name: String = ""
 ## 지금까지 쌓인 가게 소문. 쌓일수록 가게 단계(이름)가 오른다 (ReputationSettings).
 var reputation: int = 0
+## 단계 보상(밭 칸)을 이미 준 가장 높은 가게 단계. 소문 기준이 바뀌어도 보상이 빠지거나 두 번 들어가지 않게 따로 적는다.
+var rewarded_shop_tier: int = 0
 ## 재료 id → 개수
 var inventory: Dictionary[StringName, int] = {}
 var unlocked_recipe_ids: Array[StringName] = []
@@ -517,13 +524,18 @@ func add_reputation(points: int) -> int:
 	reputation += points
 	reputation_changed.emit(reputation)
 	var after: int = get_shop_tier()
-	# 새로 오른 단계마다 밭 칸을 늘린다 (한 번에 두 단계가 올라도 둘 다 준다).
-	for tier: int in range(before + 1, after + 1):
+	_give_shop_tier_rewards(after)
+	return after if after > before else -1
+
+
+## 아직 보상을 안 준 가게 단계마다 밭 칸을 늘린다 (한 번에 두 단계가 올라도 둘 다 준다).
+func _give_shop_tier_rewards(up_to_tier: int) -> void:
+	for tier: int in range(rewarded_shop_tier + 1, up_to_tier + 1):
 		var level: ShopLevel = GameData.get_reputation_settings().get_shop_level(tier)
 		if level != null and not level.bonus_plot_place_id.is_empty():
 			for i: int in level.bonus_plot_count:
 				add_plot(level.bonus_plot_place_id)
-	return after if after > before else -1
+	rewarded_shop_tier = maxi(rewarded_shop_tier, up_to_tier)
 
 
 # --- 단골도와 입맛 ---
@@ -671,6 +683,7 @@ func new_game() -> void:
 	current_day = STARTING_DAY
 	player_name = ""
 	reputation = 0
+	rewarded_shop_tier = 0
 	inventory.clear()
 	unlocked_recipe_ids.clear()
 	guest_story_progress.clear()
@@ -772,6 +785,11 @@ func load_game() -> bool:
 		return false
 	_from_save_data(data)
 	is_game_started = true
+	if rewarded_shop_tier < 0:
+		rewarded_shop_tier = OLD_FINAL_SHOP_TIER if reputation >= OLD_FINAL_SHOP_TIER_REPUTATION \
+				else mini(get_shop_tier(), OLD_FINAL_SHOP_TIER - 1)
+	# 소문 기준이 낮아져 이미 넘은 단계가 있으면, 빠진 단계 보상(밭 칸)을 지금 준다.
+	_give_shop_tier_rewards(get_shop_tier())
 	# 예전 세이브: 봄을 마치고 타이틀로 돌아갔던 세이브는 여름이 생겼으니 여름 1일째부터 이어 간다.
 	# 봄 잔치에서 데모가 끝나는 동안(봄 마무리 데이터의 is_demo_end)은 봄 완료 그대로 둔다.
 	if is_spring_completed and current_season == Season.Id.SPRING and not GameData.is_demo_end_season(current_season):
@@ -853,6 +871,7 @@ func _to_save_data() -> Dictionary:
 		"current_day": current_day,
 		"player_name": player_name,
 		"reputation": reputation,
+		"rewarded_shop_tier": rewarded_shop_tier,
 		"inventory": inventory_data,
 		"unlocked_recipe_ids": recipe_data,
 		"guest_story_progress": story_data,
@@ -895,6 +914,8 @@ func _from_save_data(data: Dictionary) -> void:
 	current_day = int(data.get("current_day", STARTING_DAY))
 	player_name = str(data.get("player_name", ""))
 	reputation = int(data.get("reputation", 0))
+	# 없으면(2026-10-08 전 세이브) 예전 기준으로 이미 받았을 단계를 계산한다.
+	rewarded_shop_tier = int(data.get("rewarded_shop_tier", -1))
 	var inventory_data: Dictionary = data.get("inventory", {})
 	for ingredient_id: String in inventory_data:
 		inventory[StringName(ingredient_id)] = int(inventory_data[ingredient_id])
