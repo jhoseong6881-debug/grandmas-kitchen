@@ -11,6 +11,9 @@ const PLACEHOLDER_ICON_PIXELS: int = 12
 
 ## 재료 그림. 비워 두면 placeholder_color 색의 임시 사각형으로 표시한다.
 @export var icon: Texture2D
+## 손질한 조각 그림: 조리기 냄비와 버무리기 그릇 안에 보이는 모습 (예: 깍둑 썬 당근). 비워 두면 통째 아이콘 대신
+## placeholder_color 색의 임시 사각형을 쓴다 (통당근이 냄비에 들어가 보이지 않게).
+@export var cut_icon: Texture2D
 ## 그림이 아직 없을 때 쓰는 임시 색. 재료마다 다르게 정해 두면 그림 없이도 구분된다.
 @export var placeholder_color: Color = Color(0.85, 0.55, 0.3)
 @export_multiline var description: String = ""
@@ -25,6 +28,17 @@ var _placeholder_texture: Texture2D
 func get_icon_texture() -> Texture2D:
 	if icon != null:
 		return icon
+	return _get_placeholder_texture()
+
+
+## 냄비·그릇 안 조각으로 쓸 그림. 손질한 조각 그림이 있으면 그것, 없으면 임시 색 사각형 (통째 아이콘은 쓰지 않는다).
+func get_piece_texture() -> Texture2D:
+	if cut_icon != null:
+		return cut_icon
+	return _get_placeholder_texture()
+
+
+func _get_placeholder_texture() -> Texture2D:
 	if _placeholder_texture == null:
 		var image: Image = Image.create(PLACEHOLDER_ICON_PIXELS, PLACEHOLDER_ICON_PIXELS, false, Image.FORMAT_RGBA8)
 		image.fill(placeholder_color)

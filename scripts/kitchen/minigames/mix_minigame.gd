@@ -91,7 +91,7 @@ func _place_pieces(ingredient: Ingredient, coat_color: Color) -> void:
 		piece.position = Vector2(center_x - piece.size.x / 2.0, top)
 		piece.pivot_offset = piece.size / 2.0
 		if ingredient != null:
-			(piece.get_node("Icon") as TextureRect).texture = ingredient.get_icon_texture()
+			(piece.get_node("Icon") as TextureRect).texture = ingredient.get_piece_texture()
 		piece.get_node("Coat").self_modulate = coat_color
 		piece.get_node("Coat").hide()
 		piece.get_node("Glow").hide()

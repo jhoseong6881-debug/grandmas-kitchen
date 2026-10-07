@@ -123,7 +123,7 @@ func _place_pieces(ingredient: Ingredient) -> void:
 		piece.pivot_offset = piece.size / 2.0
 		piece.rotation = randf() * TAU
 		if ingredient != null:
-			(piece.get_node("Icon") as TextureRect).texture = ingredient.get_icon_texture()
+			(piece.get_node("Icon") as TextureRect).texture = ingredient.get_piece_texture()
 		piece.get_node("Gloss").self_modulate = Color(_sauce_color, 0.0)
 		piece.show()
 		_piece_layer.add_child(piece)
