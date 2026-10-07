@@ -87,7 +87,10 @@ func _show_summary() -> void:
 		return
 	var season_recipes: Array[Recipe] = GameData.get_all_recipes().filter(
 			func(recipe: Recipe) -> bool: return recipe.note_season == GameState.current_season)
-	var parts: PackedStringArray = [SUMMARY_NOTES_FORMAT % [GameState.count_found_notes(), season_recipes.size()]]
+	var parts: PackedStringArray = []
+	# 노트가 없는 계절(아직 만들지 않은 여름 등)에는 "0 / 0" 대신 노트 줄을 뺀다.
+	if not season_recipes.is_empty():
+		parts.append(SUMMARY_NOTES_FORMAT % [GameState.count_found_notes(), season_recipes.size()])
 	var today: String = DayPreview.get_text(GameState.current_day, false)
 	if not today.is_empty():
 		parts.append(SUMMARY_TODAY_FORMAT % today)
