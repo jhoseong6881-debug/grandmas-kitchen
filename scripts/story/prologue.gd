@@ -35,6 +35,8 @@ const PROLOGUE_SCENE_PATH: String = "res://scenes/story/prologue.tscn"
 @export var name_confirm_delay: float = 0.6
 ## "다음" 표시가 깜빡이는 빠르기
 @export var next_mark_blink_speed: float = 4.0
+## 장마다 깔리는 소리(StoryChapter.ambient_sound)가 서서히 켜지고 꺼지는 시간(초)
+@export var ambient_fade_duration: float = 1.0
 
 var _chapter_index: int = -1
 var _line_index: int = -1
@@ -43,6 +45,8 @@ var _shown_chars: float = 0.0
 var _is_waiting_for_name: bool = false
 var _name_box_open_time: float = 0.0
 var _is_skipping: bool = false
+## 지금 깔리고 있는 장 소리 (없으면 빈 값)
+var _ambient_sound: StringName = &""
 var _blink_time: float = 0.0
 
 ## play_story 로 맡겨 둔 이야기와 다음 장면. 이 장면이 열릴 때 한 번 쓰고 비운다.
@@ -135,7 +139,24 @@ func _start_chapter(index: int) -> void:
 	_paper.visible = chapter.is_letter
 	_text_box.visible = not chapter.is_letter
 	_letter_label.text = ""
+	_set_ambient(chapter.ambient_sound)
 	_advance()
+
+
+## 장 소리를 바꾼다: 앞 장 소리는 서서히 끄고, 새 소리를 서서히 켠다. 빈 값이면 끄기만 한다.
+func _set_ambient(sound_id: StringName) -> void:
+	if sound_id == _ambient_sound:
+		return
+	if not _ambient_sound.is_empty():
+		Sound.stop_loop(_ambient_sound, ambient_fade_duration)
+	_ambient_sound = sound_id
+	if not sound_id.is_empty():
+		Sound.start_loop(sound_id, 0.0, ambient_fade_duration)
+
+
+## 장면을 떠나면 (끝까지 보거나 건너뛰어 다음 장면으로) 장 소리를 끈다.
+func _exit_tree() -> void:
+	_set_ambient(&"")
 
 
 ## 다음 줄로 넘어간다. 글자가 아직 나오는 중이면 그 줄을 바로 다 보여 준다.
@@ -222,6 +243,7 @@ func _confirm_name() -> void:
 ## 이름을 아직 안 지었으면 이름부터 짓고 끝낸다.
 func _skip() -> void:
 	_is_skipping = true
+	_set_ambient(&"")
 	if _typing_label != null:
 		_stop_typing()
 	if GameState.player_name.is_empty():

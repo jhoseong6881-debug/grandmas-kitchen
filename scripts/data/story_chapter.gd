@@ -17,4 +17,6 @@ extends Resource
 @export var background_image: Texture2D
 ## 편지 장면인지
 @export var is_letter: bool = false
+## 이 장 동안 깔리는 소리 (data/sounds/ 의 id, 예: 1장 지하철 &"subway"). 비워 두면 없다.
+@export var ambient_sound: StringName = &""
 @export_multiline var lines: Array[String] = []

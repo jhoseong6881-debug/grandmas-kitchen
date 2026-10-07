@@ -43,6 +43,7 @@
 | sfx/rain_light_loop.wav | 봄비 오는 날 낮 내내 깔리는 빗소리 (rain) | Freesound "Rain light 2 (rural)" by jmbphilmes — https://freesound.org/s/200273/ | **CC0** | 2026-10-04 |
 | sfx/mix_toss_1~5.wav | 버무리기에서 맞힐 때 (hit_mix) | Freesound "Potato salad" by 14G_Panska_Kaminkova_A — https://freesound.org/s/419992/ | **CC0** | 2026-10-04 |
 | sfx/porch_crickets_loop.wav | 저녁 평상 내내 작게 깔리는 풀벌레 소리 (porch_night) | Freesound "Night Crickets Back Porch.aiff" by hdfreema — https://freesound.org/s/333221/ | **CC0** | 2026-10-07 |
+| sfx/subway_loop.wav | 프롤로그 1장 "회색 도시" 내내 깔리는 지하철 소리 (subway, StoryChapter.ambient_sound) | 바탕: Freesound "inside train between two Stations.wav" by worldfire — https://freesound.org/s/150875/ (**CC0**). "두쿵두쿵"은 코드로 만든 낮은 쿵 소리 | 바탕 CC0 + 직접 만듦 | 2026-10-07 |
 | sfx/guest_sad.wav | 먹을 게 없어 손님이 아쉬워하며 돌아갈 때 "띵~동" 내려가는 두 음 (guest_sad) | Freesound 331047 (위 kalimba 와 같은 원본)의 음 높이를 바꾼 두 음. 벌칙 느낌이 안 나게 작고 부드럽게 | **CC0** | 2026-10-07 |
 | sfx/morning_birds.wav | 맑은 날 아침 텃밭에 그날 처음 나왔을 때 새소리 한 번 (morning_birds) | Freesound "Birds In Spring (Scotland)" by BurghRecords — https://freesound.org/s/463903/ | **CC0** | 2026-10-07 |
 
@@ -58,6 +59,9 @@
 - zone_secret 은 칼림바 "도"를 네 반음·아홉 반음 올린 "미→라", zone_request 는 일곱·열두 반음 올린 "솔→도"를 0.09초 간격으로 겹친 것 (0.6초).
   guest_sad 는 두 반음 올린 "레"에서 세 반음 내린 "라"로 0.24초 뒤 내려가는 것 (1.2초). 음 높이는 원본을 빠르게·느리게 읽어서 바꿨다.
 - 새 소리 다섯 가지는 바꾸기 전 임시 소리와 소리 나는 부분의 평균 크기를 같게 맞춰서, 소리 데이터의 Volume Db 는 그대로 두었다.
+- subway_loop 는 바탕 원본 미리 듣기 파일(6분, audio_source/subway_between_stations.mp3 → .wav)에서 고르게 달리는 140~172초를 30초로 자르고 끝 2초를 처음과 겹친 것 (평균 -28dB로 맞춤).
+  진짜 녹음은 "두쿵두쿵" 박자가 뚜렷하지 않아서(되풀이 뚜렷함 0.1 안팎), 바퀴가 레일 이음새를 지나는 "두-쿵"을 낮은 쿵 소리 두 번(0.13초 간격, 95→60Hz 사인 + 짧은 잡음)으로 만들어
+  1초마다 얹었다 (크기는 매번 조금씩 다르게). 함께 받은 짧은 녹음 audio_source/metro_clickety.mp3 (ahill86, https://freesound.org/s/207134/, CC0)는 쓰지 않았지만 바꿔 쓸 수 있다.
 - porch_crickets_loop 는 원본 미리 듣기 파일(3분 40초, audio_source/night_crickets_porch.mp3 → .wav, 아주 작게 녹음됨)의 60~92초를 22dB 키우고,
   끝 2초를 처음과 겹쳐 30초가 이음매 없이 되풀이되게 한 것. 평균 -30dB로 빗소리(-22dB)보다 작다. 원본 전체가 고르고 갑자기 커지는 잡음이 없다.
 - morning_birds 는 원본 미리 듣기 파일(2분 28초, audio_source/birds_in_spring.mp3 → .wav)에서 새가 활발한 25~30.5초를 잘라 최고점 -6dB로 맞추고,

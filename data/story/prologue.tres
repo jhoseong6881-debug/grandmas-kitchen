@@ -7,6 +7,7 @@
 script = ExtResource("2_chapter")
 title = "1장. 회색 도시"
 background_color = Color(0.22, 0.24, 0.3, 1)
+ambient_sound = &"subway"
 lines = Array[String](["새벽 한 시, 마지막 지하철.", "창에 비친 얼굴이 낯설다. 언제부터 이렇게 웃지 않았더라.", "저녁은 또 편의점 삼각김밥. 포장을 뜯다 말고 멈칫한다.", "…김밥. 이런 맛이 아니었는데."])
 
 [sub_resource type="Resource" id="Chapter_2"]
