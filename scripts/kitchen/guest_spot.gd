@@ -34,6 +34,8 @@ const WALK_SOUND: StringName = &"walk"
 @export var pop_distance: float = 360.0
 @export var pop_duration: float = 0.45
 @export var pop_fade_duration: float = 0.12
+## 요리(미니게임)하는 동안 손님과 말풍선이 흐려지고 다시 또렷해지는 시간(초)
+@export var cooking_fade_duration: float = 0.3
 ## 켜면 이름과 말풍선을 머리 위에 띄운다. 말풍선 위치(손님 그림 왼쪽 위 기준)와 폭, 높이, 이름 칸 높이
 @export var bubble_above: bool = false
 @export var above_bubble_offset: Vector2 = Vector2(0.0, -150.0)
@@ -132,6 +134,14 @@ func fade_out() -> void:
 ## 걸어 들어오는 중인지 (아직 자리에 앉지 않았으면 true)
 func is_walking() -> bool:
 	return _walk_tween != null and _walk_tween.is_valid() and _walk_tween.is_running()
+
+
+## 요리(미니게임)하는 동안 손님과 말풍선을 서서히 감추고(true), 요리가 끝나면 다시 보여 준다(false).
+## 미니게임의 팬·냄비 그림이 손님 그림 위에 겹쳐 보이지 않게 한다. 손님은 그 자리에 그대로 있다.
+func set_cooking_hidden(is_hidden: bool) -> void:
+	_kill_walk()
+	_walk_tween = create_tween()
+	_walk_tween.tween_property(self, "modulate:a", 0.0 if is_hidden else 1.0, cooking_fade_duration)
 
 
 func _kill_walk() -> void:

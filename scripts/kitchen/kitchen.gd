@@ -724,6 +724,8 @@ func _on_cook_button_pressed() -> void:
 	_grandma_step_count = 0
 	_is_request_assigned = false
 	_is_request_met = false
+	# 요리하는 동안 손님과 말풍선을 흐리게 감춘다 (미니게임 그림이 손님 위에 겹쳐 보이지 않게).
+	_guest_spot.set_cooking_hidden(true)
 	_run_next_step()
 
 
@@ -745,6 +747,7 @@ func _is_grandma_cook() -> bool:
 ## 레시피의 요리 단계(cook_steps)를 순서대로 하나씩 진행한다. 다 끝나면 요리 완성.
 func _run_next_step() -> void:
 	if _remaining_steps.is_empty():
+		_guest_spot.set_cooking_hidden(false)
 		await _dish_showcase.show_dish(current_order, _is_perfect_cook, _is_grandma_cook())
 		_set_side_buttons_enabled(true)
 		var format: String = PERFECT_COOKED_TEXT_FORMAT if _is_perfect_cook else COOKED_TEXT_FORMAT
