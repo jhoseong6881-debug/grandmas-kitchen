@@ -4,6 +4,7 @@
 [ext_resource type="FontFile" path="res://assets/fonts/KyoboHandwriting/KyoboHandwriting2025lyb.ttf" id="9_kyobo"]
 [ext_resource type="PackedScene" path="res://scenes/ui/settings_panel.tscn" id="10_settings"]
 [ext_resource type="AudioStream" path="res://assets/audio/music/title_theme.mp3" id="11_music"]
+[ext_resource type="PackedScene" path="res://scenes/ui/credits_panel.tscn" id="12_credits"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_confirm"]
 bg_color = Color(0.98, 0.94, 0.82, 1)
@@ -75,36 +76,43 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -240.0
-offset_top = 470.0
+offset_top = 440.0
 offset_right = 240.0
-offset_bottom = 878.0
+offset_bottom = 864.0
 grow_horizontal = 2
-theme_override_constants/separation = 24
+theme_override_constants/separation = 16
 
 [node name="ContinueButton" type="Button" parent="Menu"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 84)
+custom_minimum_size = Vector2(0, 72)
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "이어 하기"
 
 [node name="NewGameButton" type="Button" parent="Menu"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 84)
+custom_minimum_size = Vector2(0, 72)
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "새 게임"
 
 [node name="SettingsButton" type="Button" parent="Menu"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 84)
+custom_minimum_size = Vector2(0, 72)
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "설정"
 
+[node name="CreditsButton" type="Button" parent="Menu"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 72)
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "만든 사람들"
+
 [node name="QuitButton" type="Button" parent="Menu"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 84)
+custom_minimum_size = Vector2(0, 72)
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "끝내기"
@@ -228,6 +236,11 @@ theme_override_font_sizes/font_size = 36
 text = "아니요"
 
 [node name="SettingsPanel" parent="." instance=ExtResource("10_settings")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+
+[node name="CreditsPanel" parent="." instance=ExtResource("12_credits")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1

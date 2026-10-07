@@ -28,6 +28,8 @@ var _can_continue: bool = false
 @onready var _settings_button: Button = %SettingsButton
 @onready var _quit_button: Button = %QuitButton
 @onready var _settings_panel: SettingsPanel = %SettingsPanel
+@onready var _credits_button: Button = %CreditsButton
+@onready var _credits_panel: CreditsPanel = %CreditsPanel
 @onready var _message_label: Label = %MessageLabel
 ## 이어 하기 버튼 아래: 지난번 이어 갈 실마리 (노트 수, 오늘 있는 일)
 @onready var _summary_label: Label = %SummaryLabel
@@ -45,6 +47,7 @@ func _ready() -> void:
 	_continue_button.pressed.connect(_on_continue_button_pressed)
 	_new_game_button.pressed.connect(_on_new_game_button_pressed)
 	_settings_button.pressed.connect(_on_settings_button_pressed)
+	_credits_button.pressed.connect(_on_credits_button_pressed)
 	_quit_button.pressed.connect(_on_quit_button_pressed)
 	_confirm_yes_button.pressed.connect(_start_new_game)
 	_confirm_no_button.pressed.connect(_close_confirm)
@@ -137,10 +140,19 @@ func _on_settings_button_pressed() -> void:
 	_settings_button.grab_focus()
 
 
+## "만든 사람들" 창 (글꼴·소리 출처와 라이선스 원문)
+func _on_credits_button_pressed() -> void:
+	_set_menu_enabled(false)
+	_credits_panel.open()
+	await _credits_panel.closed
+	_set_menu_enabled(true)
+	_credits_button.grab_focus()
+
+
 ## 확인 창이나 설정 창이 떠 있는 동안 뒤의 버튼을 막는다. 비활성 버튼도 선택은 될 수 있어서 선택 자체를 끈다.
 ## 그래야 방향키로 뒤 버튼에 가지 않는다.
 func _set_menu_enabled(is_enabled: bool) -> void:
-	for button: Button in [_continue_button, _new_game_button, _settings_button, _quit_button]:
+	for button: Button in [_continue_button, _new_game_button, _settings_button, _credits_button, _quit_button]:
 		var can_use: bool = is_enabled and (button != _continue_button or _can_continue)
 		button.disabled = not can_use
 		button.focus_mode = Control.FOCUS_ALL if can_use else Control.FOCUS_NONE
