@@ -6,7 +6,7 @@
 script = ExtResource("1_request")
 id = &"thick_roll"
 line = "도톰하게 말아 주세요."
-guide_text = "도톰하게 (안 틀리고 끝까지)"
+guide_text = "도톰하게 (두 겹 더 말아요)"
 thanks_line = "두툼해서 든든해요!"
 casual_line = "도톰하게 말아 줘."
 casual_thanks_line = "두툼해서 든든하다!"
