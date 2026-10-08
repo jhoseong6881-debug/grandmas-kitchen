@@ -53,6 +53,7 @@
 | scenes/kitchen/minigames/roll_minigame.tscn (Pan, Handle) | 위에서 본 네모난 계란말이 팬 | 800x400 + 손잡이 | 할 일 |
 | scenes/kitchen/minigames/roll_minigame.tscn (Sheet) | 팬에 펴진 계란물 | 늘어나는 띠 (높이 312) | 할 일 |
 | scenes/kitchen/minigames/roll_minigame.tscn (Roll) | 말린 계란 (겹마다 두꺼워짐) | 36~144 x 336 | 할 일 |
+| roll_minigame.gd 가 만드는 국자 / 뒤집개 | 계란물 국자 (위에서 본 모습, 커서 자리) / 말린 계란을 미는 뒤집개 | 64x64 / 14x360 | 선택 |
 | scenes/kitchen/minigames/rice_minigame.tscn (Bowl, Water) | 쌀 씻는 바가지 / 물 (물 색은 코드가 입힘) | 480x480 / 420x420 | 할 일 |
 | scenes/kitchen/minigames/rice_minigame.tscn (RiceTemplate, Hand) | 쌀알 / 씻는 손 | 8x18 / 64x64 | 할 일 |
 | scenes/kitchen/minigames/rice_minigame.tscn (Pot, Lid, Flame) | 가마솥 / 솥뚜껑 / 아궁이 불 | 420x270 / 480x44 / 260x80 | 할 일 |
