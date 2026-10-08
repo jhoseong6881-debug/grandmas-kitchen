@@ -212,7 +212,7 @@ offset_bottom = -180.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_font_sizes/font_size = 48
-text = "톡톡톡, 알맞은 빠르기로 계속 눌러요"
+text = "큰 조각을 찾아 탁탁 다져요"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -231,7 +231,7 @@ offset_bottom = -100.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_font_sizes/font_size = 36
-text = "알맞은 빠르기로 톡톡톡 계속 눌러요. 바늘을 금색 칸 안에 두세요 (클릭 / 스페이스 / Ⓐ)"
+text = "칼을 조각 위에 대고 클릭! 진한 조각이 아직 큰 조각이에요   (패드: 스틱으로 옮기고 Ⓐ)"
 horizontal_alignment = 1
 vertical_alignment = 1
 

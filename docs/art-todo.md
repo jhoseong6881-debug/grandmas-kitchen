@@ -101,7 +101,8 @@
 | data/story/memories.tres (각 회상의 Background Image) | 할머니 회상 배경 3장: 여름 부엌 도마 앞의 할머니와 어린 나, 초겨울 밤 도시락 싸는 할머니 (+ 봄날 문 앞 꿀단지), 추석 시골 정류장의 은박지 김밥 | 1920x1080 | 할 일 |
 | scenes/story/prologue.tscn (Paper) | 할머니 편지지 | 1000x900 | 선택 |
 | data/keepsakes/*.tres (Icon) | 할머니 기념품 5개: 꽃무늬 손수건, 계란 바구니, 도토리 팽이, 꿀단지, 버섯 바구니 | 128x128 | 할 일 |
-| scenes/kitchen/minigames/mince_minigame.tscn (Board, Knife) | 다지기 도마 / 큰 식칼 | 900x440 / 140x200 | 할 일 |
+| scenes/kitchen/minigames/mince_minigame.tscn (Board, Knife) | 다지기 도마 / 큰 식칼 (칼날 아래 가운데가 커서 자리) | 900x440 / 140x200 | 할 일 |
+| mince_minigame.gd 가 만드는 조각 | 다지는 재료 조각 (쪼개질 때마다 작아짐, 덜 잘린 조각은 진하게) | 150x110 → 작아짐 | 선택 |
 | scenes/kitchen/minigames/mince_minigame.tscn (Pile 조각) | 다져지는 재료 (단계마다 작아짐, 재료 색은 코드가 입힘) | 큰 조각 150x110 | 선택 |
 | scenes/kitchen/shop_decor.tscn (Sign) | 가게 간판 (동네 밥집부터, 이름 글씨는 코드가 씀) | 400x72 | 할 일 |
 | scenes/kitchen/shop_decor.tscn (Lanterns) | 처마 등불 2개 (소문난 할매식당) | 48x60 | 할 일 |
