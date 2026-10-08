@@ -1,9 +1,8 @@
 class_name ChopMinigame
 extends Minigame
-## 썰기 미니게임 (손으로 쓱쓱 썰기). 칼날 끝이 마우스 커서를 따라 도마 위 어디든 다닌다.
-## 누르지 않고 재료 위로 가면 칼날이 재료 윗면에 얹힌다 (재료를 뚫고 들어가지 않는다).
-## 누른 채 아래로 끌면 칼날이 재료를 파고들고, 재료 아래까지 내려가면 칼 자리에서 한 조각이 잘려 나간다.
-## 파고드는 동안은 곧게 썰리도록 좌우가 고정된다. 다시 위로 올리면(또는 손을 떼면) 칼이 들리고 다음 칼질을 한다.
+## 썰기 미니게임 (손으로 쓱쓱 썰기). 칼날 끝이 언제나 마우스 커서 자리에 있어서 도마 위 어디든 자유롭게 다닌다.
+## 누른 채 재료 위쪽(재료 윗부분 포함)에서 아래로 끌어 칼날이 재료 아랫면에 닿으면 그 자리에서 한 조각이 잘려 나간다.
+## 누른 채 옆에서 낮게 들어오면 칼이 재료에 겹쳐 보일 뿐 썰리지 않는다. 다시 위쪽으로 올리면 다음 칼질을 한다.
 ## 게임패드·방향키: 좌우로 칼을 옮기고, 아래로 당기면 썬다. 스페이스·Ⓐ 누르기는 쓰지 않는다.
 ## 하얀 칸은 "여기 썰면 고른 두께" 안내다. 아무 데서나 썰어도 되고 빗나감·실패는 없다 (완벽 도장도 없다).
 ## 할머니 비법 자리와 부탁 자리는 하얀 칸 안의 자리 (0 = 하얀 칸 왼쪽, 1 = 오른쪽). 칸 밖에서 썬 칼질은 그 자리로 치지 않는다.
@@ -17,10 +16,10 @@ const DONE_TEXT: String = "손질 끝!"
 @export var chops_needed: int = 8
 ## 칼 길이(픽셀). 칼날 끝(아래쪽 끝)이 커서 자리에 온다.
 @export var knife_length: float = 180.0
-## 칼이 재료에 이만큼(0~1, 재료 높이에 대한 비율)보다 덜 파고들어 있으면 들린 것으로 보고 옆으로 옮기거나 다음 칼질을 할 수 있다.
-## 누른 채 위아래로 톱질하듯 썰 때 끝까지 올리지 않아도 되게 너그럽게 둔다.
+## 칼날 끝이 재료 윗면에서 이만큼(0~1, 재료 높이에 대한 비율)보다 덜 내려가 있으면 칼질을 시작할 수 있다.
+## 누른 채 위아래로 톱질하듯 썰 때 재료 위로 완전히 올리지 않아도 되게 너그럽게 둔다.
 @export var knife_rearm_depth: float = 0.25
-## 손을 뗐을 때 칼이 다시 들리는 빠르기 (1초에 들리는 정도, 1 = 끝까지)
+## 게임패드: 스틱을 놓았을 때 칼이 다시 들리는 빠르기 (1초에 들리는 정도, 1 = 끝까지)
 @export var knife_lift_speed: float = 6.0
 ## 게임패드·방향키로 칼을 옮기는 빠르기(초당 픽셀)와, 아래로 당겼을 때 칼이 내려가는 빠르기 (1초에 내려가는 정도)
 @export var pad_knife_speed: float = 420.0
@@ -59,20 +58,16 @@ var _ingredient_left: float = 0.0
 var _ingredient_full_width: float = 0.0
 ## 고른 두께 한 조각의 폭 (칼질 수 + 끝 조각 하나로 나눈 폭)
 var _even_width: float = 0.0
-## 칼 중심의 x 위치(도마 기준)와 재료에 파고든 정도 (0 = 재료 윗면 위, 1 = 재료 아래까지)
+## 칼날 끝 자리 (도마 기준). 마우스면 커서 자리, 게임패드면 스틱으로 옮긴 자리.
 var _knife_x: float = 0.0
-var _knife_depth: float = 0.0
-## 재료 위가 아닐 때 칼날 끝의 높이 (도마 기준 y, 커서를 그대로 따라간다)
-var _free_tip_y: float = 0.0
-## 이번 칼질에서 이미 썰었는지. 칼이 다시 들려야(knife_rearm_depth 이하) 다음 칼질을 할 수 있다.
-var _has_cut_this_stroke: bool = false
+var _tip_y: float = 0.0
+## 지금 칼질을 시작해서 아래로 끌면 썰리는 상태인지 (재료 위쪽에서 누르고 있을 때 켜지고, 썰면 꺼진다)
+var _is_stroke_ready: bool = false
 ## 마우스를 누르고 있는지
 var _is_mouse_down: bool = false
-## 칼날이 재료 윗면에 얹혀 있는 동안 커서가 칼날보다 아래로 내려가 있는 거리(픽셀).
-## 누른 채로는 줄어들기만 해서, 그다음부터 아래로 끄는 만큼 칼이 파고든다.
-var _rest_offset: float = 0.0
-## 지난번 마우스 움직임 때 칼이 재료 위에 있었는지 (옆에서 재료 위로 들어올 때는 윗면에 얹는다)
-var _was_over_ingredient: bool = false
+## 게임패드: 스틱을 아래로 당기고 있는지와, 칼이 재료에 내려간 정도 (0 = 재료 윗면, 1 = 재료 아래까지)
+var _is_pad_cutting: bool = false
+var _pad_depth: float = 0.0
 var _target_center: float = 0.0
 var _target_base_alpha: float = 0.45
 
@@ -111,12 +106,11 @@ func _on_start(recipe: Recipe) -> void:
 	_ingredient.color = _ingredient_color
 	_ingredient.size.x = _ingredient_full_width
 	_knife_x = _ingredient_left + _ingredient_full_width + _even_width
-	_free_tip_y = _ingredient.position.y
-	_knife_depth = 0.0
-	_has_cut_this_stroke = false
+	_tip_y = _ingredient.position.y
+	_is_stroke_ready = false
 	_is_mouse_down = false
-	_rest_offset = 0.0
-	_was_over_ingredient = false
+	_is_pad_cutting = false
+	_pad_depth = 0.0
 	_knife.rotation = 0.0
 	_update_target()
 	_update_knife()
@@ -132,15 +126,17 @@ func _process(delta: float) -> void:
 		return
 	var pad_x: float = Input.get_axis(&"ui_left", &"ui_right")
 	var pad_down: float = Input.get_action_strength(&"ui_down")
-	if not _is_mouse_down:
-		if pad_down >= pad_cut_deadzone:
-			_set_depth(_knife_depth + pad_cut_speed * delta)
+	_is_pad_cutting = pad_down >= pad_cut_deadzone and not _is_mouse_down
+	# 게임패드를 쓰는 동안(또는 당겼던 칼이 다 들릴 때까지)은 칼날을 재료 윗면에서 당긴 만큼 내린다.
+	if not _is_mouse_down and (_is_pad_cutting or pad_x != 0.0 or _pad_depth > 0.0):
+		if _is_pad_cutting:
+			_pad_depth = minf(_pad_depth + pad_cut_speed * delta, 1.0)
 		else:
-			_set_depth(_knife_depth - knife_lift_speed * delta)
-		if _is_knife_raised() and pad_x != 0.0:
+			_pad_depth = maxf(_pad_depth - knife_lift_speed * delta, 0.0)
+		if pad_x != 0.0 and _pad_depth <= knife_rearm_depth:
 			_move_knife_to(_knife_x + pad_x * pad_knife_speed * delta)
-			# 게임패드로 옮길 때는 칼날을 재료 윗면 높이에 맞춘다.
-			_free_tip_y = _ingredient.position.y
+		_tip_y = _ingredient.position.y + _ingredient.size.y * _pad_depth
+		_check_stroke()
 	_update_knife()
 
 
@@ -174,31 +170,13 @@ func _board_point(at: Vector2) -> Vector2:
 	return _board.get_global_transform().affine_inverse() * (get_global_transform() * at)
 
 
-## 칼날 끝을 커서(도마 기준 at)로 옮긴다. 재료 위에서는 윗면에 얹히고, 누른 채 아래로 끌어야 파고든다.
+## 칼날 끝을 커서(도마 기준 at) 자리로 옮긴다.
 func _follow_mouse(at: Vector2) -> void:
-	_free_tip_y = clampf(at.y, 0.0, _board.size.y)
-	# 먼저 지금 자리에서 깊이를 맞추고, 그래서 칼이 들렸으면 옆으로 옮긴 자리에서 한 번 더 맞춘다.
-	_update_depth_from(at.y)
-	if _is_knife_raised():
-		_move_knife_to(at.x)
-		_update_depth_from(at.y)
-
-
-## 커서 높이(도마 기준 y)로 칼이 재료에 파고든 정도를 정한다.
-func _update_depth_from(at_y: float) -> void:
-	var is_over: bool = _is_over_ingredient()
-	var below_top: float = at_y - _ingredient.position.y
-	var depth: float = 0.0
-	if is_over and _is_mouse_down and _was_over_ingredient:
-		# 위로 올라간 만큼 얹힌 거리도 줄여서, 다시 아래로 끌면 바로 칼이 파고들게 한다.
-		_rest_offset = minf(_rest_offset, maxf(below_top, 0.0))
-		depth = (below_top - _rest_offset) / _ingredient.size.y
-	elif is_over:
-		_rest_offset = maxf(below_top, 0.0)
-	else:
-		_rest_offset = 0.0
-	_was_over_ingredient = is_over
-	_set_depth(depth)
+	_pad_depth = 0.0
+	_move_knife_to(at.x)
+	_tip_y = clampf(at.y, 0.0, _board.size.y)
+	_check_stroke()
+	_update_knife()
 
 
 ## 칼은 도마 안 어디든 움직인다.
@@ -206,24 +184,22 @@ func _move_knife_to(x: float) -> void:
 	_knife_x = clampf(x, 0.0, _board.size.x)
 
 
-## 칼이 남은 재료 위에 있는지
+## 칼이 남은 재료 위(좌우로)에 있는지
 func _is_over_ingredient() -> bool:
 	return _ingredient.size.x > 0.0 and _knife_x >= _ingredient_left and _knife_x <= _ingredient_right()
 
 
-## 칼 깊이를 바꾼다. 끝까지 내려가면 썰고, 다시 들리면 다음 칼질을 할 수 있다.
-func _set_depth(depth: float) -> void:
-	_knife_depth = clampf(depth, 0.0, 1.0)
-	if _knife_depth >= 1.0 and not _has_cut_this_stroke:
-		_has_cut_this_stroke = true
+## 누르고 있는 동안 칼날 끝이 재료 위쪽에 있으면 칼질 준비, 거기서 재료 아랫면까지 내려가면 썬다.
+func _check_stroke() -> void:
+	if not _is_over_ingredient() or not (_is_mouse_down or _is_pad_cutting):
+		_is_stroke_ready = false
+		return
+	var depth: float = (_tip_y - _ingredient.position.y) / _ingredient.size.y
+	if depth <= knife_rearm_depth:
+		_is_stroke_ready = true
+	elif depth >= 1.0 and _is_stroke_ready:
+		_is_stroke_ready = false
 		_cut()
-	elif _is_knife_raised():
-		_has_cut_this_stroke = false
-
-
-## 칼이 들려 있는지. 들려 있을 때만 옆으로 옮긴다 (내려가는 중에는 곧게 썬다).
-func _is_knife_raised() -> bool:
-	return _knife_depth <= knife_rearm_depth
 
 
 func _ingredient_right() -> float:
@@ -310,12 +286,8 @@ func _update_target() -> void:
 	_target_zone.size.x = _target_width
 
 
-## 칼날 끝: 재료 위에서는 재료 윗면에서 파고든 만큼 아래, 그 밖에서는 커서 높이.
 func _update_knife() -> void:
-	var tip_y: float = _free_tip_y
-	if _is_over_ingredient():
-		tip_y = _ingredient.position.y + _ingredient.size.y * _knife_depth
-	_knife.position = Vector2(_knife_x - _knife.size.x / 2.0, tip_y - _knife.size.y)
+	_knife.position = Vector2(_knife_x - _knife.size.x / 2.0, _tip_y - _knife.size.y)
 	var is_over_target: bool = absf(_knife_x - _target_center) <= _target_width / 2.0
 	_target_zone.color.a = target_hover_alpha if is_over_target else _target_base_alpha
 
