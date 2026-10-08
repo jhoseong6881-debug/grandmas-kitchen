@@ -3,7 +3,10 @@
 
 - 마지막 사용자 메시지 뒤로 Claude 가 쓴 글(최종 답과 작업 중간의 진행 메모)을 모두 본다.
 - 코드 블록, `인라인 코드`, 주소(URL), 파일 경로는 빼고 글자를 센다.
-- 영어 글자가 한글보다 많은 글이 하나라도 있으면 답을 막고 "한국어로 다시 쓰라"고 돌려보낸다.
+- 마지막 글(사용자가 읽는 보고)이 영어면 답을 막고 "한국어로 다시 쓰라"고 돌려보낸다.
+- 작업 중간의 진행 메모만 영어면 막지 않고, 사용자 화면에 한국어 알림만 띄운다
+  (2026-10-08: 막을 때마다 긴 대화 전체를 다시 읽고 보고서를 두 번 써서 토큰이 많이 들었다.
+  실수를 미리 막는 알림은 .claude/settings.json 의 UserPromptSubmit 훅이 한 줄 붙인다).
 - 사용자가 영어를 요청한 경우를 위해: 사용자 메시지에 "영어로"가 있으면 검사하지 않는다.
 CLAUDE.md 의 "응답 언어 — 최우선 규칙"을 프로그램으로 지키게 하려고 만들었다.
 """
@@ -72,16 +75,24 @@ def main() -> None:
         for part in entry.get("message", {}).get("content", []) or []:
             if isinstance(part, dict) and part.get("type") == "text" and part.get("text", "").strip():
                 texts.append(part["text"])
-    # 이미 한 번 막혀서 다시 쓰는 중이면 마지막 글만 본다 (앞선 영어 글 때문에 끝없이 막히지 않게)
-    if data.get("stop_hook_active"):
-        texts = texts[-1:]
-    english = [text.strip().splitlines()[0][:80] for text in texts if is_mostly_english(text)]
-    if english:
+    if not texts:
+        return
+    final, notes = texts[-1], texts[:-1]
+    if is_mostly_english(final):
         print(json.dumps({
             "decision": "block",
-            "reason": "응답 언어 규칙 위반: 이번 차례에 영어로 쓴 글이 있습니다 (" + " / ".join(english[:3]) + "). "
+            "reason": "응답 언어 규칙 위반: 마지막 보고가 영어입니다 (" + final.strip().splitlines()[0][:80] + "). "
                       "사용자는 영어를 읽지 못합니다. 지금 바로 이번 차례의 진행 상황과 결과를 처음부터 끝까지 한국어로 다시 보고하세요. "
                       "코드·파일 이름·명령어만 영어로 둡니다.",
+        }, ensure_ascii=False))
+        return
+    # 이미 한 번 막혀서 다시 쓴 경우에는 앞선 메모를 다시 따지지 않는다
+    if data.get("stop_hook_active"):
+        return
+    english_notes = [text for text in notes if is_mostly_english(text)]
+    if english_notes:
+        print(json.dumps({
+            "systemMessage": "알림: 작업 중간의 짧은 진행 메모 %d줄이 영어였어요. 마지막 보고는 한국어예요." % len(english_notes),
         }, ensure_ascii=False))
 
 
