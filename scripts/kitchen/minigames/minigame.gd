@@ -332,6 +332,13 @@ func _register_hit(position: float, is_in_window: bool = true) -> void:
 		Sound.play(REQUEST_ZONE_SOUND)
 
 
+## 이번 단계를 처음부터 다시 할 때 (볶기에서 재료를 다 흘렸을 때) 맞힌 수와 비법·부탁 자리 수를 처음으로 돌린다.
+func _reset_hits() -> void:
+	_hit_count = 0
+	_secret_hit_count = 0
+	_request_hit_count = 0
+
+
 ## 부탁 자리가 있으면 모든 동작을 그 자리에서, 없으면 한 번도 안 틀렸으면 부탁을 들어준 것
 func _is_request_met() -> bool:
 	if _request == null:

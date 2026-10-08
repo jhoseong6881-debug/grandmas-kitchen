@@ -21,8 +21,8 @@ type = 1
 subject_name = "당근과 계란"
 count = 6
 speed = 1.2
-secret_start = 0.6
-secret_end = 1.0
+secret_start = 0.5
+secret_end = 0.8
 
 [sub_resource type="Resource" id="NoteLine_1"]
 script = ExtResource("16_note_line")
@@ -53,8 +53,8 @@ id = &"carrot_egg_stir_fry"
 display_name = "당근 계란 볶음"
 ingredients = Array[ExtResource("2_ingredient")]([ExtResource("3_carrot"), ExtResource("4_egg")])
 cook_steps = Array[ExtResource("14_cook_step")]([SubResource("CookStep_1"), SubResource("CookStep_2")])
-secret_hint = "재료가 팬에 닿기 직전에 받기"
+secret_hint = "계란은 팬 가장자리로 받아 살살 익히기"
 secret_teller_id = &"hen"
-secret_reveal_line = "볶을 땐 말이야, 재료가 팬에 닿기 직전에 탁! 받아야 해. 네 할머니 말버릇이었지!"
+secret_reveal_line = "볶을 땐 말이야, 계란은 팬 가장자리로 받아서 살살 익혀야 보들보들해. 네 할머니 말버릇이었지!"
 grandma_taste_line = "꼬꼬! 바로 이 맛이야! 네 할머니가 부엌에 서 있는 줄 알았다니까!"
 note_puzzle = SubResource("NotePuzzle_1")

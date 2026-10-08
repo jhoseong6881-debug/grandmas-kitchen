@@ -39,9 +39,11 @@
 | scenes/kitchen/minigames/chop_minigame.tscn (Ingredient, Slices) | 썰기 전 재료 / 썬 조각 (재료마다) | 420x160 / 24x120 | 할 일 |
 | scenes/kitchen/minigames/chop_minigame.tscn (Knife, TargetZone) | 칼 / 썰 자리 표시 (칼은 마우스를 따라 움직이고 위아래로 썬다) | 10x180 / 50x240 | 할 일 |
 | scenes/kitchen/minigames/chop_minigame.tscn (PerfectStamp) | 완벽 도장 (지금은 금색 글자) | 900x200 | 선택 |
-| scenes/kitchen/minigames/stir_fry_minigame.tscn (Pan, Handle) | 팬 | 520x70 + 손잡이 | 할 일 |
-| scenes/kitchen/minigames/stir_fry_minigame.tscn (Flame) | 불꽃 | 340x60 | 할 일 |
-| scenes/kitchen/minigames/stir_fry_minigame.tscn (FoodTemplate) | 볶는 재료 조각 (재료마다) | 36x36 | 할 일 |
+| scenes/kitchen/minigames/stir_fry_minigame.tscn (Pan, Handle) | 위에서 본 동그란 팬 + 손잡이 | 360x360 + 230x24 | 할 일 |
+| scenes/kitchen/minigames/stir_fry_minigame.tscn (Stove) | 위에서 본 불판 (떨어진 조각이 놓이는 곳) | 1000x590 | 할 일 |
+| scenes/kitchen/minigames/stir_fry_minigame.tscn (Flame) | 위에서 본 불꽃 고리 (팬 밑으로 살짝 보임) | 420x420 | 할 일 |
+| scenes/kitchen/minigames/stir_fry_minigame.tscn (FoodTemplate) | 볶는 재료 조각 (재료마다, 위에서 본 모습) | 36x36 | 할 일 |
+| stir_fry_minigame.gd 가 만드는 그림자 | 떨어질 자리 그림자 (지금은 검은 동그라미) | 90x90 | 선택 |
 | scenes/kitchen/minigames/pan_fry_minigame.tscn (Pan, Handle) | 위에서 본 프라이팬 | 520x520 + 손잡이 | 할 일 |
 | scenes/kitchen/minigames/pan_fry_minigame.tscn (Jeon) | 전 (흰 그림, 익는 색은 코드가 입힘. 레시피마다 다르면 좋음) | 320x320 | 할 일 |
 | scenes/kitchen/minigames/pan_fry_minigame.tscn (Spatula) | 뒤집개 (위에서 본 모습, 마우스를 따라다니다 위로 휙 올려 전을 뒤집는다. 지금은 회색 막대) | 120x27 (원본 40x9 안팎) | 할 일 |

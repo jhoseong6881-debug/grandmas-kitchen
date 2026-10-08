@@ -6,9 +6,11 @@
 script = ExtResource("1_request")
 id = &"light_stir_fry"
 line = "살짝만 볶아 주세요."
-guide_text = "살짝만 (안 틀리고 끝까지)"
+guide_text = "살짝만 (팬 가장자리로 받기)"
 thanks_line = "아삭아삭 딱 좋아요."
 casual_line = "살짝만 볶아 줘."
 casual_thanks_line = "아삭아삭 딱 좋다."
 step_type = 1
+zone_start = 0.5
+zone_end = 0.8
 count_multiplier = 0.5
