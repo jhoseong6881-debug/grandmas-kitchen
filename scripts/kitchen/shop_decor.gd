@@ -7,7 +7,7 @@ const SHELF_TITLE: String = "기념품 선반"
 
 @export var bench_size: Vector2 = Vector2(110, 40)
 @export var slot_size: Vector2 = Vector2(96, 96)
-@export var slot_font_size: int = 12
+@export var slot_font_size: int = 24
 @export var bench_color: Color = Color(0.55, 0.4, 0.25)
 @export var empty_slot_color: Color = Color(1, 1, 1, 0.15)
 @export var filled_slot_color: Color = Color(1, 0.92, 0.75)
