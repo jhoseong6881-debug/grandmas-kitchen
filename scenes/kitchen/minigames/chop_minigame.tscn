@@ -143,7 +143,7 @@ offset_bottom = -100.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_font_sizes/font_size = 36
-text = "칼이 하얀 자리에 왔을 때 눌러요 (클릭 / 스페이스 / Ⓐ)"
+text = "칼을 대고 누른 채 아래로 쓱!   (패드·방향키: 좌우로 옮기고 아래로 당겨요)"
 horizontal_alignment = 1
 vertical_alignment = 1
 

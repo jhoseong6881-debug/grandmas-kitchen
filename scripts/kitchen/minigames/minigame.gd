@@ -16,6 +16,8 @@ extends Control
 ##   _on_start(recipe)  : 미니게임을 처음 상태로 준비한다.
 ##   _on_press()        : 누를 때마다 불린다. 맞으면 진행하고, 빗나가면 _register_miss() 를 부른다.
 ##   _on_release()      : 손을 뗄 때마다 불린다. 꾹 누르는 미니게임에서 쓴다. (필요 없으면 안 채워도 된다)
+##   _uses_perfect_stamp() : 완벽 도장을 쓰지 않으면 false (손으로 직접 하는 미니게임. 필요 없으면 안 채워도 된다)
+##   손으로 직접 하는 미니게임(썰기)은 _gui_input 을 통째로 바꿔 마우스·스틱을 직접 다룬다 (누르기 입력을 쓰지 않는다).
 ##   _show_zone(start, end, color, zone_name) : 금색 칸 안에 비법 자리나 부탁 자리를 그린다. (그릴 수 없으면 안 채워도 된다)
 ##   맞힐 때마다 _register_hit(금색 칸 안의 위치 0~1) 을 부르고, 다 끝나면 _complete(완료 문구) 를 부른다.
 
@@ -172,7 +174,7 @@ func start(recipe: Recipe, step: CookStep = null, request: GuestRequest = null) 
 	_is_playing = false
 	_cooldown_left = 0.0
 	_perfect_streak_label.modulate.a = 1.0
-	_perfect_streak_label.show()
+	_perfect_streak_label.visible = _uses_perfect_stamp()
 	_perfect_stamp.hide()
 	_perfect_stamp.text = _perfect_stamp_text
 	_on_start(recipe)
@@ -251,6 +253,12 @@ func _on_start(_recipe: Recipe) -> void:
 	pass
 
 
+## 완벽 도장과 "완벽 도전 중" 표시를 쓸지. 빗나감 없이 손으로 직접 하는 미니게임(썰기)은 false 로 한다.
+## false 여도 빗나감이 없으니 결과(finished)는 완벽으로 넘긴다.
+func _uses_perfect_stamp() -> bool:
+	return true
+
+
 ## 깔리는 소리를 "시작!"부터 끝까지 낼지. 한 단계에서만 내는 미니게임(밥 짓기)은 false 로 하고 직접 켠다.
 func _loop_from_start() -> bool:
 	return true
@@ -311,14 +319,15 @@ func _step_color(default_color: Color) -> Color:
 
 
 ## 맞혔을 때 부른다. position: 금색 칸(맞는 구간) 안에서 어디쯤 맞혔는지 (0 ~ 1).
-func _register_hit(position: float) -> void:
+## is_in_window 가 false 면 금색 칸 밖에서 한 동작이라 비법 자리·부탁 자리로 치지 않는다 (썰기처럼 아무 데서나 할 수 있는 미니게임).
+func _register_hit(position: float, is_in_window: bool = true) -> void:
 	_play_hit_sound()
 	_hit_count += 1
 	var clamped: float = clampf(position, 0.0, 1.0)
-	if _step != null and not _is_converted and _step.is_in_secret(clamped):
+	if is_in_window and _step != null and not _is_converted and _step.is_in_secret(clamped):
 		_secret_hit_count += 1
 		Sound.play(SECRET_ZONE_SOUND)
-	if _request != null and _request.is_in_zone(clamped):
+	if is_in_window and _request != null and _request.is_in_zone(clamped):
 		_request_hit_count += 1
 		Sound.play(REQUEST_ZONE_SOUND)
 
@@ -389,18 +398,20 @@ func _complete(done_text: String) -> void:
 	var is_request_met: bool = _is_request_met()
 	if is_request_met:
 		_progress_label.text += REQUEST_DONE_TEXT
+	# 완벽 도장을 쓰지 않는 미니게임은 완벽이어도 도장 없이 보통 완성으로 보여 준다.
+	var shows_perfect: bool = is_perfect and _uses_perfect_stamp()
 	if is_grandma_taste:
 		_perfect_stamp.text = grandma_stamp_text
-	if is_perfect or is_grandma_taste:
+	if shows_perfect or is_grandma_taste:
 		_pop_perfect_stamp()
 	if is_grandma_taste:
 		Sound.play(GRANDMA_TASTE_SOUND)
-	elif is_perfect:
+	elif shows_perfect:
 		Sound.play(PERFECT_SOUND)
 	else:
 		Sound.play(DONE_SOUND)
 	# 두 번째 값 false: 일시 정지 중에는 이 기다림도 멈춘다.
-	var delay: float = perfect_finish_delay if is_perfect or is_grandma_taste else finish_delay
+	var delay: float = perfect_finish_delay if shows_perfect or is_grandma_taste else finish_delay
 	await get_tree().create_timer(delay, false).timeout
 	hide()
 	finished.emit(is_perfect, is_grandma_taste, is_request_met)

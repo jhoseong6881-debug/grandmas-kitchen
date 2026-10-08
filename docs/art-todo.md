@@ -37,7 +37,7 @@
 | scenes/kitchen/guest_spot.tscn (SpeechBubble) | 말풍선 | 가변 (늘어나는 9칸 그림) | 할 일 |
 | scenes/kitchen/minigames/chop_minigame.tscn (Board) | 도마 | 900x500 | 할 일 |
 | scenes/kitchen/minigames/chop_minigame.tscn (Ingredient, Slices) | 썰기 전 재료 / 썬 조각 (재료마다) | 420x160 / 24x120 | 할 일 |
-| scenes/kitchen/minigames/chop_minigame.tscn (Knife, TargetZone) | 칼 / 썰 자리 표시 | 10x300 / 50x240 | 할 일 |
+| scenes/kitchen/minigames/chop_minigame.tscn (Knife, TargetZone) | 칼 / 썰 자리 표시 (칼은 마우스를 따라 움직이고 위아래로 썬다) | 10x180 / 50x240 | 할 일 |
 | scenes/kitchen/minigames/chop_minigame.tscn (PerfectStamp) | 완벽 도장 (지금은 금색 글자) | 900x200 | 선택 |
 | scenes/kitchen/minigames/stir_fry_minigame.tscn (Pan, Handle) | 팬 | 520x70 + 손잡이 | 할 일 |
 | scenes/kitchen/minigames/stir_fry_minigame.tscn (Flame) | 불꽃 | 340x60 | 할 일 |
