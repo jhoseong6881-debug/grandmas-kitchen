@@ -6,10 +6,10 @@
 script = ExtResource("1_request")
 id = &"fluffy_rice"
 line = "고슬고슬하게요."
-guide_text = "고슬고슬 (뽀얀 자리 한가운데를 박박)"
+guide_text = "고슬고슬 (물은 손등에 살짝 못 미치게)"
 thanks_line = "밥알이 살아 있어요!"
 casual_line = "고슬고슬하게."
 casual_thanks_line = "밥알이 살아 있네!"
 step_type = 5
-zone_start = 0.3
-zone_end = 0.7
+zone_start = 0.15
+zone_end = 0.45

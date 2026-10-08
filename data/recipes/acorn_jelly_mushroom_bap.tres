@@ -11,7 +11,7 @@
 [sub_resource type="Resource" id="CookStep_1"]
 script = ExtResource("14_cook_step")
 type = 5
-count = 4
+count = 3
 secret_start = 0.3
 secret_end = 0.7
 
@@ -56,8 +56,8 @@ display_name = "버섯 도토리묵밥"
 ingredients = Array[ExtResource("2_ingredient")]([ExtResource("3_acorn"), ExtResource("4_mushroom")])
 cook_steps = Array[ExtResource("14_cook_step")]([SubResource("CookStep_1"), SubResource("CookStep_2"), SubResource("CookStep_3")])
 minigame_ingredient_name = "도토리묵"
-secret_hint = "쌀은 뽀얀 자리 한가운데를 박박"
+secret_hint = "물은 손등 찰랑찰랑할 때까지"
 secret_teller_id = &"squirrel"
-secret_reveal_line = "…할머니는 쌀 씻을 때, 뽀얀 자리 딱 가운데만 박박 하셨어요. 쌀이 안 깨지게요."
+secret_reveal_line = "…할머니는 밥물 잡을 때, 쌀 위에 손을 얹고 손등이 찰랑찰랑 잠길 만큼 부으셨어요. 그래야 묵밥 밥이 꼭 알맞대요."
 grandma_taste_line = "…따뜻해요. 할머니 밥 냄새가 나요."
 note_puzzle = SubResource("NotePuzzle_1")
