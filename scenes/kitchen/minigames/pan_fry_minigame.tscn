@@ -291,7 +291,7 @@ offset_bottom = -180.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_font_sizes/font_size = 48
-text = "전이 금색으로 노릇해지면 눌러요"
+text = "반죽 위를 빙글빙글 돌려 펴요"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -309,7 +309,7 @@ offset_bottom = -100.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_font_sizes/font_size = 36
-text = "반죽을 빙글빙글 펴고, 노릇해지면 뒤집개를 위로 휙! (마우스 / 스틱·방향키 / Ⓐ)"
+text = "커서를 빙글빙글 돌려 반죽을 펴고, 노릇해지면 전을 클릭해 뒤집어요   (패드: 스틱 돌리기 + Ⓐ)"
 horizontal_alignment = 1
 vertical_alignment = 1
 

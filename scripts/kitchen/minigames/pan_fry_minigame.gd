@@ -1,22 +1,21 @@
 class_name PanFryMinigame
 extends Minigame
 ## 부치기 미니게임 (반죽 펴기 → 노릇할 때 뒤집개로 뒤집기).
-## 1) 팬 가운데 떨어진 반죽을, 마우스를 누른 채 빙글빙글 돌려(게임패드는 스틱, 키보드는 방향키를 돌려) 동그랗게 편다.
-##    돌린 만큼 반죽이 넓어지고, 점선 동그라미까지 다 펴면 굽기 시작한다. 서툴러도 조금 오래 걸릴 뿐 실패는 없다.
-## 2) 전이 지글지글 익으며 색이 하양 → 노랑 → 금색 → 갈색으로 변한다. 금색(노릇노릇)일 때 뒤집개를 위로 휙 올리면
-##    (마우스를 누른 채 위로 빠르게 끌기, 위 방향키·스틱 위, 또는 Ⓐ·스페이스) 뒤집는다. 뒷면까지 익으면 한 번 더 휙 올려 접시로 옮긴다.
+## 1) 국자가 커서를 따라다니고, 누르지 않고 팬 가운데 반죽 위를 빙글빙글 돌리면(게임패드는 스틱, 키보드는 방향키를 돌려)
+##    돌린 만큼 반죽이 넓어진다. 점선 동그라미까지 다 펴면 굽기 시작한다. 서툴러도 조금 오래 걸릴 뿐 실패는 없다.
+## 2) 전이 지글지글 익으며 색이 하양 → 노랑 → 금색 → 갈색으로 변한다. 뒤집개가 커서를 따라다니고,
+##    금색(노릇노릇)일 때 전을 클릭하면(위 방향키·스틱 위, 또는 Ⓐ·스페이스) 후익 뒤집는다. 뒷면까지 익으면 한 번 더 클릭해 접시로 옮긴다.
 ## 전 jeon_count 장을 다 부치면 완성 (장마다 반죽부터 편다).
-## 너무 일찍 뒤집으면 빗나감이지만 그대로 계속 익는다. 늦게 뒤집으면 조금 진하게 익었을 뿐 넘어가고, 빗나감으로 센다.
+## 너무 일찍 누르면 "아직이에요"만 뜨고 그대로 계속 익는다. 늦게 누르면 진하게 익은 채 뒤집히고, 비법·부탁 자리로는 치지 않는다.
 ## 면마다 굽기 시작한 직후 flip_grace 초 동안의 위 방향 입력은 무시한다 (스틱을 돌리다 위로 지나간 것을 뒤집기로 치지 않게).
-## 타서 실패하는 일은 없다. 연타 방지, 완벽 표시는 공통 틀(Minigame)이 맡는다.
+## 빗나감·실패는 없다 (완벽 도장도 없다). 연타 방지는 공통 틀(Minigame)과 같이 쓴다.
 
 enum JeonState { SPREADING, COOKING, MOVING }
 
 const SIDE_FORMAT: String = "전 %d / %d · %s"
-const SPREAD_TEXT: String = "누른 채로 빙글빙글 돌려 반죽을 펴요 (스틱·방향키를 돌려도 돼요)"
-const SPREAD_DONE_TEXT: String = "동그랗게 폈어요! 금색으로 노릇해지면 뒤집개를 위로 휙!"
-const READY_TEXT: String = "금색으로 노릇해지면 뒤집개를 위로 휙! (위 방향키 / Ⓐ)"
-const FLICK_HINT_TEXT: String = "뒤집개를 누른 채 위로 휙 올려요"
+const SPREAD_TEXT: String = "반죽 위를 빙글빙글 돌려 펴요 (스틱·방향키를 돌려도 돼요)"
+const SPREAD_DONE_TEXT: String = "동그랗게 폈어요! 금색으로 노릇해지면 전을 클릭해 뒤집어요"
+const READY_TEXT: String = "금색으로 노릇해지면 전을 클릭해 뒤집어요 (위 방향키 / Ⓐ)"
 const SPREAD_SIDE_TEXT: String = "반죽 펴기"
 const FRONT_SIDE_TEXT: String = "앞면"
 const BACK_SIDE_TEXT: String = "뒷면"
@@ -39,15 +38,12 @@ const SIDES_PER_JEON: int = 2
 @export var spread_max_step: float = 1.2
 ## 스틱·방향키를 이만큼 기울여야 돌린 것으로 센다 (0~1)
 @export var stick_deadzone: float = 0.5
-## 펴진 반죽 위 소용돌이 줄 간격(픽셀)과 색, 다 펴야 할 크기를 보여 주는 점선 색, 게임패드 국자 표시 색
+## 펴진 반죽 위 소용돌이 줄 간격(픽셀)과 색, 다 펴야 할 크기를 보여 주는 점선 색, 국자(마우스·게임패드) 표시 색
 @export var spiral_ring_gap: float = 27.0
 @export var spiral_ring_color: Color = Color(0.86, 0.8, 0.64)
 @export var guide_color: Color = Color(1, 1, 1, 0.45)
 @export var ladle_color: Color = Color(0.55, 0.42, 0.3)
 @export var ladle_radius: float = 15.0
-## 뒤집개 휘두르기: 누른 채 이만큼(픽셀) 위로 이 시간(초) 안에 끌면 뒤집는다
-@export var flick_distance: float = 110.0
-@export var flick_max_time: float = 0.45
 ## 면마다 굽기 시작한 직후 위 방향 입력을 무시하는 시간(초)
 @export var flip_grace: float = 0.5
 ## 한 면이 하양에서 완전히 갈색이 될 때까지 걸리는 시간(초). 면마다 cook_duration_variance 만큼 조금씩 달라진다.
@@ -93,10 +89,8 @@ var _pad_last_angle: float = NAN
 ## 게임패드·방향키가 가리키는 방향 (국자 표시용, 안 기울였으면 0)
 var _pad_dir: Vector2 = Vector2.ZERO
 ## 마우스를 누르고 있는지, 뒤집개를 휘두르기 시작한 자리와 때
-var _is_mouse_down: bool = false
-var _flick_start: Vector2 = Vector2.ZERO
-var _flick_start_ms: int = 0
-var _has_flicked: bool = false
+## 마지막 커서 자리 (미니게임 기준, NAN = 아직 없음). 펴는 중에는 국자, 굽는 중에는 뒤집개가 여기에 있다.
+var _mouse_point: Vector2 = Vector2(NAN, NAN)
 ## 이 면을 굽기 시작한 뒤 지난 시간 (flip_grace 와 비교)
 var _side_time: float = 0.0
 
@@ -127,6 +121,10 @@ func _get_minigame_type() -> Recipe.MinigameType:
 	return Recipe.MinigameType.PAN_FRY
 
 
+func _uses_perfect_stamp() -> bool:
+	return false
+
+
 func _on_start(recipe: Recipe) -> void:
 	_jeon_count = _step_count(jeon_count)
 	_cook_duration = cook_duration / _speed
@@ -144,6 +142,7 @@ func _process(delta: float) -> void:
 	super(delta)
 	if not visible or not _is_playing:
 		return
+	_update_tools()
 	if _state == JeonState.SPREADING:
 		_spread_with_pad()
 		return
@@ -154,71 +153,56 @@ func _process(delta: float) -> void:
 	_update_jeon_look()
 
 
-## 마우스는 펴기·뒤집개 휘두르기를 직접 다룬다. 위 방향(키·스틱)은 뒤집기, 다른 방향은 포커스가 옮겨 가지 않게 먹는다.
-## Ⓐ·스페이스는 공통 틀이 연타 방지를 거쳐 _on_press 로 보낸다.
+## 마우스는 국자(펴기)·뒤집개(굽기)를 옮기고, 굽는 중에 전을 클릭하면 뒤집는다.
+## 위 방향(키·스틱)과 Ⓐ·스페이스도 뒤집기. 다른 방향은 포커스가 옮겨 가지 않게 먹는다.
 func _gui_input(event: InputEvent) -> void:
 	if not _is_playing:
 		return
+	if event is InputEventMouseMotion:
+		accept_event()
+		_on_mouse_move(event.position)
+		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		accept_event()
-		if event.pressed:
-			_on_mouse_down(event.position)
-		else:
-			_on_mouse_up()
-		return
-	if event is InputEventMouseMotion:
 		_on_mouse_move(event.position)
+		if event.pressed and _state == JeonState.COOKING and _is_over_jeon(event.position):
+			_try_flip(true)
+		return
+	if event.is_action_pressed("ui_accept") and _state == JeonState.COOKING:
+		accept_event()
+		_try_flip(true)
 		return
 	if event.is_action_pressed("ui_up") and _state == JeonState.COOKING:
 		accept_event()
 		_try_flip(false)
 		return
-	for action: StringName in [&"ui_left", &"ui_right", &"ui_up", &"ui_down"]:
+	for action: StringName in [&"ui_left", &"ui_right", &"ui_up", &"ui_down", &"ui_accept"]:
 		if event.is_action(action):
 			accept_event()
 			return
-	super(event)
 
 
-## Ⓐ·스페이스 (공통 틀이 이미 연타 방지를 거쳤다)
-func _on_press() -> void:
-	if _state == JeonState.COOKING:
-		_judge_flip()
-
-
-func _on_mouse_down(at: Vector2) -> void:
-	_is_mouse_down = true
-	_mouse_last_angle = NAN
-	if _state == JeonState.SPREADING:
-		_spread_toward(at, true)
-	elif _state == JeonState.COOKING:
-		_flick_start = at
-		_flick_start_ms = Time.get_ticks_msec()
-		_has_flicked = false
-		_move_spatula(at)
-		_spatula.show()
-
-
+## 펴는 중에는 국자를 옮기며 반죽을 펴고, 굽는 중에는 뒤집개를 옮긴다. 누르지 않아도 된다.
 func _on_mouse_move(at: Vector2) -> void:
-	if not _is_mouse_down:
-		return
+	_mouse_point = at
 	if _state == JeonState.SPREADING:
 		_spread_toward(at, true)
-	elif _state == JeonState.COOKING and _spatula.visible:
-		_move_spatula(at)
-		var is_quick: bool = Time.get_ticks_msec() - _flick_start_ms <= int(flick_max_time * 1000.0)
-		if not _has_flicked and is_quick and _flick_start.y - at.y >= flick_distance:
-			_has_flicked = true
-			_try_flip(true)
+	_update_tools()
 
 
-func _on_mouse_up() -> void:
-	_is_mouse_down = false
-	_mouse_last_angle = NAN
+## at(미니게임 기준)이 지금 전 위에 있는지
+func _is_over_jeon(at: Vector2) -> bool:
+	var jeon_center: Vector2 = _jeon.get_global_rect().get_center()
+	var global_at: Vector2 = get_global_transform() * at
+	return global_at.distance_to(jeon_center) <= _jeon.get_global_rect().size.x / 2.0
+
+
+## 굽는 중에만 뒤집개가 커서를 따라다닌다. 펴는 중의 국자는 반죽 그림에서 그린다.
+func _update_tools() -> void:
+	_spatula.visible = _state == JeonState.COOKING and not is_nan(_mouse_point.x)
 	if _spatula.visible:
-		_spatula.hide()
-		if not _has_flicked and _state == JeonState.COOKING:
-			_progress_label.text = FLICK_HINT_TEXT
+		_move_spatula(_mouse_point)
+	_batter.queue_redraw()
 
 
 func _move_spatula(at: Vector2) -> void:
@@ -238,13 +222,12 @@ func _try_flip(is_deliberate: bool) -> void:
 
 func _judge_flip() -> void:
 	if _doneness < golden_start - judge_margin:
-		_register_miss()
+		# 아직 덜 익었다. 뒤집지 않고 계속 익는다 (빗나감 없음).
 		_progress_label.text = EARLY_TEXT
 		return
 	if _doneness > golden_end + judge_margin:
-		_register_miss()
-		# 늦었어도 전은 뒤집으니까 뒤집는 소리는 낸다.
-		_play_hit_sound()
+		# 늦었다. 진하게 익은 채 뒤집고, 비법·부탁 자리로는 치지 않는다.
+		_register_hit(1.0, false)
 		_progress_label.text = LATE_TEXT
 	else:
 		# 막 금색이 됐을 때 = 0, 짙은 금색 끝 = 1
@@ -355,6 +338,9 @@ func _draw_batter() -> void:
 		ring -= spiral_ring_gap
 	if _pad_dir != Vector2.ZERO:
 		_batter.draw_circle(center + _pad_dir * full * 0.8, ladle_radius, ladle_color)
+	elif _state == JeonState.SPREADING and not is_nan(_mouse_point.x):
+		# 마우스 국자는 커서 자리에 (반죽 그림 밖으로 나가도 그린다)
+		_batter.draw_circle(_mouse_point - _batter.position, ladle_radius, ladle_color)
 
 
 func _start_side() -> void:
