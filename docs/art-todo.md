@@ -44,6 +44,8 @@
 | scenes/kitchen/minigames/stir_fry_minigame.tscn (FoodTemplate) | 볶는 재료 조각 (재료마다) | 36x36 | 할 일 |
 | scenes/kitchen/minigames/pan_fry_minigame.tscn (Pan, Handle) | 위에서 본 프라이팬 | 520x520 + 손잡이 | 할 일 |
 | scenes/kitchen/minigames/pan_fry_minigame.tscn (Jeon) | 전 (흰 그림, 익는 색은 코드가 입힘. 레시피마다 다르면 좋음) | 320x320 | 할 일 |
+| scenes/kitchen/minigames/pan_fry_minigame.tscn (Spatula) | 뒤집개 (위에서 본 모습, 마우스를 따라다니다 위로 휙 올려 전을 뒤집는다. 지금은 회색 막대) | 120x27 (원본 40x9 안팎) | 할 일 |
+| scenes/kitchen/minigames/pan_fry_minigame.tscn (Batter) | 펴지는 반죽은 코드가 동그라미와 소용돌이 줄로 그린다 (그림 필요 없음, 색만 raw_color·spiral_ring_color 로 조절) | - | 참고 |
 | scenes/kitchen/minigames/pan_fry_minigame.tscn (Plate, DoneTemplate) | 접시 / 접시 위 작은 전 | 340x120 / 64x64 | 선택 |
 | scenes/kitchen/minigames/pan_fry_minigame.tscn (DonenessBar) | 익힘 막대 | 600x32 | 선택 |
 | scenes/kitchen/minigames/roll_minigame.tscn (Pan, Handle) | 위에서 본 네모난 계란말이 팬 | 800x400 + 손잡이 | 할 일 |

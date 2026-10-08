@@ -16,7 +16,7 @@ count = 4
 script = ExtResource("14_cook_step")
 type = 3
 subject_name = "버섯전"
-count = 4
+count = 1
 speed = 1.1
 secret_end = 0.45
 

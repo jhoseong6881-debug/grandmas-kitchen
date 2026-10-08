@@ -135,6 +135,15 @@ offset_bottom = 630.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_jeon")
 
+[node name="Batter" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 800.0
+offset_top = 310.0
+offset_right = 1120.0
+offset_bottom = 630.0
+mouse_filter = 2
+
 [node name="Sizzle" type="CPUParticles2D" parent="."]
 position = Vector2(960, 470)
 amount = 20
@@ -245,6 +254,15 @@ offset_right = 4.0
 offset_bottom = 42.0
 mouse_filter = 2
 
+[node name="Spatula" type="ColorRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_right = 120.0
+offset_bottom = 27.0
+mouse_filter = 2
+color = Color(0.72, 0.72, 0.76, 1)
+
 [node name="PerfectStreakLabel" type="Label" parent="."]
 unique_name_in_owner = true
 layout_mode = 0
@@ -291,7 +309,7 @@ offset_bottom = -100.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_font_sizes/font_size = 36
-text = "전이 노릇노릇 금색이 되면 눌러서 뒤집어요 (클릭 / 스페이스 / Ⓐ)"
+text = "반죽을 빙글빙글 펴고, 노릇해지면 뒤집개를 위로 휙! (마우스 / 스틱·방향키 / Ⓐ)"
 horizontal_alignment = 1
 vertical_alignment = 1
 
