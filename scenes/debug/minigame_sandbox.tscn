@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://bqxg865whu213"]
 
 [ext_resource type="Script" uid="uid://4i50nkjp22rb" path="res://scripts/debug/minigame_sandbox.gd" id="1_sandbox"]
-[ext_resource type="Resource" uid="uid://bonr2x1lflbvm" path="res://data/recipes/carrot_egg_stir_fry.tres" id="2_recipe"]
-[ext_resource type="Resource" path="res://data/requests/fine_chop.tres" id="3_request"]
+[ext_resource type="Resource" uid="uid://bkwilv0h65gjm" path="res://data/recipes/acorn_honey_gangjeong.tres" id="2_1qmmx"]
+[ext_resource type="Resource" uid="uid://cy4j60ougv7or" path="res://data/requests/fine_chop.tres" id="3_request"]
 [ext_resource type="PackedScene" uid="uid://x3ef510qot4e" path="res://scenes/kitchen/minigames/chop_minigame.tscn" id="10_chop"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/stir_fry_minigame.tscn" id="11_stir_fry"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/minigames/pan_fry_minigame.tscn" id="13_pan_fry"]
@@ -20,7 +20,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_sandbox")
-recipe = ExtResource("2_recipe")
+recipe = ExtResource("2_1qmmx")
 request = ExtResource("3_request")
 minigame_scenes = Dictionary[int, PackedScene]({
 0: ExtResource("10_chop"),

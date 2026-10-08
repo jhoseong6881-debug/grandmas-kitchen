@@ -1,11 +1,10 @@
-[gd_resource type="Resource" script_class="PhoneBook" format=3]
+[gd_resource type="Resource" script_class="PhoneBook" format=3 uid="uid://bc57vxgvf3fkb"]
 
-[ext_resource type="Script" path="res://scripts/data/phone_book.gd" id="1_book"]
-[ext_resource type="Script" path="res://scripts/data/phone_message.gd" id="2_message"]
+[ext_resource type="Script" uid="uid://dknak45pesi3n" path="res://scripts/data/phone_book.gd" id="1_book"]
+[ext_resource type="Script" uid="uid://j2r43c0ke6ub" path="res://scripts/data/phone_message.gd" id="2_message"]
 
 [sub_resource type="Resource" id="PhoneMessage_1"]
 script = ExtResource("2_message")
-night = 4
 sender = "팀 단톡방"
 messages = Array[String](["팀장: 다들 주말 잘 보내요~", "팀장: 아, {name} 씨. 복귀 날짜 정해지면 알려 줘요."])
 after_text = "…답장은 내일 하기로 했다."

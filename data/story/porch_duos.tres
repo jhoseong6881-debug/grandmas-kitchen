@@ -1,48 +1,8 @@
-[gd_resource type="Resource" script_class="DuoTalkBook" format=3]
+[gd_resource type="Resource" script_class="DuoTalkBook" format=3 uid="uid://bjn1eefngpkxg"]
 
-[ext_resource type="Script" path="res://scripts/data/duo_talk_book.gd" id="1_book"]
-[ext_resource type="Script" path="res://scripts/data/guest_duo_talk.gd" id="2_talk"]
-[ext_resource type="Script" path="res://scripts/data/duo_line.gd" id="3_line"]
-
-[sub_resource type="Resource" id="Line_1"]
-script = ExtResource("3_line")
-speaker = &"rabbit"
-text = "…"
-
-[sub_resource type="Resource" id="Line_2"]
-script = ExtResource("3_line")
-speaker = &"squirrel"
-text = "…"
-
-[sub_resource type="Resource" id="Line_3"]
-script = ExtResource("3_line")
-speaker = &"rabbit"
-expression = &"surprised"
-text = "저, 저기… 도토리 좋아해요?"
-
-[sub_resource type="Resource" id="Line_4"]
-script = ExtResource("3_line")
-speaker = &"squirrel"
-text = "…네. …당근은요?"
-
-[sub_resource type="Resource" id="Line_5"]
-script = ExtResource("3_line")
-speaker = &"rabbit"
-expression = &"happy"
-text = "좋아해요! …(둘 다 고개를 푹 숙인다)"
-
-[sub_resource type="Resource" id="Line_6"]
-script = ExtResource("3_line")
-speaker = &"squirrel"
-expression = &"happy"
-text = "…(작게) 다음에, 바꿔 먹어요."
-
-[sub_resource type="Resource" id="Talk_1"]
-script = ExtResource("2_talk")
-id = &"duo_rabbit_squirrel_shy"
-open_day = 2
-guest_ids = Array[StringName]([&"rabbit", &"squirrel"])
-lines = Array[ExtResource("3_line")]([SubResource("Line_1"), SubResource("Line_2"), SubResource("Line_3"), SubResource("Line_4"), SubResource("Line_5"), SubResource("Line_6")])
+[ext_resource type="Script" uid="uid://drgcbfxa4sj2q" path="res://scripts/data/duo_talk_book.gd" id="1_book"]
+[ext_resource type="Script" uid="uid://tvsuqap5t5w1" path="res://scripts/data/guest_duo_talk.gd" id="2_talk"]
+[ext_resource type="Script" uid="uid://cekufjs6tuyj" path="res://scripts/data/duo_line.gd" id="3_line"]
 
 [sub_resource type="Resource" id="Line_7"]
 script = ExtResource("3_line")
@@ -119,6 +79,151 @@ requires_seen_chapters = Array[StringName]([&"squirrel_spring_1"])
 ends_after_chapters = Array[StringName]([&"squirrel_spring_2"])
 lines = Array[ExtResource("3_line")]([SubResource("Line_12"), SubResource("Line_13"), SubResource("Line_14"), SubResource("Line_15"), SubResource("Line_16")])
 
+[sub_resource type="Resource" id="Line_23"]
+script = ExtResource("3_line")
+speaker = &"hedgehog"
+text = "…곰. 밤마다 쿵쿵거리는 거, 너지."
+
+[sub_resource type="Resource" id="Line_24"]
+script = ExtResource("3_line")
+speaker = &"bear"
+expression = &"surprised"
+text = "쉿! …못 들은 걸로 해 줘. 평상 다리가 영 시원찮아서."
+
+[sub_resource type="Resource" id="Line_25"]
+script = ExtResource("3_line")
+speaker = &"hedgehog"
+text = "…삭은 나무로는 안 된다. 내 원목 하나 남았다. 내일 가져가라."
+
+[sub_resource type="Resource" id="Line_26"]
+script = ExtResource("3_line")
+speaker = &"bear"
+expression = &"happy"
+text = "고마워, 고슴도치. 음~ 밥 한 그릇 살게."
+
+[sub_resource type="Resource" id="Line_27"]
+script = ExtResource("3_line")
+speaker = &"hedgehog"
+text = "…밥은 여기서 먹는 거다. 흥."
+
+[sub_resource type="Resource" id="Talk_5"]
+script = ExtResource("2_talk")
+id = &"duo_hedgehog_bear_porch"
+open_day = 4
+guest_ids = Array[StringName]([&"hedgehog", &"bear"])
+requires_seen_chapters = Array[StringName]([&"bear_spring_1"])
+ends_after_chapters = Array[StringName]([&"bear_spring_2"])
+lines = Array[ExtResource("3_line")]([SubResource("Line_23"), SubResource("Line_24"), SubResource("Line_25"), SubResource("Line_26"), SubResource("Line_27")])
+
+[sub_resource type="Resource" id="Line_32"]
+script = ExtResource("3_line")
+speaker = &"hen"
+text = "꼬꼬! 토끼야, 요즘 너희 굴에서 아침마다 탁탁탁 소리 나더라?"
+
+[sub_resource type="Resource" id="Line_33"]
+script = ExtResource("3_line")
+speaker = &"rabbit"
+expression = &"surprised"
+text = "드, 들렸어요?"
+
+[sub_resource type="Resource" id="Line_34"]
+script = ExtResource("3_line")
+speaker = &"hen"
+expression = &"happy"
+text = "아침 당번이 모르는 소리가 어디 있니! 박자가 날마다 좋아지던데? 호호."
+
+[sub_resource type="Resource" id="Line_35"]
+script = ExtResource("3_line")
+speaker = &"rabbit"
+expression = &"happy"
+text = "…정말요? 할머니 박자 같아요?"
+
+[sub_resource type="Resource" id="Line_36"]
+script = ExtResource("3_line")
+speaker = &"hen"
+expression = &"happy"
+text = "그럼! 탁, 탁, 탁. 꼭 네 할머니 부엌 같았어."
+
+[sub_resource type="Resource" id="Talk_7"]
+script = ExtResource("2_talk")
+id = &"duo_hen_rabbit_practice"
+open_day = 6
+guest_ids = Array[StringName]([&"hen", &"rabbit"])
+requires_seen_chapters = Array[StringName]([&"rabbit_spring_2"])
+ends_after_chapters = Array[StringName]([&"rabbit_spring_3"])
+lines = Array[ExtResource("3_line")]([SubResource("Line_32"), SubResource("Line_33"), SubResource("Line_34"), SubResource("Line_35"), SubResource("Line_36")])
+
+[sub_resource type="Resource" id="Line_28"]
+script = ExtResource("3_line")
+speaker = &"bear"
+expression = &"happy"
+text = "음~ 병아리 나왔다며? 축하해, 암탉."
+
+[sub_resource type="Resource" id="Line_29"]
+script = ExtResource("3_line")
+speaker = &"hen"
+expression = &"happy"
+text = "꼬꼬! 고마워. 근데 곰, 너는 아직 오지 마. 애들이 너 보면 놀라."
+
+[sub_resource type="Resource" id="Line_30"]
+script = ExtResource("3_line")
+speaker = &"bear"
+expression = &"sad"
+text = "…나 이렇게 순한데."
+
+[sub_resource type="Resource" id="Line_31"]
+script = ExtResource("3_line")
+speaker = &"hen"
+expression = &"happy"
+text = "덩치가 안 순하잖아! …대신 막내 좀 크면 평상에 데려와서 보여 줄게."
+
+[sub_resource type="Resource" id="Talk_6"]
+script = ExtResource("2_talk")
+id = &"duo_bear_hen_chicks"
+open_day = 5
+guest_ids = Array[StringName]([&"bear", &"hen"])
+requires_seen_chapters = Array[StringName]([&"hen_spring_2"])
+lines = Array[ExtResource("3_line")]([SubResource("Line_28"), SubResource("Line_29"), SubResource("Line_30"), SubResource("Line_31")])
+
+[sub_resource type="Resource" id="Line_1"]
+script = ExtResource("3_line")
+speaker = &"rabbit"
+text = "…"
+
+[sub_resource type="Resource" id="Line_2"]
+script = ExtResource("3_line")
+speaker = &"squirrel"
+text = "…"
+
+[sub_resource type="Resource" id="Line_3"]
+script = ExtResource("3_line")
+speaker = &"rabbit"
+expression = &"surprised"
+text = "저, 저기… 도토리 좋아해요?"
+
+[sub_resource type="Resource" id="Line_4"]
+script = ExtResource("3_line")
+speaker = &"squirrel"
+text = "…네. …당근은요?"
+
+[sub_resource type="Resource" id="Line_5"]
+script = ExtResource("3_line")
+speaker = &"rabbit"
+expression = &"happy"
+text = "좋아해요! …(둘 다 고개를 푹 숙인다)"
+
+[sub_resource type="Resource" id="Line_6"]
+script = ExtResource("3_line")
+speaker = &"squirrel"
+expression = &"happy"
+text = "…(작게) 다음에, 바꿔 먹어요."
+
+[sub_resource type="Resource" id="Talk_1"]
+script = ExtResource("2_talk")
+id = &"duo_rabbit_squirrel_shy"
+guest_ids = Array[StringName]([&"rabbit", &"squirrel"])
+lines = Array[ExtResource("3_line")]([SubResource("Line_1"), SubResource("Line_2"), SubResource("Line_3"), SubResource("Line_4"), SubResource("Line_5"), SubResource("Line_6")])
+
 [sub_resource type="Resource" id="Line_17"]
 script = ExtResource("3_line")
 speaker = &"hen"
@@ -159,112 +264,6 @@ id = &"duo_hen_squirrel_grandma"
 open_day = 3
 guest_ids = Array[StringName]([&"hen", &"squirrel"])
 lines = Array[ExtResource("3_line")]([SubResource("Line_17"), SubResource("Line_18"), SubResource("Line_19"), SubResource("Line_20"), SubResource("Line_21"), SubResource("Line_22")])
-
-[sub_resource type="Resource" id="Line_23"]
-script = ExtResource("3_line")
-speaker = &"hedgehog"
-text = "…곰. 밤마다 쿵쿵거리는 거, 너지."
-
-[sub_resource type="Resource" id="Line_24"]
-script = ExtResource("3_line")
-speaker = &"bear"
-expression = &"surprised"
-text = "쉿! …못 들은 걸로 해 줘. 평상 다리가 영 시원찮아서."
-
-[sub_resource type="Resource" id="Line_25"]
-script = ExtResource("3_line")
-speaker = &"hedgehog"
-text = "…삭은 나무로는 안 된다. 내 원목 하나 남았다. 내일 가져가라."
-
-[sub_resource type="Resource" id="Line_26"]
-script = ExtResource("3_line")
-speaker = &"bear"
-expression = &"happy"
-text = "고마워, 고슴도치. 음~ 밥 한 그릇 살게."
-
-[sub_resource type="Resource" id="Line_27"]
-script = ExtResource("3_line")
-speaker = &"hedgehog"
-text = "…밥은 여기서 먹는 거다. 흥."
-
-[sub_resource type="Resource" id="Talk_5"]
-script = ExtResource("2_talk")
-id = &"duo_hedgehog_bear_porch"
-open_day = 4
-guest_ids = Array[StringName]([&"hedgehog", &"bear"])
-requires_seen_chapters = Array[StringName]([&"bear_spring_1"])
-ends_after_chapters = Array[StringName]([&"bear_spring_2"])
-lines = Array[ExtResource("3_line")]([SubResource("Line_23"), SubResource("Line_24"), SubResource("Line_25"), SubResource("Line_26"), SubResource("Line_27")])
-
-[sub_resource type="Resource" id="Line_28"]
-script = ExtResource("3_line")
-speaker = &"bear"
-expression = &"happy"
-text = "음~ 병아리 나왔다며? 축하해, 암탉."
-
-[sub_resource type="Resource" id="Line_29"]
-script = ExtResource("3_line")
-speaker = &"hen"
-expression = &"happy"
-text = "꼬꼬! 고마워. 근데 곰, 너는 아직 오지 마. 애들이 너 보면 놀라."
-
-[sub_resource type="Resource" id="Line_30"]
-script = ExtResource("3_line")
-speaker = &"bear"
-expression = &"sad"
-text = "…나 이렇게 순한데."
-
-[sub_resource type="Resource" id="Line_31"]
-script = ExtResource("3_line")
-speaker = &"hen"
-expression = &"happy"
-text = "덩치가 안 순하잖아! …대신 막내 좀 크면 평상에 데려와서 보여 줄게."
-
-[sub_resource type="Resource" id="Talk_6"]
-script = ExtResource("2_talk")
-id = &"duo_bear_hen_chicks"
-open_day = 5
-guest_ids = Array[StringName]([&"bear", &"hen"])
-requires_seen_chapters = Array[StringName]([&"hen_spring_2"])
-lines = Array[ExtResource("3_line")]([SubResource("Line_28"), SubResource("Line_29"), SubResource("Line_30"), SubResource("Line_31")])
-
-[sub_resource type="Resource" id="Line_32"]
-script = ExtResource("3_line")
-speaker = &"hen"
-text = "꼬꼬! 토끼야, 요즘 너희 굴에서 아침마다 탁탁탁 소리 나더라?"
-
-[sub_resource type="Resource" id="Line_33"]
-script = ExtResource("3_line")
-speaker = &"rabbit"
-expression = &"surprised"
-text = "드, 들렸어요?"
-
-[sub_resource type="Resource" id="Line_34"]
-script = ExtResource("3_line")
-speaker = &"hen"
-expression = &"happy"
-text = "아침 당번이 모르는 소리가 어디 있니! 박자가 날마다 좋아지던데? 호호."
-
-[sub_resource type="Resource" id="Line_35"]
-script = ExtResource("3_line")
-speaker = &"rabbit"
-expression = &"happy"
-text = "…정말요? 할머니 박자 같아요?"
-
-[sub_resource type="Resource" id="Line_36"]
-script = ExtResource("3_line")
-speaker = &"hen"
-expression = &"happy"
-text = "그럼! 탁, 탁, 탁. 꼭 네 할머니 부엌 같았어."
-
-[sub_resource type="Resource" id="Talk_7"]
-script = ExtResource("2_talk")
-id = &"duo_hen_rabbit_practice"
-open_day = 6
-guest_ids = Array[StringName]([&"hen", &"rabbit"])
-requires_seen_chapters = Array[StringName]([&"rabbit_spring_2"])
-ends_after_chapters = Array[StringName]([&"rabbit_spring_3"])
-lines = Array[ExtResource("3_line")]([SubResource("Line_32"), SubResource("Line_33"), SubResource("Line_34"), SubResource("Line_35"), SubResource("Line_36")])
 
 [sub_resource type="Resource" id="Line_37"]
 script = ExtResource("3_line")

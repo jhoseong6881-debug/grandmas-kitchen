@@ -131,8 +131,8 @@
 
 ## 배경음악
 봄 낮·저녁 장면(텃밭, 버섯 원목, 부엌, 평상)은 날마다 곡이 바뀐다: data/music/spring_daily_music.tres 의 Tracks 를 1일째부터 차례로, 하루 동안은 한 곡. 곡을 더하려면 Tracks 칸에 넣기만 하면 된다.
-봄비 오는 날 낮 장면은 봄비 곡(spring_rain.mp3), 비가 그친 저녁 평상은 그날 곡. 장터와 봄 잔치는 언제나 각자 곡.
-장면마다 인스펙터의 **Music** 칸에 곡을 넣는다 (타이틀, 프롤로그, 텃밭, 버섯 원목, 장터, 부엌, 평상, 봄 잔치).
+봄비 오는 날 낮 장면은 봄비 곡(spring_rain.mp3). 저녁 평상은 날짜·날씨와 무관하게 평상 전용곡(porch_evening.mp3, data/music/porch_daily_music.tres, 트랙 1개)만 튼다 (2026-10-08). 장터와 봄 잔치는 언제나 각자 곡.
+장면마다 인스펙터의 **Music**(또는 Daily Music) 칸에 곡을 넣는다 (타이틀, 프롤로그, 텃밭, 버섯 원목, 장터, 부엌, 평상, 봄 잔치).
 비어 있으면 앞 장면 음악이 서서히 꺼진다. 같은 곡이면 끊기지 않고 이어진다. 곡은 끝나면 처음부터 다시 튼다.
 파일은 `assets/audio/music/` 에 영어 이름으로 넣는다.
 
@@ -147,16 +147,11 @@
 | spring_feast_night.mp3 | 봄 잔치 (15일째 저녁) | Suno AI (v6) | Pro | 2026-10-04 | japanese anime slice of life soundtrack, warm and joyful evening celebration, friends smiling around a table in a cozy countryside garden as warm lights come on, light acoustic guitar strumming and bright piano, playful pizzicato strings, cheerful clarinet melody, soft shaker and gentle hand percussion, relaxed and happy, calm but festive, bright major key, 88 BPM, loopable video game background music / 제외: vocals, singing, sad, melancholic, wistful, nostalgic, minor key, dramatic, loud drums, EDM, rock |
 | title_theme.mp3 | 처음 화면 (scenes/ui/title.tscn 의 Music) | Suno AI | Pro (사용자 확인 2026-10-07) | 2026-10-07 | japanese anime slice of life soundtrack, warm and welcoming title screen theme for a cozy cooking game, a small grandmother's kitchen at the edge of a spring forest in soft morning light, gentle acoustic guitar fingerpicking and soft piano, tender clarinet melody, light pizzicato strings, delicate music box sparkles, homey and heartwarming, peaceful and inviting, diatonic major key, 92 BPM, loopable video game background music / 제외: vocals, singing, drums, EDM, rock, electric guitar, sad, minor key, dramatic, epic, orchestral swell |
 | story_theme.mp3 | 이야기 장면: 프롤로그, 밤의 할머니 회상, 계절 시작 이야기 (scenes/story/prologue.tscn 의 Music). 참고 느낌: 스타듀밸리 "Night Market" (재즈 카페·다방 느낌은 빼기로 함) | Suno AI | Pro (사용자 확인 2026-10-07) | 2026-10-07 | slow dreamy nighttime indie game soundtrack for a quiet story scene, soft felt piano, gentle music box, quiet plucked acoustic guitar, very soft warm pad in the far background, floating and calm, slightly wistful, cozy and a little mysterious like a small village at night, unobtrusive background for reading, simple repeating melody, diatonic major key, 70 BPM, loopable video game background music / 제외: vocals, singing, saxophone, electric piano, jazz, lounge, cafe, smooth jazz, retro, 80s, elevator music, city pop, bossa nova, drums, EDM, rock, electric guitar, upbeat, sentimental, emotional climax, swelling strings, choir, dramatic, epic, dark, scary, heavy (실제로 쓴 프롬프트, 사용자 확인) |
+| porch_evening.mp3 | 저녁 평상 전용곡. 원래 이름 Starlit Porch Stories (scenes/porch/porch.tscn 의 daily_music → data/music/porch_daily_music.tres, 트랙 1개라 날마다 같은 곡) | Suno AI | Pro (사용자 확인 2026-10-09) | 2026-10-08 | (직접 적기 — 제안한 프롬프트와 똑같이 썼는지 확인 필요) |
 
 - Suno 무료 요금제로 만든 곡은 상업적으로 쓸 수 없고, 나중에 유료로 바꿔도 소급되지 않는다.
 - 스팀 등록 때 "AI로 만든 콘텐츠"(배경음악)를 밝힌다.
 
 ### 아직 없는 곡
-2026-10-08: 저녁 평상 전용곡 (porch_evening.mp3 예정). 지금은 저녁 평상에 그날 봄 곡(spring_theme/2/3)이 그대로 이어지는데, 평상만의 차분한 곡을 따로 만들기로 함.
-Suno 프롬프트 (아직 생성 전, 직접 Suno에 넣어 보고 마음에 들면 결과를 알려 주면 기록 남김):
-`japanese anime slice of life soundtrack, warm quiet evening on a wooden porch outside a cozy countryside kitchen after closing up, sharing stories with old friends under a starlit sky, soft acoustic guitar fingerpicking and warm felt piano, tender clarinet melody, light pizzicato strings, soft music box touches, calm and cozy, peaceful and a little sleepy, content and heartwarming, bright major key, 76 BPM, loopable video game background music`
-제외: `vocals, singing, drums, EDM, rock, electric guitar, sad, melancholic, minor key, dramatic, epic, orchestral swell`
-
-곡이 나오면: 1) `assets/audio/music/porch_evening.mp3` 로 넣기 2) `scenes/porch/porch.tscn` 인스펙터의 **Music** 칸에 끼워 넣기 3) 이 문서의 음악 출처 표에 기록.
-
+없음 (2026-10-08 저녁 평상 전용곡 porch_evening.mp3 를 넣었다).
 프롬프트 쓸 때: 동양 전통 악기나 '등불 축제' 같은 말은 넣지 않는다 (중국풍으로 나옴). 제외 칸에도 그런 단어는 넣지 않는다. 장면마다 다른 곡을 원하면 그 장면의 Music 칸만 바꾸면 된다 (점심 부엌 2~3곡 돌려 틀기도 생각 중).

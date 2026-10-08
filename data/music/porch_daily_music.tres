@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="DailyMusic" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/daily_music.gd" id="1_music"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/porch_evening.mp3" id="2_track"]
+
+[resource]
+script = ExtResource("1_music")
+tracks = Array[AudioStream]([ExtResource("2_track")])

@@ -31,7 +31,8 @@ text = "당근은 가늘게 채 썬다"
 [sub_resource type="Resource" id="NoteLine_2"]
 script = ExtResource("16_note_line")
 kind = 2
-text = "달군 팬에 차례로 넣는다\n   {blank}"
+text = "달군 팬에 차례로 넣는다
+   {blank}"
 wrong_line = "음… 계란이 먼저면 당근이 설익겠는데."
 order_answer = Array[ExtResource("2_ingredient")]([ExtResource("17_oil"), ExtResource("3_carrot"), ExtResource("4_egg")])
 readable_count = 1

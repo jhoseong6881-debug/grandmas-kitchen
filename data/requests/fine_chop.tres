@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="GuestRequest" format=3]
+[gd_resource type="Resource" script_class="GuestRequest" format=3 uid="uid://cy4j60ougv7or"]
 
-[ext_resource type="Script" path="res://scripts/data/guest_request.gd" id="1_request"]
+[ext_resource type="Script" uid="uid://dapbk07b3mouu" path="res://scripts/data/guest_request.gd" id="1_request"]
 
 [resource]
 script = ExtResource("1_request")
@@ -11,6 +11,5 @@ thanks_line = "와, 곱게도 다졌네요!"
 casual_line = "오늘은 잘게 다져 줘."
 casual_thanks_line = "곱게도 다졌네!"
 use_new_minigame = true
-new_minigame_type = 8
 action_name = "잘게 다지기"
 count_bonus = 1

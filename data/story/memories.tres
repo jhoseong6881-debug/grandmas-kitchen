@@ -1,9 +1,9 @@
-[gd_resource type="Resource" script_class="MemoryBook" format=3]
+[gd_resource type="Resource" script_class="MemoryBook" format=3 uid="uid://cbfgnyj21rr6h"]
 
-[ext_resource type="Script" path="res://scripts/data/memory_book.gd" id="1_book"]
-[ext_resource type="Script" path="res://scripts/data/grandma_memory.gd" id="2_memory"]
-[ext_resource type="Script" path="res://scripts/data/story.gd" id="3_story"]
-[ext_resource type="Script" path="res://scripts/data/story_chapter.gd" id="4_chapter"]
+[ext_resource type="Script" uid="uid://rlwsfalhnp1n" path="res://scripts/data/memory_book.gd" id="1_book"]
+[ext_resource type="Script" uid="uid://wbeehx0064gh" path="res://scripts/data/grandma_memory.gd" id="2_memory"]
+[ext_resource type="Script" uid="uid://ksjejo13xfkx" path="res://scripts/data/story.gd" id="3_story"]
+[ext_resource type="Script" uid="uid://h2aojxuhiml4" path="res://scripts/data/story_chapter.gd" id="4_chapter"]
 
 [sub_resource type="Resource" id="Chapter_1"]
 script = ExtResource("4_chapter")
@@ -18,7 +18,6 @@ chapters = Array[ExtResource("4_chapter")]([SubResource("Chapter_1")])
 [sub_resource type="Resource" id="Memory_1"]
 script = ExtResource("2_memory")
 id = &"first_knife"
-notes_needed = 3
 story = SubResource("Story_1")
 
 [sub_resource type="Resource" id="Chapter_2"]
@@ -73,4 +72,3 @@ story = SubResource("Story_4")
 [resource]
 script = ExtResource("1_book")
 memories = Array[ExtResource("2_memory")]([SubResource("Memory_1"), SubResource("Memory_2"), SubResource("Memory_3"), SubResource("Memory_4")])
-dream_text = "…잠결에, 오래된 기억 하나가 떠올랐다."

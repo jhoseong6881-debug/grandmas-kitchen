@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/notebook_button.tscn" id="90_notebook_button"]
 [ext_resource type="PackedScene" path="res://scenes/porch/recipe_note_book.tscn" id="91_note_book"]
 [ext_resource type="Script" path="res://scripts/porch/porch_scenery.gd" id="4_scenery"]
+[ext_resource type="Resource" path="res://data/music/porch_daily_music.tres" id="5_music"]
 
 [node name="Porch" type="Control"]
 layout_mode = 3
@@ -15,6 +16,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_porch")
+daily_music = ExtResource("5_music")
 
 [node name="Sky" type="ColorRect" parent="."]
 layout_mode = 1
