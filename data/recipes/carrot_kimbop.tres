@@ -4,6 +4,8 @@
 [ext_resource type="Resource" uid="uid://cbhyfvk1vplmf" path="res://data/ingredients/carrot.tres" id="2_0ar3d"]
 [ext_resource type="Script" uid="uid://fbx0a77slaix" path="res://scripts/data/recipe.gd" id="2_ae6f3"]
 [ext_resource type="Script" uid="uid://che4nl0g5vff0" path="res://scripts/data/cook_step.gd" id="13_cook_step"]
+[ext_resource type="Script" uid="uid://bsjiel7rxyc3e" path="res://scripts/data/note_puzzle.gd" id="np_script"]
+[ext_resource type="Script" uid="uid://bdhro27kp8ykp" path="res://scripts/data/note_puzzle_line.gd" id="nl_script"]
 
 [sub_resource type="Resource" id="CookStep_1"]
 script = ExtResource("13_cook_step")
@@ -32,6 +34,31 @@ hit_sound = &"chop_kimbap"
 secret_start = 0.3
 secret_end = 0.7
 
+[sub_resource type="Resource" id="NoteLine_1"]
+script = ExtResource("nl_script")
+text = "밥에 소금 한 꼬집, 고슬고슬 식힌다"
+
+[sub_resource type="Resource" id="NoteLine_2"]
+script = ExtResource("nl_script")
+text = "김 위에 밥을 얇게 펴고 당근을 올린다"
+
+[sub_resource type="Resource" id="NoteLine_3"]
+script = ExtResource("nl_script")
+text = "꼭꼭 눌러 가며 돌돌 만다"
+
+[sub_resource type="Resource" id="NoteLine_4"]
+script = ExtResource("nl_script")
+kind = 1
+text = "썰기 전에 칼에 {blank}을 바른다"
+choices = Array[String](["물", "참기름", "꿀"])
+answer_index = 1
+wrong_line = "음… 칼에 밥알이 다 달라붙겠는데."
+
+[sub_resource type="Resource" id="NotePuzzle_1"]
+script = ExtResource("np_script")
+lines = Array[ExtResource("nl_script")]([SubResource("NoteLine_1"), SubResource("NoteLine_2"), SubResource("NoteLine_3"), SubResource("NoteLine_4")])
+hint = "칼에 기름칠을 해야 김밥이 안 뭉개지지."
+
 [resource]
 script = ExtResource("2_ae6f3")
 id = &"carrot_kimbop"
@@ -43,3 +70,4 @@ secret_teller_id = &"rabbit"
 secret_reveal_line = "할머니는 김밥 썰 때 칼을 꼭 한가운데로 내리셨어요. 그래야 속이 안 터진대요."
 grandma_taste_line = "…이 맛이에요. 소풍 가는 날 할머니가 싸 주던 김밥. {name}, 고마워요."
 metadata/_custom_type_script = "uid://fbx0a77slaix"
+note_puzzle = SubResource("NotePuzzle_1")

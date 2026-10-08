@@ -5,6 +5,8 @@
 [ext_resource type="Resource" path="res://data/ingredients/acorn.tres" id="3_acorn"]
 [ext_resource type="Script" uid="uid://che4nl0g5vff0" path="res://scripts/data/cook_step.gd" id="13_cook_step"]
 [ext_resource type="Resource" path="res://data/coatings/seasoning.tres" id="14_seasoning"]
+[ext_resource type="Script" uid="uid://bsjiel7rxyc3e" path="res://scripts/data/note_puzzle.gd" id="np_script"]
+[ext_resource type="Script" uid="uid://bdhro27kp8ykp" path="res://scripts/data/note_puzzle_line.gd" id="nl_script"]
 
 [sub_resource type="Resource" id="CookStep_1"]
 script = ExtResource("13_cook_step")
@@ -23,6 +25,27 @@ count = 6
 secret_start = 0.3
 secret_end = 0.7
 
+[sub_resource type="Resource" id="NoteLine_1"]
+script = ExtResource("nl_script")
+text = "도토리묵은 도톰하게 썬다"
+
+[sub_resource type="Resource" id="NoteLine_2"]
+script = ExtResource("nl_script")
+text = "간장, 참기름, 깨를 섞어 양념을 만든다"
+
+[sub_resource type="Resource" id="NoteLine_3"]
+script = ExtResource("nl_script")
+kind = 1
+text = "양념은 {blank} 살살 버무린다"
+choices = Array[String](["숟가락으로", "손으로", "거품기로"])
+answer_index = 1
+wrong_line = "음… 묵이 다 부서지겠는데."
+
+[sub_resource type="Resource" id="NotePuzzle_1"]
+script = ExtResource("np_script")
+lines = Array[ExtResource("nl_script")]([SubResource("NoteLine_1"), SubResource("NoteLine_2"), SubResource("NoteLine_3")])
+hint = "묵은 여려서 손으로 살살 달래야 해."
+
 [resource]
 script = ExtResource("1_recipe")
 id = &"acorn_jelly_muchim"
@@ -35,3 +58,4 @@ secret_hint = "양념은 묵 한가운데에 살살"
 secret_teller_id = &"squirrel"
 secret_reveal_line = "…할머니는 묵에 양념 얹을 때, 주걱을 꼭 한가운데로 살살 지나가셨어요. 묵이 안 부서지게요."
 grandma_taste_line = "…할머니 묵 맛이에요. …다 먹기 아까워요."
+note_puzzle = SubResource("NotePuzzle_1")

@@ -130,4 +130,4 @@
 | scenes/ui/goal_button.tscn → scripts/ui/goal_button.gd (Board Icon) | 계절 목표 버튼 아이콘: 과녁에 화살 (누르면 목표판이 크게 뜸). 지금은 코드로 그린 도트 과녁 | 96x96 (원본 32x32, 배경 투명) | 할 일 |
 | scenes/kitchen/note_puzzle_board.tscn (Paper) | 번진 할머니 노트 퍼즐 창의 노트 종이 (왼쪽, 손글씨 줄을 게임이 올림). 지금은 크림색 상자. 펼친 노트 그림(recipe_note_book)과 맞추면 좋음 | 792x672 | 할 일 |
 | scripts/kitchen/note_puzzle_board.gd (번진 자국) | 노트의 번진 잉크 자국 몇 가지 (지금은 보라·주황 단색 띠) | 약 160x48 | 선택 |
-| data/pantry/*.tres (Icon) | 노트 퍼즐 재료 카드에 쓰는 부엌 기본양념 아이콘. 지금은 기름(cooking_oil)만 있음 (노란 네모). 앞으로 소금·참기름·간장·깨·물·밀가루·도토리가루 | 48x48 (원본 16x16) | 할 일 |
+| data/pantry/*.tres (Icon) | 노트 퍼즐 재료 카드에 쓰는 부엌 기본양념 아이콘. 지금 쓰는 것: 기름(cooking_oil), 물(water), 도토리가루(acorn_flour), 밀가루(flour). 모두 단색 네모 | 48x48 (원본 16x16) | 할 일 |

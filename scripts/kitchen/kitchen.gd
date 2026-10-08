@@ -148,6 +148,8 @@ var _cook_text: String = ""
 var _next_guest_text: String = ""
 var _lunchbox_picker: LunchboxPicker
 var _note_puzzle_board: NotePuzzleBoard
+## 이번 점심에 노트 퍼즐을 이미 풀었는지 (점심 한 번에 퍼즐은 하나까지. 소풍 도시락 날처럼 여러 요리를 해도 줄줄이 나오지 않게)
+var _has_note_puzzle_today: bool = false
 ## 요리 중에 아직 남은 미니게임 단계
 var _remaining_steps: Array[CookStep] = []
 ## 이번 요리의 미니게임을 지금까지 전부 한 번도 안 틀렸는지
@@ -259,6 +261,7 @@ func _add_shop_decor() -> void:
 
 func _start_lunch() -> void:
 	_report = LunchReport.new()
+	_has_note_puzzle_today = false
 	_guests_served = 0
 	_orders_today.clear()
 	_todays_guests.clear()
@@ -736,13 +739,14 @@ func _on_cook_button_pressed() -> void:
 		_note_puzzle_board.open(current_order)
 		await _note_puzzle_board.closed
 		GameState.solve_note_puzzle(current_order.id)
+		_has_note_puzzle_today = true
 	_run_next_step()
 
 
-## 이 요리를 만들기 전에 번진 할머니 노트 퍼즐을 풀지 (아직 안 푼 퍼즐이 있고, 1일째가 아닐 때)
+## 이 요리를 만들기 전에 번진 할머니 노트 퍼즐을 풀지 (아직 안 푼 퍼즐이 있고, 1일째가 아니고, 이번 점심에 아직 안 풀었을 때)
 func _should_open_note_puzzle(recipe: Recipe) -> bool:
 	return NotePuzzleBoard.has_puzzle(recipe) and not GameState.is_note_puzzle_solved(recipe.id) \
-			and GameState.current_day >= note_puzzle_first_day
+			and GameState.current_day >= note_puzzle_first_day and not _has_note_puzzle_today
 
 
 func _on_minigame_finished(is_perfect: bool, is_grandma_taste: bool, is_request_met: bool) -> void:

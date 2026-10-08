@@ -11,8 +11,8 @@ signal closed
 
 const TITLE_FORMAT: String = "할머니 노트 · %s"
 const PROMPT_TEXT: String = "번진 칸에 들어갈 말은?"
-## 넣는 순서 안내: "번진 순서대로 팬에 넣어 봐요"
-const ORDER_PROMPT_FORMAT: String = "번진 순서대로 %s에 넣어 봐요"
+## 넣는 순서 안내: "번진 순서대로 팬에 넣어요"
+const ORDER_PROMPT_FORMAT: String = "번진 순서대로 %s에 넣어요"
 const DONE_TEXT: String = "할머니 노트를 다 읽었어요!"
 const DEFAULT_WRONG_LINE: String = "음… 할머니는 이렇게 안 하셨던 것 같은데."
 const DEFAULT_ORDER_WRONG_LINE: String = "음… 이건 조금 나중이었던 것 같은데."
@@ -172,12 +172,22 @@ func _on_card_pressed(card: Ingredient, button: Button) -> void:
 
 
 ## 틀린 카드가 톡 튀었다 제자리로 돌아온다 (그림만 움직이고 자리는 그대로).
+## 튀는 도중에 또 누르면 앞 움직임을 멈추고 원래 자리에서 다시 튄다 (카드가 제자리를 잃지 않게).
 func _hop(button: Button) -> void:
+	if button.has_meta(&"hop_tween"):
+		(button.get_meta(&"hop_tween") as Tween).kill()
+	var base_y: float = button.get_meta(&"hop_base_y", button.position.y)
+	button.position.y = base_y
+	button.set_meta(&"hop_base_y", base_y)
 	var tween: Tween = button.create_tween()
-	tween.tween_property(button, "position:y", button.position.y - card_hop_height, card_hop_duration / 2.0) \
+	button.set_meta(&"hop_tween", tween)
+	tween.tween_property(button, "position:y", base_y - card_hop_height, card_hop_duration / 2.0) \
 			.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
-	tween.tween_property(button, "position:y", button.position.y, card_hop_duration / 2.0) \
+	tween.tween_property(button, "position:y", base_y, card_hop_duration / 2.0) \
 			.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+	tween.finished.connect(func() -> void:
+		button.remove_meta(&"hop_tween")
+		button.remove_meta(&"hop_base_y"))
 
 
 # --- 공통 ---

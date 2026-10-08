@@ -6,6 +6,8 @@
 [ext_resource type="Resource" path="res://data/ingredients/honey.tres" id="4_honey"]
 [ext_resource type="Resource" path="res://data/coatings/honey.tres" id="5_honey_coating"]
 [ext_resource type="Script" uid="uid://che4nl0g5vff0" path="res://scripts/data/cook_step.gd" id="15_cook_step"]
+[ext_resource type="Script" uid="uid://bsjiel7rxyc3e" path="res://scripts/data/note_puzzle.gd" id="np_script"]
+[ext_resource type="Script" uid="uid://bdhro27kp8ykp" path="res://scripts/data/note_puzzle_line.gd" id="nl_script"]
 
 [sub_resource type="Resource" id="CookStep_1"]
 script = ExtResource("15_cook_step")
@@ -23,6 +25,27 @@ speed = 1.15
 secret_start = 0.3
 secret_end = 0.7
 
+[sub_resource type="Resource" id="NoteLine_1"]
+script = ExtResource("nl_script")
+text = "도토리는 노릇하게 볶아 식힌다"
+
+[sub_resource type="Resource" id="NoteLine_2"]
+script = ExtResource("nl_script")
+kind = 1
+text = "꿀은 숟가락으로 떠서 {blank} 늘어질 때까지 졸인다"
+choices = Array[String](["물처럼", "실처럼", "돌처럼"])
+answer_index = 1
+wrong_line = "음… 강정이 잘 안 뭉치겠는데."
+
+[sub_resource type="Resource" id="NoteLine_3"]
+script = ExtResource("nl_script")
+text = "도토리를 넣고 버무려 넓게 펴서 식힌다"
+
+[sub_resource type="Resource" id="NotePuzzle_1"]
+script = ExtResource("np_script")
+lines = Array[ExtResource("nl_script")]([SubResource("NoteLine_1"), SubResource("NoteLine_2"), SubResource("NoteLine_3")])
+hint = "숟가락으로 떠서 실이 주욱 늘어지면 됐다."
+
 [resource]
 script = ExtResource("1_recipe")
 id = &"acorn_honey_gangjeong"
@@ -34,3 +57,4 @@ secret_hint = "꿀은 조각 한가운데에"
 secret_teller_id = &"bear"
 secret_reveal_line = "강정 버무릴 땐 꿀이 조각 한가운데에 닿게 해야 한대. 할머니가 늘 그러셨어."
 grandma_taste_line = "바삭하고 달고… 할머니 강정이다. 겨울잠 자기 전에 먹던 맛."
+note_puzzle = SubResource("NotePuzzle_1")

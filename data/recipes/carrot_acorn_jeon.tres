@@ -6,6 +6,10 @@
 [ext_resource type="Resource" path="res://data/ingredients/acorn.tres" id="4_acorn"]
 [ext_resource type="Resource" path="res://data/ingredients/egg.tres" id="5_egg"]
 [ext_resource type="Script" path="res://scripts/data/cook_step.gd" id="15_cook_step"]
+[ext_resource type="Script" uid="uid://bsjiel7rxyc3e" path="res://scripts/data/note_puzzle.gd" id="np_script"]
+[ext_resource type="Script" uid="uid://bdhro27kp8ykp" path="res://scripts/data/note_puzzle_line.gd" id="nl_script"]
+[ext_resource type="Resource" path="res://data/pantry/acorn_flour.tres" id="np_acorn_flour"]
+[ext_resource type="Resource" path="res://data/ingredients/honey.tres" id="np_honey"]
 
 [sub_resource type="Resource" id="CookStep_1"]
 script = ExtResource("15_cook_step")
@@ -21,6 +25,33 @@ count = 1
 secret_start = 0.55
 secret_end = 1.0
 
+[sub_resource type="Resource" id="NoteLine_1"]
+script = ExtResource("nl_script")
+text = "당근은 잘게 다진다"
+
+[sub_resource type="Resource" id="NoteLine_2"]
+script = ExtResource("nl_script")
+kind = 2
+text = "그릇에 차례로 넣고 섞는다\n   {blank}"
+wrong_line = "음… 계란부터면 반죽이 멍울지겠는데."
+order_answer = Array[ExtResource("2_ingredient")]([ExtResource("3_carrot"), ExtResource("np_acorn_flour"), ExtResource("5_egg")])
+readable_count = 1
+extra_cards = Array[ExtResource("2_ingredient")]([ExtResource("np_honey")])
+extra_card_line = "꿀은… 전 반죽엔 안 넣으셨는데."
+container_name = "그릇"
+
+[sub_resource type="Resource" id="NoteLine_3"]
+script = ExtResource("nl_script")
+kind = 1
+text = "전은 {blank} 뒤집는다"
+choices = Array[String](["한 번만", "여러 번"])
+wrong_line = "음… 자꾸 뒤집으면 전이 울 텐데."
+
+[sub_resource type="Resource" id="NotePuzzle_1"]
+script = ExtResource("np_script")
+lines = Array[ExtResource("nl_script")]([SubResource("NoteLine_1"), SubResource("NoteLine_2"), SubResource("NoteLine_3")])
+hint = "가루랑 먼저 섞어야 반죽이 매끈하지. 그리고 자꾸 뒤집으면 전이 운다."
+
 [resource]
 script = ExtResource("1_recipe")
 id = &"carrot_acorn_jeon"
@@ -31,3 +62,4 @@ secret_hint = "전은 금색이 짙어질 때 뒤집기"
 secret_teller_id = &"rabbit"
 secret_reveal_line = "할머니 전은요, 금색이 짙어질 때까지 꾹 참았다가 뒤집으셨어요. 그래서 바삭했대요."
 grandma_taste_line = "바삭! …할머니 전이에요. 비 오는 날 냄새가 나요."
+note_puzzle = SubResource("NotePuzzle_1")

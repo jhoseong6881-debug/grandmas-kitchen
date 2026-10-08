@@ -5,6 +5,8 @@
 [ext_resource type="Resource" path="res://data/ingredients/acorn.tres" id="3_acorn"]
 [ext_resource type="Resource" path="res://data/ingredients/mushroom.tres" id="4_mushroom"]
 [ext_resource type="Script" uid="uid://che4nl0g5vff0" path="res://scripts/data/cook_step.gd" id="14_cook_step"]
+[ext_resource type="Script" uid="uid://bsjiel7rxyc3e" path="res://scripts/data/note_puzzle.gd" id="np_script"]
+[ext_resource type="Script" uid="uid://bdhro27kp8ykp" path="res://scripts/data/note_puzzle_line.gd" id="nl_script"]
 
 [sub_resource type="Resource" id="CookStep_1"]
 script = ExtResource("14_cook_step")
@@ -26,6 +28,26 @@ count = 4
 speed = 0.6
 placeholder_color = Color(0.5, 0.34, 0.24, 1)
 
+[sub_resource type="Resource" id="NoteLine_1"]
+script = ExtResource("nl_script")
+text = "밥을 짓고, 도토리묵은 길쭉하게 썬다"
+
+[sub_resource type="Resource" id="NoteLine_2"]
+script = ExtResource("nl_script")
+text = "그릇에 밥, 묵, 버섯을 차곡차곡 담는다"
+
+[sub_resource type="Resource" id="NoteLine_3"]
+script = ExtResource("nl_script")
+kind = 1
+text = "봄 국물은 {blank} 붓는다"
+choices = Array[String](["따끈하게", "차갑게"])
+wrong_line = "음… 쌀쌀한 봄엔 속이 시리겠는데."
+
+[sub_resource type="Resource" id="NotePuzzle_1"]
+script = ExtResource("np_script")
+lines = Array[ExtResource("nl_script")]([SubResource("NoteLine_1"), SubResource("NoteLine_2"), SubResource("NoteLine_3")])
+hint = "여름엔 시원하게, 쌀쌀한 봄엔 따끈하게."
+
 [resource]
 script = ExtResource("1_recipe")
 id = &"acorn_jelly_mushroom_bap"
@@ -38,3 +60,4 @@ secret_hint = "쌀은 손이 자리 한가운데에 올 때 씻기"
 secret_teller_id = &"squirrel"
 secret_reveal_line = "…할머니는 쌀 씻을 때, 손이 딱 가운데 올 때만 박박 하셨어요. 쌀이 안 깨지게요."
 grandma_taste_line = "…따뜻해요. 할머니 밥 냄새가 나요."
+note_puzzle = SubResource("NotePuzzle_1")

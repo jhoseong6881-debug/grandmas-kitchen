@@ -5,6 +5,10 @@
 [ext_resource type="Resource" path="res://data/ingredients/mushroom.tres" id="3_mushroom"]
 [ext_resource type="Resource" path="res://data/ingredients/egg.tres" id="4_egg"]
 [ext_resource type="Script" uid="uid://che4nl0g5vff0" path="res://scripts/data/cook_step.gd" id="14_cook_step"]
+[ext_resource type="Script" uid="uid://bsjiel7rxyc3e" path="res://scripts/data/note_puzzle.gd" id="np_script"]
+[ext_resource type="Script" uid="uid://bdhro27kp8ykp" path="res://scripts/data/note_puzzle_line.gd" id="nl_script"]
+[ext_resource type="Resource" path="res://data/pantry/flour.tres" id="np_flour"]
+[ext_resource type="Resource" path="res://data/pantry/water.tres" id="np_water"]
 
 [sub_resource type="Resource" id="CookStep_1"]
 script = ExtResource("14_cook_step")
@@ -20,6 +24,30 @@ count = 1
 speed = 1.1
 secret_end = 0.45
 
+[sub_resource type="Resource" id="NoteLine_1"]
+script = ExtResource("nl_script")
+text = "버섯은 도톰하게 썬다"
+
+[sub_resource type="Resource" id="NoteLine_2"]
+script = ExtResource("nl_script")
+kind = 2
+text = "버섯에 차례로 옷을 입힌다\n   {blank}"
+wrong_line = "음… 계란이 주르륵 흘러내리겠는데."
+order_answer = Array[ExtResource("2_ingredient")]([ExtResource("3_mushroom"), ExtResource("np_flour"), ExtResource("4_egg")])
+readable_count = 1
+extra_cards = Array[ExtResource("2_ingredient")]([ExtResource("np_water")])
+extra_card_line = "물은… 안 묻히셨던 것 같은데."
+container_name = "그릇"
+
+[sub_resource type="Resource" id="NoteLine_3"]
+script = ExtResource("nl_script")
+text = "기름 두른 팬에 노릇하게 부친다"
+
+[sub_resource type="Resource" id="NotePuzzle_1"]
+script = ExtResource("np_script")
+lines = Array[ExtResource("nl_script")]([SubResource("NoteLine_1"), SubResource("NoteLine_2"), SubResource("NoteLine_3")])
+hint = "가루옷을 입혀야 계란이 착 붙어."
+
 [resource]
 script = ExtResource("1_recipe")
 id = &"mushroom_egg_jeon"
@@ -31,3 +59,4 @@ secret_hint = "버섯전은 막 금색이 됐을 때 바로"
 secret_teller_id = &"hedgehog"
 secret_reveal_line = "…버섯전은 막 금색이 되자마자 뒤집어야 촉촉하다. 네 할머니가 그랬다."
 grandma_taste_line = "…촉촉하군. …고맙다, {name}."
+note_puzzle = SubResource("NotePuzzle_1")

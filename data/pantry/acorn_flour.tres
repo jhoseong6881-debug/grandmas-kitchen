@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Ingredient" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/ingredient.gd" id="1_ingredient"]
+
+[resource]
+script = ExtResource("1_ingredient")
+id = &"acorn_flour"
+display_name = "도토리가루"
+placeholder_color = Color(0.6, 0.42, 0.28, 1)
+description = "곱게 빻은 도토리가루. 퍼즐에서만 쓰는 기본양념이라 줄지 않는다."

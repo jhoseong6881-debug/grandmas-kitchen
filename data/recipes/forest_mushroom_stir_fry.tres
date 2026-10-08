@@ -4,6 +4,8 @@
 [ext_resource type="Script" uid="uid://jdo3q781e21o" path="res://scripts/data/ingredient.gd" id="2_ingredient"]
 [ext_resource type="Resource" path="res://data/ingredients/mushroom.tres" id="3_mushroom"]
 [ext_resource type="Script" uid="uid://che4nl0g5vff0" path="res://scripts/data/cook_step.gd" id="13_cook_step"]
+[ext_resource type="Script" uid="uid://bsjiel7rxyc3e" path="res://scripts/data/note_puzzle.gd" id="np_script"]
+[ext_resource type="Script" uid="uid://bdhro27kp8ykp" path="res://scripts/data/note_puzzle_line.gd" id="nl_script"]
 
 [sub_resource type="Resource" id="CookStep_1"]
 script = ExtResource("13_cook_step")
@@ -19,6 +21,31 @@ count = 8
 speed = 1.1
 secret_end = 0.45
 
+[sub_resource type="Resource" id="NoteLine_1"]
+script = ExtResource("nl_script")
+kind = 1
+text = "버섯은 {blank}"
+choices = Array[String](["물에 박박 씻는다", "마른 행주로 톡톡 턴다"])
+answer_index = 1
+wrong_line = "음… 버섯이 물을 잔뜩 먹겠는데."
+
+[sub_resource type="Resource" id="NoteLine_2"]
+script = ExtResource("nl_script")
+text = "결대로 쭉쭉 찢어 달군 팬에 올린다"
+
+[sub_resource type="Resource" id="NoteLine_3"]
+script = ExtResource("nl_script")
+kind = 1
+text = "소금은 {blank} 솔솔 뿌린다"
+choices = Array[String](["처음에", "다 볶고"])
+answer_index = 1
+wrong_line = "음… 버섯이 물을 줄줄 흘리겠는데."
+
+[sub_resource type="Resource" id="NotePuzzle_1"]
+script = ExtResource("np_script")
+lines = Array[ExtResource("nl_script")]([SubResource("NoteLine_1"), SubResource("NoteLine_2"), SubResource("NoteLine_3")])
+hint = "버섯은 물을 먹으면 맛이 도망가. 소금도 물을 끌어내니까 맨 나중에."
+
 [resource]
 script = ExtResource("1_recipe")
 id = &"forest_mushroom_stir_fry"
@@ -29,3 +56,4 @@ secret_hint = "버섯은 금색에 막 들어올 때 받기"
 secret_teller_id = &"hedgehog"
 secret_reveal_line = "…버섯은 오래 띄우면 물러진다. 네 할머니는 금색에 들어오자마자 받았다."
 grandma_taste_line = "…흠. 쫄깃하군. …그 사람 맛이다."
+note_puzzle = SubResource("NotePuzzle_1")

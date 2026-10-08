@@ -6,6 +6,10 @@
 [ext_resource type="Resource" path="res://data/ingredients/honey.tres" id="4_honey"]
 [ext_resource type="Resource" path="res://data/coatings/honey.tres" id="5_honey_coating"]
 [ext_resource type="Script" uid="uid://che4nl0g5vff0" path="res://scripts/data/cook_step.gd" id="15_cook_step"]
+[ext_resource type="Script" uid="uid://bsjiel7rxyc3e" path="res://scripts/data/note_puzzle.gd" id="np_script"]
+[ext_resource type="Script" uid="uid://bdhro27kp8ykp" path="res://scripts/data/note_puzzle_line.gd" id="nl_script"]
+[ext_resource type="Resource" path="res://data/pantry/water.tres" id="np_water"]
+[ext_resource type="Resource" path="res://data/ingredients/egg.tres" id="np_egg"]
 
 [sub_resource type="Resource" id="CookStep_1"]
 script = ExtResource("15_cook_step")
@@ -22,6 +26,30 @@ speed = 0.85
 secret_start = 0.3
 secret_end = 0.7
 
+[sub_resource type="Resource" id="NoteLine_1"]
+script = ExtResource("nl_script")
+text = "당근은 큼직하게 깍둑 썬다"
+
+[sub_resource type="Resource" id="NoteLine_2"]
+script = ExtResource("nl_script")
+kind = 2
+text = "냄비에 차례로 넣고 조린다\n   {blank}"
+wrong_line = "음… 꿀을 일찍 넣으면 쓴맛이 날 텐데."
+order_answer = Array[ExtResource("2_ingredient")]([ExtResource("3_carrot"), ExtResource("np_water"), ExtResource("4_honey")])
+readable_count = 1
+extra_cards = Array[ExtResource("2_ingredient")]([ExtResource("np_egg")])
+extra_card_line = "계란은… 조림엔 안 넣으셨는데."
+container_name = "냄비"
+
+[sub_resource type="Resource" id="NoteLine_3"]
+script = ExtResource("nl_script")
+text = "국물이 자작해지면 불을 끈다"
+
+[sub_resource type="Resource" id="NotePuzzle_1"]
+script = ExtResource("np_script")
+lines = Array[ExtResource("nl_script")]([SubResource("NoteLine_1"), SubResource("NoteLine_2"), SubResource("NoteLine_3")])
+hint = "꿀은 오래 끓이면 쓴맛이 나. 불 끄기 전에 쪼르륵."
+
 [resource]
 script = ExtResource("1_recipe")
 id = &"honey_carrot_jorim"
@@ -33,3 +61,4 @@ secret_teller_id = &"bear"
 secret_reveal_line = "할머니는 조림 저을 때 노래를 흥얼거리셨어. 박자에 딱딱 맞춰서. 그래야 윤기가 고르게 돈대."
 grandma_taste_line = "음~ 이 윤기… 할머니 노랫소리가 들리는 것 같아."
 simmer_sauce = ExtResource("5_honey_coating")
+note_puzzle = SubResource("NotePuzzle_1")
