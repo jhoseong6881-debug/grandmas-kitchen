@@ -5,6 +5,10 @@
 [ext_resource type="Resource" uid="uid://cbhyfvk1vplmf" path="res://data/ingredients/carrot.tres" id="3_carrot"]
 [ext_resource type="Resource" path="res://data/ingredients/egg.tres" id="4_egg"]
 [ext_resource type="Script" uid="uid://che4nl0g5vff0" path="res://scripts/data/cook_step.gd" id="14_cook_step"]
+[ext_resource type="Script" uid="uid://bsjiel7rxyc3e" path="res://scripts/data/note_puzzle.gd" id="15_note_puzzle"]
+[ext_resource type="Script" uid="uid://bdhro27kp8ykp" path="res://scripts/data/note_puzzle_line.gd" id="16_note_line"]
+[ext_resource type="Resource" path="res://data/pantry/cooking_oil.tres" id="17_oil"]
+[ext_resource type="Resource" path="res://data/ingredients/honey.tres" id="18_honey"]
 
 [sub_resource type="Resource" id="CookStep_1"]
 script = ExtResource("14_cook_step")
@@ -20,6 +24,29 @@ speed = 1.2
 secret_start = 0.6
 secret_end = 1.0
 
+[sub_resource type="Resource" id="NoteLine_1"]
+script = ExtResource("16_note_line")
+text = "당근은 가늘게 채 썬다"
+
+[sub_resource type="Resource" id="NoteLine_2"]
+script = ExtResource("16_note_line")
+kind = 2
+text = "달군 팬에 차례로 넣는다\n   {blank}"
+wrong_line = "음… 계란이 먼저면 당근이 설익겠는데."
+order_answer = Array[ExtResource("2_ingredient")]([ExtResource("17_oil"), ExtResource("3_carrot"), ExtResource("4_egg")])
+readable_count = 1
+extra_cards = Array[ExtResource("2_ingredient")]([ExtResource("18_honey")])
+extra_card_line = "꿀은… 볶음에는 안 넣으셨던 것 같은데."
+
+[sub_resource type="Resource" id="NoteLine_3"]
+script = ExtResource("16_note_line")
+text = "소금 한 꼬집, 달달 볶으면 끝"
+
+[sub_resource type="Resource" id="NotePuzzle_1"]
+script = ExtResource("15_note_puzzle")
+lines = Array[ExtResource("16_note_line")]([SubResource("NoteLine_1"), SubResource("NoteLine_2"), SubResource("NoteLine_3")])
+hint = "단단한 것부터 볶는 거여."
+
 [resource]
 script = ExtResource("1_recipe")
 id = &"carrot_egg_stir_fry"
@@ -30,3 +57,4 @@ secret_hint = "재료가 팬에 닿기 직전에 받기"
 secret_teller_id = &"hen"
 secret_reveal_line = "볶을 땐 말이야, 재료가 팬에 닿기 직전에 탁! 받아야 해. 네 할머니 말버릇이었지!"
 grandma_taste_line = "꼬꼬! 바로 이 맛이야! 네 할머니가 부엌에 서 있는 줄 알았다니까!"
+note_puzzle = SubResource("NotePuzzle_1")

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Ingredient" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/ingredient.gd" id="1_ingredient"]
+
+[resource]
+script = ExtResource("1_ingredient")
+id = &"cooking_oil"
+display_name = "기름"
+placeholder_color = Color(0.95, 0.82, 0.35, 1)
+description = "부엌 선반의 기름병. 퍼즐에서만 쓰는 기본양념이라 줄지 않는다."
