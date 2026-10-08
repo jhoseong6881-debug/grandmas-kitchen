@@ -33,7 +33,8 @@
 | data/recipes/carrot_kimbop.tres (finished_image) | 할머니표 당근 김밥 완성 그림 | 미정 | 할 일 |
 | scenes/kitchen/kitchen.tscn (Background) | 부엌 배경 | 1920x1080 | 할 일 |
 | scenes/kitchen/kitchen.tscn (Counter) | 조리대 | 1920x300 | 할 일 |
-| data/guests/rabbit.tres (portrait) | 토끼 손님 (기본 표정) — assets/art/characters/rabbit/rabbit_default.png | 360x480 (원본 120x160) | 완료 (2026-10-06) |
+| data/guests/rabbit.tres (portrait) | 토끼 손님 (기본 표정) — assets/art/characters/rabbit/rabbit_default.png (2026-10-09 새 그림으로 바꿈, 360x480 그대로) | 360x480 (원본 120x160) | 완료 (2026-10-09) |
+| data/guests/rabbit.tres (expression_portraits) | 토끼 웃음(happy) rabbit_happy.png · 놀람(surprised) rabbit_surprised.png. 시무룩(sad)은 아직 없어서 기본 그림 | 360x480 | 웃음·놀람 완료 (2026-10-09) |
 | scenes/kitchen/guest_spot.tscn (SpeechBubble) | 말풍선 | 가변 (늘어나는 9칸 그림) | 할 일 |
 | scenes/kitchen/minigames/chop_minigame.tscn (Board) | 도마 | 900x500 | 할 일 |
 | scenes/kitchen/minigames/chop_minigame.tscn (Ingredient, Slices) | 썰기 전 재료 / 썬 조각 (재료마다) | 420x160 / 24x120 | 할 일 |
