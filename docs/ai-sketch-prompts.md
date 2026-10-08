@@ -4,16 +4,18 @@
 디스코드에 올릴 때는 "참고용 AI 시안"이라고 밝힌다. 프롬프트는 AI가 영어를 더 잘 알아들어서 영어로 썼고, 바로 아래에 한국어 뜻을 적었다.
 
 기준 그림: 디자이너님 토끼 `assets/art/characters/rabbit/rabbit_default.png` (360×480, 2026-10-09 새 그림 · 웃음 rabbit_happy.png · 놀람 rabbit_surprised.png)
-- 머리가 몸의 절반쯤인 귀여운 비율, 머리부터 엉덩이까지 (아래는 그림 끝에서 잘림)
-- 살짝 비스듬히(3/4) 플레이어를 바라봄 — 부엌 조리대 너머로 마주 보고 이야기하는 1인칭 화면
-- 진한 밤색 테두리, 크고 윤기 나는 까만 눈, 분홍 볼, 크림색 주둥이
-- 사연이 담긴 소품: 손 붕대(1막 사연), 할머니 손수건 같은 빨간 물방울 두건, 당근 주머니 달린 초록 앞치마
+- 픽셀 그림이 아니라 **매끈한 선 + 단색 칠** 일러스트. 명암은 부드러운 그림자 한 단계 정도, 가장자리는 흐림 없이 또렷하게
+- 동물 귀(길게 선 토끼 귀)와 작은 동물 코·입을 가진 **사람에 가까운 얼굴과 손**, 털색과 같은 곱슬머리를 땋아 내림
+- 머리가 보이는 키의 1/3쯤, 머리부터 허리 아래까지 (아래는 그림 끝에서 잘림), 고개를 살짝 기울이고 플레이어를 바라봄 — 부엌 조리대 너머로 마주 보고 이야기하는 1인칭 화면
+- 진한 밤색 테두리(굵기 고르게), 작고 까만 눈에 작은 하이라이트, 동그란 분홍 볼, 차분하고 살짝 바랜 따뜻한 색 (회갈색·연분홍·짙은 초록·바랜 빨강)
+- 표정 그림에는 놀람 표시 같은 작은 만화 기호(주황 꼬불선)를 머리 옆에 얹기도 함
+- 사연이 담긴 소품: 손 붕대(1막 사연), 두 손에 쥔 할머니의 빨간 꽃무늬 손수건, 레이스 달린 당근 주머니 초록 앞치마
 
 ## SpriteCook 설정
 
 | 칸 | 넣을 것 |
 |---|---|
-| 모드 | Pixel Art |
+| 모드 | 픽셀이 아닌 일반 그림(일러스트) 모드가 있으면 그것, 없으면 Pixel Art 로 만들고 그림체 차이는 감안해서 본다 |
 | 배경 | Transparent (투명) |
 | 크기 | 손님 360×480 (고를 수 없으면 가장 큰 크기로 만들고 가로:세로 3:4 로 맞춘다) · 잔치에 앉은 모습 180×240 · 너구리 72×88 |
 | 테마 | 아래 "공통 그림체"를 테마로 한 번 만들어 두고, 다섯 손님 모두 같은 테마로 |
@@ -24,29 +26,32 @@
 ## 공통 그림체 (테마)
 
 ```
-Cozy, gentle pixel art for a healing cooking game set in a quiet Korean countryside forest village.
-Soft dark-brown outlines, never pure black. Warm palette centered on cream, orange, warm brown and sage green,
-about 10 colors per character. 2-3 shading steps with tiny highlight pixels. Cute chibi animal villager:
-head about half of the body height, big glossy dark eyes, pink blush cheeks, small simple mouth.
-Clean crisp pixels, no anti-aliasing, no noisy dithering, transparent background.
+Cozy, gentle 2D character illustration for a healing cooking game set in a quiet Korean countryside forest village.
+Clean, even dark-brown lineart, never pure black. Soft flat colors with one gentle shadow tone, crisp hard edges, no gradients.
+Muted, slightly faded warm palette: greyish taupe, dusty pink, deep sage green, faded red, with small orange accents.
+Animal villager drawn with a gentle human-like face and hands, keeping animal ears, a tiny animal nose and mouth,
+and fur-colored hair. Head about one third of the visible height. Small dark eyes with a tiny white highlight,
+simple brows, round pink blush cheeks, a soft shy expression. Transparent background.
 ```
-뜻: 조용한 한국 시골 숲마을의 힐링 요리 게임. 테두리는 검정이 아닌 진한 밤색. 크림·주황·따뜻한 갈색·연초록 중심, 한 캐릭터에 10색 안팎.
-명암 2~3단계와 작은 하이라이트 픽셀. 머리가 몸의 절반인 귀여운 동물 이웃, 크고 윤기 나는 눈, 분홍 볼. 또렷한 픽셀, 흐림·지저분한 점무늬 없이, 배경 투명.
+뜻: 조용한 한국 시골 숲마을의 힐링 요리 게임 캐릭터 일러스트. 고른 굵기의 진한 밤색 선(검정 아님). 단색 칠에 부드러운 그림자 한 단계, 가장자리 또렷, 그라데이션 없음.
+차분하고 살짝 바랜 따뜻한 색: 회갈색·연분홍·짙은 연초록·바랜 빨강, 주황은 포인트로만. 사람에 가까운 얼굴과 손에 동물 귀·작은 동물 코와 입·털색 머리카락.
+머리는 보이는 키의 1/3쯤. 작고 까만 눈에 작은 하이라이트, 단순한 눈썹, 동그란 분홍 볼, 수줍고 순한 표정. 배경 투명.
 
 ## 피할 것 (네거티브 칸이 있으면)
 
 ```
-text, letters, logo, watermark, pure black outlines, realistic shading, photo, 3D render, neon colors,
+text, letters, logo, watermark, pure black outlines, realistic shading, photo, 3D render, pixel art, dithering,
+heavy gradients, glossy anime shading, oversized sparkly eyes, chibi proportions, neon colors, saturated colors,
 cold blue palette, glowing effects, sparkle background, weapons, scary or angry face, full-body tiny figure
 ```
-뜻: 글자·로고, 새까만 테두리, 사실적인 명암, 사진·3D 느낌, 형광색·차가운 파란색, 반짝이 배경, 무기, 무섭거나 화난 얼굴, 너무 작게 서 있는 전신.
+뜻: 글자·로고, 새까만 테두리, 사실적인 명암, 사진·3D 느낌, 픽셀 그림·점무늬, 짙은 그라데이션, 번쩍이는 애니메 명암, 지나치게 큰 반짝 눈, 머리 큰 꼬마 비율, 형광색·쨍한 색·차가운 파란색, 반짝이 배경, 무기, 무섭거나 화난 얼굴, 너무 작게 서 있는 전신.
 
 ## 손님 공통 구도
 
 ```
 Character portrait, 360x480 pixels, upper body from the head down to the hips, cropped at the bottom edge,
 facing the viewer at a slight three-quarter angle, as if talking to the player across a kitchen counter.
-Same framing and head size as a cute rabbit villager in the same set.
+Same framing and head size as the rabbit villager in the same set (rabbit ears, braided curly hair, green apron).
 ```
 뜻: 360×480, 머리부터 엉덩이까지(아래는 잘림), 살짝 비스듬히 플레이어를 보며 조리대 너머로 이야기하는 모습. 같은 세트의 토끼와 구도·머리 크기를 맞춘다.
 
@@ -134,30 +139,33 @@ stacked with cloth-wrapped bundles, a small cooking pot and a little lantern.
 
 🐔 암탉
 ```
-Cozy pixel art portrait, warm cream orange brown palette, soft dark-brown outline, cute chibi, big glossy eyes, pink blush. Upper body, facing viewer. Plump cheerful hen auntie, cream white feathers, small red comb, orange beak open as if chatting, tiny flower-print apron, holding a woven basket of brown eggs with a checkered cloth, other wing waving hello.
+Cozy soft flat-color illustration, clean dark-brown lineart, muted warm palette, one soft shadow tone, animal villager with a gentle human-like face and hands and animal ears, small dark eyes with a tiny highlight, round pink blush. Upper body, facing viewer. Plump cheerful hen auntie, cream white feathers, small red comb, orange beak open as if chatting, tiny flower-print apron, holding a woven basket of brown eggs with a checkered cloth, other wing waving hello.
 ```
 
 🐿️ 다람쥐
 ```
-Cozy pixel art portrait, warm cream orange brown palette, soft dark-brown outline, cute chibi, big glossy eyes, pink blush. Upper body, facing viewer. Small timid squirrel, chestnut fur, cream belly, huge fluffy tail curling behind shoulder, shyly hugging a shiny acorn with both paws, moss-green neckerchief, little acorn pouch, sparkle in eyes, shy smile.
+Cozy soft flat-color illustration, clean dark-brown lineart, muted warm palette, one soft shadow tone, animal villager with a gentle human-like face and hands and animal ears, small dark eyes with a tiny highlight, round pink blush. Upper body, facing viewer. Small timid squirrel, chestnut fur, cream belly, huge fluffy tail curling behind shoulder, shyly hugging a shiny acorn with both paws, moss-green neckerchief, little acorn pouch, sparkle in eyes, shy smile.
 ```
 
 🐻 곰
 ```
-Cozy pixel art portrait, warm cream orange brown palette, soft dark-brown outline, cute chibi, big glossy eyes, pink blush. Upper body, facing viewer. Big gentle sleepy brown bear just woken from hibernation, half-closed kind eyes, messy bed-head tuft, faded mustard overalls with a tiny hammer in the pocket, holding a clay honey jar dripping honey, paw on round tummy.
+Cozy soft flat-color illustration, clean dark-brown lineart, muted warm palette, one soft shadow tone, animal villager with a gentle human-like face and hands and animal ears, small dark eyes with a tiny highlight, round pink blush. Upper body, facing viewer. Big gentle sleepy brown bear just woken from hibernation, half-closed kind eyes, messy bed-head tuft, faded mustard overalls with a tiny hammer in the pocket, holding a clay honey jar dripping honey, paw on round tummy.
 ```
 
 🦔 고슴도치
 ```
-Cozy pixel art portrait, warm cream orange brown palette, soft dark-brown outline, cute chibi, big glossy eyes, pink blush. Upper body, facing viewer. Small reserved hedgehog, chocolate-brown spines with tan tips, cream face, serious eyes, slightly lowered brows, faint blush, neat dark-green vest, carrying a woven mushroom basket with old leather gloves tucked in the handle.
+Cozy soft flat-color illustration, clean dark-brown lineart, muted warm palette, one soft shadow tone, animal villager with a gentle human-like face and hands and animal ears, small dark eyes with a tiny highlight, round pink blush. Upper body, facing viewer. Small reserved hedgehog, chocolate-brown spines with tan tips, cream face, serious eyes, slightly lowered brows, faint blush, neat dark-green vest, carrying a woven mushroom basket with old leather gloves tucked in the handle.
 ```
 
 🦝 너구리 상인
 ```
-Cozy pixel art, warm cream orange brown palette, soft dark-brown outline, cute chibi. Full body, standing, facing viewer. Friendly traveling merchant raccoon, grey-brown fur, dark eye mask, striped bushy tail, winking grin, wide straw hat, patched vest, big wooden backpack frame stacked with cloth bundles, a small pot and a lantern.
+Cozy soft flat-color illustration, clean dark-brown lineart, muted warm palette, one soft shadow tone, animal villager with a gentle human-like face and hands and animal ears. Full body, standing, facing viewer. Friendly traveling merchant raccoon, grey-brown fur, dark eye mask, striped bushy tail, winking grin, wide straw hat, patched vest, big wooden backpack frame stacked with cloth bundles, a small pot and a lantern.
 ```
 
-피할 것 칸이 있으면: `text, logo, black outline, realistic, 3D, neon, blue palette, scary face`
+피할 것 칸이 있으면: `text, logo, black outline, realistic, 3D, pixel art, dithering, gradients, chibi, neon, blue palette, scary face`
+
+짧은 판 앞부분 뜻: 포근한 단색 칠 일러스트, 깔끔한 진한 밤색 선, 차분한 따뜻한 색, 부드러운 그림자 한 단계, 사람에 가까운 얼굴과 손에 동물 귀, 작고 까만 눈에 작은 하이라이트, 동그란 분홍 볼.
+픽셀랩은 픽셀 그림 전용 도구라 새 그림체(일러스트)와는 결과가 다르게 나온다. 구도·소품·색 느낌만 참고한다.
 
 ---
 
