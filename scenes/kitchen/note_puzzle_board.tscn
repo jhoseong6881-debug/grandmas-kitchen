@@ -1,6 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/kitchen/note_puzzle_board.gd" id="1_board"]
+[ext_resource type="FontFile" uid="uid://lr2a8emruvb8" path="res://assets/fonts/KyoboHandwriting/KyoboHandwriting2025lyb.ttf" id="2_kyobo"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_board"]
 bg_color = Color(0.36, 0.27, 0.18, 0.97)
@@ -100,7 +101,8 @@ grow_vertical = 2
 mouse_filter = 2
 theme_override_colors/default_color = Color(0.3, 0.22, 0.15, 1)
 theme_override_constants/line_separation = 12
-theme_override_font_sizes/normal_font_size = 36
+theme_override_fonts/normal_font = ExtResource("2_kyobo")
+theme_override_font_sizes/normal_font_size = 34
 bbcode_enabled = true
 text = "· 계란을 곱게 푼다"
 scroll_active = false

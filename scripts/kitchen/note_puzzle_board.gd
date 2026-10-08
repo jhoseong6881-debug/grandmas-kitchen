@@ -23,8 +23,8 @@ const LINE_PREFIX: String = "· "
 const SMUDGE_SPACE: String = " "
 
 ## 번진 칸 너비 (띄어쓰기 몇 칸). 넣는 순서 칸은 재료 이름이 짧아서 좁게.
-@export var smudge_width: int = 8
-@export var order_smudge_width: int = 5
+@export var smudge_width: int = 14
+@export var order_smudge_width: int = 10
 ## 번진 자국 색, 지금 채우는 칸의 번진 자국 색
 @export var smudge_color: Color = Color(0.42, 0.36, 0.48, 0.85)
 @export var current_smudge_color: Color = Color(0.85, 0.55, 0.25, 0.9)
