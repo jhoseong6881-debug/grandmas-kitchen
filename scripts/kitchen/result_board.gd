@@ -15,7 +15,6 @@ const PAYMENT_ITEM_FORMAT: String = " %s ×%d    "
 const NONE_TEXT: String = "없음"
 ## 오늘 하이라이트: 완벽·입맛 딱은 늘, 할머니 손맛은 비법을 하나라도 알게 된 뒤, 부탁은 오늘 부탁을 받았을 때만 보여 준다
 ## (처음 하는 사람이 아직 모르는 말을 먼저 보지 않게).
-const PERFECT_FORMAT: String = "완벽 %d"
 const GRANDMA_TASTE_FORMAT: String = "할머니 손맛 %d"
 const REQUEST_FORMAT: String = "부탁 %d/%d"
 const TASTE_MATCH_FORMAT: String = "입맛 딱 %d"
@@ -78,7 +77,7 @@ func open(report: LunchReport) -> void:
 	_title_label.text = TITLE_FORMAT % [GameData.get_season_name(), GameState.current_day]
 	_fill_guests(report.guests)
 	_fill_payment(report.payment)
-	var highlights: PackedStringArray = [PERFECT_FORMAT % report.perfect_count]
+	var highlights: PackedStringArray = []
 	if not GameState.learned_secret_ids.is_empty() or report.grandma_taste_count > 0:
 		highlights.append(GRANDMA_TASTE_FORMAT % report.grandma_taste_count)
 	if report.request_count > 0:

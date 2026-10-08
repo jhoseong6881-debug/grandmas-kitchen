@@ -4,8 +4,8 @@ extends Resource
 ## 점심 장사에서 한 일만큼 소문이 쌓이고, 소문이 쌓이면 가게 단계(ShopLevel)가 오른다.
 
 ## 한 일마다 쌓이는 소문
-@export var serve_points: int = 1
-@export var perfect_points: int = 1
+## 대접 한 번 (예전 "완벽" 소문 1을 합친 값)
+@export var serve_points: int = 2
 @export var taste_match_points: int = 1
 @export var request_points: int = 2
 @export var grandma_taste_points: int = 2

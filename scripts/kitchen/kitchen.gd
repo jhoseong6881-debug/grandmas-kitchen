@@ -19,7 +19,6 @@ const PICNIC_HAND_OVER_TEXT: String = "도시락 건네기"
 const PICNIC_DONE_TEXT: String = "도시락을 다 쌌어요! 오늘 점심 장사 끝."
 const PICNIC_NAME_SEPARATOR: String = ", "
 const COOKED_TEXT_FORMAT: String = "%s 완성!"
-const PERFECT_COOKED_TEXT_FORMAT: String = "%s 완성! 한 번도 안 틀렸어요!"
 const GRANDMA_COOKED_TEXT_FORMAT: String = "%s 완성! ♥ 할머니 손맛이 났어요!"
 const GRANDMA_STAMP_TEXT: String = "♥ 레시피 노트에 할머니 손맛 도장!"
 const TASTE_MATCH_POP_TEXT: String = "♥ 입맛 딱!"
@@ -36,7 +35,6 @@ const PAYMENT_SUFFIX: String = " 받았어요"
 const PAYMENT_ITEM_FORMAT: String = " %s ×%d"
 const PAYMENT_ITEM_ICON_ONLY_FORMAT: String = " ×%d"
 const PAYMENT_ITEM_SEPARATOR: String = ", "
-const PERFECT_BONUS_FORMAT: String = " (완벽 +%d)"
 const REGULAR_BONUS_FORMAT: String = " (%s 덤 +%d)"
 const LUNCH_DONE_TEXT: String = "오늘 점심 장사 끝! 수고했어요."
 ## 입맛 힌트를 주문 뒤에 붙일 때 사이에 넣는 글, 고명 창에 다시 보여 줄 때의 모양
@@ -81,8 +79,8 @@ const EVENING_SOUND: StringName = &"porch_night"
 @export_file("*.tscn") var feast_scene_path: String = "res://scenes/porch/spring_feast.tscn"
 ## 좋아하는 요리 대신 다른 요리를 주문한 손님은 첫 번째 밥값 재료를 이만큼만 낸다.
 @export var fallback_payment_amount: int = 1
-## 미니게임을 한 번도 안 틀리면 밥값 재료마다 이만큼 더 받는다.
-@export var perfect_bonus_amount: int = 1
+## 밥값 재료 종류마다 이만큼 덤으로 더 받는다 (예전 "완벽 보너스"를 기본 밥값에 합친 것).
+@export var extra_payment_amount: int = 1
 ## 손님이 들어올 때: 문이 다 열리고 손님이 쏙 올라오기까지 기다리는 시간(초), 올라오기 시작하고 문이 닫히기까지 시간(초)
 @export var guest_appear_delay: float = 0.35
 @export var door_close_delay: float = 0.5
@@ -103,7 +101,7 @@ const EVENING_SOUND: StringName = &"porch_night"
 @export var payment_icon_size: int = 48
 ## true: "아이콘 당근 ×2", false: "아이콘 ×2". 재료 그림이 다 생기면 false로 바꿔도 된다.
 @export var show_ingredient_names_with_icons: bool = true
-## 완벽하게 요리했을 때 아래 안내 글자 색
+## 할머니 손맛·부탁처럼 특별한 순간의 금색 글자 색 (아래 안내 글, 손님 위로 떠오르는 글)
 @export var perfect_text_color: Color = Color(1, 0.84, 0.25)
 ## 처음 할머니 손맛을 냈을 때 손님 위로 떠오르는 도장 글의 높이(픽셀), 시간(초), 글자 크기
 @export var stamp_pop_rise: float = 140.0
@@ -152,8 +150,6 @@ var _note_puzzle_board: NotePuzzleBoard
 var _has_note_puzzle_today: bool = false
 ## 요리 중에 아직 남은 미니게임 단계
 var _remaining_steps: Array[CookStep] = []
-## 이번 요리의 미니게임을 지금까지 전부 한 번도 안 틀렸는지
-var _is_perfect_cook: bool = true
 ## 이번 요리에서 할머니 비법이 있는 단계 수와, 그중 비법대로 해낸 단계 수
 var _secret_step_count: int = 0
 ## 완성 장면에서 고른 고명 (대접할 때 쓴다)
@@ -728,7 +724,6 @@ func _on_cook_button_pressed() -> void:
 	_show_only_button(null)
 	_set_side_buttons_enabled(false)
 	GameState.remove_ingredients(current_order.get_ingredient_counts())
-	_is_perfect_cook = true
 	_remaining_steps = current_order.cook_steps.duplicate()
 	_secret_step_count = _remaining_steps.filter(func(step: CookStep) -> bool: return step.has_secret()).size()
 	_grandma_step_count = 0
@@ -750,9 +745,8 @@ func _should_open_note_puzzle(recipe: Recipe) -> bool:
 			and GameState.current_day >= note_puzzle_first_day and not _has_note_puzzle_today
 
 
-func _on_minigame_finished(is_perfect: bool, is_grandma_taste: bool, is_request_met: bool) -> void:
-	if not is_perfect:
-		_is_perfect_cook = false
+## is_perfect 는 쓰지 않는다 (미니게임에 빗나감이 없어져 늘 true).
+func _on_minigame_finished(_is_perfect: bool, is_grandma_taste: bool, is_request_met: bool) -> void:
 	if is_grandma_taste:
 		_grandma_step_count += 1
 	if is_request_met:
@@ -771,14 +765,12 @@ func _run_next_step() -> void:
 		# "완성~!" 장면에서 고명 병을 골라 요리에 뿌린다 (손님 입맛 힌트를 아래에 보여 준다).
 		# 손님과 말풍선은 고명 병과 겹치지 않게 다 뿌린 뒤에 다시 보인다.
 		var hint: String = _taste_hint(current_guest)
-		_chosen_garnish = await _dish_showcase.show_dish(current_order, _is_perfect_cook, _is_grandma_cook(),
+		_chosen_garnish = await _dish_showcase.show_dish(current_order, _is_grandma_cook(),
 				TASTE_HINT_REMINDER_FORMAT % [current_guest.display_name, hint] if hint != "" else "")
 		_guest_spot.set_cooking_hidden(false)
 		_set_side_buttons_enabled(true)
-		var format: String = PERFECT_COOKED_TEXT_FORMAT if _is_perfect_cook else COOKED_TEXT_FORMAT
-		if _is_grandma_cook():
-			format = GRANDMA_COOKED_TEXT_FORMAT
-		_set_status(format % current_order.display_name, _is_perfect_cook or _is_grandma_cook())
+		var format: String = GRANDMA_COOKED_TEXT_FORMAT if _is_grandma_cook() else COOKED_TEXT_FORMAT
+		_set_status(format % current_order.display_name, _is_grandma_cook())
 		_show_only_button(_serve_button)
 		return
 	var step: CookStep = _remaining_steps.pop_front()
@@ -801,7 +793,7 @@ func _on_serve_button_pressed() -> void:
 	_serve(_chosen_garnish)
 
 
-## 대접하면 손님이 말하고, 밥값 재료를 준다. 완벽하면 재료마다 보너스, 단골이면 덤, 부탁을 들어줬으면 더 준다.
+## 대접하면 손님이 말하고, 밥값 재료를 준다. 단골이면 덤, 부탁을 들어줬으면 더 준다.
 ## 고명이 손님 입맛에 맞거나, 할머니 손맛이거나, 부탁을 들어줬으면 단골도가 더 오르고 손님 말도 달라진다.
 func _serve(garnish: Garnish) -> void:
 	GameState.remove_ingredients(garnish.get_cost())
@@ -819,9 +811,6 @@ func _serve(garnish: Garnish) -> void:
 	# 밥값
 	var payment: Dictionary[StringName, int] = _base_payment(guest)
 	var bonus_text: String = ""
-	if _is_perfect_cook:
-		for ingredient_id: StringName in payment:
-			payment[ingredient_id] += perfect_bonus_amount
 	var regular_bonus: int = settings.get_payment_bonus(tier)
 	if regular_bonus > 0 and not payment.is_empty():
 		payment[payment.keys()[0]] += regular_bonus
@@ -838,9 +827,9 @@ func _serve(garnish: Garnish) -> void:
 	for ingredient_id: StringName in payment:
 		GameState.add_ingredient(ingredient_id, payment[ingredient_id])
 
-	# 손님 말과 표정: 할머니 손맛 > 부탁 (들어줌 / 못 들어줌) > 입맛 (맞음 / 힌트) > 완벽 / 보통
-	var line: String = guest.perfect_line if _is_perfect_cook else guest.thanks_line
-	var expression: StringName = AnimalGuest.EXPRESSION_HAPPY if _is_perfect_cook else AnimalGuest.EXPRESSION_DEFAULT
+	# 손님 말과 표정: 할머니 손맛 > 부탁 (들어줌 / 못 들어줌) > 입맛 (맞음 / 힌트) > 기본 감사 인사 (perfect_line)
+	var line: String = guest.perfect_line
+	var expression: StringName = AnimalGuest.EXPRESSION_HAPPY
 	if guest.favorite_garnish != null:
 		line = guest.taste_match_line if is_taste_match else guest.taste_miss_line
 		expression = AnimalGuest.EXPRESSION_HAPPY if is_taste_match else AnimalGuest.EXPRESSION_DEFAULT
@@ -916,8 +905,8 @@ func _serve(garnish: Garnish) -> void:
 	_guest_spot.say(line, expression)
 	Sound.play(SERVE_SOUND)
 	Sound.play(RECEIVE_SOUND)
-	_set_payment_status(payment, _is_perfect_cook, is_grandma_taste or is_request_met, bonus_text)
-	GameState.record_served_guest(guest.id, _is_perfect_cook)
+	_set_payment_status(payment, is_grandma_taste or is_request_met, bonus_text)
+	GameState.record_served_guest(guest.id)
 	current_request = null
 	_guests_served += 1
 	_update_lunch_label()
@@ -936,9 +925,6 @@ func _record_serve(guest: AnimalGuest, payment: Dictionary[StringName, int], is_
 	_report.guests.append(guest)
 	_report.add_payment(payment)
 	_report.add_affection(guest.display_name, affection_points)
-	if _is_perfect_cook:
-		_report.perfect_count += 1
-		points += rules.perfect_points
 	if is_grandma_taste:
 		_report.grandma_taste_count += 1
 		points += rules.grandma_taste_points
@@ -953,7 +939,7 @@ func _record_serve(guest: AnimalGuest, payment: Dictionary[StringName, int], is_
 	_report.reputation += points
 
 
-## 기본 밥값: 좋아하는 요리면 밥값 재료 전부, 대신 고른 요리면 첫 번째 재료를 조금만.
+## 기본 밥값: 좋아하는 요리면 밥값 재료 전부, 대신 고른 요리면 첫 번째 재료를 조금만. 어느 쪽이든 재료 종류마다 덤을 얹는다.
 func _base_payment(guest: AnimalGuest) -> Dictionary[StringName, int]:
 	var payment: Dictionary[StringName, int] = {}
 	if _is_fallback_order:
@@ -962,6 +948,8 @@ func _base_payment(guest: AnimalGuest) -> Dictionary[StringName, int]:
 	else:
 		for ingredient: Ingredient in guest.payment_ingredients:
 			payment[ingredient.id] = payment.get(ingredient.id, 0) + 1
+	for ingredient_id: StringName in payment:
+		payment[ingredient_id] += extra_payment_amount
 	return payment
 
 
@@ -987,17 +975,16 @@ func _show_only_button(button: Button) -> void:
 		button.grab_focus()
 
 
-func _set_status(text: String, is_perfect: bool) -> void:
-	_begin_status(is_perfect)
+func _set_status(text: String, is_gold: bool) -> void:
+	_begin_status(is_gold)
 	_cook_status_label.add_text(text)
 	_cook_status_label.pop()
 
 
-## "밥값으로 [아이콘] 당근 ×2, [아이콘] 꿀 ×1 받았어요 (완벽 보너스 +1!)"
-## is_perfect 면 완벽 보너스를 적고, 완벽이나 할머니 손맛이면 금색으로. extra_text 는 맨 뒤에 덧붙인다 (예: 단골 덤).
-func _set_payment_status(payment: Dictionary[StringName, int], is_perfect: bool, is_grandma_taste: bool = false,
-		extra_text: String = "") -> void:
-	_begin_status(is_perfect or is_grandma_taste)
+## "밥값으로 [아이콘] 당근 ×2, [아이콘] 꿀 ×1 받았어요 (단골 덤 +1)"
+## is_gold 면 (할머니 손맛이나 부탁을 들어줬을 때) 금색으로. extra_text 는 맨 뒤에 덧붙인다 (예: 단골 덤).
+func _set_payment_status(payment: Dictionary[StringName, int], is_gold: bool = false, extra_text: String = "") -> void:
+	_begin_status(is_gold)
 	_cook_status_label.add_text(PAYMENT_PREFIX)
 	var is_first: bool = true
 	for ingredient_id: StringName in payment:
@@ -1015,17 +1002,15 @@ func _set_payment_status(payment: Dictionary[StringName, int], is_perfect: bool,
 		else:
 			_cook_status_label.add_text(PAYMENT_ITEM_ICON_ONLY_FORMAT % payment[ingredient_id])
 	_cook_status_label.add_text(PAYMENT_SUFFIX)
-	if is_perfect:
-		_cook_status_label.add_text(PERFECT_BONUS_FORMAT % perfect_bonus_amount)
 	_cook_status_label.add_text(extra_text)
 	_cook_status_label.pop()
 
 
 ## 안내 글을 비우고 색을 정한 뒤, 가운데 정렬 문단을 연다. 쓰고 나면 pop() 으로 닫는다.
-func _begin_status(is_perfect: bool) -> void:
+func _begin_status(is_gold: bool) -> void:
 	_cook_status_label.clear()
 	_cook_status_label.add_theme_color_override("default_color",
-			perfect_text_color if is_perfect else _status_default_color)
+			perfect_text_color if is_gold else _status_default_color)
 	_cook_status_label.push_paragraph(HORIZONTAL_ALIGNMENT_CENTER)
 
 

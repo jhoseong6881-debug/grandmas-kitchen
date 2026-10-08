@@ -67,9 +67,9 @@ const PLACEHOLDER_ICON_PIXELS: int = 12
 @export_multiline var promise_order_line: String = ""
 @export_multiline var promise_kept_line: String = ""
 @export_multiline var promise_missed_line: String = ""
-## 대접받고 하는 말
+## 대접받고 하는 말 (지금은 쓰지 않는다. 미니게임에 빗나감이 없어져 perfect_line 이 기본 인사가 됐다)
 @export var thanks_line: String = "잘 먹었어요!"
-## 미니게임을 한 번도 안 틀리고 대접받았을 때 하는 말
+## 대접받았을 때 하는 기본 감사 인사 (예전에는 한 번도 안 틀렸을 때만 했다)
 @export var perfect_line: String = "와, 정말 맛있어요!"
 ## 저녁 평상 대화. 찾아올 때마다 하나씩 순서대로 나누고, 다 나누면 처음부터 다시.
 @export var evening_talks: Array[EveningTalk] = []

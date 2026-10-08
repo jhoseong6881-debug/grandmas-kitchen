@@ -8,7 +8,6 @@ var guest_names: Array[String] = []
 var guests: Array[AnimalGuest] = []
 ## 받은 밥값: 재료 id → 개수
 var payment: Dictionary[StringName, int] = {}
-var perfect_count: int = 0
 var grandma_taste_count: int = 0
 var request_count: int = 0
 var request_met_count: int = 0

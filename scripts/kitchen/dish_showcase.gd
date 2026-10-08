@@ -1,7 +1,7 @@
 class_name DishShowcase
 extends Control
 ## 요리 완성 장면. 요리 미니게임이 다 끝나면 접시에 담긴 완성 요리가 가운데 톡 튀어나오며 "완성~!".
-## 완벽하게 했으면 "★ 완벽!", 할머니 비법대로 했으면 "♥ 할머니 손맛" 한 줄이 붙는다.
+## 할머니 비법대로 했으면 "♥ 할머니 손맛" 한 줄이 붙는다.
 ## 오른쪽에 고명 병(GarnishShaker)이 세로로 놓이고, 하나를 골라 요리에 뿌리면 닫힌다. show_dish 를 await 하면 고른 고명이 돌아온다.
 ##   마우스: 병에 올리면 들리고, 누르면 집어서 마우스를 따라온다. 요리 위에서 누르거나 끌어다 놓으면 뿌린다.
 ##           요리 밖을 누르거나 오른쪽 클릭·Esc 면 제자리로 돌려놓는다.
@@ -18,7 +18,6 @@ const SPRINKLE_SOUND: StringName = &"rustle"
 const SHORT_FORMAT: String = "%s%s 모자라요!"
 
 @export var done_text: String = "완성~!"
-@export var perfect_text: String = "★ 완벽!"
 @export var grandma_text: String = "♥ 할머니 손맛"
 ## 완성 요리 그림을 키우는 배수 (원본 64×64)
 @export var dish_scale: int = 4
@@ -91,11 +90,11 @@ func _ready() -> void:
 
 
 ## 완성 요리를 보여 주고 고명을 고를 때까지 기다린다. hint: 아래에 보여 줄 손님 입맛 힌트 (없으면 빈 글)
-func show_dish(recipe: Recipe, is_perfect: bool, is_grandma_taste: bool, hint: String = "") -> Garnish:
+func show_dish(recipe: Recipe, is_grandma_taste: bool, hint: String = "") -> Garnish:
 	_dish_image.texture = DishArt.get_texture(recipe, dish_scale)
 	_done_label.text = done_text
 	_name_label.text = recipe.display_name
-	_badge_label.text = grandma_text if is_grandma_taste else (perfect_text if is_perfect else "")
+	_badge_label.text = grandma_text if is_grandma_taste else ""
 	_hint_text = hint
 	_hint_label.text = hint
 	_clear_grains()

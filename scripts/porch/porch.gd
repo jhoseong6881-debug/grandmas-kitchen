@@ -375,17 +375,14 @@ func _has_waiting_beats(guest: AnimalGuest) -> bool:
 	return GameState.get_pending_reward_tier(guest.id) >= 0 or GameState.get_next_story_chapter(guest) != null
 
 
-## 첫 손님: 오늘 대접한 손님 중 한 명. 완벽하게 대접한 손님 중에서 돌려줄 레시피 노트나 알려 줄 할머니 비법이 남은 손님을
+## 첫 손님: 오늘 대접한 손님 중 한 명. 돌려줄 레시피 노트나 알려 줄 할머니 비법이 남은 손님을
 ## 먼저 고르고 (그중에서도 단골 보상이나 사연 막을 기다리는 손님 먼저), 그런 손님이 없으면 단골 보상이나 사연 막을 기다리는 손님을 고른다.
 ## 기다리는 다른 손님은 _choose_extra_guests 가 두 번째 손님으로 부른다. 아무도 없으면 null.
 func _choose_evening_guest() -> AnimalGuest:
 	var served: Array[AnimalGuest] = _todays_served_guests()
 	if served.is_empty():
 		return null
-	var perfect: Array[AnimalGuest] = served.filter(
-			func(guest: AnimalGuest) -> bool: return GameState.todays_served_guests[guest.id])
-	var candidates: Array[AnimalGuest] = perfect if not perfect.is_empty() else served
-	var with_page: Array[AnimalGuest] = candidates.filter(
+	var with_page: Array[AnimalGuest] = served.filter(
 			func(guest: AnimalGuest) -> bool: return _next_note_page(guest) != null or _next_secret(guest) != null)
 	if not with_page.is_empty():
 		var with_page_and_waiting: Array[AnimalGuest] = with_page.filter(_has_waiting_beats)
@@ -393,7 +390,7 @@ func _choose_evening_guest() -> AnimalGuest:
 	var with_waiting: Array[AnimalGuest] = served.filter(_has_waiting_beats)
 	if not with_waiting.is_empty():
 		return with_waiting.pick_random()
-	return candidates.pick_random()
+	return served.pick_random()
 
 
 ## 손님이 아직 돌려주지 않은 첫 번째 레시피 노트 페이지. 없으면 null.

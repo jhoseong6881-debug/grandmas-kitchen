@@ -128,7 +128,7 @@ var current_season: Season.Id = Season.Id.SPRING
 var is_spring_completed: bool = false
 ## 새 게임을 시작했거나 세이브를 불러왔으면 true. 화면이 바뀌어도 게임을 다시 시작하지 않게 할 때 쓴다.
 var is_game_started: bool = false
-## 오늘 대접한 손님 id → 한 번도 안 틀리고 대접했는지. 저녁 평상에 올 손님을 고를 때 쓴다.
+## 오늘 대접한 손님 id → true. 저녁 평상에 올 손님을 고를 때 쓴다.
 ## 하루가 지나면 비운다. 하루가 끝날 때 저장할 것이라 세이브에는 넣지 않는다.
 var todays_served_guests: Dictionary[StringName, bool] = {}
 ## 오늘 점심에 번진 할머니 노트 퍼즐을 푼 레시피 id (없으면 빈 값). 저녁 평상에서 그 노트에 요령 한 줄을 적는 장면을 보여 준다.
@@ -199,9 +199,9 @@ func advance_day() -> void:
 	day_changed.emit(current_day)
 
 
-## 오늘 대접한 손님을 기록한다. 같은 손님을 여러 번 대접했으면 한 번이라도 완벽했는지를 남긴다.
-func record_served_guest(guest_id: StringName, is_perfect: bool) -> void:
-	todays_served_guests[guest_id] = todays_served_guests.get(guest_id, false) or is_perfect
+## 오늘 대접한 손님을 기록한다. (값 true 는 예전 "완벽했는지" 자리라 지금은 뜻이 없다)
+func record_served_guest(guest_id: StringName) -> void:
+	todays_served_guests[guest_id] = true
 	if guest_id not in met_guest_ids:
 		met_guest_ids.append(guest_id)
 		notebook_changed.emit()
