@@ -24,7 +24,7 @@ const PLACEHOLDER_ICON_PIXELS: int = 12
 @export var expression_portraits: Dictionary[StringName, Texture2D] = {}
 ## 봄비 오는 날 우비를 입은 그림. 비워 두면 임시 그림일 때만 우비 도형을 씌우고, 진짜 그림이 있으면 평소 모습.
 @export var raincoat_portrait: Texture2D
-## 봄 잔치에서 평상에 앉은 모습 (원본 60×80 · 화면 180×240). 비워 두면 손님 그림(portrait)을, 그것도 없으면 임시 사각형.
+## 봄 잔치에서 평상에 앉은 모습 (180×240, 화면에 그대로). 비워 두면 손님 그림(portrait)을, 그것도 없으면 임시 사각형.
 @export var feast_portrait: Texture2D
 @export_multiline var personality: String = ""
 @export var favorite_recipes: Array[Recipe] = []

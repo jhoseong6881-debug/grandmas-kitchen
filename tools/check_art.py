@@ -24,7 +24,7 @@ SPECS = {
     ("AnimalGuest", "portrait"): (360, 480, True, "손님 그림"),
     ("AnimalGuest", "expression_portraits"): (360, 480, True, "손님 표정 그림"),
     ("AnimalGuest", "raincoat_portrait"): (360, 480, True, "손님 우비 그림"),
-    ("AnimalGuest", "feast_portrait"): (60, 80, True, "잔치용 앉은 모습"),
+    ("AnimalGuest", "feast_portrait"): (180, 240, True, "잔치용 앉은 모습"),
     ("AnimalGuest", "icon"): (16, 16, True, "손님 얼굴 아이콘"),
     ("Ingredient", "icon"): (16, 16, True, "재료 아이콘"),
     ("Recipe", "finished_image"): (64, 64, True, "완성 요리"),
