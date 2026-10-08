@@ -141,7 +141,7 @@
 ### 음악 출처 기록 (출시 전에 권리를 꼭 다시 확인)
 | 파일 | 쓰는 곳 | 만든 곳 | 요금제 / 권리 | 만든 날 | 프롬프트 |
 |---|---|---|---|---|---|
-| spring_theme.mp3 | 봄 곡 1 (1·4·7·10·13일째) | Suno AI | Pro 구독 중 생성 → 상업적 이용 가능 (Suno 약관 기준, 출시 전 다시 확인) | 2026-10-03 | (직접 적기) |
+| spring_theme.mp3 | 봄 곡 1 (1·4·7·10·13일째) | Suno AI | Pro 구독 중 생성 → 상업적 이용 가능 (Suno 약관 기준, 출시 전 다시 확인) | 2026-10-03 | Game-title instrumental, warm mid-range with an airy, non-intrusive mix; bouncy acoustic guitar strums, playful pizzicato strings, light marimba accents, gentle hand percussion, and a soft whistle-like flute melody trading turns over a varied, graceful arc; easygoing 100 BPM bounce in a happy major key, sunny-afternoon warmth, with subtle section lifts and a seamless loop back to the opening harmony and texture |
 | spring_theme2.mp3 | 봄 곡 2 (2·5·8·11·14일째). 원래 이름 Lunchtime Kitchen | Suno AI (v6) | Pro | 2026-10-04 | japanese anime slice of life soundtrack, bright spring lunchtime in a cozy little countryside kitchen, busy but relaxed cooking, bouncy ukulele and light piano, playful clarinet and bassoon melody, soft pizzicato strings, gentle shaker and light hand percussion, fresh warm and cheerful, bright major key, 108 BPM, loopable video game background music / 제외: vocals, singing, EDM, rock, heavy drums, sad, melancholic, minor key, dramatic |
 | spring_theme3.mp3 | 봄 곡 3 (3·6·9·12·15일째). 원래 이름 Morning Garden | Suno AI (v6) | Pro | 2026-10-04 | japanese anime slice of life soundtrack, fresh breezy spring morning in a countryside vegetable garden, sunlight and gentle wind, light acoustic guitar and bright piano, airy flute-like recorder melody, soft pizzicato strings, birdsong mood, clean and refreshing, hopeful and cheerful, bright major key, 100 BPM, loopable video game background music / 제외: vocals, singing, drums, EDM, rock, sad, melancholic, minor key, dramatic |
 | spring_rain.mp3 | 봄비 오는 날 낮 (텃밭, 버섯 원목, 부엌). data/weather/rain_settings.tres 의 Rain Music. 원래 이름 Spring Rain Day | Suno AI (v6) | Pro | 2026-10-04 | japanese anime slice of life soundtrack, cozy rainy spring day inside a warm countryside kitchen, soft gentle piano and warm nylon guitar, light pizzicato strings like raindrops, soft clarinet melody, calm comforting and peaceful, quietly happy, warm and snug, gentle dynamics, bright major key, 84 BPM, loopable video game background music / 제외: vocals, singing, rain sound effects, thunder, drums, EDM, rock, sad, melancholic, minor key, dramatic, dark |
@@ -154,5 +154,11 @@
 - 스팀 등록 때 "AI로 만든 콘텐츠"(배경음악)를 밝힌다.
 
 ### 아직 없는 곡
-없음 (2026-10-07 처음 화면·이야기 장면 곡을 넣었다).
+2026-10-08: 저녁 평상 전용곡 (porch_evening.mp3 예정). 지금은 저녁 평상에 그날 봄 곡(spring_theme/2/3)이 그대로 이어지는데, 평상만의 차분한 곡을 따로 만들기로 함.
+Suno 프롬프트 (아직 생성 전, 직접 Suno에 넣어 보고 마음에 들면 결과를 알려 주면 기록 남김):
+`japanese anime slice of life soundtrack, warm quiet evening on a wooden porch outside a cozy countryside kitchen after closing up, sharing stories with old friends under a starlit sky, soft acoustic guitar fingerpicking and warm felt piano, tender clarinet melody, light pizzicato strings, soft music box touches, calm and cozy, peaceful and a little sleepy, content and heartwarming, bright major key, 76 BPM, loopable video game background music`
+제외: `vocals, singing, drums, EDM, rock, electric guitar, sad, melancholic, minor key, dramatic, epic, orchestral swell`
+
+곡이 나오면: 1) `assets/audio/music/porch_evening.mp3` 로 넣기 2) `scenes/porch/porch.tscn` 인스펙터의 **Music** 칸에 끼워 넣기 3) 이 문서의 음악 출처 표에 기록.
+
 프롬프트 쓸 때: 동양 전통 악기나 '등불 축제' 같은 말은 넣지 않는다 (중국풍으로 나옴). 제외 칸에도 그런 단어는 넣지 않는다. 장면마다 다른 곡을 원하면 그 장면의 Music 칸만 바꾸면 된다 (점심 부엌 2~3곡 돌려 틀기도 생각 중).
