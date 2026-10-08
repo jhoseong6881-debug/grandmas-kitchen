@@ -3,7 +3,7 @@
 **시안 전용 (2026-10-08 결정).** 여기서 만든 그림은 디자이너님께 보여 줄 참고용이고, 게임(assets/, data/)에는 넣지 않는다.
 디스코드에 올릴 때는 "참고용 AI 시안"이라고 밝힌다. 프롬프트는 AI가 영어를 더 잘 알아들어서 영어로 썼고, 바로 아래에 한국어 뜻을 적었다.
 
-기준 그림: 디자이너님 토끼 `assets/art/characters/rabbit/rabbit_default.png` (120×160)
+기준 그림: 디자이너님 토끼 `assets/art/characters/rabbit/rabbit_default.png` (360×480, 2026-10-09 새 그림 · 웃음 rabbit_happy.png · 놀람 rabbit_surprised.png)
 - 머리가 몸의 절반쯤인 귀여운 비율, 머리부터 엉덩이까지 (아래는 그림 끝에서 잘림)
 - 살짝 비스듬히(3/4) 플레이어를 바라봄 — 부엌 조리대 너머로 마주 보고 이야기하는 1인칭 화면
 - 진한 밤색 테두리, 크고 윤기 나는 까만 눈, 분홍 볼, 크림색 주둥이
@@ -15,7 +15,7 @@
 |---|---|
 | 모드 | Pixel Art |
 | 배경 | Transparent (투명) |
-| 크기 | 손님 120×160 (고를 수 없으면 128 또는 160 정사각형으로 만들고 위아래를 맞춘다) · 너구리 72×88 |
+| 크기 | 손님 360×480 (고를 수 없으면 가장 큰 크기로 만들고 가로:세로 3:4 로 맞춘다) · 잔치에 앉은 모습 180×240 · 너구리 72×88 |
 | 테마 | 아래 "공통 그림체"를 테마로 한 번 만들어 두고, 다섯 손님 모두 같은 테마로 |
 
 ⚠️ 디자이너님 토끼 그림을 SpriteCook에 "참고 그림(Use as Reference)"으로 올리면 그림체가 가장 잘 맞지만,
@@ -44,11 +44,11 @@ cold blue palette, glowing effects, sparkle background, weapons, scary or angry 
 ## 손님 공통 구도
 
 ```
-Character portrait, 120x160 pixels, upper body from the head down to the hips, cropped at the bottom edge,
+Character portrait, 360x480 pixels, upper body from the head down to the hips, cropped at the bottom edge,
 facing the viewer at a slight three-quarter angle, as if talking to the player across a kitchen counter.
 Same framing and head size as a cute rabbit villager in the same set.
 ```
-뜻: 120×160, 머리부터 엉덩이까지(아래는 잘림), 살짝 비스듬히 플레이어를 보며 조리대 너머로 이야기하는 모습. 같은 세트의 토끼와 구도·머리 크기를 맞춘다.
+뜻: 360×480, 머리부터 엉덩이까지(아래는 잘림), 살짝 비스듬히 플레이어를 보며 조리대 너머로 이야기하는 모습. 같은 세트의 토끼와 구도·머리 크기를 맞춘다.
 
 각 손님 프롬프트는 **공통 구도 + 아래 손님 글**을 이어 붙여서 넣는다.
 
@@ -79,7 +79,7 @@ Shoulders slightly hunched, small shy smile, a bright sparkle highlight in the b
 - **왜 이렇게:** 겁이 많아 말이 짧다 → 움츠린 어깨, 꼬리 뒤에 반쯤 숨는 자세. 도토리 얘기엔 눈이 반짝 → 눈에 반짝 하이라이트.
 - **도토리 주머니:** 밥값(도토리), 뒷산 도토리나무를 제일 잘 안다는 설정.
 - **이끼색 목수건:** 사연(할머니 도토리 자리에서 돋은 새싹, "할머니 나무")의 초록과 이어져요.
-- 다람쥐는 몸이 작지만 같은 120×160 칸을 써서, 큰 꼬리로 칸을 채우게 했어요.
+- 다람쥐는 몸이 작지만 같은 360×480 칸을 써서, 큰 꼬리로 칸을 채우게 했어요.
 
 ## 🐻 곰
 
@@ -129,7 +129,7 @@ stacked with cloth-wrapped bundles, a small cooking pot and a little lantern.
 
 픽셀랩 캐릭터 만들기(pixellab.ai/create-character)는 테마 칸이 따로 없고 설명 칸이 하나뿐이다.
 그래서 그림체 + 구도 + 손님을 한 줄로 합친 짧은 판을 쓴다. 회색 칸 하나를 통째로 복사해 설명 칸에 붙인다.
-- 픽셀랩 그림 크기는 최대 140×140 (등급 1은 80×80) 이라 120×160 을 그대로 못 만든다. 시안이니 가장 큰 정사각형으로 만들고 비율만 본다.
+- 픽셀랩 그림 크기는 최대 140×140 (등급 1은 80×80) 이라 360×480 을 그대로 못 만든다. 시안이니 가장 큰 정사각형으로 만들고 비율만 본다.
 - 필터(깔때기) 버튼에 크기·보는 방향·테두리·명암 설정이 있으면: 보는 방향은 정면(south), 명암은 basic shading, 테두리는 selective outline, 디테일은 medium.
 
 🐔 암탉
