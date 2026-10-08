@@ -80,10 +80,6 @@ func _get_minigame_type() -> Recipe.MinigameType:
 	return Recipe.MinigameType.CHOP
 
 
-func _uses_perfect_stamp() -> bool:
-	return false
-
-
 func _on_start(recipe: Recipe) -> void:
 	_chops_needed = _step_count(chops_needed)
 	_target_width = target_width * _window_scale

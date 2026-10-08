@@ -97,10 +97,6 @@ func _get_minigame_type() -> Recipe.MinigameType:
 	return Recipe.MinigameType.ROLL
 
 
-func _uses_perfect_stamp() -> bool:
-	return false
-
-
 func _on_start(recipe: Recipe) -> void:
 	_layers_needed = _step_count(layers_needed)
 	_layers_done = 0

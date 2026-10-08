@@ -745,8 +745,7 @@ func _should_open_note_puzzle(recipe: Recipe) -> bool:
 			and GameState.current_day >= note_puzzle_first_day and not _has_note_puzzle_today
 
 
-## is_perfect 는 쓰지 않는다 (미니게임에 빗나감이 없어져 늘 true).
-func _on_minigame_finished(_is_perfect: bool, is_grandma_taste: bool, is_request_met: bool) -> void:
+func _on_minigame_finished(is_grandma_taste: bool, is_request_met: bool) -> void:
 	if is_grandma_taste:
 		_grandma_step_count += 1
 	if is_request_met:

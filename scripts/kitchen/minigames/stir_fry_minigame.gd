@@ -116,10 +116,6 @@ func _get_minigame_type() -> Recipe.MinigameType:
 	return Recipe.MinigameType.STIR_FRY
 
 
-func _uses_perfect_stamp() -> bool:
-	return false
-
-
 func _on_start(recipe: Recipe) -> void:
 	_tosses_needed = _step_count(tosses_needed)
 	_toss_duration = toss_duration / _speed

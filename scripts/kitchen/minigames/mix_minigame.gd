@@ -64,10 +64,6 @@ func _get_minigame_type() -> Recipe.MinigameType:
 	return Recipe.MinigameType.MIX
 
 
-func _uses_perfect_stamp() -> bool:
-	return false
-
-
 func _on_start(recipe: Recipe) -> void:
 	_piece_count = _step_count(piece_count)
 	_rub_reach = rub_reach * _window_scale

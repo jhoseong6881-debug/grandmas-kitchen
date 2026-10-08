@@ -71,10 +71,6 @@ func _get_minigame_type() -> Recipe.MinigameType:
 	return Recipe.MinigameType.MINCE
 
 
-func _uses_perfect_stamp() -> bool:
-	return false
-
-
 func _on_start(recipe: Recipe) -> void:
 	_stages_needed = _step_count(stages_needed)
 	_ingredient_color = _step_color(ingredient_color)

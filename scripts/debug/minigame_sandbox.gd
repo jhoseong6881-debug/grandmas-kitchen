@@ -3,7 +3,7 @@ extends Control
 ## 인스펙터에서 레시피, 몇 번째 요리 단계, 오늘의 부탁을 고르고 이 씬만 실행(F6)한다.
 ## 끝나면 결과를 보여 주고 restart_delay 초 뒤에 같은 미니게임을 다시 시작한다.
 
-const RESULT_FORMAT: String = "결과: %s   ·   완벽 %s   ·   할머니 손맛 %s   ·   부탁 %s   (%d번째)"
+const RESULT_FORMAT: String = "결과: %s   ·   할머니 손맛 %s   ·   부탁 %s   (%d번째)"
 const YES_TEXT: String = "O"
 const NO_TEXT: String = "X"
 const NONE_TEXT: String = "-"
@@ -59,11 +59,10 @@ func _start() -> void:
 	_minigame.start(recipe, recipe.cook_steps[step_index], request)
 
 
-func _on_finished(is_perfect: bool, is_grandma_taste: bool, is_request_met: bool) -> void:
+func _on_finished(is_grandma_taste: bool, is_request_met: bool) -> void:
 	var has_secret: bool = recipe.cook_steps[step_index].has_secret()
 	_result_label.text = RESULT_FORMAT % [
-		"성공" if is_perfect or is_grandma_taste or is_request_met else "완료",
-		YES_TEXT if is_perfect else NO_TEXT,
+		"성공" if is_grandma_taste or is_request_met else "완료",
 		(YES_TEXT if is_grandma_taste else NO_TEXT) if has_secret else NONE_TEXT,
 		(YES_TEXT if is_request_met else NO_TEXT) if request != null else NONE_TEXT,
 		_round]

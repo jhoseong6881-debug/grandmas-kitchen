@@ -97,10 +97,6 @@ func _get_minigame_type() -> Recipe.MinigameType:
 	return Recipe.MinigameType.SIMMER
 
 
-func _uses_perfect_stamp() -> bool:
-	return false
-
-
 ## 냄비 옆의 "젓는 빠르기" 막대와 바늘, 글을 만든다.
 func _build_meter() -> void:
 	_meter = ColorRect.new()

@@ -251,10 +251,6 @@ func _get_minigame_type() -> Recipe.MinigameType:
 	return Recipe.MinigameType.COOK_RICE
 
 
-func _uses_perfect_stamp() -> bool:
-	return false
-
-
 func _on_start(recipe: Recipe) -> void:
 	_washes_needed = _step_count(washes_needed)
 	_cook_time_needed = cook_time_needed * _duration_scale

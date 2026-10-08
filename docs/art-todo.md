@@ -38,7 +38,7 @@
 | scenes/kitchen/minigames/chop_minigame.tscn (Board) | 도마 | 900x500 | 할 일 |
 | scenes/kitchen/minigames/chop_minigame.tscn (Ingredient, Slices) | 썰기 전 재료 / 썬 조각 (재료마다) | 420x160 / 24x120 | 할 일 |
 | scenes/kitchen/minigames/chop_minigame.tscn (Knife, TargetZone) | 칼 / 썰 자리 표시 (칼은 마우스를 따라 움직이고 위아래로 썬다) | 10x180 / 50x240 | 할 일 |
-| scenes/kitchen/minigames/chop_minigame.tscn (PerfectStamp) | 완벽 도장 (지금은 금색 글자) | 900x200 | 선택 |
+| scenes/kitchen/minigames/chop_minigame.tscn (PerfectStamp) | 할머니 손맛 도장 (지금은 금색 글자) | 900x200 | 선택 |
 | scenes/kitchen/minigames/stir_fry_minigame.tscn (Pan, Handle) | 위에서 본 동그란 팬 + 손잡이 | 360x360 + 230x24 | 할 일 |
 | scenes/kitchen/minigames/stir_fry_minigame.tscn (Stove) | 위에서 본 불판 (떨어진 조각이 놓이는 곳) | 1000x590 | 할 일 |
 | scenes/kitchen/minigames/stir_fry_minigame.tscn (Flame) | 위에서 본 불꽃 고리 (팬 밑으로 살짝 보임) | 420x420 | 할 일 |

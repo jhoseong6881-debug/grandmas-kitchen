@@ -2,29 +2,29 @@ class_name Minigame
 extends Control
 ## 요리 미니게임들의 공통 틀. 썰기, 담기, 볶기 미니게임이 이 스크립트를 물려받는다(extends Minigame).
 ## 공통으로 맡는 일: 시작 전 "준비~ 시작!" 보여 주기(그동안 입력은 무시), 누르기/손 떼기 입력(클릭, 스페이스/Enter,
-## 게임패드 A) 감지, 연타 방지, 빗나간 횟수 세기, "완벽 도전 중" 표시, 완벽 도장, 끝나면 finished 시그널 보내기,
-## 효과음 (맞힐 때 "hit_미니게임종류" 소리, 없으면 "hit". 빗나감, 준비~ 시작!, 완성/완벽/할머니 손맛 소리),
+## 게임패드 A) 감지, 연타 방지, 끝나면 finished 시그널 보내기,
+## 효과음 (맞힐 때 "hit_미니게임종류" 소리, 없으면 "hit". 준비~ 시작!, 완성/할머니 손맛 소리),
 ## 할머니 비법(요리 단계의 비법 자리) 확인과 "할머니 손맛" 도장, 비법을 알면 비법 한 줄 보여 주기,
 ## 손님의 오늘의 부탁(GuestRequest) 보여 주기와 들어줬는지 확인하기,
 ## 가게가 커지면 생기는 조리도구(ShopTool) 찾기와 보여 주기 (효과는 _window_scale, _duration_scale 로 각 미니게임이 쓴다).
-## 시간 제한과 실패는 없다. 빗나가도 벌칙 없이 다시 하면 된다.
+## 시간 제한과 실패, 빗나감은 없다. (예전 "완벽" 판정은 2026-10-09에 없앴다)
 ##
 ## 물려받는 미니게임 씬에는 %TitleLabel, %ProgressLabel, %PerfectStreakLabel, %PerfectStamp 노드가 있어야 한다.
+## 두 노드 이름은 예전 "완벽" 표시의 흔적이다. 지금 %PerfectStreakLabel 은 안내 줄(비법·부탁·도구)을 만드는 본보기로만 쓰고
+## (자기는 늘 숨김), %PerfectStamp 는 "♥ 할머니 손맛 ♥" 도장과 "준비~ 시작!" 글의 모양으로 쓴다.
 ## 요리 단계(CookStep)의 횟수와 빠르기, 제목은 _step_count(), _speed, _step_title() 로 읽는다.
 ## 물려받는 스크립트가 채우는 함수:
 ##   _get_minigame_type() : 이 미니게임의 종류 (조리도구를 찾을 때 쓴다)
 ##   _on_start(recipe)  : 미니게임을 처음 상태로 준비한다.
-##   _on_press()        : 누를 때마다 불린다. 맞으면 진행하고, 빗나가면 _register_miss() 를 부른다.
+##   _on_press()        : 누를 때마다 불린다.
 ##   _on_release()      : 손을 뗄 때마다 불린다. 꾹 누르는 미니게임에서 쓴다. (필요 없으면 안 채워도 된다)
-##   _uses_perfect_stamp() : 완벽 도장을 쓰지 않으면 false (손으로 직접 하는 미니게임. 필요 없으면 안 채워도 된다)
 ##   손으로 직접 하는 미니게임(썰기)은 _gui_input 을 통째로 바꿔 마우스·스틱을 직접 다룬다 (누르기 입력을 쓰지 않는다).
 ##   _show_zone(start, end, color, zone_name) : 금색 칸 안에 비법 자리나 부탁 자리를 그린다. (그릴 수 없으면 안 채워도 된다)
 ##   맞힐 때마다 _register_hit(금색 칸 안의 위치 0~1) 을 부르고, 다 끝나면 _complete(완료 문구) 를 부른다.
 
-## is_perfect: 한 번도 빗나가지 않았으면 true
 ## is_grandma_taste: 이 단계에 할머니 비법이 있고, 모든 동작을 비법 자리에서 해냈으면 true
 ## is_request_met: 이 단계에 오늘의 부탁이 있고, 부탁대로 해냈으면 true
-signal finished(is_perfect: bool, is_grandma_taste: bool, is_request_met: bool)
+signal finished(is_grandma_taste: bool, is_request_met: bool)
 
 ## 미니게임 제목: 이름 + 동작 (예: "당근 채썰기")
 const STEP_TITLE_FORMAT: String = "%s %s"
@@ -43,11 +43,9 @@ const HIT_SOUND_PREFIX: String = "hit_"
 const HIT_SOUND_FALLBACK: StringName = &"hit"
 ## 하는 동안 계속 깔리는 소리: "loop_" + 미니게임 종류 (예: loop_stir_fry). data/sounds/ 에 없으면 아무 소리도 안 깔린다.
 const LOOP_SOUND_PREFIX: String = "loop_"
-const MISS_SOUND: StringName = &"miss"
 const READY_SOUND: StringName = &"ready"
 const GO_SOUND: StringName = &"go"
 const DONE_SOUND: StringName = &"done"
-const PERFECT_SOUND: StringName = &"perfect"
 const GRANDMA_TASTE_SOUND: StringName = &"grandma_taste"
 ## 할머니 비법 자리(주황) / 손님 부탁 자리(파랑)에 딱 맞혔을 때 맞히는 소리에 더하는 "띠링"
 const SECRET_ZONE_SOUND: StringName = &"zone_secret"
@@ -55,17 +53,15 @@ const REQUEST_ZONE_SOUND: StringName = &"zone_request"
 
 ## 한 번 누른 뒤 다음 입력을 받기까지 쉬는 시간(초). 마구 눌러 통과하는 것을 막는다.
 @export var press_cooldown: float = 0.15
-## 다 끝난 뒤 화면을 보여 주는 시간(초). 완벽했을 때는 도장이 잘 보이게 더 길게 보여 준다.
+## 다 끝난 뒤 화면을 보여 주는 시간(초). 할머니 손맛이면 도장이 잘 보이게 더 길게 보여 준다.
 @export var finish_delay: float = 0.8
-@export var perfect_finish_delay: float = 1.5
-## 완벽 도장이 튀어나오는 크기 변화와 시간(초)
+@export var stamp_finish_delay: float = 1.5
+## 도장(할머니 손맛, 준비~ 시작!)이 튀어나오는 크기 변화와 시간(초)
 @export var stamp_start_scale: float = 0.3
 @export var stamp_overshoot_scale: float = 1.15
 @export var stamp_pop_duration: float = 0.18
 @export var stamp_settle_duration: float = 0.1
-## 처음 빗나갔을 때 "완벽 도전 중" 표시가 사라지는 시간(초)
-@export var streak_fade_duration: float = 0.3
-## 시작 전에 보여 주는 글과 각각 보여 주는 시간(초). 이 동안은 눌러도 빗나감으로 치지 않는다.
+## 시작 전에 보여 주는 글과 각각 보여 주는 시간(초). 이 동안은 입력을 받지 않는다.
 @export var ready_text: String = "준비~"
 @export var go_text: String = "시작!"
 @export var ready_duration: float = 0.9
@@ -84,7 +80,6 @@ const REQUEST_ZONE_SOUND: StringName = &"zone_request"
 @export var secret_hint_rect: Rect2 = Rect2(60, 240, 900, 48)
 @export var secret_hint_font_size: int = 24
 
-var _miss_count: int = 0
 ## 지금 하는 요리 단계. 없으면 null (기본값으로 한다).
 var _step: CookStep
 ## 요리 단계의 빠르기 배율 (1 = 보통)
@@ -102,29 +97,30 @@ var _window_scale: float = 1.0
 var _duration_scale: float = 1.0
 ## 오늘의 부탁 때문에 원래와 다른 미니게임으로 하는 중이면 true (단계의 횟수, 빠르기, 비법을 쓰지 않는다)
 var _is_converted: bool = false
-## 처음 보여 줄 완벽 도장 글 (할머니 손맛 도장을 썼다가 되돌릴 때 쓴다)
-var _perfect_stamp_text: String = ""
 ## 이 미니게임의 맞히는 소리 이름 (예: &"hit_chop")
 var _hit_sound: StringName
 var _loop_sound: StringName
 
 @onready var _title_label: Label = %TitleLabel
 @onready var _progress_label: Label = %ProgressLabel
-@onready var _perfect_streak_label: Label = %PerfectStreakLabel
-@onready var _perfect_stamp: Label = %PerfectStamp
-## "준비~ 시작!" 글. 완벽 도장과 같은 모양으로 쓰려고 도장을 복사해서 만든다.
-@onready var _ready_label: Label = _perfect_stamp.duplicate()
-## "★ 할머니 비법: …" 한 줄. "완벽 도전 중" 글과 같은 모양으로 쓰려고 복사해서 만든다.
-@onready var _secret_hint_label: Label = _perfect_streak_label.duplicate()
+## 안내 줄의 본보기 (자기는 늘 숨김)
+@onready var _line_template: Label = %PerfectStreakLabel
+## "♥ 할머니 손맛 ♥" 도장
+@onready var _stamp: Label = %PerfectStamp
+## "준비~ 시작!" 글. 도장과 같은 모양으로 쓰려고 도장을 복사해서 만든다.
+@onready var _ready_label: Label = _stamp.duplicate()
+## "★ 할머니 비법: …" 한 줄. 본보기와 같은 모양으로 쓰려고 복사해서 만든다.
+@onready var _secret_hint_label: Label = _line_template.duplicate()
 ## "♪ 오늘의 부탁: …" 한 줄
-@onready var _request_label: Label = _perfect_streak_label.duplicate()
+@onready var _request_label: Label = _line_template.duplicate()
 ## "도구: 넓은 도마 (…)" 한 줄
-@onready var _tool_label: Label = _perfect_streak_label.duplicate()
+@onready var _tool_label: Label = _line_template.duplicate()
 
 
 func _ready() -> void:
-	_perfect_stamp.pivot_offset = _perfect_stamp.size / 2.0
-	_perfect_stamp_text = _perfect_stamp.text
+	_line_template.hide()
+	_stamp.text = grandma_stamp_text
+	_stamp.pivot_offset = _stamp.size / 2.0
 	var type_name: String = String(Recipe.MinigameType.find_key(_get_minigame_type())).to_lower()
 	_hit_sound = StringName(HIT_SOUND_PREFIX + type_name)
 	_loop_sound = StringName(LOOP_SOUND_PREFIX + type_name)
@@ -167,16 +163,12 @@ func start(recipe: Recipe, step: CookStep = null, request: GuestRequest = null) 
 	if request != null:
 		_speed *= request.speed_multiplier
 	_apply_shop_tools()
-	_miss_count = 0
 	_hit_count = 0
 	_secret_hit_count = 0
 	_request_hit_count = 0
 	_is_playing = false
 	_cooldown_left = 0.0
-	_perfect_streak_label.modulate.a = 1.0
-	_perfect_streak_label.visible = _uses_perfect_stamp()
-	_perfect_stamp.hide()
-	_perfect_stamp.text = _perfect_stamp_text
+	_stamp.hide()
 	_on_start(recipe)
 	# 비법을 알면 비법 한 줄과 비법 자리를 보여 준다. 몰라도 비법 자리에서 해내면 할머니 손맛이 된다.
 	var is_secret_known: bool = _step != null and _step.has_secret() and not _is_converted \
@@ -251,12 +243,6 @@ func _get_minigame_type() -> Recipe.MinigameType:
 
 func _on_start(_recipe: Recipe) -> void:
 	pass
-
-
-## 완벽 도장과 "완벽 도전 중" 표시를 쓸지. 빗나감 없이 손으로 직접 하는 미니게임(썰기)은 false 로 한다.
-## false 여도 빗나감이 없으니 결과(finished)는 완벽으로 넘긴다.
-func _uses_perfect_stamp() -> bool:
-	return true
 
 
 ## 깔리는 소리를 "시작!"부터 끝까지 낼지. 한 단계에서만 내는 미니게임(밥 짓기)은 false 로 하고 직접 켠다.
@@ -339,13 +325,13 @@ func _reset_hits() -> void:
 	_request_hit_count = 0
 
 
-## 부탁 자리가 있으면 모든 동작을 그 자리에서, 없으면 한 번도 안 틀렸으면 부탁을 들어준 것
+## 부탁 자리가 있으면 모든 동작을 그 자리에서 해냈을 때, 없으면 (횟수·빠르기만 바꾸는 부탁) 해내기만 하면 부탁을 들어준 것
 func _is_request_met() -> bool:
 	if _request == null:
 		return false
 	if _request.has_zone():
 		return _hit_count > 0 and _request_hit_count == _hit_count
-	return _miss_count == 0
+	return true
 
 
 func _is_grandma_taste() -> bool:
@@ -387,49 +373,27 @@ func _play_hit_sound() -> void:
 	Sound.play_or(sound, HIT_SOUND_FALLBACK)
 
 
-func _register_miss() -> void:
-	Sound.play(MISS_SOUND)
-	_miss_count += 1
-	if _miss_count == 1:
-		var tween: Tween = create_tween()
-		tween.tween_property(_perfect_streak_label, "modulate:a", 0.0, streak_fade_duration)
-		tween.tween_callback(_perfect_streak_label.hide)
-
-
 func _complete(done_text: String) -> void:
 	_is_playing = false
 	Sound.stop_loop(_loop_sound)
 	_progress_label.text = done_text
-	var is_perfect: bool = _miss_count == 0
 	var is_grandma_taste: bool = _is_grandma_taste()
 	var is_request_met: bool = _is_request_met()
 	if is_request_met:
 		_progress_label.text += REQUEST_DONE_TEXT
-	# 완벽 도장을 쓰지 않는 미니게임은 완벽이어도 도장 없이 보통 완성으로 보여 준다.
-	var shows_perfect: bool = is_perfect and _uses_perfect_stamp()
 	if is_grandma_taste:
-		_perfect_stamp.text = grandma_stamp_text
-	if shows_perfect or is_grandma_taste:
-		_pop_perfect_stamp()
-	if is_grandma_taste:
+		_pop(_stamp)
 		Sound.play(GRANDMA_TASTE_SOUND)
-	elif shows_perfect:
-		Sound.play(PERFECT_SOUND)
 	else:
 		Sound.play(DONE_SOUND)
 	# 두 번째 값 false: 일시 정지 중에는 이 기다림도 멈춘다.
-	var delay: float = perfect_finish_delay if shows_perfect or is_grandma_taste else finish_delay
+	var delay: float = stamp_finish_delay if is_grandma_taste else finish_delay
 	await get_tree().create_timer(delay, false).timeout
 	hide()
-	finished.emit(is_perfect, is_grandma_taste, is_request_met)
+	finished.emit(is_grandma_taste, is_request_met)
 
 
-func _pop_perfect_stamp() -> void:
-	_perfect_streak_label.hide()
-	_pop(_perfect_stamp)
-
-
-## 글이 작게 시작해서 살짝 크게 튀어나왔다가 제자리로 돌아온다. (완벽 도장, 준비~ 시작!)
+## 글이 작게 시작해서 살짝 크게 튀어나왔다가 제자리로 돌아온다. (할머니 손맛 도장, 준비~ 시작!)
 func _pop(label: Label) -> void:
 	label.scale = Vector2.ONE * stamp_start_scale
 	label.show()

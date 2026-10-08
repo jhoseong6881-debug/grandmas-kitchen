@@ -121,10 +121,6 @@ func _get_minigame_type() -> Recipe.MinigameType:
 	return Recipe.MinigameType.PAN_FRY
 
 
-func _uses_perfect_stamp() -> bool:
-	return false
-
-
 func _on_start(recipe: Recipe) -> void:
 	_jeon_count = _step_count(jeon_count)
 	_cook_duration = cook_duration / _speed
