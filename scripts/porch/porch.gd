@@ -15,6 +15,8 @@ extends Control
 const DAY_TEXT_FORMAT: String = "%s %d일째 저녁"
 const QUIET_EVENING_TEXT: String = "오늘 저녁은 조용하네요. 별이 참 많아요."
 const NOTE_FOUND_TEXT: String = "할머니 레시피 노트 한 장을 되찾았어요!"
+## 오늘 점심에 번진 할머니 노트를 읽은 날, 저녁 첫 순서에 그 노트를 펼치며 보여 주는 글
+const NOTE_TIP_TEXT: String = "점심에 읽은 할머니 노트에 요령 한 줄을 적어 두었어요."
 const PROMISE_MADE_FORMAT: String = "약속했어요!  내일 점심: %s · %s"
 const MENU_SLOT_UP_FORMAT: String = "  ·  메뉴 칸이 늘었어요 (%d칸)"
 const SECRET_LEARNED_FORMAT: String = "할머니 비법을 알았어요!  ★ %s"
@@ -107,9 +109,28 @@ func _ready() -> void:
 		else:
 			for guest: AnimalGuest in _choose_extra_guests(first_guest):
 				_add_guest_beats(guest, false)
+	_add_note_tip_beat()
 	_run_next_beat()
 	if _next_button.visible:
 		_next_button.grab_focus()
+
+
+## 오늘 점심에 번진 노트 퍼즐을 풀었으면, 저녁 첫 순서로 그 노트를 펼쳐 요령 한 줄이 써지는 것을 보여 준다.
+## 다음 순서로 넘어갈 때 노트를 덮는다.
+func _add_note_tip_beat() -> void:
+	var recipe: Recipe = GameData.get_recipe(GameState.todays_note_puzzle_id) \
+			if GameState.todays_note_puzzle_id != &"" else null
+	if recipe == null or recipe.note_puzzle == null or recipe.note_puzzle.hint.is_empty():
+		return
+	if not _beats.is_empty():
+		var next_beat: Callable = _beats[0]
+		_beats[0] = func() -> void:
+			_note_card.hide()
+			_status_label.text = ""
+			await next_beat.call()
+	_beats.push_front(func() -> void:
+		_status_label.text = NOTE_TIP_TEXT
+		_note_card.show_recipe(recipe, true))
 
 
 func _on_next_button_pressed() -> void:

@@ -141,3 +141,14 @@ theme_override_font_sizes/font_size = 36
 text = "재료: 당근, 도토리"
 horizontal_alignment = 1
 autowrap_mode = 3
+
+[node name="TipLabel" type="Label" parent="TextBox"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 0.33, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_kyobo")
+theme_override_font_sizes/font_size = 30
+text = "\"계란은 성질이 급해서 약불에 달래야 해.\""
+horizontal_alignment = 1
+autowrap_mode = 3

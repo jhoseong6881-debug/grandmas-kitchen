@@ -76,6 +76,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Paper" type="Panel" parent="Board"]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
@@ -106,6 +107,27 @@ theme_override_font_sizes/normal_font_size = 40
 bbcode_enabled = true
 text = "· 계란을 곱게 푼다"
 scroll_active = false
+
+[node name="MemoryLabel" type="Label" parent="Board/Paper"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = -180.0
+offset_right = -40.0
+offset_bottom = -36.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.5, 0.33, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_kyobo")
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+vertical_alignment = 2
+autowrap_mode = 3
 
 [node name="Counter" type="VBoxContainer" parent="Board"]
 layout_mode = 1
@@ -141,6 +163,13 @@ theme_override_colors/font_color = Color(1, 0.84, 0.25, 1)
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 autowrap_mode = 3
+
+[node name="HintButton" type="Button" parent="Board/Counter"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 72)
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "추억 떠올리기"
 
 [node name="StartButton" type="Button" parent="Board/Counter"]
 unique_name_in_owner = true

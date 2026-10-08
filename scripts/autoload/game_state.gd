@@ -131,6 +131,9 @@ var is_game_started: bool = false
 ## 오늘 대접한 손님 id → 한 번도 안 틀리고 대접했는지. 저녁 평상에 올 손님을 고를 때 쓴다.
 ## 하루가 지나면 비운다. 하루가 끝날 때 저장할 것이라 세이브에는 넣지 않는다.
 var todays_served_guests: Dictionary[StringName, bool] = {}
+## 오늘 점심에 번진 할머니 노트 퍼즐을 푼 레시피 id (없으면 빈 값). 저녁 평상에서 그 노트에 요령 한 줄을 적는 장면을 보여 준다.
+## 하루가 지나면 비운다. todays_served_guests 처럼 세이브에는 넣지 않는다.
+var todays_note_puzzle_id: StringName = &""
 
 
 # --- 인벤토리 ---
@@ -184,6 +187,7 @@ func remove_ingredients(counts: Dictionary[StringName, int]) -> bool:
 func advance_day() -> void:
 	current_day += 1
 	todays_served_guests.clear()
+	todays_note_puzzle_id = &""
 	todays_market_trades.clear()
 	has_visited_market_today = false
 	has_opened_feast_prep_today = false
@@ -461,6 +465,7 @@ func start_next_season() -> bool:
 	current_season = next.id
 	current_day = STARTING_DAY
 	todays_served_guests.clear()
+	todays_note_puzzle_id = &""
 	todays_market_trades.clear()
 	clear_promise()
 	todays_guest_ids.clear()
@@ -498,6 +503,7 @@ func is_note_puzzle_solved(recipe_id: StringName) -> bool:
 func solve_note_puzzle(recipe_id: StringName) -> void:
 	if recipe_id not in solved_note_puzzle_ids:
 		solved_note_puzzle_ids.append(recipe_id)
+	todays_note_puzzle_id = recipe_id
 
 
 ## 레시피 노트에 "할머니 손맛" 도장이 찍혔는지
@@ -707,6 +713,7 @@ func new_game() -> void:
 	todays_guest_ids.clear()
 	todays_guests_day = 0
 	todays_served_guests.clear()
+	todays_note_puzzle_id = &""
 	plot_crop_ids.clear()
 	plot_days_left.clear()
 	met_guest_ids.clear()
