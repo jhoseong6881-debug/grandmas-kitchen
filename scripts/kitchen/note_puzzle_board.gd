@@ -8,6 +8,7 @@ extends Control
 ## "추억 떠올리기"를 누르거나 두 번 틀리면 노트 아래에 할머니 말씀(NotePuzzle.hint)이 손글씨로 떠오른다.
 ## 칸을 채우면 번진 자국이 스르르 걷히며 글씨가 나타나고, 다 채우면 종이가 한 번 환해진다.
 ## 마우스와 게임패드 모두: 보기와 카드는 모두 버튼이라 십자키 + Ⓐ 로 고른다.
+## 마우스로는 보기·카드를 끌어다 왼쪽 노트 종이에 놓아도 된다 (누른 것과 같다).
 
 signal closed
 
@@ -25,6 +26,9 @@ const LINE_SEPARATOR: String = "\n\n"
 const LINE_PREFIX: String = "· "
 ## 번진 칸을 그리는 빈칸 (줄바꿈 안 되는 띄어쓰기)
 const SMUDGE_SPACE: String = " "
+
+## 손에 든 카드 모양을 그리는 높이. 이 창(z_index 1)보다 위에 그려야 보인다.
+const DRAG_PREVIEW_Z_INDEX: int = 10
 
 ## 번진 칸 너비 (띄어쓰기 몇 칸). 넣는 순서 칸은 재료 이름이 짧아서 좁게.
 @export var smudge_width: int = 14
@@ -56,6 +60,10 @@ const SMUDGE_SPACE: String = " "
 ## 노트를 다 채웠을 때 종이가 환해지는 색과 시간(초)
 @export var paper_glow_color: Color = Color(1.25, 1.2, 1.05)
 @export var paper_glow_duration: float = 0.8
+## 보기·카드를 끄는 동안 노트 종이 색 (여기에 놓으라는 표시), 끄는 카드의 흐림 정도, 손에 든 카드 모양의 흐림 정도
+@export var paper_drop_color: Color = Color(1.1, 1.08, 0.9)
+@export var dragging_alpha: float = 0.4
+@export var drag_preview_alpha: float = 1.0
 
 var _puzzle: NotePuzzle
 var _puzzle_lines: Array[NotePuzzleLine] = []
@@ -68,6 +76,8 @@ var _wrong_count: int = 0
 var _reveal_key: String = ""
 var _reveal_t: float = 1.0
 var _reveal_tween: Tween
+## 지금 끌고 있는 보기·카드 (끌지 않으면 null)
+var _dragging_button: Button
 
 @onready var _title_label: Label = %TitleLabel
 @onready var _note_text: RichTextLabel = %NoteText
@@ -84,6 +94,8 @@ func _ready() -> void:
 	_start_button.pressed.connect(_on_start_pressed)
 	_hint_button.pressed.connect(_recall_memory)
 	_keep_focus_inside([_start_button])
+	# 노트 종이는 끌어 온 보기·카드를 받는다.
+	_paper.set_drag_forwarding(Callable(), _can_drop_on_paper, _drop_on_paper)
 	hide()
 
 
@@ -291,8 +303,60 @@ func _make_row_button(text: String) -> Button:
 	button.custom_minimum_size.y = choice_height
 	button.add_theme_font_size_override("font_size", choice_font_size)
 	button.text = text
+	button.set_drag_forwarding(_get_row_drag_data.bind(button), Callable(), Callable())
 	_choice_rows.add_child(button)
 	return button
+
+
+# --- 마우스로 끌어다 놓기 ---
+
+## 보기·카드를 끌기 시작한다: 손에 든 모양을 마우스에 붙이고, 원래 카드는 흐리게, 노트 종이는 밝게.
+func _get_row_drag_data(_at_position: Vector2, button: Button) -> Variant:
+	if button.disabled or not is_visible_in_tree():
+		return null
+	var preview: Button = button.duplicate(0)
+	preview.size = button.size
+	preview.position = -button.size / 2.0
+	preview.modulate.a = drag_preview_alpha
+	# 버튼 바탕이 반투명이라 밝은 노트 종이 위에서 흐려 보이지 않게, 손에 든 카드는 바탕을 불투명하게 칠한다.
+	var style: StyleBoxFlat = button.get_theme_stylebox("normal") as StyleBoxFlat
+	if style != null:
+		var solid: StyleBoxFlat = style.duplicate()
+		solid.bg_color.a = 1.0
+		preview.add_theme_stylebox_override("normal", solid)
+	var holder: Control = Control.new()
+	holder.z_index = DRAG_PREVIEW_Z_INDEX
+	holder.add_child(preview)
+	button.set_drag_preview(holder)
+	_dragging_button = button
+	button.modulate.a = dragging_alpha
+	_paper.self_modulate = paper_drop_color
+	return {"note_puzzle_button": button}
+
+
+func _can_drop_on_paper(_at_position: Vector2, data: Variant) -> bool:
+	return data is Dictionary and (data as Dictionary).get("note_puzzle_button") is Button
+
+
+## 노트 종이에 놓으면 그 보기·카드를 누른 것과 같다.
+func _drop_on_paper(_at_position: Vector2, data: Variant) -> void:
+	var button: Button = (data as Dictionary).get("note_puzzle_button")
+	_end_drag()
+	if is_instance_valid(button) and button.get_parent() == _choice_rows:
+		button.pressed.emit()
+
+
+## 끌기가 끝나면 (어디에 놓았든) 카드와 종이를 원래대로.
+func _end_drag() -> void:
+	if is_instance_valid(_dragging_button):
+		_dragging_button.modulate.a = 1.0
+	_dragging_button = null
+	_paper.self_modulate = Color.WHITE
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_DRAG_END and _dragging_button != null:
+		_end_drag()
 
 
 ## 지금 줄을 다 채웠다: 다음 줄로.
