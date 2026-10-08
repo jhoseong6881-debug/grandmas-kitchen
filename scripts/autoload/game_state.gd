@@ -20,7 +20,7 @@ const SAVE_BACKUP_PATH: String = "user://save.json.bak"
 const SAVE_DICTIONARY_KEYS: PackedStringArray = ["inventory", "extra_plots", "feast_prep_delivered", "guest_affection",
 		"guest_story_progress", "pending_reward_tiers", "garden"]
 const SAVE_ARRAY_KEYS: PackedStringArray = ["basket_guest_ids", "grandma_taste_recipe_ids", "keepsake_ids",
-		"known_taste_guest_ids", "learned_secret_ids", "menu_recipe_ids", "met_guest_ids", "porch_met_guest_ids",
+		"known_taste_guest_ids", "learned_secret_ids", "menu_recipe_ids", "solved_note_puzzle_ids", "met_guest_ids", "porch_met_guest_ids",
 		"seen_duo_talk_ids", "seen_guest_ids", "seen_memory_ids", "seen_story_chapter_ids", "todays_guest_ids",
 		"unlocked_place_ids", "unlocked_recipe_ids", "used_basket_note_ids", "garden_days_left", "notebook_viewed_keys"]
 const SAVE_NUMBER_KEYS: PackedStringArray = ["version", "current_day", "current_season", "promise_day", "reputation", "todays_guests_day",
@@ -93,6 +93,8 @@ var used_basket_note_ids: Array[StringName] = []
 var seen_duo_talk_ids: Array[StringName] = []
 ## 손님에게 들어서 알게 된 할머니 비법 (레시피 id)
 var learned_secret_ids: Array[StringName] = []
+## 번진 할머니 노트 퍼즐을 푼 레시피 id (NotePuzzle)
+var solved_note_puzzle_ids: Array[StringName] = []
 ## 할머니 손맛으로 한 번이라도 대접한 레시피 (레시피 노트 도장)
 var grandma_taste_recipe_ids: Array[StringName] = []
 ## 손님 id → 단골도 (대접할수록 오른다. 단계는 RegularSettings 로 정한다)
@@ -487,6 +489,17 @@ func learn_secret(recipe_id: StringName) -> void:
 		learned_secret_ids.append(recipe_id)
 
 
+# --- 번진 할머니 노트 퍼즐 ---
+
+func is_note_puzzle_solved(recipe_id: StringName) -> bool:
+	return recipe_id in solved_note_puzzle_ids
+
+
+func solve_note_puzzle(recipe_id: StringName) -> void:
+	if recipe_id not in solved_note_puzzle_ids:
+		solved_note_puzzle_ids.append(recipe_id)
+
+
 ## 레시피 노트에 "할머니 손맛" 도장이 찍혔는지
 func has_grandma_taste(recipe_id: StringName) -> bool:
 	return recipe_id in grandma_taste_recipe_ids
@@ -700,6 +713,7 @@ func new_game() -> void:
 	seen_guest_ids.clear()
 	menu_recipe_ids.clear()
 	learned_secret_ids.clear()
+	solved_note_puzzle_ids.clear()
 	grandma_taste_recipe_ids.clear()
 	guest_affection.clear()
 	known_taste_guest_ids.clear()
@@ -880,6 +894,7 @@ func _to_save_data() -> Dictionary:
 		"seen_guest_ids": Array(seen_guest_ids).map(func(guest_id: StringName) -> String: return String(guest_id)),
 		"menu_recipe_ids": Array(menu_recipe_ids).map(func(recipe_id: StringName) -> String: return String(recipe_id)),
 		"learned_secret_ids": Array(learned_secret_ids).map(func(recipe_id: StringName) -> String: return String(recipe_id)),
+		"solved_note_puzzle_ids": Array(solved_note_puzzle_ids).map(func(recipe_id: StringName) -> String: return String(recipe_id)),
 		"grandma_taste_recipe_ids": Array(grandma_taste_recipe_ids).map(func(recipe_id: StringName) -> String: return String(recipe_id)),
 		"guest_affection": _string_keys(guest_affection),
 		"known_taste_guest_ids": Array(known_taste_guest_ids).map(func(guest_id: StringName) -> String: return String(guest_id)),
@@ -948,6 +963,8 @@ func _from_save_data(data: Dictionary) -> void:
 		menu_recipe_ids.append(StringName(str(recipe_id)))
 	for recipe_id: Variant in data.get("learned_secret_ids", []):
 		learned_secret_ids.append(StringName(str(recipe_id)))
+	for recipe_id: Variant in data.get("solved_note_puzzle_ids", []):
+		solved_note_puzzle_ids.append(StringName(str(recipe_id)))
 	for recipe_id: Variant in data.get("grandma_taste_recipe_ids", []):
 		grandma_taste_recipe_ids.append(StringName(str(recipe_id)))
 	var affection_data: Dictionary = data.get("guest_affection", {})

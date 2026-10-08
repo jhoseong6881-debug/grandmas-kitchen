@@ -5,6 +5,8 @@
 [ext_resource type="Resource" path="res://data/ingredients/egg.tres" id="3_egg"]
 [ext_resource type="Resource" path="res://data/ingredients/honey.tres" id="4_honey"]
 [ext_resource type="Script" uid="uid://che4nl0g5vff0" path="res://scripts/data/cook_step.gd" id="14_cook_step"]
+[ext_resource type="Script" path="res://scripts/data/note_puzzle.gd" id="15_note_puzzle"]
+[ext_resource type="Script" path="res://scripts/data/note_puzzle_line.gd" id="16_note_line"]
 
 [sub_resource type="Resource" id="CookStep_1"]
 script = ExtResource("14_cook_step")
@@ -22,6 +24,31 @@ speed = 0.9
 placeholder_color = Color(0.98, 0.8, 0.36, 1)
 hit_sound = &"chop_omelette"
 
+[sub_resource type="Resource" id="NoteLine_1"]
+script = ExtResource("16_note_line")
+text = "계란 두 알을 톡톡 깨서 곱게 푼다"
+
+[sub_resource type="Resource" id="NoteLine_2"]
+script = ExtResource("16_note_line")
+text = "꿀 한 숟갈 넣고 살살 젓는다"
+
+[sub_resource type="Resource" id="NoteLine_3"]
+script = ExtResource("16_note_line")
+kind = 1
+text = "불은 {blank}, 팬에 얇게 붓는다"
+choices = Array[String](["센불", "약불"])
+answer_index = 1
+wrong_line = "음… 이러면 계란이 금방 타 버릴 것 같은데."
+
+[sub_resource type="Resource" id="NoteLine_4"]
+script = ExtResource("16_note_line")
+text = "몽글몽글 익으면 돌돌 만다"
+
+[sub_resource type="Resource" id="NotePuzzle_1"]
+script = ExtResource("15_note_puzzle")
+lines = Array[ExtResource("16_note_line")]([SubResource("NoteLine_1"), SubResource("NoteLine_2"), SubResource("NoteLine_3"), SubResource("NoteLine_4")])
+hint = "계란은 성질이 급해서 약불에 달래야 해."
+
 [resource]
 script = ExtResource("1_recipe")
 id = &"honey_egg_roll"
@@ -33,3 +60,4 @@ secret_hint = "계란말이는 끝에 닿기 직전에 말기"
 secret_teller_id = &"hen"
 secret_reveal_line = "계란말이는 끝에 닿기 바로 전에 돌돌! 그게 네 할머니 비법이었지. 늦으면 터지거든!"
 grandma_taste_line = "꼬꼬꼬! 폭신폭신! 네 할머니 계란말이 그대로야!"
+note_puzzle = SubResource("NotePuzzle_1")

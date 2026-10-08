@@ -92,6 +92,9 @@ const EVENING_SOUND: StringName = &"porch_night"
 @export var next_guest_delay: float = 1.0
 ## 소풍 도시락 날 "○○ 도시락에 넣을 요리" 창
 @export var lunchbox_picker_scene: PackedScene = preload("res://scenes/kitchen/lunchbox_picker.tscn")
+## 번진 할머니 노트 창 (퍼즐이 있는 요리를 처음 만들 때 미니게임 전에 연다)과, 퍼즐이 나오기 시작하는 날 (1일째는 가볍게)
+@export var note_puzzle_board_scene: PackedScene = preload("res://scenes/kitchen/note_puzzle_board.tscn")
+@export var note_puzzle_first_day: int = 2
 ## 대접할 때 접시가 조리대 위를 드윽 미끄러져 손님 앞으로 가는 시간(초)과, 내 쪽(화면 아래)에서 출발하는 거리(픽셀), 처음 크기
 @export var serve_slide_duration: float = 0.5
 @export var serve_slide_distance: float = 360.0
@@ -144,6 +147,7 @@ var _is_chef_hit: bool = false
 var _cook_text: String = ""
 var _next_guest_text: String = ""
 var _lunchbox_picker: LunchboxPicker
+var _note_puzzle_board: NotePuzzleBoard
 ## 요리 중에 아직 남은 미니게임 단계
 var _remaining_steps: Array[CookStep] = []
 ## 이번 요리의 미니게임을 지금까지 전부 한 번도 안 틀렸는지
@@ -211,6 +215,8 @@ func _ready() -> void:
 	_add_goal_board()
 	_lunchbox_picker = lunchbox_picker_scene.instantiate()
 	add_child(_lunchbox_picker)
+	_note_puzzle_board = note_puzzle_board_scene.instantiate()
+	add_child(_note_puzzle_board)
 	_next_guest_text = _next_guest_button.text
 	_cook_text = _cook_button.text
 	RainOverlay.apply_daytime(self, false)
@@ -726,7 +732,17 @@ func _on_cook_button_pressed() -> void:
 	_is_request_met = false
 	# 요리하는 동안 손님과 말풍선을 흐리게 감춘다 (미니게임 그림이 손님 위에 겹쳐 보이지 않게).
 	_guest_spot.set_cooking_hidden(true)
+	if _should_open_note_puzzle(current_order):
+		_note_puzzle_board.open(current_order)
+		await _note_puzzle_board.closed
+		GameState.solve_note_puzzle(current_order.id)
 	_run_next_step()
+
+
+## 이 요리를 만들기 전에 번진 할머니 노트 퍼즐을 풀지 (아직 안 푼 퍼즐이 있고, 1일째가 아닐 때)
+func _should_open_note_puzzle(recipe: Recipe) -> bool:
+	return NotePuzzleBoard.has_puzzle(recipe) and not GameState.is_note_puzzle_solved(recipe.id) \
+			and GameState.current_day >= note_puzzle_first_day
 
 
 func _on_minigame_finished(is_perfect: bool, is_grandma_taste: bool, is_request_met: bool) -> void:

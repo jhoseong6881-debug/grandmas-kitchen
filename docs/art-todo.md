@@ -128,3 +128,5 @@
 | data/recipes/*.tres (Finished Image) | 완성 요리 그림 (접시 / 국물 요리는 그릇에 담긴 모습). "완성~!" 장면(4배), 대접할 때 미끄러지는 접시(3배), 레시피 노트에 같이 쓴다. 지금은 DishArt 가 재료 색으로 그린 임시 그림 | 원본 64x64 | 할 일 |
 | scenes/ui/goal_board.tscn → scripts/ui/goal_board.gd (Board Texture) | 목표판: 나무 틀 안 크림색 종이 (9칸 늘이기, 가장자리 Board Margin 칸 그대로). 지금은 코드로 그린 도트 판 | 원본 약 26x26 이상, 배경 투명 | 할 일 |
 | scenes/ui/goal_button.tscn → scripts/ui/goal_button.gd (Board Icon) | 계절 목표 버튼 아이콘: 과녁에 화살 (누르면 목표판이 크게 뜸). 지금은 코드로 그린 도트 과녁 | 96x96 (원본 32x32, 배경 투명) | 할 일 |
+| scenes/kitchen/note_puzzle_board.tscn (Paper) | 번진 할머니 노트 퍼즐 창의 노트 종이 (왼쪽, 손글씨 줄을 게임이 올림). 지금은 크림색 상자. 펼친 노트 그림(recipe_note_book)과 맞추면 좋음 | 792x672 | 할 일 |
+| scripts/kitchen/note_puzzle_board.gd (번진 자국) | 노트의 번진 잉크 자국 몇 가지 (지금은 보라·주황 단색 띠) | 약 160x48 | 선택 |

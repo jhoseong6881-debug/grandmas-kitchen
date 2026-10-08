@@ -53,6 +53,8 @@ const DEFAULT_ACTION_NAMES: Dictionary[MinigameType, String] = {
 ## 조리기 미니게임에서 졸이는 조림장 (data/coatings/). 조리기가 없는 레시피는 비워 둔다.
 ## 졸이는 재료 조각은 첫 번째 재료를 쓴다.
 @export var simmer_sauce: Coating
+## 번진 할머니 노트 퍼즐. 이 요리를 처음 만들 때 미니게임 전에 푼다. 비워 두면 퍼즐 없이 바로 미니게임.
+@export var note_puzzle: NotePuzzle
 
 
 ## 썰기/볶기 화면 제목에 쓸 재료 이름. 정해 둔 이름이 없으면 첫 번째 재료 이름, 재료도 없으면 빈 문자열.
