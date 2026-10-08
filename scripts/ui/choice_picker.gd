@@ -1,7 +1,7 @@
 class_name ChoicePicker
 extends Control
 ## 여러 개 중 하나를 고르는 창의 공통 틀. 텃밭 "무엇을 심을까요?"(PlantPicker)와
-## 부엌 "어떻게 마무리할까요?"(GarnishPicker)가 물려받는다.
+## 부엌 "○○ 도시락에 넣을 요리"(LunchboxPicker)가 물려받는다.
 ## open_choices() 로 제목과 고를 것들을 넣어 열고, 고르면 chosen(번호), 그만두면 chosen(-1).
 ## 씬에는 %TitleLabel, %ChoiceRows(VBoxContainer), %CancelButton 이 있어야 한다.
 

@@ -10,3 +10,5 @@ display_name = "꿀 한 숟갈"
 taste_name = "달콤한 맛"
 sort_order = 3
 cost_ingredient = ExtResource("2_honey")
+short_name = "꿀"
+sprinkle_color = Color(0.98, 0.76, 0.2, 1)

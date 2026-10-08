@@ -156,6 +156,8 @@ var _remaining_steps: Array[CookStep] = []
 var _is_perfect_cook: bool = true
 ## 이번 요리에서 할머니 비법이 있는 단계 수와, 그중 비법대로 해낸 단계 수
 var _secret_step_count: int = 0
+## 완성 장면에서 고른 고명 (대접할 때 쓴다)
+var _chosen_garnish: Garnish
 var _grandma_step_count: int = 0
 ## 안내 글자의 원래 색 (완벽 색에서 되돌릴 때 쓴다)
 var _status_default_color: Color
@@ -174,7 +176,6 @@ var _status_default_color: Color
 @onready var _notebook_button: Button = %NotebookButton
 ## 계절 목표 버튼 (부엌이 켜질 때 붙인다)
 var _goal_button: GoalButton
-@onready var _garnish_picker: GarnishPicker = %GarnishPicker
 @onready var _result_board: ResultBoard = %ResultBoard
 ## 요리 완성 장면 ("완성~!")과 대접한 접시 (손님 앞 조리대 위)
 @onready var _dish_showcase: DishShowcase = %DishShowcase
@@ -767,8 +768,12 @@ func _is_grandma_cook() -> bool:
 ## 레시피의 요리 단계(cook_steps)를 순서대로 하나씩 진행한다. 다 끝나면 요리 완성.
 func _run_next_step() -> void:
 	if _remaining_steps.is_empty():
+		# "완성~!" 장면에서 고명 병을 골라 요리에 뿌린다 (손님 입맛 힌트를 아래에 보여 준다).
+		# 손님과 말풍선은 고명 병과 겹치지 않게 다 뿌린 뒤에 다시 보인다.
+		var hint: String = _taste_hint(current_guest)
+		_chosen_garnish = await _dish_showcase.show_dish(current_order, _is_perfect_cook, _is_grandma_cook(),
+				TASTE_HINT_REMINDER_FORMAT % [current_guest.display_name, hint] if hint != "" else "")
 		_guest_spot.set_cooking_hidden(false)
-		await _dish_showcase.show_dish(current_order, _is_perfect_cook, _is_grandma_cook())
 		_set_side_buttons_enabled(true)
 		var format: String = PERFECT_COOKED_TEXT_FORMAT if _is_perfect_cook else COOKED_TEXT_FORMAT
 		if _is_grandma_cook():
@@ -791,16 +796,9 @@ func _run_next_step() -> void:
 		_run_next_step()
 
 
-## 대접하기 전에 마무리 고명을 고른다. 그만두면 다시 대접하기 버튼으로 돌아간다.
+## 완성 장면에서 뿌린 고명으로 대접한다.
 func _on_serve_button_pressed() -> void:
-	var hint: String = _taste_hint(current_guest)
-	_garnish_picker.open(TASTE_HINT_REMINDER_FORMAT % [current_guest.display_name, hint] if hint != "" else "",
-			current_guest, current_order)
-	var garnish: Garnish = await _garnish_picker.closed
-	if garnish == null:
-		_serve_button.grab_focus()
-		return
-	_serve(garnish)
+	_serve(_chosen_garnish)
 
 
 ## 대접하면 손님이 말하고, 밥값 재료를 준다. 완벽하면 재료마다 보너스, 단골이면 덤, 부탁을 들어줬으면 더 준다.

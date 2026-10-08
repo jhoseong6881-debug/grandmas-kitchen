@@ -8,3 +8,5 @@ id = &"chili"
 display_name = "고춧가루 솔솔"
 taste_name = "매콤한 맛"
 sort_order = 4
+short_name = "고춧\n가루"
+sprinkle_color = Color(0.86, 0.16, 0.1, 1)

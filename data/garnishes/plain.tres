@@ -8,3 +8,4 @@ id = &"plain"
 display_name = "그대로"
 taste_name = "담백한 맛"
 sort_order = 0
+serve_as_is = true
