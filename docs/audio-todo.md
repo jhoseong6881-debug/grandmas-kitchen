@@ -17,6 +17,10 @@
 | sfx/chop_jelly_1~3.wav | 도토리묵 썰기 | ElevenLabs | Starter | 2026-10-04 |
 | sfx/chop_omelette_1~3.wav | 계란말이 썰기 | ElevenLabs | Starter | 2026-10-04 |
 
+| sfx/achievement_jingle.wav | 미니게임을 보통으로 완성했을 때 (done) | Freesound "Achievement Accomplish Jingle App UI" by CogFireStudios — https://freesound.org/s/619840/ | **CC0** | 2026-10-08 |
+
+| sfx/victory_melody.wav | 할머니 비법 자리를 맞혀 "할머니 손맛"이 나왔을 때 (grandma_taste) | Freesound "Puzzle Game Victory Melody" by CogFireStudios — https://freesound.org/s/619832/ | **CC0** | 2026-10-08 |
+
 | sfx/sizzle_1~4.wav | 볶기에서 재료를 받을 때 (hit_stir_fry) | Freesound "Frying vegetables.wav" by BeeProductive — https://freesound.org/s/382287/ | **CC0** (출처 표시 없이 상업적 이용 가능) | 2026-10-04 |
 
 | sfx/pan_flip_1~3.wav | 전을 뒤집을 때 (hit_pan_fry) | Freesound "Adding Bacon To Frying Pan" by Bon_Vivant_Pictures — https://freesound.org/s/440830/ | **CC0** | 2026-10-04 |
@@ -82,6 +86,8 @@
   원본은 `audio_source/`(Godot 와 Git 에서 빠짐)에 있어서 다른 부분을 다시 잘라 쓸 수 있다.
 - 썰기 소리(chop_*)는 ElevenLabs mp3 의 크기가 조각마다 20dB 넘게 달라서, 모두 같은 크기(가장 큰 부분 -16dB, 최고점 -1dB 이하)로 맞춘 wav 로 바꿨다. 원본 mp3 는 audio_source/chop_mp3/ 에 있다.
 - 썰기 소리 고르는 순서: 요리 단계의 Hit Sound → 재료의 Chop Sound → 썰기 기본 소리(hit_chop, Kenney).
+- achievement_jingle 은 원본(2.37초)의 꼬리 울림을 살리고 끝 0.15초만 부드럽게 줄였다. 피크를 -1.9dB로 올려 happy_beeps_perfect("완벽!" 소리)와 같은 크기로 맞췄다.
+- victory_melody 는 원본(3.61초)에서 끝 0.15초만 부드럽게 줄였다. 피크를 -1.9dB로 맞춰 happy_beeps_perfect 와 같은 "성취 징글" 계열(CogFireStudios)로 통일했다.
 - ElevenLabs 무료 요금제로 만든 소리는 상업적으로 쓸 수 없다.
 
 ## 그대로 써도 괜찮은 것
@@ -94,7 +100,6 @@
 | hit_plate | 담기 |
 | hit_roll | 말기 (천 소리) |
 | miss | 빗나감 (작고 부드럽게, 벌칙 느낌이 안 나게) |
-| done, grandma_taste | 미니게임 완성 / 할머니 손맛 |
 | guest_arrive | 손님이 올 때 (문 여는 소리) |
 | serve | 대접할 때 (접시 내려놓기) |
 | pop, tier_up | 손님 위로 뜨는 글 / 단골 단계가 오를 때 |

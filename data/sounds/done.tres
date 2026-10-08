@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="SoundEffect" format=3]
 
 [ext_resource type="Script" path="res://scripts/data/sound_effect.gd" id="1_sound"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/kenney/confirmation_001.ogg" id="2_stream"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/achievement_jingle.wav" id="2_stream"]
 
 [resource]
 script = ExtResource("1_sound")
