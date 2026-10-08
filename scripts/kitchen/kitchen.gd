@@ -765,7 +765,8 @@ func _run_next_step() -> void:
 		# 손님과 말풍선은 고명 병과 겹치지 않게 다 뿌린 뒤에 다시 보인다.
 		var hint: String = _taste_hint(current_guest)
 		_chosen_garnish = await _dish_showcase.show_dish(current_order, _is_grandma_cook(),
-				TASTE_HINT_REMINDER_FORMAT % [current_guest.display_name, hint] if hint != "" else "")
+				TASTE_HINT_REMINDER_FORMAT % [current_guest.display_name, hint] if hint != "" else "",
+				current_guest.display_name)
 		_guest_spot.set_cooking_hidden(false)
 		_set_side_buttons_enabled(true)
 		var format: String = GRANDMA_COOKED_TEXT_FORMAT if _is_grandma_cook() else COOKED_TEXT_FORMAT

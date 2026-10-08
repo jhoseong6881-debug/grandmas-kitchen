@@ -19,6 +19,8 @@ const SHORT_FORMAT: String = "%s%s 모자라요!"
 
 @export var done_text: String = "완성~!"
 @export var grandma_text: String = "♥ 할머니 손맛"
+## 요리 이름 줄: 누구에게 낼 요리인지 (손님 이름, 요리 이름)
+@export var for_guest_format: String = "%s에게 낼 %s"
 ## 완성 요리 그림을 키우는 배수 (원본 64×64)
 @export var dish_scale: int = 4
 ## 튀어나오는 크기 변화와 시간(초)
@@ -90,10 +92,11 @@ func _ready() -> void:
 
 
 ## 완성 요리를 보여 주고 고명을 고를 때까지 기다린다. hint: 아래에 보여 줄 손님 입맛 힌트 (없으면 빈 글)
-func show_dish(recipe: Recipe, is_grandma_taste: bool, hint: String = "") -> Garnish:
+## guest_name: 이 요리를 받을 손님 이름 (없으면 요리 이름만)
+func show_dish(recipe: Recipe, is_grandma_taste: bool, hint: String = "", guest_name: String = "") -> Garnish:
 	_dish_image.texture = DishArt.get_texture(recipe, dish_scale)
 	_done_label.text = done_text
-	_name_label.text = recipe.display_name
+	_name_label.text = for_guest_format % [guest_name, recipe.display_name] if guest_name != "" else recipe.display_name
 	_badge_label.text = grandma_text if is_grandma_taste else ""
 	_hint_text = hint
 	_hint_label.text = hint
