@@ -132,6 +132,7 @@ offset_bottom = 470.0
 mouse_filter = 2
 
 [node name="TargetRing" type="Panel" parent="."]
+visible = false
 layout_mode = 0
 offset_left = 890.0
 offset_top = 400.0
@@ -141,6 +142,7 @@ mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_target")
 
 [node name="BeatRing" type="Panel" parent="."]
+visible = false
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 890.0
@@ -266,7 +268,7 @@ offset_bottom = -180.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_font_sizes/font_size = 48
-text = "하얀 원이 금색 원에 겹칠 때 눌러요"
+text = "냄비 안에서 빙글빙글 저어 주세요"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -284,7 +286,7 @@ offset_bottom = -100.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_font_sizes/font_size = 36
-text = "줄어드는 하얀 원이 금색 원에 딱 겹칠 때 눌러서 저어요 (클릭 / 스페이스 / Ⓐ)"
+text = "냄비 안에서 커서를 빙글빙글 돌려 저어요   (패드: 스틱을 빙글빙글)"
 horizontal_alignment = 1
 vertical_alignment = 1
 

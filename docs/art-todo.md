@@ -58,8 +58,8 @@
 | scenes/kitchen/minigames/mix_minigame.tscn (Spatula) | 나무 주걱 (위에서 본 모습) | 36x380 | 할 일 |
 | scenes/kitchen/minigames/mix_minigame.tscn (PieceTemplate/Coat) | 양념 묻은 반짝임 (조각은 재료 아이콘을 그대로 씀, 양념 색은 data/coatings/) | 56x56 | 선택 |
 | scenes/kitchen/minigames/simmer_minigame.tscn (Pot, Sauce) | 위에서 본 냄비 / 조림 국물 (국물 색은 data/coatings/) | 520x520 / 460x460 | 할 일 |
-| scenes/kitchen/minigames/simmer_minigame.tscn (Spoon) | 나무 숟가락 | 240x44 | 할 일 |
-| scenes/kitchen/minigames/simmer_minigame.tscn (TargetRing, BeatRing) | 박자 원 (금색 / 하얀색) | 140x140 | 선택 |
+| scenes/kitchen/minigames/simmer_minigame.tscn (Spoon) | 나무 국자 (그릇이 커서 자리, 손잡이는 냄비 바깥쪽) | 240x44 | 할 일 |
+| simmer_minigame.gd 이 만드는 빠르기 막대 | 젓는 빠르기 막대 (지금은 단색 막대 + 흰 바늘) | 400x28 | 선택 |
 | data/ingredients/egg.tres (icon) | 계란 아이콘 | 미정 | 할 일 |
 | data/ingredients/acorn.tres (icon) | 도토리 아이콘 | 미정 | 할 일 |
 | data/recipes/acorn_jelly_muchim.tres (finished_image) | 도토리묵 무침 완성 그림 | 미정 | 할 일 |
