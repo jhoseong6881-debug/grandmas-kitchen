@@ -194,7 +194,7 @@ offset_bottom = -180.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_font_sizes/font_size = 48
-text = "주걱이 안 묻은 조각 위를 지날 때 눌러요"
+text = "주걱으로 조각을 쓱쓱 문질러요"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -212,7 +212,7 @@ offset_bottom = -100.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_font_sizes/font_size = 36
-text = "주걱이 지나가는 조각이 금색으로 빛날 때 눌러요 (클릭 / 스페이스 / Ⓐ)"
+text = "누르지 않고 주걱으로 조각 위를 쓱쓱! 한가운데를 지나가요   (패드: 스틱으로 문질러요)"
 horizontal_alignment = 1
 vertical_alignment = 1
 
