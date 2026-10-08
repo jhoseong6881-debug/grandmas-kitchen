@@ -55,7 +55,8 @@
 | scenes/kitchen/minigames/roll_minigame.tscn (Roll) | 말린 계란 (겹마다 두꺼워짐) | 36~144 x 336 | 할 일 |
 | roll_minigame.gd 가 만드는 국자 / 뒤집개 | 계란물 국자 (위에서 본 모습, 커서 자리) / 말린 계란을 미는 뒤집개 | 64x64 / 14x360 | 선택 |
 | scenes/kitchen/minigames/rice_minigame.tscn (Bowl, Water) | 쌀 씻는 바가지 / 물 (물 색은 코드가 입힘) | 480x480 / 420x420 | 할 일 |
-| scenes/kitchen/minigames/rice_minigame.tscn (RiceTemplate, Hand) | 쌀알 / 씻는 손 | 8x18 / 64x64 | 할 일 |
+| scenes/kitchen/minigames/rice_minigame.tscn (RiceTemplate, Hand) | 쌀알 / 씻는 손 (커서 자리) | 8x18 / 64x64 | 할 일 |
+| rice_minigame.gd 가 만드는 뽀얀 자리 | 쌀뜨물 뽀얀 자리 (클릭하면 씻겨 사라짐) | 110x110 | 선택 |
 | scenes/kitchen/minigames/rice_minigame.tscn (Pot, Lid, Flame) | 가마솥 / 솥뚜껑 / 아궁이 불 | 420x270 / 480x44 / 260x80 | 할 일 |
 | scenes/kitchen/minigames/mix_minigame.tscn (Bowl) | 넓은 버무리기 그릇 | 960x440 | 할 일 |
 | scenes/kitchen/minigames/mix_minigame.tscn (Spatula) | 나무 주걱 (위에서 본 모습) | 36x380 | 할 일 |
