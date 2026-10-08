@@ -40,7 +40,6 @@
 | sfx/loop_sizzle.wav | 볶는 동안 계속 깔리는 지글지글 (loop_stir_fry) | Freesound 382287 (위 sizzle 과 같은 원본) | **CC0** | 2026-10-04 |
 | sfx/loop_rice_boil.wav | 밥 짓기 불 조절 동안 깔리는 보글보글 (loop_cook_rice) | Freesound 124584 (위 simmer_bubble 과 같은 원본) | **CC0** | 2026-10-04 |
 | sfx/kalimba_ready.wav, kalimba_go.wav | 미니게임 "준비~" / "시작!" (ready, go) | Freesound "Kalimba (C-note)" by foochie_foochie — https://freesound.org/s/331047/ | **CC0** | 2026-10-04 |
-| sfx/happy_beeps_perfect.wav | 미니게임 "완벽!" (perfect) | Freesound "Achievement Happy Beeps Jingle" by CogFireStudios — https://freesound.org/s/619838/ | **CC0** | 2026-10-04 |
 | sfx/phone_buzz.wav, phone_buzz_2.wav | 잠드는 장면 휴대폰 진동 (phone_buzz, 번갈아 나옴) | Freesound "iPhone Vibrate on Wood Table" by steeltowngaming — https://freesound.org/s/537738/ | **CC0** | 2026-10-07 |
 | sfx/dish_slide.wav, dish_slide_2.wav, dish_slide_3.wav | 대접할 때 접시가 조리대 위를 드윽 미끄러지는 소리 (dish_slide, 셋 중 하나) | Freesound "Plate Sliding on Counter.wav" by PVM — https://freesound.org/s/585634/ | **CC0** | 2026-10-07 |
 | sfx/zone_secret.wav, zone_request.wav | 미니게임에서 할머니 비법 자리(주황) / 손님 부탁 자리(파랑)에 딱 맞혔을 때 "띠링" (zone_secret, zone_request) | Freesound 331047 (위 kalimba 와 같은 원본)의 음 높이를 바꾼 두 음 | **CC0** | 2026-10-07 |
@@ -55,7 +54,7 @@
   숟가락이 그릇에 부딪힌 듯한 큰 소리(2.50·4.40초)는 뺐다.
 - loop_sizzle 은 원본 0.5~7.5초, loop_rice_boil 은 원본 53~60초를 6초 길이로 자르고, 끝 1초를 처음과 겹쳐 되풀이해도 이음매가 안 들리게 한 것.
 - kalimba_ready 는 칼림바 "도" 한 음을 1초로 줄인 것, kalimba_go 는 같은 음을 다섯 음 올린 "솔"(0.9초).
-- happy_beeps_perfect 는 징글(3.5초) 중 소리가 나는 앞 2.5초만 쓰고 끝을 부드럽게 줄인 것. (나무 실로폰 가락은 들어 보고 뺐다)
+- 미니게임 "완벽!" 소리(happy_beeps_perfect, Freesound 619838 CogFireStudios, CC0)는 2026-10-09 미니게임에서 완벽 판정을 없애면서 뺐다 (원본은 audio_source/happy_beeps_jingle.wav).
 - phone_buzz 두 개는 원본 미리 듣기 파일(9.9초, audio_source/phone_vibrate_wood.mp3 → .wav)에서 0.6초짜리 진동 "부르르"가 나는 0.98초·8.78초부터 0.68초씩 자른 것.
   긴 진동(1초 넘는 것)과 아주 짧은 진동은 뺐다. 말풍선마다 한 번씩 나서 짧은 것을 골랐다.
 - dish_slide 세 개는 원본 미리 듣기 파일(12.6초, audio_source/plate_slide_counter.mp3 → .wav)의 미끄러짐 여덟 번 중, 시작이 "탁" 하고 세게 부딪히지 않고
@@ -86,8 +85,8 @@
   원본은 `audio_source/`(Godot 와 Git 에서 빠짐)에 있어서 다른 부분을 다시 잘라 쓸 수 있다.
 - 썰기 소리(chop_*)는 ElevenLabs mp3 의 크기가 조각마다 20dB 넘게 달라서, 모두 같은 크기(가장 큰 부분 -16dB, 최고점 -1dB 이하)로 맞춘 wav 로 바꿨다. 원본 mp3 는 audio_source/chop_mp3/ 에 있다.
 - 썰기 소리 고르는 순서: 요리 단계의 Hit Sound → 재료의 Chop Sound → 썰기 기본 소리(hit_chop, Kenney).
-- achievement_jingle 은 원본(2.37초)의 꼬리 울림을 살리고 끝 0.15초만 부드럽게 줄였다. 피크를 -1.9dB로 올려 happy_beeps_perfect("완벽!" 소리)와 같은 크기로 맞췄다.
-- victory_melody 는 원본(3.61초)에서 끝 0.15초만 부드럽게 줄였다. 피크를 -1.9dB로 맞춰 happy_beeps_perfect 와 같은 "성취 징글" 계열(CogFireStudios)로 통일했다.
+- achievement_jingle 은 원본(2.37초)의 꼬리 울림을 살리고 끝 0.15초만 부드럽게 줄였다. 피크를 -1.9dB로 올려 (지금은 뺀) happy_beeps_perfect("완벽!" 소리)와 같은 크기로 맞췄다.
+- victory_melody 는 원본(3.61초)에서 끝 0.15초만 부드럽게 줄였다. 피크를 -1.9dB로 맞춰 (지금은 뺀) happy_beeps_perfect 와 같은 "성취 징글" 계열(CogFireStudios)로 통일했다.
 - ElevenLabs 무료 요금제로 만든 소리는 상업적으로 쓸 수 없다.
 
 ## 그대로 써도 괜찮은 것
@@ -99,7 +98,6 @@
 | hit_mince | 다지기 (탁탁) |
 | hit_plate | 담기 |
 | hit_roll | 말기 (천 소리) |
-| miss | 빗나감 (작고 부드럽게, 벌칙 느낌이 안 나게) |
 | guest_arrive | 손님이 올 때 (문 여는 소리) |
 | serve | 대접할 때 (접시 내려놓기) |
 | pop, tier_up | 손님 위로 뜨는 글 / 단골 단계가 오를 때 |
@@ -107,7 +105,7 @@
 | note_page, secret, gift | 평상: 레시피 노트 / 할머니 비법 / 단골 선물 |
 | special_day | 특별한 점심 날(소풍, 생일, 아무거나)에 부엌이 열릴 때 (Kenney jingles_PIZZI04) |
 | door_close | 가게 문이 다 닫힐 때 작은 "툭" (Kenney impactSoft_medium 세 개 번갈아) |
-| miss (메뉴판) | 메뉴판에서 장사를 시작할 수 없을 때 (재료 부족, 아무것도 안 고름). 장터의 "재료 부족"과 같은 소리 |
+| miss | 할 수 없을 때 작고 부드러운 "툭": 메뉴판에서 장사를 시작할 수 없을 때 (재료 부족, 아무것도 안 고름), 장터의 "재료 부족", 잔치 준비에서 그 재료를 더 낼 수 없을 때. 벌칙 느낌이 안 나게. (2026-10-09부터 미니게임 빗나감에는 안 씀) |
 | result_line, shop_up | 장사 결과판 줄이 나올 때 / 가게 이름이 바뀔 때 |
 
 ## 미니게임마다 맞히는 소리
