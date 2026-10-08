@@ -4,7 +4,7 @@
 쓰는 법 (프로젝트 폴더에서):  python3 tools/check_art.py
 
 확인하는 것
-- 크기: 칸마다 정한 원본 크기와 같은지 (예: 손님 120×160, 아이콘 16×16, 완성 요리 64×64)
+- 크기: 칸마다 정한 원본 크기와 같은지 (예: 손님 360×480, 아이콘 16×16, 완성 요리 64×64)
 - 표정·우비 그림이 기본 손님 그림과 크기가 같은지 (다르면 표정이 바뀔 때 캐릭터가 흔들린다)
 - 배경이 투명해야 하는 그림에 투명한 부분이 있는지
 - 가져오기 설정: 손실 압축(색이 바뀜)이나 밉맵(흐려짐)이 켜져 있지 않은지
@@ -21,9 +21,9 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # (데이터 종류 또는 장면 파일, 칸 이름) → (가로, 세로, 배경 투명이어야 하는지, 설명)
 SPECS = {
-    ("AnimalGuest", "portrait"): (120, 160, True, "손님 그림"),
-    ("AnimalGuest", "expression_portraits"): (120, 160, True, "손님 표정 그림"),
-    ("AnimalGuest", "raincoat_portrait"): (120, 160, True, "손님 우비 그림"),
+    ("AnimalGuest", "portrait"): (360, 480, True, "손님 그림"),
+    ("AnimalGuest", "expression_portraits"): (360, 480, True, "손님 표정 그림"),
+    ("AnimalGuest", "raincoat_portrait"): (360, 480, True, "손님 우비 그림"),
     ("AnimalGuest", "feast_portrait"): (60, 80, True, "잔치용 앉은 모습"),
     ("AnimalGuest", "icon"): (16, 16, True, "손님 얼굴 아이콘"),
     ("Ingredient", "icon"): (16, 16, True, "재료 아이콘"),

@@ -6,10 +6,11 @@
 게임(assets/, data/)에는 넣지 않는다. 디스코드에 올릴 때는 "참고용 AI 시안"이라고 밝힌다. 그림이 없는 곳은 지금처럼 임시 도형.
 
 **픽셀 배율: 3배 (2026-10-04, 디자이너님과 결정).** 그리는 판 640×360. 아래 표의 크기는 화면 크기이고, 디자이너님은 1/3 크기로 그린다
+— 단 손님 그림(기본·표정·우비)은 2026-10-09부터 화면 크기 360x480 그대로 그린다.
 (디자이너용 원본 크기 목록: docs/discord/art-list.md). 게임은 기본 텍스처 필터 Nearest 로 또렷하게 키운다. 그림이 들어올 때 칸 크기를 3의 배수로 맞춘다.
 
 **데모에 먼저 필요한 그림 (2026-10-06, 화면에 보이는 시간 순서)** — 자동 플레이로 잰 화면 비율: 부엌 59% · 저녁 평상 26% · 아침 텃밭 12%
-1. 남은 손님 넷(암탉·다람쥐·곰·고슴도치) 기본 모습 120x160
+1. 남은 손님 넷(암탉·다람쥐·곰·고슴도치) 기본 모습 360x480
 2. 부엌 배경 640x360 + 조리대 640x100
 3. 재료 아이콘 넷(계란·도토리·꿀·버섯) 16x16
 4. 완성 요리 10개 64x64
@@ -33,7 +34,7 @@
 | data/recipes/carrot_kimbop.tres (finished_image) | 할머니표 당근 김밥 완성 그림 | 미정 | 할 일 |
 | scenes/kitchen/kitchen.tscn (Background) | 부엌 배경 | 1920x1080 | 할 일 |
 | scenes/kitchen/kitchen.tscn (Counter) | 조리대 | 1920x300 | 할 일 |
-| data/guests/rabbit.tres (portrait) | 토끼 손님 (기본 표정) — assets/art/characters/rabbit/rabbit_default.png (2026-10-09 새 그림으로 바꿈, 360x480 그대로) | 360x480 (원본 120x160) | 완료 (2026-10-09) |
+| data/guests/rabbit.tres (portrait) | 토끼 손님 (기본 표정) — assets/art/characters/rabbit/rabbit_default.png (2026-10-09 새 그림으로 바꿈) | 360x480 | 완료 (2026-10-09) |
 | data/guests/rabbit.tres (expression_portraits) | 토끼 웃음(happy) rabbit_happy.png · 놀람(surprised) rabbit_surprised.png. 시무룩(sad)은 아직 없어서 기본 그림 | 360x480 | 웃음·놀람 완료 (2026-10-09) |
 | scenes/kitchen/guest_spot.tscn (SpeechBubble) | 말풍선 | 가변 (늘어나는 9칸 그림) | 할 일 |
 | scenes/kitchen/minigames/chop_minigame.tscn (Board) | 도마 | 900x500 | 할 일 |
@@ -70,8 +71,8 @@
 | data/ingredients/acorn.tres (icon) | 도토리 아이콘 | 미정 | 할 일 |
 | data/recipes/acorn_jelly_muchim.tres (finished_image) | 도토리묵 무침 완성 그림 | 미정 | 할 일 |
 | data/recipes/carrot_egg_stir_fry.tres (finished_image) | 당근 계란 볶음 완성 그림 | 미정 | 할 일 |
-| data/guests/hen.tres (portrait) | 암탉 손님 (기본 표정) | 360x480 (원본 120x160) | 할 일 |
-| data/guests/squirrel.tres (portrait) | 다람쥐 손님 (기본 표정) | 360x480 (원본 120x160) | 할 일 |
+| data/guests/hen.tres (portrait) | 암탉 손님 (기본 표정) | 360x480 | 할 일 |
+| data/guests/squirrel.tres (portrait) | 다람쥐 손님 (기본 표정) | 360x480 | 할 일 |
 | scenes/porch/porch.tscn (Backdrop → Picture) | 저녁 배경: 밤하늘(아래는 노을빛), 별, 먼 산과 숲, 담 너머 마을 길. 구도: 평상에 앉은 내 눈높이 (지금은 PorchScenery 임시 도트) | 1920x1080 (원본 640x360) | 할 일 |
 | scenes/porch/porch.tscn (Wall → Picture) | 등불 달린 낮은 돌담. 손님이 담 너머에 서서 이야기하고, 담이 손님 아랫몸을 가린다 (점심 조리대처럼). 위쪽은 투명, 담은 아래 약 73칸, 왼쪽에 등불 기둥 | 1920x330 (원본 640x110, 배경 투명) | 할 일 |
 | scenes/porch/porch.tscn (Bench → Picture) | 화면 맨 아래 평상 끝 (내가 평상에 앉아 있다는 표시, 나무판) | 1920x120 (원본 640x40) | 할 일 |
@@ -83,8 +84,8 @@
 | scenes/ui/title.tscn (Background, GameTitle) | 타이틀 배경 / 제목 로고 | 1920x1080 | 할 일 |
 | data/ingredients/honey.tres (icon) | 꿀 아이콘 | 미정 | 할 일 |
 | data/ingredients/mushroom.tres (icon) | 버섯 아이콘 | 미정 | 할 일 |
-| data/guests/bear.tres (portrait) | 곰 손님 (기본 표정) | 360x480 (원본 120x160) | 할 일 |
-| data/guests/hedgehog.tres (portrait) | 고슴도치 손님 (기본 표정) | 360x480 (원본 120x160) | 할 일 |
+| data/guests/bear.tres (portrait) | 곰 손님 (기본 표정) | 360x480 | 할 일 |
+| data/guests/hedgehog.tres (portrait) | 고슴도치 손님 (기본 표정) | 360x480 | 할 일 |
 | data/recipes/forest_mushroom_stir_fry.tres (finished_image) | 숲속 버섯 볶음 완성 그림 | 미정 | 할 일 |
 | data/recipes/honey_carrot_jorim.tres (finished_image) | 꿀 당근 조림 완성 그림 | 미정 | 할 일 |
 | data/recipes/acorn_honey_gangjeong.tres (finished_image) | 도토리 꿀강정 완성 그림 | 미정 | 할 일 |
@@ -121,8 +122,8 @@
 | scenes/ui/sunset_transition.tscn (SkyTop, SkyGlow, Sun, Hill) | 해 지는 장면: 노을 하늘, 지는 해, 산 실루엣 (해가 내려가는 건 코드가 함) | 1920x1080 / 해 180x180 | 할 일 |
 | scenes/kitchen/guest_spot.gd (걸어 들어오기) | 손님 걷는 모습 (선택: 걸음마다 바뀌는 2장, 지금은 통통 튀기만 함) | 360x480 | 선택 |
 | scenes/kitchen/kitchen_door.tscn (Frame, Outside, Leaf) | 부엌 뒷벽의 가게 문: 문틀 / 문 밖 풍경(문이 열리면 보임) / 문짝(창 달린 나무문, 왼쪽 경첩으로 접히며 열림). 손님이 이 문으로 드나든다 | 문 200x260 (원본 약 67x87) | 할 일 |
-| data/guests/*.tres (raincoat_portrait) | 봄비 오는 날 우비 입은 손님 다섯 (암탉, 곰, 토끼, 다람쥐, 고슴도치). 지금은 임시 손님 그림에만 노란 우비 도형(raincoat_shape.gd)을 씌움 (진짜 그림이 있으면 우비 그림이 생길 때까지 평소 모습) | 360x480 (원본 120x160) | 할 일 |
-| data/guests/*.tres (expression_portraits) | 손님 표정 그림: happy(웃음), surprised(놀람), sad(시무룩). 다섯 손님 × 3장. 없으면 기본 그림 (임시 도형일 땐 "(웃음)" 같은 글자) | 360x480 (원본 120x160) | 할 일 |
+| data/guests/*.tres (raincoat_portrait) | 봄비 오는 날 우비 입은 손님 다섯 (암탉, 곰, 토끼, 다람쥐, 고슴도치). 지금은 임시 손님 그림에만 노란 우비 도형(raincoat_shape.gd)을 씌움 (진짜 그림이 있으면 우비 그림이 생길 때까지 평소 모습) | 360x480 | 할 일 |
+| data/guests/*.tres (expression_portraits) | 손님 표정 그림: happy(웃음), surprised(놀람), sad(시무룩). 다섯 손님 × 3장. 없으면 기본 그림 (임시 도형일 땐 "(웃음)" 같은 글자) | 360x480 | 할 일 |
 | scripts/ui/rain_overlay.gd | 빗줄기 (지금은 선으로 그림. 그림으로 바꾸려면 빗방울 한 줄 그림) | 4x40 | 선택 |
 | scenes/garden/garden.tscn (Sky) | 비 오는 날 흐린 하늘 (지금은 맑은 하늘에 푸른빛만 덮음) | 1920x560 | 선택 |
 | data/crops/carrot_crop.tres (Growth Textures) | 당근이 자라는 단계 그림 (막 심음 → 새싹 → 자람 → 다 자람, 3~4장. 마지막 장 = 거둘 때) | 칸 폭 x 칸 높이-90 (지금 260x150) | 할 일 |

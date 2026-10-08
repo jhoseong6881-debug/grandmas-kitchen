@@ -18,7 +18,7 @@ const PLACEHOLDER_ICON_PIXELS: int = 12
 ## 작은 얼굴 아이콘 (원본 16×16). 장사 결과판 손님 줄에 이름 옆에 나온다. 비워 두면 icon_placeholder_color 색의 임시 사각형.
 @export var icon: Texture2D
 @export var icon_placeholder_color: Color = Color(0.86, 0.84, 0.8)
-## 손님 그림 (기본 표정, 원본 120×160 · 화면 360×480). 비워 두면 임시 도형으로 표시한다.
+## 손님 그림 (기본 표정, 360×480, 화면에 그대로). 비워 두면 임시 도형으로 표시한다.
 @export var portrait: Texture2D
 ## 표정 그림: happy(웃음), surprised(놀람), sad(시무룩) 를 이름으로 넣는다. 없는 표정은 기본 그림을 쓴다.
 @export var expression_portraits: Dictionary[StringName, Texture2D] = {}
