@@ -130,7 +130,7 @@ text = "드, 들렸어요?"
 script = ExtResource("3_line")
 speaker = &"hen"
 expression = &"happy"
-text = "아침 당번이 모르는 소리가 어디 있니! 박자가 날마다 좋아지던데? 호호."
+text = "새벽 마실 도는 내가 모르는 소리가 어디 있니! 박자가 날마다 좋아지던데? 호호."
 
 [sub_resource type="Resource" id="Line_35"]
 script = ExtResource("3_line")
