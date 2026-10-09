@@ -53,6 +53,8 @@ const UNMET_GUEST_TEXT: String = "?"
 @export var note_puzzle_tag_color: Color = Color(0.85, 0.76, 0.62)
 var _selected_ids: Array[StringName] = []
 var _dish_buttons: Dictionary[StringName, Button] = {}
+## 메뉴판을 열 때 처음 골라 둔 요리 (확정할 때 플레이어가 직접 뺀 번진 노트 요리를 찾으려고)
+var _initial_ids: Array[StringName] = []
 ## 번진 노트 표시를 붙이는 줄의 글 (요리 id → 글)
 var _note_tag_labels: Dictionary[StringName, Label] = {}
 ## 메뉴판을 열기 전에 선택돼 있던 것. 돌아가기를 누르면 다시 선택한다.
@@ -95,6 +97,7 @@ func open() -> void:
 	var recipes: Array[Recipe] = GameData.get_all_recipes().filter(
 			func(recipe: Recipe) -> bool: return GameState.is_recipe_unlocked(recipe.id))
 	_selected_ids = _initial_selection(recipes)
+	_initial_ids = _selected_ids.duplicate()
 	var buttons: Array[Button] = []
 	for recipe: Recipe in recipes:
 		var row: HBoxContainer = _make_row(recipe)
@@ -134,6 +137,9 @@ func _initial_selection(recipes: Array[Recipe]) -> Array[StringName]:
 		if ids.size() >= _max_dishes():
 			break
 		var recipe_id: StringName = GameState.unlocked_recipe_ids[i]
+		# 플레이어가 직접 뺀 번진 노트 요리는 빈 칸에도 다시 채우지 않는다.
+		if GameState.is_note_puzzle_declined(recipe_id):
+			continue
 		if recipe_id not in ids and recipes.any(func(recipe: Recipe) -> bool: return recipe.id == recipe_id):
 			ids.append(recipe_id)
 	ids = ids.slice(0, _max_dishes())
@@ -142,8 +148,10 @@ func _initial_selection(recipes: Array[Recipe]) -> Array[StringName]:
 
 
 ## 번진 할머니 노트가 있는 요리가 메뉴에 하나도 없으면, 그중 가장 최근에 되찾았고 지금 재료로 만들 수 있는 요리 하나를 미리 올려 둔다.
-## 칸이 다 찼으면 맨 뒤의 요리(약속·생일 소원 요리는 빼고)와 바꾼다. 플레이어가 메뉴판에서 다시 바꿀 수 있다.
+## 칸이 다 찼으면 재료가 모자란 요리, 없으면 맨 뒤의 요리(약속·생일 소원 요리는 빼고)와 바꾼다. 플레이어가 메뉴판에서 다시 바꿀 수 있다.
 ## 새로 되찾은 요리가 어제 메뉴에 밀려 한 번도 안 나가는 일을 막으려는 것 (퍼즐을 고르게 만나게).
+## 플레이어가 (재료가 있는데도) 직접 뺀 요리는 그 선택을 존중해서 다시 밀어 넣지 않는다 (줄의 "번진 할머니 노트" 표시는 그대로라 언제든 다시 고를 수 있다).
+## 재료가 없어서 뺀 요리는 선택이 아니므로 재료가 생기면 다시 권한다.
 func _add_note_puzzle_dish(recipes: Array[Recipe], ids: Array[StringName]) -> void:
 	for id: StringName in ids:
 		var chosen: Recipe = GameData.get_recipe(id)
@@ -152,7 +160,7 @@ func _add_note_puzzle_dish(recipes: Array[Recipe], ids: Array[StringName]) -> vo
 	for i: int in range(GameState.unlocked_recipe_ids.size() - 1, -1, -1):
 		var recipe: Recipe = GameData.get_recipe(GameState.unlocked_recipe_ids[i])
 		if recipe == null or recipe not in recipes or not NotePuzzleBoard.is_waiting_today(recipe) \
-				or not GameState.has_ingredients(recipe.get_ingredient_counts()):
+				or GameState.is_note_puzzle_declined(recipe.id) or not GameState.has_ingredients(recipe.get_ingredient_counts()):
 			continue
 		if ids.size() < _max_dishes():
 			ids.append(recipe.id)
@@ -368,6 +376,12 @@ func _on_start_button_pressed() -> void:
 		Wiggle.shake(_start_button)
 		Sound.play(BLOCKED_SOUND)
 		return
+	# 처음 골라 둔 번진 노트 요리를 재료가 있는데도 뺐으면 플레이어의 선택이라 적어 둔다 (다음부터 다시 밀어 넣지 않게).
+	for recipe_id: StringName in _initial_ids:
+		var recipe: Recipe = GameData.get_recipe(recipe_id)
+		if recipe_id not in _selected_ids and NotePuzzleBoard.is_waiting_today(recipe) \
+				and GameState.has_ingredients(recipe.get_ingredient_counts()):
+			GameState.decline_note_puzzle(recipe_id)
 	hide()
 	confirmed.emit(_selected_ids.duplicate())
 

@@ -18,6 +18,15 @@ tools/check/run.sh
 - **못 잡는 것**: 오토로드(GameState·GameData·Sound) 함수 이름 틀림, 실행해야 드러나는 오류. 이런 건 2번의 봇으로 확인한다.
 - 실패하면 고치고 다시 돌린다. 통과하기 전에는 2번으로 가지 않는다.
 
+### 1-1. 시나리오 시험 (특정 상황을 직접 만들어 보는 시험, 1분 안쪽)
+
+```bash
+tools/check/run.sh menu_note_suggest
+```
+- `tools/check/scenarios/<이름>.gd` 를 사본에 오토로드로 붙여 돌린다. 끝 코드 = 실패 수, `!! 실패` 줄이 무엇이 틀렸는지.
+- 봇이 하지 않는 행동(메뉴에서 요리 빼기, 뒤로 나가기, 옛 세이브 불러오기)을 확인할 때 새 시나리오를 만든다. 형식은 menu_note_suggest.gd 를 따른다 (`_ready` 에서 몇 프레임 기다린 뒤 시험, `check(조건, 설명)`, 끝에 `get_tree().quit(fails)`).
+- 지금 있는 것: `menu_note_suggest` — 메뉴판이 번진 노트 요리를 권할 때 플레이어가 직접 뺀 것은 다시 안 넣는지 (menu_board.gd·GameState 메뉴/퍼즐 쪽을 바꾸면 돌린다).
+
 ## 2. 바꾼 곳에 맞는 검사
 
 | 바꾼 것 | 돌릴 것 |
