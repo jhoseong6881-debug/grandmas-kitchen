@@ -11,3 +11,7 @@ extends Resource
 ## 첫 봄 며칠 아침에 안내 글 아래 덧붙이는 한 줄 (날 → 글). 처음 하는 사람에게 손님 수첩·봄 목표 같은 걸 알려 준다.
 ## 두 번째 봄부터는 나오지 않는다.
 @export var morning_tips: Dictionary[int, String] = {}
+## 게임 첫날(봄 1일째) 점심의 첫 손님. 프롤로그에서 밥집을 다시 열게 만든 손님이 약속대로 먼저 온다. 비워 두면 평소처럼 섞는다.
+@export var first_guest: AnimalGuest
+## 첫 손님이 첫날 주문하는 요리 (프롤로그에서 부탁한 요리). 메뉴에 없거나 재료가 없으면 평소처럼 고른다.
+@export var first_guest_order: Recipe

@@ -398,6 +398,9 @@ func _choose_todays_guests() -> void:
 		todays_guest_ids.append(special.host_id)
 	if has_promise_on(current_day) and GameData.get_guest(promise_guest_id) != null and promise_guest_id not in todays_guest_ids:
 		todays_guest_ids.append(promise_guest_id)
+	var first_guest: AnimalGuest = get_first_day_guest()
+	if first_guest != null and first_guest.id not in todays_guest_ids:
+		todays_guest_ids.append(first_guest.id)
 	var story_guests: Array[AnimalGuest] = GameData.get_season_guests().filter(func(guest: AnimalGuest) -> bool:
 			var chapter: GuestStoryChapter = get_next_story_chapter(guest)
 			return chapter != null and chapter.open_day == current_day)
@@ -415,6 +418,15 @@ func _choose_todays_guests() -> void:
 		var guest: AnimalGuest = pool.pop_front()
 		if guest.id not in todays_guest_ids or pool.is_empty():
 			todays_guest_ids.append(guest.id)
+
+
+## 게임 첫날(첫 봄 1일째)이면 StartingSetup.first_guest (프롤로그의 손님), 아니면 null.
+func get_first_day_guest() -> AnimalGuest:
+	var setup: StartingSetup = GameData.get_starting_setup()
+	if setup == null or setup.first_guest == null or current_day != STARTING_DAY \
+			or current_season != Season.Id.SPRING or is_spring_completed:
+		return null
+	return setup.first_guest
 
 
 ## 지금 계절에 사연이 있는 손님들의 사연을 모두 끝까지 봤는지 (사연이 하나도 없으면 false)

@@ -314,11 +314,17 @@ func _call_next_guest() -> void:
 	_is_promise_order = false
 	var guest: AnimalGuest = _todays_guests[_guests_served]
 	var order: Recipe = _choose_order(guest)
+	# 게임 첫날 첫 손님(프롤로그의 손님)은 프롤로그에서 부탁한 요리를 시킨다 (낼 수 있을 때만).
+	var setup: StartingSetup = GameData.get_starting_setup()
+	var is_first_day_order: bool = guest == GameState.get_first_day_guest() and setup.first_guest_order != null \
+			and _can_cook(setup.first_guest_order)
+	if is_first_day_order:
+		order = setup.first_guest_order
 	_is_fallback_order = order == null
 	if _is_fallback_order:
 		order = _choose_fallback_order(guest)
 	# 봄비 오는 날에는 따뜻한 요리를 먼저 찾는다. 밥값은 좋아하는 요리와 똑같이 받는다.
-	var warm_order: Recipe = _choose_warm_order(guest)
+	var warm_order: Recipe = _choose_warm_order(guest) if not is_first_day_order else null
 	if warm_order != null:
 		order = warm_order
 		_is_fallback_order = false

@@ -7,13 +7,17 @@
 [ext_resource type="Resource" path="res://data/recipes/carrot_kimbop.tres" id="7_kimbop"]
 [ext_resource type="Resource" path="res://data/ingredients/honey.tres" id="8_honey"]
 [ext_resource type="Resource" path="res://data/recipes/honey_carrot_jorim.tres" id="9_jorim"]
+[ext_resource type="Resource" path="res://data/guests/rabbit.tres" id="10_rabbit"]
 
 [resource]
 script = ExtResource("1_setup")
 starting_ingredients = Array[ExtResource("2_ingredient")]([ExtResource("3_carrot"), ExtResource("3_carrot"), ExtResource("3_carrot"), ExtResource("3_carrot"), ExtResource("3_carrot"), ExtResource("3_carrot"), ExtResource("8_honey"), ExtResource("8_honey"), ExtResource("8_honey")])
 starting_recipes = Array[ExtResource("6_recipe")]([ExtResource("7_kimbop"), ExtResource("9_jorim")])
-first_morning_text = "찬장 구석에서 할머니가 남긴 꿀과 쪽지 한 장을 찾았어요. 쪽지에는 「꿀 당근 조림」이 적혀 있어요!"
+first_morning_text = "찬장 구석에서 할머니가 남긴 꿀과 쪽지 한 장을 찾았어요. 쪽지에는 「꿀 당근 조림」이 적혀 있어요!
+당근을 거두고 부엌으로 가 볼까요?"
 morning_tips = {
 2: "손님이 좋아하는 요리와 입맛은 손님 수첩에!",
 3: "봄 목표는 왼쪽 위 과녁 버튼에서 봐요."
 }
+first_guest = ExtResource("10_rabbit")
+first_guest_order = ExtResource("7_kimbop")
