@@ -23,5 +23,17 @@
         ]
       }
     ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(afinfo *)",
+      "Bash(ffprobe *)",
+      "Bash(md5 *)",
+      "mcp__Claude_Browser__find",
+      "mcp__Claude_Browser__get_page_text",
+      "mcp__Claude_Browser__read_network_requests",
+      "mcp__plugin_discord_discord__fetch_messages",
+      "mcp__terminal__read_terminal"
+    ]
   }
 }
