@@ -114,6 +114,7 @@ func open() -> void:
 	show()
 	if not buttons.is_empty():
 		buttons[0].grab_focus()
+	TutorialDialog.show_once(self, &"menu")
 
 
 ## 되찾은 레시피 중 지금 가진 재료로 만들 수 있는 것이 하나라도 있는지

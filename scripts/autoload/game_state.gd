@@ -22,7 +22,7 @@ const SAVE_DICTIONARY_KEYS: PackedStringArray = ["inventory", "extra_plots", "fe
 const SAVE_ARRAY_KEYS: PackedStringArray = ["basket_guest_ids", "grandma_taste_recipe_ids", "keepsake_ids",
 		"known_taste_guest_ids", "learned_secret_ids", "menu_recipe_ids", "solved_note_puzzle_ids", "declined_note_puzzle_ids", "met_guest_ids", "porch_met_guest_ids",
 		"seen_duo_talk_ids", "seen_guest_ids", "seen_memory_ids", "seen_story_chapter_ids", "todays_guest_ids",
-		"unlocked_place_ids", "unlocked_recipe_ids", "used_basket_note_ids", "garden_days_left", "notebook_viewed_keys"]
+		"unlocked_place_ids", "unlocked_recipe_ids", "used_basket_note_ids", "garden_days_left", "notebook_viewed_keys", "seen_tutorial_ids"]
 const SAVE_NUMBER_KEYS: PackedStringArray = ["version", "current_day", "current_season", "promise_day", "reputation", "todays_guests_day",
 		"rewarded_shop_tier"]
 ## 2026-10-08 전 가게 단계 기준: 마지막 단계(소문난 할매식당)는 소문 220. 그 뒤 데모에서 보이게 150으로 낮췄다.
@@ -105,6 +105,8 @@ var guest_affection: Dictionary[StringName, int] = {}
 var known_taste_guest_ids: Array[StringName] = []
 ## 손님 수첩에서 이미 본 기록 ("guest:토끼 id", "taste:토끼 id"). 아직 안 본 기록이 있으면 수첩 버튼에 ● 표시.
 var notebook_viewed_keys: Array[String] = []
+## 이미 본 처음 안내(TutorialTip.id). 한 번 본 안내는 다시 나오지 않는다.
+var seen_tutorial_ids: Array[StringName] = []
 ## 손님 id → 단계는 올랐지만 아직 저녁에 보상(새 이야기, 선물)을 받지 않은 단골 단계들
 var pending_reward_tiers: Dictionary[StringName, Array] = {}
 ## 손님에게 받은 할머니 기념품 id
@@ -418,6 +420,16 @@ func _choose_todays_guests() -> void:
 		var guest: AnimalGuest = pool.pop_front()
 		if guest.id not in todays_guest_ids or pool.is_empty():
 			todays_guest_ids.append(guest.id)
+
+
+## 처음 안내를 이미 봤는지
+func has_seen_tutorial(tip_id: StringName) -> bool:
+	return tip_id in seen_tutorial_ids
+
+
+func mark_tutorial_seen(tip_id: StringName) -> void:
+	if tip_id not in seen_tutorial_ids:
+		seen_tutorial_ids.append(tip_id)
 
 
 ## 게임 첫날(첫 봄 1일째)이면 StartingSetup.first_guest (프롤로그의 손님), 아니면 null.
@@ -749,6 +761,7 @@ func new_game() -> void:
 	guest_affection.clear()
 	known_taste_guest_ids.clear()
 	notebook_viewed_keys.clear()
+	seen_tutorial_ids.clear()
 	pending_reward_tiers.clear()
 	keepsake_ids.clear()
 	extra_plots.clear()
@@ -931,6 +944,7 @@ func _to_save_data() -> Dictionary:
 		"guest_affection": _string_keys(guest_affection),
 		"known_taste_guest_ids": Array(known_taste_guest_ids).map(func(guest_id: StringName) -> String: return String(guest_id)),
 		"notebook_viewed_keys": notebook_viewed_keys.duplicate(),
+		"seen_tutorial_ids": Array(seen_tutorial_ids).map(func(tip_id: StringName) -> String: return String(tip_id)),
 		"pending_reward_tiers": _string_keys(pending_reward_tiers),
 		"keepsake_ids": Array(keepsake_ids).map(func(keepsake_id: StringName) -> String: return String(keepsake_id)),
 		"extra_plots": _string_keys(extra_plots),
@@ -1008,6 +1022,13 @@ func _from_save_data(data: Dictionary) -> void:
 		known_taste_guest_ids.append(StringName(str(guest_id)))
 	for key: Variant in data.get("notebook_viewed_keys", []):
 		notebook_viewed_keys.append(str(key))
+	for tip_id: Variant in data.get("seen_tutorial_ids", []):
+		seen_tutorial_ids.append(StringName(str(tip_id)))
+	# 처음 안내가 생기기 전(2026-10-09) 세이브: 이미 해 보던 사람이니 안내를 모두 본 것으로 친다.
+	if not data.has("seen_tutorial_ids"):
+		var setup: StartingSetup = GameData.get_starting_setup()
+		if setup != null and setup.tutorial != null:
+			seen_tutorial_ids.assign(setup.tutorial.get_all_ids())
 	var pending_data: Dictionary = data.get("pending_reward_tiers", {})
 	for guest_id: String in pending_data:
 		pending_reward_tiers[StringName(guest_id)] = Array(pending_data[guest_id]).map(func(tier: Variant) -> int: return int(tier))

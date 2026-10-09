@@ -8,6 +8,7 @@
 [ext_resource type="Resource" path="res://data/ingredients/honey.tres" id="8_honey"]
 [ext_resource type="Resource" path="res://data/recipes/honey_carrot_jorim.tres" id="9_jorim"]
 [ext_resource type="Resource" path="res://data/guests/rabbit.tres" id="10_rabbit"]
+[ext_resource type="Resource" path="res://data/story/tutorial.tres" id="11_tutorial"]
 
 [resource]
 script = ExtResource("1_setup")
@@ -21,3 +22,4 @@ morning_tips = {
 }
 first_guest = ExtResource("10_rabbit")
 first_guest_order = ExtResource("7_kimbop")
+tutorial = ExtResource("11_tutorial")

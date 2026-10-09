@@ -183,6 +183,7 @@ func _finish_reveal() -> void:
 		Sound.play(SHOP_UP_SOUND)
 	_continue_button.show()
 	_continue_button.grab_focus()
+	TutorialDialog.show_once(self, &"result")
 
 
 func _on_continue_pressed() -> void:

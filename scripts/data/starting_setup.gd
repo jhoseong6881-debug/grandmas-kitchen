@@ -15,3 +15,5 @@ extends Resource
 @export var first_guest: AnimalGuest
 ## 첫 손님이 첫날 주문하는 요리 (프롤로그에서 부탁한 요리). 메뉴에 없거나 재료가 없으면 평소처럼 고른다.
 @export var first_guest_order: Recipe
+## 처음 하는 사람에게 화면마다 한 번씩 보여 주는 안내 (data/story/tutorial.tres). 비워 두면 안내 없음.
+@export var tutorial: TutorialBook

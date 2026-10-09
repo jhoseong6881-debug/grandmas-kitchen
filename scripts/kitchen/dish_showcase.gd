@@ -115,6 +115,7 @@ func show_dish(recipe: Recipe, is_grandma_taste: bool, hint: String = "", guest_
 	tween.tween_property(_dish_box, "scale", Vector2.ONE, settle_duration)
 	_bob()
 	_build_shakers()
+	TutorialDialog.show_once(self, &"garnish")
 	var garnish: Garnish = await _garnish_done
 	return garnish
 

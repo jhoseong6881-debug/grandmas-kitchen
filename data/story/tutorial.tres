@@ -1,0 +1,45 @@
+[gd_resource type="Resource" script_class="TutorialBook" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/tutorial_book.gd" id="1_book"]
+[ext_resource type="Script" path="res://scripts/data/tutorial_tip.gd" id="2_tip"]
+[ext_resource type="Resource" path="res://data/guests/rabbit.tres" id="3_rabbit"]
+
+[sub_resource type="Resource" id="Tip_garden"]
+script = ExtResource("2_tip")
+id = &"garden"
+expression = &""
+lines = Array[String](["{name}… 조, 좋은 아침이에요. 어제 말한 대로 도와드리러 왔어요.", "할머니 텃밭 당근이 다 자랐어요! 잎이 이만큼 올라오면 딱 좋을 때예요. 눌러서 쏙 뽑아 보세요.", "거둔 재료로 점심 요리를 해요. 다 거두면 '부엌으로 가기'예요.", "점심엔… 제, 제가 첫 손님으로 올게요."])
+line_expressions = Array[StringName]([&"", &"happy", &"", &""])
+
+[sub_resource type="Resource" id="Tip_menu"]
+script = ExtResource("2_tip")
+id = &"menu"
+expression = &""
+lines = Array[String](["여기는 오늘의 메뉴판이에요. 점심에 낼 요리를 골라요.", "손님들은 메뉴에 있는 요리만 시켜요. 재료가 모자란 요리는 만들 수 없어요.", "다 골랐으면… '장사 시작'을 눌러요."])
+line_expressions = Array[StringName]([&"", &"", &""])
+
+[sub_resource type="Resource" id="Tip_garnish"]
+script = ExtResource("2_tip")
+id = &"garnish"
+expression = &""
+lines = Array[String](["와… 다 됐다!", "마지막으로 고명을 골라요. 오른쪽 병을 집어서 요리에 톡톡 뿌려요. 아무것도 안 뿌리려면 '그대로 내기'예요.", "손님 입맛에 맞으면 더 기뻐해요. 입맛은 손님 말 속에 힌트가 있어요.", "…저, 저는 양념 없이 담백한 게 좋아요."])
+line_expressions = Array[StringName]([&"surprised", &"", &"", &""])
+
+[sub_resource type="Resource" id="Tip_result"]
+script = ExtResource("2_tip")
+id = &"result"
+expression = &""
+lines = Array[String](["첫 장사 끝! …정말 할머니 밥집 같았어요.", "손님을 대접할수록 소문이 쌓여요. 소문이 나면 밥집 이름이 바뀌고 손님도 더 와요.", "♥ 단골도는 손님과 가까워진 만큼이에요. 가까워지면 선물을 들고 와요.", "♥ 할머니 손맛은 할머니 비법대로 요리했을 때 나요. 비법은 이웃들이 저녁에 하나씩 알려 줄 거예요."])
+line_expressions = Array[StringName]([&"happy", &"", &"", &""])
+
+[sub_resource type="Resource" id="Tip_porch"]
+script = ExtResource("2_tip")
+id = &"porch"
+expression = &""
+lines = Array[String](["저녁엔 이 평상에서 손님들 이야기를 들어요. 할머니도 늘 그랬어요.", "다들 할머니 레시피 노트를 한 장씩 맡아 두고 있대요. 가까워지면… 돌려줄 거예요.", "그, 그럼 오늘 저녁 이야기, 같이 들어 봐요."])
+line_expressions = Array[StringName]([&"", &"", &""])
+
+[resource]
+script = ExtResource("1_book")
+guide = ExtResource("3_rabbit")
+tips = Array[ExtResource("2_tip")]([SubResource("Tip_garden"), SubResource("Tip_menu"), SubResource("Tip_garnish"), SubResource("Tip_result"), SubResource("Tip_porch")])

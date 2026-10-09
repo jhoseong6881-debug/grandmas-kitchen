@@ -126,6 +126,7 @@ func _ready() -> void:
 	_add_goal_board()
 	RainOverlay.apply_daytime(self, true)
 	_focus_next_thing_to_do()
+	TutorialDialog.show_once(self, &"garden")
 
 
 func _add_goal_board() -> void:

@@ -110,6 +110,8 @@ func _ready() -> void:
 			for guest: AnimalGuest in _choose_extra_guests(first_guest):
 				_add_guest_beats(guest, false)
 	_add_note_tip_beat()
+	# 처음 평상에 온 날은 안내를 먼저 보고 저녁 이야기를 시작한다.
+	await TutorialDialog.show_once(self, &"porch")
 	_run_next_beat()
 	if _next_button.visible:
 		_next_button.grab_focus()

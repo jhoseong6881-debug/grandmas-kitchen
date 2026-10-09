@@ -71,6 +71,15 @@ func _tick() -> void:
 		_log("!! 멈춤: %d일째 %s 에서 5분 넘게 그대로 — 보이는 버튼: %s" % [GameState.current_day, _scene_path(), _visible_button_texts()])
 		_finish()
 		return
+	# 처음 안내 대화창: 다 넘길 때까지 다른 일은 하지 않는다
+	if TutorialDialog.is_any_open():
+		var dialog: TutorialDialog = get_tree().get_first_node_in_group(TutorialDialog.GROUP)
+		if dialog != null:
+			if dialog.get_meta(&"logged", false) == false:
+				dialog.set_meta(&"logged", true)
+				_log("  안내 창: %s (%d일째)" % [dialog._tip.id, GameState.current_day])
+			dialog.advance()
+		return
 	var scene: Node = get_tree().current_scene
 	if scene == null:
 		return

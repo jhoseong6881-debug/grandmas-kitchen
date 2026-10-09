@@ -64,6 +64,9 @@ func _ready() -> void:
 	add_child(timer)
 	timer.start()
 
+## 본 안내 창 (instance id → true). 기록에 한 번씩만 적으려고.
+var _tutorials_seen: Dictionary = {}
+
 func _press(button: JoyButton) -> void:
 	var down: InputEventJoypadButton = InputEventJoypadButton.new()
 	down.button_index = button
@@ -287,6 +290,14 @@ func _step() -> void:
 		_issue("멈춤", "같은 상태로 오래 머무름 (포커스: %s / 보이는 버튼: %s)" % [_describe(focus), _texts(_visible_buttons())])
 		_same_ticks = 0
 		_force_progress()
+		return
+	# 처음 안내 대화창: 사람처럼 A 로 넘긴다 (창이 입력을 먼저 받아서 뒤 화면 버튼은 눌리지 않아야 한다)
+	if TutorialDialog.is_any_open():
+		var dialog: Node = get_tree().get_first_node_in_group(TutorialDialog.GROUP)
+		if dialog != null and not _tutorials_seen.has(dialog.get_instance_id()):
+			_tutorials_seen[dialog.get_instance_id()] = true
+			lines.append("  안내 창: %s (%d일째 %s)" % [dialog._tip.id, GameState.current_day, _scene_name()])
+		await _press(JOY_BUTTON_A)
 		return
 	# 미니게임: 입력은 _process 의 _drive 가 매 프레임 넣는다. 여기서는 진행만 지켜본다
 	for mg: Node in get_tree().root.find_children("*", "Minigame", true, false):
