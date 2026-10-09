@@ -17,6 +17,7 @@
 [ext_resource type="Texture2D" path="res://assets/art/characters/rabbit/rabbit_default.png" id="50_portrait"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/rabbit/rabbit_happy.png" id="51_happy"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/rabbit/rabbit_surprised.png" id="52_surprised"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/rabbit/rabbit_sad.png" id="53_sad"]
 
 [sub_resource type="Resource" id="EveningTalk_1"]
 script = ExtResource("9_talk")
@@ -150,7 +151,8 @@ display_name = "토끼"
 portrait = ExtResource("50_portrait")
 expression_portraits = Dictionary[StringName, Texture2D]({
 &"happy": ExtResource("51_happy"),
-&"surprised": ExtResource("52_surprised")
+&"surprised": ExtResource("52_surprised"),
+&"sad": ExtResource("53_sad")
 })
 personality = "수줍음이 많지만 당근 이야기만 나오면 말이 많아진다."
 favorite_recipes = Array[ExtResource("2_recipe")]([ExtResource("4_kimbop"), ExtResource("6_jeon"), ExtResource("7_jorim")])
