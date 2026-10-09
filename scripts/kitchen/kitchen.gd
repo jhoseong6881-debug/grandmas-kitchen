@@ -107,7 +107,7 @@ const EVENING_SOUND: StringName = &"porch_night"
 @export var stamp_pop_duration: float = 2.4
 @export var stamp_pop_font_size: int = 48
 ## 떠오르는 글이 여러 개일 때 하나씩 띄우는 간격(초)
-@export var pop_interval: float = 0.9
+@export var pop_interval: float = 1.3
 
 ## 지금 와 있는 손님과 그 손님의 주문. 손님이 없으면 null.
 var current_guest: AnimalGuest
@@ -137,6 +137,8 @@ var _picnic_dishes: Array[StringName] = []
 ## 손님 생일 날의 생일 손님 (아니면 null)과, 지금 주문이 생일 소원 요리인지
 var _birthday_host: AnimalGuest
 var _is_birthday_order: bool = false
+## 떠오르는 글 묶음 번호. "다음 손님"을 누르면 바뀌어서, 아직 안 뜬 지난 손님 글은 띄우지 않는다.
+var _pop_batch: int = 0
 ## "아무거나 맛있는 거" 날인지, 지금 손님 요리를 아직 고르기 전인지, 고른 요리가 그 손님이 좋아하는 요리인지
 var _is_chef_day: bool = false
 var _is_choosing_dish: bool = false
@@ -565,6 +567,7 @@ func _end_lunch(message: String) -> void:
 
 
 func _on_next_guest_button_pressed() -> void:
+	_pop_batch += 1
 	if _is_picnic:
 		_pack_next_lunchbox()
 	else:
@@ -959,10 +962,14 @@ func _base_payment(guest: AnimalGuest) -> Dictionary[StringName, int]:
 
 ## 손님 위로 글을 하나씩 띄운다 (도장, 부탁, 입맛, 단골 단계). sounds 는 글마다 낼 효과음 (texts 와 같은 순서).
 func _pop_one_by_one(texts: Array[String], sounds: Array[StringName]) -> void:
+	_pop_batch += 1
+	var batch: int = _pop_batch
 	for i: int in texts.size():
 		if i > 0:
 			# 두 번째 값 false: 일시 정지 중에는 이 기다림도 멈춘다.
 			await get_tree().create_timer(pop_interval, false).timeout
+			if batch != _pop_batch:
+				return
 		Sound.play(sounds[i])
 		FloatingText.pop(self, texts[i], _guest_spot, stamp_pop_rise, stamp_pop_duration,
 				stamp_pop_font_size, perfect_text_color)
