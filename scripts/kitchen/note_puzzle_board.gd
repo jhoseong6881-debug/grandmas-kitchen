@@ -29,6 +29,8 @@ const SMUDGE_SPACE: String = " "
 
 ## 손에 든 카드 모양을 그리는 높이. 이 창(z_index 1)보다 위에 그려야 보인다.
 const DRAG_PREVIEW_Z_INDEX: int = 10
+## 번진 노트 퍼즐이 나오기 시작하는 날 (1일째는 처음 15분이 무거워지지 않게 없음)
+const FIRST_DAY: int = 2
 
 ## 번진 칸 너비 (띄어쓰기 몇 칸). 넣는 순서 칸은 재료 이름이 짧아서 좁게.
 @export var smudge_width: int = 14
@@ -102,6 +104,14 @@ func _ready() -> void:
 ## 이 요리에 풀 퍼즐이 있는지 (퍼즐이 없거나 채울 칸이 없으면 false)
 static func has_puzzle(recipe: Recipe) -> bool:
 	return recipe != null and recipe.note_puzzle != null and not recipe.note_puzzle.get_puzzle_lines().is_empty()
+
+
+## 오늘 이 요리를 만들면 번진 노트 퍼즐이 나올 수 있는지: 아직 안 푼 퍼즐이 있고, FIRST_DAY 일째부터이며, 계절 끝 잔치 날이 아닐 때.
+## (1일째는 처음 15분이 무거워지지 않게, 잔치 날은 저녁에 요령 한 줄을 적는 장면이 없어서 퍼즐을 내지 않는다.)
+## 부엌(퍼즐을 여는 곳)과 메뉴판(번진 노트 표시)이 같은 규칙을 쓴다. 점심 한 번에 하나 규칙은 부엌이 따로 본다.
+static func is_waiting_today(recipe: Recipe) -> bool:
+	return has_puzzle(recipe) and not GameState.is_note_puzzle_solved(recipe.id) \
+			and GameState.current_day >= FIRST_DAY and not GameState.is_season_end_day()
 
 
 func open(recipe: Recipe) -> void:

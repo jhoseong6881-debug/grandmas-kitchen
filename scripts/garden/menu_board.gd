@@ -21,6 +21,8 @@ const NAME_SEPARATOR: String = ", "
 const SHORT_TEXT: String = "  재료 부족"
 const INGREDIENT_FORMAT: String = "×%d  "
 const PROMISE_FORMAT: String = "★ %s%s 약속"
+## 아직 못 읽은 번진 할머니 노트가 있는 요리 줄에 붙는 글 (만들면 노트 퍼즐이 나온다)
+const NOTE_PUZZLE_TAG: String = "번진 할머니 노트"
 ## 장사를 시작할 수 없을 때(재료 부족, 아무것도 안 고름) 나는 작고 부드러운 소리 (장터의 "재료 부족"과 같은 소리)
 const BLOCKED_SOUND: StringName = &"miss"
 const INVENTORY_ITEM_FORMAT: String = "%s ×%d"
@@ -45,6 +47,8 @@ const UNMET_GUEST_TEXT: String = "?"
 @export var short_color: Color = Color(1, 0.55, 0.45)
 ## 고른 요리의 글자 색
 @export var selected_color: Color = Color(1, 0.84, 0.25)
+## 번진 할머니 노트 글 색 (약속 표시보다 차분하게)
+@export var note_puzzle_tag_color: Color = Color(0.85, 0.76, 0.62)
 
 var _selected_ids: Array[StringName] = []
 var _dish_buttons: Dictionary[StringName, Button] = {}
@@ -128,7 +132,32 @@ func _initial_selection(recipes: Array[Recipe]) -> Array[StringName]:
 		var recipe_id: StringName = GameState.unlocked_recipe_ids[i]
 		if recipe_id not in ids and recipes.any(func(recipe: Recipe) -> bool: return recipe.id == recipe_id):
 			ids.append(recipe_id)
-	return ids.slice(0, _max_dishes())
+	ids = ids.slice(0, _max_dishes())
+	_add_note_puzzle_dish(recipes, ids)
+	return ids
+
+
+## 번진 할머니 노트가 있는 요리가 메뉴에 하나도 없으면, 그중 가장 최근에 되찾았고 지금 재료로 만들 수 있는 요리 하나를 미리 올려 둔다.
+## 칸이 다 찼으면 맨 뒤의 요리(약속·생일 소원 요리는 빼고)와 바꾼다. 플레이어가 메뉴판에서 다시 바꿀 수 있다.
+## 새로 되찾은 요리가 어제 메뉴에 밀려 한 번도 안 나가는 일을 막으려는 것 (퍼즐을 고르게 만나게).
+func _add_note_puzzle_dish(recipes: Array[Recipe], ids: Array[StringName]) -> void:
+	for id: StringName in ids:
+		var chosen: Recipe = GameData.get_recipe(id)
+		if NotePuzzleBoard.is_waiting_today(chosen) and GameState.has_ingredients(chosen.get_ingredient_counts()):
+			return
+	for i: int in range(GameState.unlocked_recipe_ids.size() - 1, -1, -1):
+		var recipe: Recipe = GameData.get_recipe(GameState.unlocked_recipe_ids[i])
+		if recipe == null or recipe not in recipes or not NotePuzzleBoard.is_waiting_today(recipe) \
+				or not GameState.has_ingredients(recipe.get_ingredient_counts()):
+			continue
+		if ids.size() < _max_dishes():
+			ids.append(recipe.id)
+			return
+		for j: int in range(ids.size() - 1, -1, -1):
+			if not _is_promised(ids[j]) and not _is_birthday_wish(ids[j]):
+				ids[j] = recipe.id
+				return
+		return
 
 
 func _make_row(recipe: Recipe) -> HBoxContainer:
@@ -154,6 +183,9 @@ func _make_row(recipe: Recipe) -> HBoxContainer:
 		var special: SpecialLunch = GameData.get_special_lunch(GameState.current_day)
 		likes.text = special.fill(special.menu_tag_format)
 		likes.add_theme_color_override("font_color", selected_color)
+	elif NotePuzzleBoard.is_waiting_today(recipe):
+		likes.text = NOTE_PUZZLE_TAG
+		likes.add_theme_color_override("font_color", note_puzzle_tag_color)
 	likes.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	row.add_child(likes)
 	return row

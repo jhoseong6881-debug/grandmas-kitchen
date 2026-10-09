@@ -90,9 +90,8 @@ const EVENING_SOUND: StringName = &"porch_night"
 @export var next_guest_delay: float = 1.0
 ## 소풍 도시락 날 "○○ 도시락에 넣을 요리" 창
 @export var lunchbox_picker_scene: PackedScene = preload("res://scenes/kitchen/lunchbox_picker.tscn")
-## 번진 할머니 노트 창 (퍼즐이 있는 요리를 처음 만들 때 미니게임 전에 연다)과, 퍼즐이 나오기 시작하는 날 (1일째는 가볍게)
+## 번진 할머니 노트 창 (퍼즐이 있는 요리를 처음 만들 때 미니게임 전에 연다. 나오는 날 규칙은 NotePuzzleBoard.is_waiting_today)
 @export var note_puzzle_board_scene: PackedScene = preload("res://scenes/kitchen/note_puzzle_board.tscn")
-@export var note_puzzle_first_day: int = 2
 ## 대접할 때 접시가 조리대 위를 드윽 미끄러져 손님 앞으로 가는 시간(초)과, 내 쪽(화면 아래)에서 출발하는 거리(픽셀), 처음 크기
 @export var serve_slide_duration: float = 0.5
 @export var serve_slide_distance: float = 360.0
@@ -741,8 +740,7 @@ func _on_cook_button_pressed() -> void:
 
 ## 이 요리를 만들기 전에 번진 할머니 노트 퍼즐을 풀지 (아직 안 푼 퍼즐이 있고, 1일째가 아니고, 이번 점심에 아직 안 풀었을 때)
 func _should_open_note_puzzle(recipe: Recipe) -> bool:
-	return NotePuzzleBoard.has_puzzle(recipe) and not GameState.is_note_puzzle_solved(recipe.id) \
-			and GameState.current_day >= note_puzzle_first_day and not _has_note_puzzle_today
+	return NotePuzzleBoard.is_waiting_today(recipe) and not _has_note_puzzle_today
 
 
 func _on_minigame_finished(is_grandma_taste: bool, is_request_met: bool) -> void:
