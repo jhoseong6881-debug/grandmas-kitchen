@@ -2,18 +2,15 @@ extends Node
 ## 게임패드(A·B·십자키) 입력만 보내서 봄 한 철을 끝까지 가 본다. 막히는 화면을 기록한다.
 ## 막히면 기록한 뒤 버튼을 직접 눌러 다음으로 넘어간다 (뒤쪽 화면도 계속 점검하려고).
 ## 시험용 사본에서 오토로드로 붙여 돌린다 (tools/autoplay/run.sh). 진짜 프로젝트에 붙이지 말 것.
-## 미니게임은 왼쪽 스틱을 빙글빙글 돌리고, 가끔 오른쪽으로 밀고, A 를 눌렀다 뗀다 (손으로 다루는 미니게임이라 박자는 없다).
+## 미니게임은 사람처럼 목표를 보고 왼쪽 스틱과 A 로 한다 (칼을 조각 위로 옮겨 A, 그림자 밑으로 팬 옮기기 등).
+## 미니게임 동안에는 1배속으로 돌리고 매 프레임 입력을 넣는다 (8배속이면 한 프레임에 너무 많이 움직여 겨눌 수 없다).
 
 const PROGRESS: Array[String] = ["장사 시작", "요리 고르기", "요리하기", "마무리하고 대접하기", "다음 손님", "도시락 싸기",
 	"도시락 건네기", "평상으로 가기", "계속하기", "다음", "잠자리에 들기", "닫기", "부엌으로 가기", "← 텃밭으로", "요리 시작"]
 ## 미니게임 하나를 게임패드로 해 보는 최대 틱 수 (0.1초마다 한 틱). 넘으면 도구가 대신 끝내고 기록한다.
 const MINIGAME_TICK_LIMIT: int = 600
-## 스틱 방향을 한 틱에 바꾸는 각도(라디안). 작을수록 손이 넓게 돌아다닌다 (크면 제자리에서 작은 원만 그린다), 오른쪽으로 미는 구간 (틱 주기와 길이), A 를 누르고 있는 틱 수와 뗀 틱 수
-const STICK_TURN: float = 0.15
-const PUSH_RIGHT_PERIOD: int = 40
-const PUSH_RIGHT_TICKS: int = 12
-const A_HOLD_TICKS: int = 3
-const A_REST_TICKS: int = 3
+## 미니게임 밖에서 게임을 빨리 돌리는 배속
+const FAST_TIME_SCALE: float = 8.0
 
 var log_path: String = ""
 var lines: Array[String] = []
@@ -39,6 +36,8 @@ var _mg_done_by_pad: Dictionary = {}
 var _mg_done_by_tool: Dictionary = {}
 var _mg_ticks: Dictionary = {}
 var _stick_angle: float = 0.0
+var _stick: Vector2 = Vector2.ZERO
+var _a_wait: float = 0.0
 var _a_held: bool = false
 var _stick_active: bool = false
 
@@ -46,7 +45,7 @@ func _ready() -> void:
 	var args: PackedStringArray = OS.get_cmdline_user_args()
 	log_path = args[0] if args.size() > 0 else "user://pad_log.txt"
 	seed(int(args[1]) if args.size() > 1 else 5)
-	Engine.time_scale = 8.0
+	Engine.time_scale = FAST_TIME_SCALE
 	_start_ms = Time.get_ticks_msec()
 	var accept_events: Array = InputMap.action_get_events(&"ui_accept").map(func(e: InputEvent) -> String: return e.as_text())
 	lines.append("ui_accept 에 연결된 입력: %s" % ", ".join(accept_events))
@@ -88,6 +87,9 @@ func _set_a(is_down: bool) -> void:
 
 
 func _set_stick(dir: Vector2) -> void:
+	if dir == _stick and _stick_active == (dir != Vector2.ZERO):
+		return
+	_stick = dir
 	for axis: int in [JOY_AXIS_LEFT_X, JOY_AXIS_LEFT_Y]:
 		var e: InputEventJoypadMotion = InputEventJoypadMotion.new()
 		e.axis = axis
@@ -102,6 +104,126 @@ func _release_pad() -> void:
 	if _stick_active:
 		_set_stick(Vector2.ZERO)
 	_set_a(false)
+
+
+## 미니게임 중에는 1배속으로 돌리며 매 프레임 사람처럼 입력한다. 밖에서는 빨리 돌린다.
+func _process(delta: float) -> void:
+	if _finished:
+		return
+	var mg: Minigame = _playing_minigame()
+	Engine.time_scale = 1.0 if mg != null else FAST_TIME_SCALE
+	if mg == null:
+		return
+	_a_wait = maxf(_a_wait - delta, 0.0)
+	_drive(mg, delta)
+
+
+func _playing_minigame() -> Minigame:
+	for mg: Node in get_tree().root.find_children("*", "Minigame", true, false):
+		if (mg as Control).is_visible_in_tree() and mg._is_playing:
+			return mg
+	return null
+
+
+## A 를 한 번 탁 (이번 프레임 누르고 다음 프레임 뗌). 그 뒤 wait 초 동안은 다시 누르지 않는다.
+func _tap_a(wait: float) -> void:
+	if _a_held or _a_wait > 0.0:
+		return
+	_set_a(true)
+	_a_wait = wait
+	await get_tree().process_frame
+	_set_a(false)
+
+
+## from 에서 to 로 스틱을 민다. 가까우면 살살, stop 픽셀 안이면 놓고 true.
+func _steer(from: Vector2, to: Vector2, stop: float = 6.0) -> bool:
+	var d: Vector2 = to - from
+	if d.length() <= stop:
+		_set_stick(Vector2.ZERO)
+		return true
+	_set_stick(d.normalized() * clampf(d.length() / 60.0, 0.6, 1.0))
+	return false
+
+
+## 미니게임마다 화면에 보이는 것(칼 자리, 그림자, 전 색, 바늘 등)을 보고 스틱과 A 를 넣는다.
+func _drive(mg: Minigame, delta: float) -> void:
+	if mg is ChopMinigame:
+		var c: ChopMinigame = mg
+		var dx: float = c._target_center - c._knife_x
+		if absf(dx) <= 6.0:
+			_set_stick(Vector2.ZERO)
+			_tap_a(0.25)
+		else:
+			_set_stick(Vector2(signf(dx) * clampf(absf(dx) / 60.0, 0.6, 1.0), 0.0))
+	elif mg is MinceMinigame:
+		var m: MinceMinigame = mg
+		var best: Vector2 = Vector2.INF
+		for i: int in m._pieces.size():
+			if m._levels[i] < m._stages_needed and is_instance_valid(m._pieces[i]):
+				var center: Vector2 = m._pieces[i].position + m._pieces[i].size / 2.0
+				if best == Vector2.INF or center.distance_to(m._blade_point) < best.distance_to(m._blade_point):
+					best = center
+		if best != Vector2.INF and _steer(m._blade_point, best, 15.0):
+			_tap_a(0.2)
+	elif mg is MixMinigame:
+		var x: MixMinigame = mg
+		var here: Vector2 = x._spatula.position + x._head_center() if is_nan(x._spatula_point.x) else x._spatula_point
+		for i: int in x._pieces.size():
+			if not x._is_coated[i]:
+				_stick_angle += delta * 8.0
+				_steer(here, x._piece_center(i) + Vector2.from_angle(_stick_angle) * 25.0, 2.0)
+				return
+	elif mg is RollMinigame:
+		var r: RollMinigame = mg
+		if r._phase == RollMinigame.Phase.POURING and not r._is_spreading:
+			var want: float = r._roll_width + 0.6 * r._pour_free_width()
+			if _steer(r._tool_point, Vector2(want, r._tool_point.y), 8.0):
+				_tap_a(0.3)
+		elif r._phase == RollMinigame.Phase.ROLLING:
+			_set_stick(Vector2.RIGHT)
+		else:
+			_set_stick(Vector2.ZERO)
+	elif mg is StirFryMinigame:
+		var s: StirFryMinigame = mg
+		if s._state == StirFryMinigame.TossState.RESTING:
+			if _steer(s._pan_point, s._home_point, 20.0):
+				_tap_a(0.2)
+		elif s._state == StirFryMinigame.TossState.AIRBORNE:
+			_steer(s._pan_point, s._landing_point, 6.0)
+		else:
+			_set_stick(Vector2.ZERO)
+	elif mg is PanFryMinigame:
+		var p: PanFryMinigame = mg
+		if p._state == PanFryMinigame.JeonState.SPREADING:
+			_stick_angle += delta * 6.0
+			_set_stick(Vector2.from_angle(_stick_angle))
+		else:
+			_set_stick(Vector2.ZERO)
+			if p._state == PanFryMinigame.JeonState.COOKING and p._doneness >= (p.golden_start + p.golden_end) / 2.0:
+				_tap_a(0.3)
+	elif mg is RiceMinigame:
+		var k: RiceMinigame = mg
+		match k._phase:
+			RiceMinigame.Phase.RUBBING:
+				var bowl: Vector2 = k._wash_area.size / 2.0
+				var hand: Vector2 = bowl if is_nan(k._hand_point.x) else k._hand_point
+				_stick_angle += delta * 5.0
+				_steer(hand, bowl + Vector2.from_angle(_stick_angle) * 90.0, 2.0)
+			RiceMinigame.Phase.DRAINING:
+				# 끝까지 확 기울이기 전에 손을 놓는다 (쌀알이 흘러도 손해는 없지만 사람처럼)
+				_set_stick(Vector2(1.0 if k._tilt < 0.8 else 0.0, 0.0))
+			RiceMinigame.Phase.WATERING:
+				_set_stick(Vector2.ZERO)
+				_set_a(k._water_level < 0.5)
+			RiceMinigame.Phase.COOKING:
+				var d: float = (k.heat_target_start + k.heat_target_end) / 2.0 - k._heat
+				_set_stick(Vector2(clampf(d * 8.0, -1.0, 1.0) if absf(d) > 0.03 else 0.0, 0.0))
+			_:
+				_set_stick(Vector2.ZERO)
+				_set_a(false)
+	elif mg is SimmerMinigame:
+		_stick_angle += delta * TAU * 1.2
+		_set_stick(Vector2.from_angle(_stick_angle))
 
 
 func _mg_kind(mg: Node) -> String:
@@ -166,7 +288,7 @@ func _step() -> void:
 		_same_ticks = 0
 		_force_progress()
 		return
-	# 미니게임: 스틱을 돌리고 가끔 오른쪽으로 밀며 A 를 눌렀다 뗀다
+	# 미니게임: 입력은 _process 의 _drive 가 매 프레임 넣는다. 여기서는 진행만 지켜본다
 	for mg: Node in get_tree().root.find_children("*", "Minigame", true, false):
 		if (mg as Control).is_visible_in_tree() and mg._is_playing:
 			if get_viewport().gui_get_focus_owner() != mg:
@@ -190,10 +312,6 @@ func _step() -> void:
 				_release_pad()
 				mg._complete("완성")
 				return
-			_stick_angle += STICK_TURN + randf_range(-0.1, 0.1)
-			var push_right: bool = t % PUSH_RIGHT_PERIOD >= PUSH_RIGHT_PERIOD - PUSH_RIGHT_TICKS
-			_set_stick(Vector2.RIGHT if push_right else Vector2.from_angle(_stick_angle))
-			_set_a(t % (A_HOLD_TICKS + A_REST_TICKS) < A_HOLD_TICKS)
 			return
 	# 방금 끝난 미니게임: 게임패드만으로 끝난 것으로 센다
 	for id: int in _mg_presses.keys():
