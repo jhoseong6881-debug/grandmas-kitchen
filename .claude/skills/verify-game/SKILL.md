@@ -26,6 +26,10 @@ tools/check/run.sh menu_note_suggest
 - `tools/check/scenarios/<이름>.gd` 를 사본에 오토로드로 붙여 돌린다. 끝 코드 = 실패 수, `!! 실패` 줄이 무엇이 틀렸는지.
 - 봇이 하지 않는 행동(메뉴에서 요리 빼기, 뒤로 나가기, 옛 세이브 불러오기)을 확인할 때 새 시나리오를 만든다. 형식은 menu_note_suggest.gd 를 따른다 (`_ready` 에서 몇 프레임 기다린 뒤 시험, `check(조건, 설명)`, 끝에 `get_tree().quit(fails)`).
 - 지금 있는 것: `menu_note_suggest` — 메뉴판이 번진 노트 요리를 권할 때 플레이어가 직접 뺀 것은 다시 안 넣는지 (menu_board.gd·GameState 메뉴/퍼즐 쪽을 바꾸면 돌린다).
+  `chop_target` — 썰기는 하얀 칸 안에서만 썰리고 칸 밖은 톡 치기만 하는지, 칸 안에서 다 썰면 끝나는지 (chop_minigame 을 바꾸면 돌린다).
+  `rice_water` — 밥 짓기 물 맞추기: 넘치면 따라 내고 다시, 모자라면 기다림, 알맞으면 불 조절로 (rice_minigame 을 바꾸면 돌린다).
+  `rice_fire` — 밥 짓기 불 조절(가마솥 3단 불): 센불 → 뚜껑 두 번 들썩 → 중불 → 약불 뜸, 안 맞는 불은 진행만 멈춤.
+  시나리오는 끝 코드가 0 이어도 게임 쪽 `SCRIPT ERROR` 는 못 센다 → `grep SCRIPT /tmp/grandmas-kitchen-check/scenario_<이름>.log` 도 본다.
 
 ## 2. 바꾼 곳에 맞는 검사
 
