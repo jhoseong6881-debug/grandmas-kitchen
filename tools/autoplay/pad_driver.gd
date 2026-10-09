@@ -219,7 +219,8 @@ func _drive(mg: Minigame, delta: float) -> void:
 				_set_stick(Vector2.ZERO)
 				_set_a(k._water_level < 0.5)
 			RiceMinigame.Phase.COOKING:
-				var d: float = (k.heat_target_start + k.heat_target_end) / 2.0 - k._heat
+				var target: Vector2 = k.cook_stage_ranges[k._cook_stage]
+				var d: float = (target.x + target.y) / 2.0 - k._heat
 				_set_stick(Vector2(clampf(d * 8.0, -1.0, 1.0) if absf(d) > 0.03 else 0.0, 0.0))
 			_:
 				_set_stick(Vector2.ZERO)

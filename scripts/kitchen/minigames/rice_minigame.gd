@@ -8,36 +8,56 @@ extends Minigame
 ##      되풀이할수록 뜨물이 덜 뽀얘진다.
 ##   2. 물 맞추기: 솥 안 쌀 위에 손이 납작하게 얹혀 있다. 누르고 있는 동안 물이 차오르고, 떼면 멈춘다.
 ##      떼고 water_settle_time 초가 지나면 그 물 높이로 정하고 넘어간다 (그 전에 다시 누르면 더 붓는다).
+##      솥 양쪽 안벽의 하얀 표시 사이(눈금의 초록 칸, water_min_level ~ water_max_level)가 알맞은 물이다. 모자라면 "조금 더 부어요",
+##      넘치면 물을 따라 내고 처음부터 다시 받는다 (손해 없음. 2026-10-09 "아무렇게나 부어도 성공한다"는 피드백으로 바꿈).
 ##      할머니 비법 자리·부탁 자리 = 물 높이: 0 = 쌀 바로 위, 0.5 = 손등, 1 = 손등 위로 손 두께만큼. 솥 왼쪽 눈금에 그린다.
-##   3. 불 조절: 누르지 않고 커서를 좌우로 움직이면 불 손잡이(바늘)가 따라간다 (왼쪽 = 약불, 오른쪽 = 센불).
-##      불은 저절로 조금씩 일렁여서 가끔 손잡이를 고쳐 잡아야 한다. 바늘이 금색 칸 안에 있는 동안에만 밥이 지어진다.
-##      금색 칸보다 세면 솥뚜껑이 들썩이고 밥이 멈출 뿐, 약한 것도 멈출 뿐이다.
+##   3. 불 조절 (가마솥 3단 불, 2026-10-09 "밋밋하다"는 피드백으로 바꿈): 누르지 않고 커서를 좌우로 움직이면 불 손잡이(바늘)가
+##      따라간다 (왼쪽 = 약불, 오른쪽 = 센불). 진짜 가마솥 밥처럼 센불 → 끓어오르면 중불 → 약불로 뜸 들이기.
+##      지금 단계의 금색 칸 안에 바늘이 있는 동안에만 그 단계가 진행된다. 센불이 거의 차면 보글보글 뚜껑이 살짝 들썩이고,
+##      다 차면 뚜껑이 "들썩! 들썩!" 두 번 뛰며 중불로 넘어간다. 그때 불을 안 줄이면 거품이 넘치려 하고 뚜껑이 들썩일 뿐
+##      (진행만 멈춤), 너무 약해도 멈출 뿐이다. 단계별 칸과 시간 비율은 cook_stage_ranges / cook_stage_shares.
 ## 빗나감·실패는 없다 (완벽 도장도 없다).
 ## 게임패드·방향키: 스틱으로 손을 옮기고 바가지를 기울인다. Ⓐ를 누르고 있으면 물을 붓는다. 불 조절은 스틱 좌우.
 
 enum Phase { RUBBING, DRAINING, WATERING, MOVING, COOKING }
 enum Heat { LOW, GOOD, HIGH }
+## 불 조절 단계: 센불로 끓이기 → 중불 → 약불로 뜸 들이기
+enum CookStage { BOIL, SIMMER, REST }
 
 const WASH_TITLE: String = "쌀 씻기"
 const WATER_TITLE: String = "물 맞추기"
 const WASH_STEP_FORMAT: String = "① 쌀 씻기 %d / %d"
 const WATER_STEP_TEXT: String = "② 물 맞추기"
-const COOK_STEP_TEXT: String = "③ 불 조절"
+const COOK_STEP_FORMAT: String = "③ 불 조절 · %s"
 const RUB_TEXT: String = "쌀을 쓱쓱 문질러 비벼요"
 const DRAIN_TEXT: String = "뽀얘졌어요! 오른쪽으로 기울여 뜨물을 버려요"
 const SPILL_TEXT: String = "앗, 쌀알이 톡! 살살 기울여요"
 const REFILL_TEXT: String = "새 물을 받았어요. 또 박박 비벼요"
 const WASHED_TEXT: String = "뽀득뽀득 깨끗해졌어요! 솥에 안쳐요"
-const WATER_TEXT: String = "누르고 있으면 물이 차요. 손등이 찰랑찰랑 잠길 만큼!"
+const WATER_TEXT: String = "누르고 있으면 물이 차요. 솥 벽의 하얀 표시 사이에서 떼요 (손등이 찰랑찰랑)"
+const WATER_TOO_MUCH_TEXT: String = "넘쳐요! 손을 떼요"
+const WATER_POUR_OFF_TEXT: String = "앗, 물이 너무 많아요! 따라 내고 다시 받아요"
+## 물이 너무 많아 따라 낼 때 나는 소리 ("할 수 없어요" 소리)
+const WATER_POUR_OFF_SOUND: StringName = &"miss"
 const WATER_MORE_TEXT: String = "조금 더 부어요"
 const WATER_DONE_TEXT: String = "물 맞췄어요! 불을 지펴요"
-const HEAT_LOW_TEXT: String = "불이 약해요. 손잡이를 오른쪽으로"
-const HEAT_GOOD_TEXT: String = "좋아요, 그대로! 밥 짓는 중"
-const HEAT_HIGH_TEXT: String = "앗, 불이 너무 세요! 손잡이를 왼쪽으로"
 const DONE_TEXT: String = "고슬고슬 밥 완성!"
 const WASH_HINT_TEXT: String = "쌀 위를 쓱쓱 문질러 비비고, 커서를 오른쪽으로 밀어 뜨물을 버려요   (패드: 스틱)"
-const WATER_HINT_TEXT: String = "누르고 있는 동안 물을 부어요. 손등이 잠길 만큼   (패드: Ⓐ 누르고 있기)"
-const COOK_HINT_TEXT: String = "커서를 좌우로 움직여 불 손잡이를 돌려요. 바늘을 금색 칸 안에 두세요   (패드: 스틱 좌우)"
+const WATER_HINT_TEXT: String = "누르고 있는 동안 물을 부어요. 솥 벽의 하얀 표시 사이에서 손을 떼요   (패드: Ⓐ 누르고 있기)"
+const COOK_HINT_TEXT: String = "커서를 좌우로 움직여 불 손잡이를 돌려요. 센불 → 끓어오르면 중불 → 약불로 뜸   (패드: 스틱 좌우)"
+## 단계 이름 (CookStage 차례)
+const COOK_STAGE_NAMES: PackedStringArray = ["센불", "중불", "약불 뜸"]
+## 단계마다 불이 약할 때 / 알맞을 때 / 셀 때 글 (CookStage 차례, 안은 Heat 차례)
+const COOK_STAGE_TEXTS: Array = [
+	["불이 약해요. 처음엔 센불로! 손잡이를 오른쪽 끝으로", "센불로 끓이는 중… 보글보글 소리가 날 때까지", "센불로 끓이는 중… 보글보글 소리가 날 때까지"],
+	["불이 너무 약해요. 손잡이를 가운데로", "중불로 자작자작… 좋아요", "앗, 거품이 넘치려 해요! 불을 줄여요 (가운데로)"],
+	["불이 꺼지겠어요. 아주 살짝만 켜 둬요", "약불로 뜸 들이는 중… 구수한 냄새", "뜸 들일 땐 약불로! 손잡이를 왼쪽으로"],
+]
+const BOIL_SOON_TEXT: String = "보글보글… 곧 끓어올라요!"
+const BOILED_TEXT: String = "들썩! 들썩! 끓어올랐어요. 이제 불을 줄여요 (가운데로)"
+const SIMMERED_TEXT: String = "물이 잦아들었어요. 이제 약불로 뜸 들여요 (왼쪽으로)"
+## 솥뚜껑이 들썩 뛸 때 소리 (아직 전용 소리가 없어 퐁 소리. docs/audio-todo.md)
+const LID_HOP_SOUND: StringName = &"pop"
 
 @export_group("쌀 씻기")
 ## 씻는 횟수 (요리 단계의 횟수가 없을 때). 한 번 = 비비기 + 뜨물 버리기.
@@ -94,28 +114,40 @@ const COOK_HINT_TEXT: String = "커서를 좌우로 움직여 불 손잡이를 �
 @export var water_settle_time: float = 1.0
 ## 이보다 적게(물 높이 0~1 중) 붓고 떼면 "조금 더 부어요" 하고 기다린다.
 @export var water_min_level: float = 0.15
+## 이보다 많이(물 높이 0~1 중) 붓고 떼면 물을 따라 내고 다시 받는다. 비법 자리·부탁 자리가 이 칸 안에 있어야 한다.
+@export var water_max_level: float = 0.8
+## 눈금의 알맞은 물 칸 색, 솥 안쪽 벽에 그리는 알맞은 물 위·아래 표시 색과 길이(픽셀), 넘친 물을 따라 내는 시간(초)
+@export var water_ok_color: Color = Color(0.75, 0.95, 0.75, 0.6)
+@export var water_tick_color: Color = Color(1, 1, 1, 0.85)
+@export var water_tick_length: float = 28.0
+@export var water_pour_off_time: float = 0.6
 ## 물 색 (손이 비쳐 보이게 반투명), 쌀 층 색, 손 색, 눈금 색과 폭, 솥에서 떨어진 거리(픽셀)
 @export var pot_water_color: Color = Color(0.62, 0.8, 0.92, 0.55)
 @export var pot_rice_color: Color = Color(0.97, 0.96, 0.9)
 @export var hand_color: Color = Color(0.96, 0.8, 0.66)
 @export var gauge_color: Color = Color(0.25, 0.22, 0.2, 0.9)
-@export var gauge_width: float = 24.0
+@export var gauge_width: float = 36.0
 @export var gauge_gap: float = 40.0
 
 @export_group("불 조절")
 ## 바늘이 손잡이를 따라가는 빠르기 (1초에 따라잡는 정도)와, 게임패드·방향키로 손잡이를 돌리는 빠르기 (1초에 막대의 비율)
 @export var heat_follow: float = 6.0
 @export var pad_heat_speed: float = 0.6
-## 불이 저절로 일렁이는 정도 (불 세기 0~1 중)와 빠르기
-@export var heat_drift_amount: float = 0.18
+## 불이 저절로 일렁이는 정도 (불 세기 0~1 중)와 빠르기. 살아 있는 불처럼 보일 만큼만.
+@export var heat_drift_amount: float = 0.05
 @export var heat_drift_speed: float = 0.8
-## 금색 칸 (불 세기 0~1 중). 넓을수록 쉽다.
-@export_range(0.0, 1.0) var heat_target_start: float = 0.55
-@export_range(0.0, 1.0) var heat_target_end: float = 0.78
-## 금색 칸 위로 이만큼은 봐준다. 화면에는 안 보인다.
+## 단계별 금색 칸 (불 세기 0~1 중, x = 시작, y = 끝): 센불, 중불, 약불 뜸. 넓을수록 쉽다.
+@export var cook_stage_ranges: Array[Vector2] = [Vector2(0.72, 1.0), Vector2(0.38, 0.64), Vector2(0.06, 0.3)]
+## 금색 칸 밖으로 이만큼은 봐준다. 화면에는 안 보인다.
 @export var heat_margin: float = 0.03
-## 금색 칸 안에서 이 시간(초)을 채우면 밥이 다 된다.
-@export var cook_time_needed: float = 4.0
+## 금색 칸 안에서 보내야 하는 시간(초)의 합. 단계별로는 cook_stage_shares 비율로 나눈다.
+@export var cook_time_needed: float = 7.0
+@export var cook_stage_shares: Array[float] = [0.4, 0.35, 0.25]
+## 센불 단계가 이만큼 차면 보글보글 소리가 커지고 뚜껑이 가끔 살짝 들썩인다 (곧 끓는다는 신호)
+@export var boil_soon_share: float = 0.7
+## 끓어오를 때 뚜껑이 뛰는 높이(픽셀)와 한 번 뛰는 시간(초)
+@export var lid_hop_height: float = 26.0
+@export var lid_hop_duration: float = 0.18
 ## 불꽃 크기 (불 세기 0일 때와 1일 때)
 @export var flame_min_scale: float = 0.25
 @export var flame_max_scale: float = 1.4
@@ -148,10 +180,17 @@ var _water_level: float = 0.0
 var _is_pouring_water: bool = false
 var _settle_time: float = 0.0
 var _has_poured: bool = false
+## 넘친 물을 따라 내는 중 (그동안은 붓지 않는다)
+var _is_pouring_off: bool = false
 ## 불 손잡이 자리 (0~1)와, 일렁임을 더한 지금 불 세기
 var _knob: float = 0.0
 var _heat: float = 0.0
 var _heat_state: Heat = Heat.LOW
+var _cook_stage: CookStage = CookStage.BOIL
+## 지금 단계의 진행 (0~1)
+var _stage_progress: float = 0.0
+## 뚜껑이 "들썩! 들썩!" 뛰는 중 (그동안은 흔들기를 하지 않는다)
+var _is_lid_hopping: bool = false
 var _flame_time: float = 0.0
 ## 밥이 지어진 정도 (0 ~ 1)
 var _cook_progress: float = 0.0
@@ -225,9 +264,17 @@ func _build_water_view() -> void:
 	_water_view.add_child(_make_rect(hand_rect, hand_color))
 	_pot_water = _make_rect(Rect2(inner_left, bottom, inner_width, 0.0), pot_water_color)
 	_water_view.add_child(_pot_water)
+	# 솥 양쪽 안벽에 알맞은 물의 아래·위 높이 표시 (물을 보면서 맞출 수 있게)
+	for level: float in [water_min_level, water_max_level]:
+		var y: float = _rice_top_y - level * _water_range - 2.0
+		_water_view.add_child(_make_rect(Rect2(inner_left, y, water_tick_length, 4.0), water_tick_color))
+		_water_view.add_child(_make_rect(Rect2(inner_left + inner_width - water_tick_length, y, water_tick_length, 4.0),
+				water_tick_color))
 	_gauge = _make_rect(Rect2(_pot.position.x - gauge_gap - gauge_width, _rice_top_y - _water_range,
 			gauge_width, _water_range), gauge_color)
 	_water_view.add_child(_gauge)
+	_gauge.add_child(_make_rect(Rect2(0.0, (1.0 - water_max_level) * _water_range, gauge_width,
+			(water_max_level - water_min_level) * _water_range), water_ok_color))
 	_gauge_marker = _make_rect(Rect2(-8.0, 0.0, gauge_width + 16.0, 4.0), Color(clear_color, 1.0))
 	_gauge.add_child(_gauge_marker)
 	_water_view.hide()
@@ -259,9 +306,9 @@ func _on_start(recipe: Recipe) -> void:
 	_start_washing()
 
 
-## 물 높이 눈금 안에 비법 자리나 부탁 자리를 그린다 (눈금 위쪽이 1).
+## 물 높이 눈금 오른쪽 절반에 비법 자리나 부탁 자리를 그린다 (눈금 위쪽이 1). 왼쪽 절반은 알맞은 물 칸이 보이게 남긴다.
 func _show_zone(start: float, end: float, color: Color, zone_name: String) -> void:
-	_make_zone(_gauge, Rect2(0.0, (1.0 - end) * _water_range, gauge_width, (end - start) * _water_range),
+	_make_zone(_gauge, Rect2(gauge_width / 2.0, (1.0 - end) * _water_range, gauge_width / 2.0, (end - start) * _water_range),
 			color, zone_name)
 	_gauge.move_child(_gauge_marker, -1)
 
@@ -422,6 +469,7 @@ func _start_watering() -> void:
 	_phase = Phase.WATERING
 	_water_level = 0.0
 	_is_pouring_water = false
+	_is_pouring_off = false
 	_has_poured = false
 	_settle_time = 0.0
 	_wash_area.hide()
@@ -443,11 +491,13 @@ func _set_water_view(is_water: bool) -> void:
 
 
 func _update_watering(delta: float) -> void:
+	if _is_pouring_off:
+		return
 	if _is_pouring_water:
 		_water_level += water_fill_speed * delta / _water_range
 		_has_poured = true
 		_settle_time = 0.0
-		_progress_label.text = WATER_TEXT
+		_progress_label.text = WATER_TOO_MUCH_TEXT if _water_level > water_max_level else WATER_TEXT
 		_update_pot_water()
 		return
 	if not _has_poured:
@@ -457,7 +507,25 @@ func _update_watering(delta: float) -> void:
 		return
 	_settle_time += delta
 	if _settle_time >= water_settle_time:
-		_settle_water()
+		if _water_level > water_max_level:
+			_pour_off_water()
+		else:
+			_settle_water()
+
+
+## 물이 너무 많다. 솥의 물을 따라 내고 처음부터 다시 받는다 (빗나감으로 세지 않는다).
+func _pour_off_water() -> void:
+	_is_pouring_off = true
+	_has_poured = false
+	_settle_time = 0.0
+	_progress_label.text = WATER_POUR_OFF_TEXT
+	Sound.play(WATER_POUR_OFF_SOUND)
+	var tween: Tween = create_tween()
+	tween.tween_method(func(level: float) -> void:
+			_water_level = level
+			_update_pot_water(), _water_level, 0.0, water_pour_off_time)
+	await tween.finished
+	_is_pouring_off = false
 
 
 ## 지금 물 높이로 정하고 불 조절로 넘어간다.
@@ -490,15 +558,11 @@ func _start_cooking() -> void:
 	_flame_time = 0.0
 	_heat_state = Heat.LOW
 	_cook_progress = 0.0
-	var width: float = _heat_bar.size.x
-	_heat_gold_zone.position.x = heat_target_start * width
-	_heat_gold_zone.size.x = (heat_target_end - heat_target_start) * width
-	_heat_over_zone.position.x = heat_target_end * width
-	_heat_over_zone.size.x = (1.0 - heat_target_end) * width
+	_is_lid_hopping = false
 	_title_label.text = _cook_title
-	_side_label.text = COOK_STEP_TEXT
-	_progress_label.text = HEAT_LOW_TEXT
 	_hint_label.text = COOK_HINT_TEXT
+	_enter_cook_stage(CookStage.BOIL)
+	_progress_label.text = COOK_STAGE_TEXTS[CookStage.BOIL][Heat.LOW]
 	_update_fire(0.0)
 	Sound.start_loop(_loop_sound, boil_quiet_db)
 
@@ -509,23 +573,87 @@ func _cook(delta: float) -> void:
 	var drift: float = heat_drift_amount * (0.6 * sin(_flame_time * heat_drift_speed * TAU / 3.0) \
 			+ 0.4 * sin(_flame_time * heat_drift_speed * TAU / 1.3 + 1.0))
 	_heat = lerpf(_heat, clampf(_knob + drift, 0.0, 1.0), clampf(heat_follow * delta, 0.0, 1.0))
+	var stage_range: Vector2 = cook_stage_ranges[_cook_stage]
 	var new_state: Heat = Heat.GOOD
-	if _heat < heat_target_start:
+	if _heat < stage_range.x - heat_margin:
 		new_state = Heat.LOW
-	elif _heat > heat_target_end + heat_margin:
+	elif _heat > stage_range.y + heat_margin:
 		new_state = Heat.HIGH
+	var was_soon: bool = _is_boil_soon()
 	if new_state != _heat_state:
 		_heat_state = new_state
-		_progress_label.text = [HEAT_LOW_TEXT, HEAT_GOOD_TEXT, HEAT_HIGH_TEXT][new_state]
-	if _heat_state == Heat.GOOD:
-		_cook_progress = minf(_cook_progress + delta / _cook_time_needed, 1.0)
+		if not _is_lid_hopping:
+			_progress_label.text = COOK_STAGE_TEXTS[_cook_stage][new_state]
+	if _heat_state == Heat.GOOD and not _is_lid_hopping:
+		_stage_progress = minf(_stage_progress + delta / (_cook_time_needed * cook_stage_shares[_cook_stage]), 1.0)
+	if _is_boil_soon() and not was_soon:
+		_progress_label.text = BOIL_SOON_TEXT
+	_cook_progress = _stages_done_share() + cook_stage_shares[_cook_stage] * _stage_progress
 	_update_fire(delta)
-	Sound.set_loop_volume(_loop_sound, lerpf(boil_quiet_db, boil_loud_db, _heat))
-	if _cook_progress >= 1.0:
-		_phase = Phase.MOVING
-		_heat = 0.0
-		_update_fire(0.0)
-		_complete(DONE_TEXT)
+	var volume: float = lerpf(boil_quiet_db, boil_loud_db, _heat)
+	if _is_boil_soon():
+		volume = boil_loud_db
+	Sound.set_loop_volume(_loop_sound, volume)
+	if _stage_progress < 1.0 or _is_lid_hopping:
+		return
+	match _cook_stage:
+		CookStage.BOIL:
+			_hop_lid_twice()
+		CookStage.SIMMER:
+			_enter_cook_stage(CookStage.REST)
+			_progress_label.text = SIMMERED_TEXT
+		CookStage.REST:
+			_phase = Phase.MOVING
+			_heat = 0.0
+			_update_fire(0.0)
+			_complete(DONE_TEXT)
+
+
+## 센불 단계가 거의 다 차서 곧 끓어오르는 때인지
+func _is_boil_soon() -> bool:
+	return _cook_stage == CookStage.BOIL and _stage_progress >= boil_soon_share
+
+
+## 앞 단계들이 차지하는 몫의 합 (밥 짓기 막대를 채우는 데 쓴다)
+func _stages_done_share() -> float:
+	var total: float = 0.0
+	for i: int in _cook_stage:
+		total += cook_stage_shares[i]
+	return total
+
+
+## 단계를 바꾸고 불 막대의 금색 칸(이번 단계 자리)과 붉은 칸(넘치는 자리)을 옮긴다.
+func _enter_cook_stage(stage: CookStage) -> void:
+	_cook_stage = stage
+	_stage_progress = 0.0
+	_heat_state = Heat.GOOD
+	var stage_range: Vector2 = cook_stage_ranges[stage]
+	var width: float = _heat_bar.size.x
+	_heat_gold_zone.position.x = stage_range.x * width
+	_heat_gold_zone.size.x = (stage_range.y - stage_range.x) * width
+	_heat_over_zone.visible = stage_range.y < 1.0
+	_heat_over_zone.position.x = stage_range.y * width
+	_heat_over_zone.size.x = (1.0 - stage_range.y) * width
+	_side_label.text = COOK_STEP_FORMAT % COOK_STAGE_NAMES[stage]
+
+
+## 끓어올랐다: 뚜껑이 "들썩! 들썩!" 두 번 뛰고 중불 단계로 넘어간다 (할머니: "뚜껑이 두 번 들썩이면 불 줄여").
+func _hop_lid_twice() -> void:
+	_is_lid_hopping = true
+	_progress_label.text = BOILED_TEXT
+	for i: int in 2:
+		Sound.play(LID_HOP_SOUND)
+		var tween: Tween = create_tween()
+		tween.tween_property(_lid, "position:y", _lid_home_y - lid_hop_height, lid_hop_duration / 2.0) \
+				.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		tween.tween_property(_lid, "position:y", _lid_home_y, lid_hop_duration / 2.0) \
+				.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		await tween.finished
+	if not _is_playing or _phase != Phase.COOKING:
+		return
+	_enter_cook_stage(CookStage.SIMMER)
+	_is_lid_hopping = false
+	_progress_label.text = BOILED_TEXT
 
 
 ## 불꽃 크기, 바늘, 밥 짓기 막대, 김, 솥뚜껑 들썩임을 지금 상태에 맞춘다.
@@ -534,9 +662,17 @@ func _update_fire(delta: float) -> void:
 	_heat_marker.position.x = _heat * _heat_bar.size.x - _heat_marker.size.x / 2.0
 	_cook_fill.size.x = _cook_progress * _cook_bar.size.x
 	_steam.modulate.a = _cook_progress
-	if _heat_state == Heat.HIGH:
+	if _is_lid_hopping:
+		return
+	var rattle: float = 0.0
+	if _heat_state == Heat.HIGH and _cook_stage != CookStage.BOIL:
+		rattle = lid_rattle_height
+	elif _is_boil_soon() and _heat_state == Heat.GOOD and fmod(_flame_time, 0.9) < 0.25:
+		# 곧 끓는다: 가끔 살짝 들썩
+		rattle = lid_rattle_height * 0.4
+	if rattle > 0.0:
 		_rattle_time += delta
-		_lid.position.y = _lid_home_y - absf(sin(_rattle_time * lid_rattle_speed)) * lid_rattle_height
+		_lid.position.y = _lid_home_y - absf(sin(_rattle_time * lid_rattle_speed)) * rattle
 	else:
 		_lid.position.y = _lid_home_y
 
