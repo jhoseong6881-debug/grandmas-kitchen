@@ -8,56 +8,30 @@ script = ExtResource("2_chapter")
 title = "1장. 회색 도시"
 background_color = Color(0.22, 0.24, 0.3, 1)
 ambient_sound = &"subway"
-lines = Array[String](["새벽 한 시, 마지막 지하철.", "창에 비친 얼굴이 낯설다. 언제부터 이렇게 웃지 않았더라.", "저녁은 또 편의점 삼각김밥. 포장을 뜯다 말고 멈칫한다.", "…김밥. 이런 맛이 아니었는데."])
+lines = Array[String](["새벽 한 시, 마지막 지하철. 오늘 저녁도 편의점 삼각김밥이었다.", "다음 날 아침, 전화가 왔다. 시골 할머니가 주무시다 편안히 가셨다고.", "바쁘다는 핑계로, 다음에, 다음에… 그 '다음'은 이제 오지 않는다.", "며칠 뒤 소포가 왔다. 녹슨 열쇠, 텅 빈 레시피 공책, 그리고 편지 한 장."])
 
 [sub_resource type="Resource" id="Chapter_2"]
 script = ExtResource("2_chapter")
-title = "2장. 전화 한 통"
-background_color = Color(0.3, 0.32, 0.36, 1)
-lines = Array[String](["아침, 모르는 번호. 숲골 마을 이장님이었다.", "이장님: \"할머니께서… 편안하게 가셨어요. 주무시다가.\"", "마지막으로 찾아간 게 언제였지. 바쁘다는 핑계로, 다음에, 다음에.", "그 '다음'은 이제 오지 않는다."])
+title = "2장. 할머니의 편지"
+background_color = Color(0.3, 0.26, 0.22, 1)
+is_letter = true
+lines = Array[String](["우리 강아지에게.", "숲속 집이랑 작은 밥집, 너한테 남긴다.
+할미 없으면 숲 이웃들이 배곯을까, 그게 걱정이여.", "레시피 노트는 한 장씩 이웃들한테 맡겨 뒀다.
+따뜻한 밥 지어 주면 다들 돌려줄 거다.", "밥은 마음으로 짓는 거여. — 할미가"])
 
 [sub_resource type="Resource" id="Chapter_3"]
 script = ExtResource("2_chapter")
-title = "3장. 기억 속 여름"
-background_color = Color(0.86, 0.72, 0.48, 1)
-lines = Array[String](["어릴 적 여름방학마다 할머니 집에 맡겨졌다.", "평상에 앉아 있으면 할머니가 김밥 꽁다리를 입에 쏙 넣어 주셨다.", "할머니: \"밥은 손으로 짓는 게 아니여. 마음으로 짓는 거지.\"", "그 시절엔 이상한 일이 많았다.", "밥 냄새가 퍼지면 숲에서 토끼며 다람쥐가 기웃기웃 내려왔고,", "할머니는 그 애들한테도 꼭 한 그릇씩 떠 주셨다.", "할머니: \"숲 이웃들도 다 우리 식구여.\""])
+title = "3장. 숲속 집"
+background_color = Color(0.5, 0.66, 0.46, 1)
+lines = Array[String](["휴가를 내고, 숲속 할머니 집으로 왔다.", "먼지 쌓인 밥집, 식은 아궁이. 창밖 텃밭엔 할머니가 심어 둔 당근이 자라 있었다."])
 
 [sub_resource type="Resource" id="Chapter_4"]
 script = ExtResource("2_chapter")
-title = "4장. 할머니가 남긴 것"
-background_color = Color(0.36, 0.3, 0.26, 1)
-lines = Array[String](["장례가 끝나고 며칠 뒤, 작은 소포가 왔다.", "녹슨 열쇠 하나. 손때 묻은 공책 하나.", "표지에는 삐뚤빼뚤한 글씨로 \"할미 레시피\".", "그런데 속은 텅 비어 있었다. 페이지가 전부 뜯겨 나가고, 편지 한 장만 끼워져 있었다."])
-
-[sub_resource type="Resource" id="Chapter_5"]
-script = ExtResource("2_chapter")
-title = "5장. 할머니의 편지"
-background_color = Color(0.3, 0.26, 0.22, 1)
-is_letter = true
-lines = Array[String](["우리 강아지에게.", "이 편지 읽을 즈음엔 할미는 먼 데 가 있겠구나. 너무 울지 말어.", "숲속 집이랑 작은 밥집, 너한테 남긴다.
-할미가 문 닫으면 숲 이웃들이 배곯을까, 그게 제일 걱정이여.", "레시피 노트는 한 장씩 뜯어서 이웃들한테 맡겨 뒀다.
-공책만 남겨 두면 너는 바빠서 펴 보지도 않을 것 같아서. 할미 꾀여.
-네가 따뜻한 밥 지어 주면, 다들 한 장씩 돌려줄 거다.", "도시 생활 힘들면 언제든 쉬러 오렴.
-밥은 마음으로 짓는 거여. 너는 잘할 거다.", "— 할미가"])
-
-[sub_resource type="Resource" id="Chapter_6"]
-script = ExtResource("2_chapter")
-title = "6장. 떠나는 날"
-background_color = Color(0.5, 0.62, 0.7, 1)
-lines = Array[String](["회사에 휴가를 냈다. 딱 한 달만.", "캐리어 하나, 열쇠 하나, 텅 빈 공책 하나.", "버스 창밖으로 회색 빌딩이 줄고, 연둣빛 산이 늘어난다."])
-
-[sub_resource type="Resource" id="Chapter_7"]
-script = ExtResource("2_chapter")
-title = "7장. 숲속 집"
-background_color = Color(0.5, 0.66, 0.46, 1)
-lines = Array[String](["버스에서 내려 숲길을 한참 걸었다. 흙냄새, 새소리, 어디선가 꽃냄새.", "기억보다 작아진 집. 녹슨 열쇠가 찰칵, 돌아간다.", "먼지 쌓인 밥집. 식은 아궁이. 반들반들 닳은 칼.", "못에 걸린 꽃무늬 앞치마에서 할머니 냄새가 났다.", "창밖 텃밭에는 할머니가 마지막으로 심어 둔 당근이 자라 있었다."])
-
-[sub_resource type="Resource" id="Chapter_8"]
-script = ExtResource("2_chapter")
-title = "8장. 첫 손님"
+title = "4장. 첫 손님"
 background_color = Color(0.2, 0.22, 0.34, 1)
-lines = Array[String](["짐을 풀다 지쳐 깜빡 잠이 들었다. 똑, 똑. 작은 노크 소리.", "문틈으로 하얀 귀 두 개가 쫑긋.", "토끼: \"…할머니? 아, 아니구나…\"", "토끼: \"그 냄새… 혹시, 할머니 손주예요?\"", "#이름", "토끼: \"{name}! 할머니가 맨날 자랑했어요. 도시에서 일하는 멋진 손주가 있다고.\"", "토끼: \"저… 할머니 노트 한 장 갖고 있어요. 할머니가 꼭 손주한테 주라고 했는데…\"", "토끼: \"그 전에, 할머니 김밥… 한 번만 다시 먹어 볼 수 있을까요?\"", "토끼가 당근 하나를 내밀고, 귀를 붉히며 숲으로 뛰어간다.", "그 밤, 오랜만에 깊이 잠들었다."])
+lines = Array[String](["그날 밤, 똑똑. 문틈으로 하얀 귀 두 개가 쫑긋.", "토끼: \"그 냄새… 혹시 할머니 손주예요?\"", "#이름", "토끼: \"{name}! 할머니 노트 한 장, 제가 맡고 있어요.\"", "토끼: \"그 전에… 할머니 김밥, 한 번만 다시 먹어 볼 수 있을까요?\""])
 
 [resource]
 script = ExtResource("1_story")
-chapters = Array[ExtResource("2_chapter")]([SubResource("Chapter_1"), SubResource("Chapter_2"), SubResource("Chapter_3"), SubResource("Chapter_4"), SubResource("Chapter_5"), SubResource("Chapter_6"), SubResource("Chapter_7"), SubResource("Chapter_8")])
+chapters = Array[ExtResource("2_chapter")]([SubResource("Chapter_1"), SubResource("Chapter_2"), SubResource("Chapter_3"), SubResource("Chapter_4")])
 name_prompt = "토끼가 이름을 물어봐요"
