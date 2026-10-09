@@ -46,17 +46,16 @@ func show_recipe(recipe: Recipe, write_tip: bool = false) -> void:
 	for ingredient: Ingredient in recipe.ingredients:
 		if ingredient != null and ingredient.display_name not in names:
 			names.append(ingredient.display_name)
-	_recipe_label.text = recipe.display_name
-	_ingredients_label.text = INGREDIENTS_FORMAT % INGREDIENT_SEPARATOR.join(names)
+	# 한글이 낱말 중간에서 줄이 바뀌지 않게 띄어쓰기 자리에서 미리 줄을 나눈다 (요령 한 줄도 아래에서 같이).
+	_recipe_label.text = _wrap(_recipe_label, recipe.display_name)
+	_ingredients_label.text = _wrap(_ingredients_label, INGREDIENTS_FORMAT % INGREDIENT_SEPARATOR.join(names))
 	_dish_image.texture = DishArt.get_texture(recipe, pixel_scale)
 	var has_tip: bool = recipe.note_puzzle != null and not recipe.note_puzzle.hint.is_empty() \
 			and GameState.is_note_puzzle_solved(recipe.id)
 	_tip_label.visible = has_tip
 	_tip_label.visible_ratio = 1.0
 	if has_tip:
-		# 한글이 낱말 중간에서 줄이 바뀌지 않게 띄어쓰기 자리에서 미리 줄을 나눈다.
-		_tip_label.text = Korean.wrap_by_spaces(TIP_FORMAT % recipe.note_puzzle.hint, _tip_label.get_theme_font("font"),
-				_tip_label.get_theme_font_size("font_size"), (_tip_label.get_parent() as Control).size.x)
+		_tip_label.text = _wrap(_tip_label, TIP_FORMAT % recipe.note_puzzle.hint)
 		if write_tip:
 			_write_tip()
 	pivot_offset = size / 2.0
@@ -64,6 +63,12 @@ func show_recipe(recipe: Recipe, write_tip: bool = false) -> void:
 	show()
 	var tween: Tween = create_tween()
 	tween.tween_property(self, "scale", Vector2.ONE, pop_duration)
+
+
+## label 의 글꼴로 글 상자 폭 안에 들어가게 띄어쓰기 자리에서 줄을 나눈다.
+func _wrap(label: Label, text: String) -> String:
+	return Korean.wrap_by_spaces(text, label.get_theme_font("font"), label.get_theme_font_size("font_size"),
+			(label.get_parent() as Control).size.x)
 
 
 func _scaled(source: Image) -> ImageTexture:
