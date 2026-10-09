@@ -3,13 +3,17 @@ extends Minigame
 ## 썰기 미니게임 (손으로 탁탁 썰기). 칼날 끝이 언제나 마우스 커서 자리에 있어서 도마 위 어디든 자유롭게 다닌다.
 ## 칼이 재료 위에 있을 때 클릭하면 칼이 재료 아랫면까지 탁 내려갔다 돌아오며, 그 자리에서 한 조각이 잘려 나간다.
 ## 게임패드·방향키: 좌우로 칼을 옮기고 Ⓐ(스페이스)나 아래 방향으로 썬다. 칼을 직접 겨눈 뒤 누르는 것이라 클릭과 같다.
-## 하얀 칸은 "여기 썰면 고른 두께" 안내다. 아무 데서나 썰어도 되고 빗나감·실패는 없다 (완벽 도장도 없다).
+## 하얀 칸(다음에 썰 자리)에 칼을 대고 눌러야 한 조각이 잘린다. 칸 밖에서 누르면 칼이 도마를 톡 칠 뿐 아무 일도 없다
+## (빗나감·감점·실패는 없고 다시 겨누면 된다. 2026-10-09 "아무 데나 썰어도 다 썰린다"는 피드백으로 바꿈). 완벽 도장도 없다.
 ## 할머니 비법 자리와 부탁 자리는 하얀 칸 안의 자리 (0 = 하얀 칸 왼쪽, 1 = 오른쪽). 칸 밖에서 썬 칼질은 그 자리로 치지 않는다.
 ## 요리 단계의 횟수 = 칼질 수. 다 썰면(두껍게 썰어 재료가 먼저 모자라도) 남은 끝 조각까지 조각 더미로 옮기고 완성. (빠르기는 쓰지 않는다)
 
 const READY_FORMAT: String = "0 / %d"
 const HIT_FORMAT: String = "탁! %d / %d"
 const EMPTY_TEXT: String = "재료 위에서 썰어요"
+const OFF_TARGET_TEXT: String = "하얀 칸에 칼을 대고 썰어요"
+## 하얀 칸 밖에서 눌렀을 때 나는 소리 ("할 수 없어요" 소리)
+const OFF_TARGET_SOUND: StringName = &"miss"
 const DONE_TEXT: String = "손질 끝!"
 
 @export var chops_needed: int = 8
@@ -20,8 +24,10 @@ const DONE_TEXT: String = "손질 끝!"
 @export var chop_up_duration: float = 0.1
 ## 게임패드·방향키로 칼을 옮기는 빠르기(초당 픽셀)
 @export var pad_knife_speed: float = 420.0
-## 썰 자리(하얀 칸)의 넓이(픽셀). 넓을수록 비법 자리·부탁 자리를 맞추기 쉽다.
+## 썰 자리(하얀 칸)의 넓이(픽셀). 넓을수록 겨누기·비법 자리·부탁 자리를 맞추기 쉽다.
 @export var target_width: float = 50.0
+## 하얀 칸은 고른 두께 한 조각의 이 배수보다 넓어지지 않는다 (칸이 재료 밖이나 이미 썬 자리까지 넘어가지 않게)
+@export var max_target_ratio: float = 0.95
 ## 칼이 하얀 칸 위에 있을 때 하얀 칸 진하기 (평소 진하기는 씬의 TargetZone 색)
 @export var target_hover_alpha: float = 0.8
 ## 이보다 얇게는 썰리지 않는다(픽셀). 남은 재료 끝에서도 이만큼은 떨어져야 썰린다.
@@ -82,9 +88,9 @@ func _get_minigame_type() -> Recipe.MinigameType:
 
 func _on_start(recipe: Recipe) -> void:
 	_chops_needed = _step_count(chops_needed)
-	_target_width = target_width * _window_scale
 	_ingredient_color = _step_color(ingredient_color)
 	_even_width = _ingredient_full_width / (_chops_needed + 1)
+	_target_width = minf(target_width * _window_scale, _even_width * max_target_ratio)
 	_chop_count = 0
 	for slice: Node in _slices.get_children():
 		slice.queue_free()
@@ -192,6 +198,9 @@ func _cut() -> void:
 	# 하얀 칸 왼쪽 끝 = 0, 오른쪽 끝 = 1
 	var window_left: float = _target_center - _target_width / 2.0
 	var is_in_window: bool = _knife_x >= window_left and _knife_x <= window_left + _target_width
+	if not is_in_window:
+		_tap_off_target()
+		return
 	_register_hit((_knife_x - window_left) / _target_width, is_in_window)
 	_chop_count += 1
 	_ingredient.size.x = _knife_x - _ingredient_left
@@ -208,6 +217,15 @@ func _cut() -> void:
 ## 재료가 없는 곳(또는 너무 얇은 곳)에 칼이 닿았다. 칼이 살짝 흔들릴 뿐 빗나감으로 세지 않는다.
 func _tap_empty_board() -> void:
 	_progress_label.text = EMPTY_TEXT
+	_knife.rotation = empty_wobble_angle
+	var tween: Tween = create_tween()
+	tween.tween_property(_knife, "rotation", 0.0, empty_wobble_duration)
+
+
+## 재료 위지만 하얀 칸 밖이다. 칼이 도마를 톡 치고 흔들릴 뿐, 썰리지도 빗나감으로 세지도 않는다.
+func _tap_off_target() -> void:
+	_progress_label.text = OFF_TARGET_TEXT
+	Sound.play(OFF_TARGET_SOUND)
 	_knife.rotation = empty_wobble_angle
 	var tween: Tween = create_tween()
 	tween.tween_property(_knife, "rotation", 0.0, empty_wobble_duration)

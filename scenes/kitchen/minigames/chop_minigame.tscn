@@ -143,7 +143,7 @@ offset_bottom = -100.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_font_sizes/font_size = 36
-text = "칼을 재료에 대고 클릭!   (패드·방향키: 좌우로 옮기고 Ⓐ / 스페이스)"
+text = "칼을 하얀 칸에 대고 클릭!   (패드·방향키: 좌우로 옮기고 Ⓐ / 스페이스)"
 horizontal_alignment = 1
 vertical_alignment = 1
 
