@@ -738,7 +738,7 @@ func _on_cook_button_pressed() -> void:
 	_run_next_step()
 
 
-## 이 요리를 만들기 전에 번진 할머니 노트 퍼즐을 풀지 (아직 안 푼 퍼즐이 있고, 1일째가 아니고, 이번 점심에 아직 안 풀었을 때)
+## 이 요리를 만들기 전에 번진 할머니 노트 퍼즐을 풀지 (나오는 날 규칙은 NotePuzzleBoard.is_waiting_today, 이번 점심에 아직 안 풀었을 때)
 func _should_open_note_puzzle(recipe: Recipe) -> bool:
 	return NotePuzzleBoard.is_waiting_today(recipe) and not _has_note_puzzle_today
 

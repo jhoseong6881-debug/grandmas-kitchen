@@ -23,6 +23,8 @@ const INGREDIENT_FORMAT: String = "×%d  "
 const PROMISE_FORMAT: String = "★ %s%s 약속"
 ## 아직 못 읽은 번진 할머니 노트가 있는 요리 줄에 붙는 글 (만들면 노트 퍼즐이 나온다)
 const NOTE_PUZZLE_TAG: String = "번진 할머니 노트"
+## 번진 노트 요리를 둘 이상 골랐을 때 그 줄들에 붙는 글 (퍼즐은 점심 한 번에 한 장, 먼저 만드는 요리에서)
+const NOTE_PUZZLE_ONE_PER_LUNCH_TAG: String = "번진 노트 · 점심에 한 장"
 ## 장사를 시작할 수 없을 때(재료 부족, 아무것도 안 고름) 나는 작고 부드러운 소리 (장터의 "재료 부족"과 같은 소리)
 const BLOCKED_SOUND: StringName = &"miss"
 const INVENTORY_ITEM_FORMAT: String = "%s ×%d"
@@ -49,9 +51,10 @@ const UNMET_GUEST_TEXT: String = "?"
 @export var selected_color: Color = Color(1, 0.84, 0.25)
 ## 번진 할머니 노트 글 색 (약속 표시보다 차분하게)
 @export var note_puzzle_tag_color: Color = Color(0.85, 0.76, 0.62)
-
 var _selected_ids: Array[StringName] = []
 var _dish_buttons: Dictionary[StringName, Button] = {}
+## 번진 노트 표시를 붙이는 줄의 글 (요리 id → 글)
+var _note_tag_labels: Dictionary[StringName, Label] = {}
 ## 메뉴판을 열기 전에 선택돼 있던 것. 돌아가기를 누르면 다시 선택한다.
 var _previous_focus: Control
 
@@ -88,6 +91,7 @@ func open() -> void:
 	for child: Node in _rows.get_children():
 		child.queue_free()
 	_dish_buttons.clear()
+	_note_tag_labels.clear()
 	var recipes: Array[Recipe] = GameData.get_all_recipes().filter(
 			func(recipe: Recipe) -> bool: return GameState.is_recipe_unlocked(recipe.id))
 	_selected_ids = _initial_selection(recipes)
@@ -153,10 +157,18 @@ func _add_note_puzzle_dish(recipes: Array[Recipe], ids: Array[StringName]) -> vo
 		if ids.size() < _max_dishes():
 			ids.append(recipe.id)
 			return
+		# 재료가 모자란 요리를 먼저 뺀다 (그대로 두면 장사를 시작할 수 없다). 없으면 맨 뒤의 요리.
+		var target: int = -1
 		for j: int in range(ids.size() - 1, -1, -1):
-			if not _is_promised(ids[j]) and not _is_birthday_wish(ids[j]):
-				ids[j] = recipe.id
-				return
+			if _is_promised(ids[j]) or _is_birthday_wish(ids[j]):
+				continue
+			if target == -1:
+				target = j
+			if not GameState.has_ingredients(GameData.get_recipe(ids[j]).get_ingredient_counts()):
+				target = j
+				break
+		if target != -1:
+			ids[target] = recipe.id
 		return
 
 
@@ -184,8 +196,9 @@ func _make_row(recipe: Recipe) -> HBoxContainer:
 		likes.text = special.fill(special.menu_tag_format)
 		likes.add_theme_color_override("font_color", selected_color)
 	elif NotePuzzleBoard.is_waiting_today(recipe):
-		likes.text = NOTE_PUZZLE_TAG
+		# 글은 _refresh 가 정한다 (고른 메뉴에 따라 바뀐다).
 		likes.add_theme_color_override("font_color", note_puzzle_tag_color)
+		_note_tag_labels[recipe.id] = likes
 	likes.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	row.add_child(likes)
 	return row
@@ -326,6 +339,11 @@ func _refresh() -> void:
 			for color_name: String in ["font_color", "font_focus_color", "font_hover_color", "font_pressed_color"]:
 				button.remove_theme_color_override(color_name)
 	_count_label.text = COUNT_FORMAT % [_selected_ids.size(), _max_dishes()]
+	# 퍼즐은 점심 한 번에 한 장이라서, 번진 노트 요리를 둘 이상 고르면 고른 줄에 그 사실을 적는다 (먼저 만드는 요리에서 펼쳐진다).
+	var selected_count: int = _note_tag_labels.keys().filter(func(recipe_id: StringName) -> bool: return recipe_id in _selected_ids).size()
+	for recipe_id: StringName in _note_tag_labels:
+		var is_one_of_many: bool = selected_count >= 2 and recipe_id in _selected_ids
+		_note_tag_labels[recipe_id].text = NOTE_PUZZLE_ONE_PER_LUNCH_TAG if is_one_of_many else NOTE_PUZZLE_TAG
 
 
 func _on_start_button_pressed() -> void:
