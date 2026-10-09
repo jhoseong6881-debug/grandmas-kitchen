@@ -73,6 +73,9 @@ var _grains: Array[Control] = []
 var _mouse_position: Vector2 = Vector2.ZERO
 ## 둥실거리는 요리 그림의 제자리 높이 (여러 번 열어도 자리가 밀리지 않게 처음 값을 기억한다)
 var _dish_home_y: float = 0.0
+## 마지막 입력이 마우스였는지. 마우스면 선택된 병을 강조하지 않고, 키보드·게임패드면 강조한다 (어느 병을 고르는지 보이게).
+## 미니게임 동안의 입력도 듣고 있다가 완성 장면이 열릴 때 그대로 쓴다.
+static var _is_pointer_mode: bool = false
 
 @onready var _dish_box: Control = %DishBox
 @onready var _dish_image: TextureRect = %DishImage
@@ -134,6 +137,7 @@ func _build_shakers() -> void:
 		var shaker: GarnishShaker = GarnishShaker.new()
 		_shaker_layer.add_child(shaker)
 		shaker.setup(garnish, GameState.has_ingredients(garnish.get_cost()))
+		shaker.show_focus = not _is_pointer_mode
 		shaker.position = Vector2(shaker_column_x, shaker_top + shaker_step * index)
 		shaker.picked.connect(_on_shaker_picked)
 		shaker.hover_changed.connect(_on_shaker_hover_changed)
@@ -180,6 +184,7 @@ func _on_shaker_picked(shaker: GarnishShaker) -> void:
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouse:
 		_mouse_position = (event as InputEventMouse).position
+	_track_input_mode(event)
 	if not _is_open or _held == null or _is_sprinkling:
 		return
 	var mouse: Vector2 = _mouse_position
@@ -199,6 +204,19 @@ func _input(event: InputEvent) -> void:
 			or event.is_action_pressed("ui_cancel"):
 		get_viewport().set_input_as_handled()
 		_put_back()
+
+
+func _track_input_mode(event: InputEvent) -> void:
+	var is_pointer: bool = event is InputEventMouseButton \
+			or (event is InputEventMouseMotion and (event as InputEventMouseMotion).relative.length() > 2.0)
+	var is_buttons: bool = event is InputEventKey or event is InputEventJoypadButton \
+			or (event is InputEventJoypadMotion and absf((event as InputEventJoypadMotion).axis_value) > 0.5)
+	if not is_pointer and not is_buttons or is_pointer == _is_pointer_mode:
+		return
+	_is_pointer_mode = is_pointer
+	for shaker: GarnishShaker in _shakers:
+		if is_instance_valid(shaker):
+			shaker.set_show_focus(not is_pointer)
 
 
 func _put_back() -> void:

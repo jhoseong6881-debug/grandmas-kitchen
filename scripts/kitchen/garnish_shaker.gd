@@ -42,6 +42,8 @@ var is_held: bool = false:
 ## 0(내려놓음) ~ 1(다 들림)
 var _lift: float = 0.0
 var _is_hovered: bool = false
+## 선택(포커스)됐을 때 들어 올려 강조할지. 마우스로 하는 중에는 끈다 (안 고른 병이 골라진 것처럼 보이지 않게).
+var show_focus: bool = true
 var _lift_tween: Tween
 
 
@@ -62,6 +64,13 @@ func _ready() -> void:
 	focus_exited.connect(_update_lift)
 
 
+func set_show_focus(value: bool) -> void:
+	if show_focus == value:
+		return
+	show_focus = value
+	_update_lift()
+
+
 func _set_hovered(hovered: bool) -> void:
 	_is_hovered = hovered
 	_update_lift()
@@ -70,7 +79,7 @@ func _set_hovered(hovered: bool) -> void:
 
 ## 마우스가 올라가 있거나 선택돼 있거나 손에 들려 있으면 들고, 아니면 내린다.
 func _update_lift() -> void:
-	var target: float = 1.0 if is_available and (_is_hovered or has_focus() or is_held) else 0.0
+	var target: float = 1.0 if is_available and (_is_hovered or (has_focus() and show_focus) or is_held) else 0.0
 	if _lift_tween != null:
 		_lift_tween.kill()
 	_lift_tween = create_tween()
