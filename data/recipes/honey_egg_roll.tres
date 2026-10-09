@@ -35,6 +35,7 @@ text = "꿀 한 숟갈 넣고 살살 젓는다"
 [sub_resource type="Resource" id="NoteLine_3"]
 script = ExtResource("16_note_line")
 kind = 1
+prompt = "불은 어떻게 하셨을까?"
 text = "불은 {blank}, 팬에 얇게 붓는다"
 choices = Array[String](["센불", "약불"])
 answer_index = 1

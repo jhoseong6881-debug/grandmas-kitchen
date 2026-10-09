@@ -32,6 +32,7 @@ text = "도토리는 노릇하게 볶아 식힌다"
 [sub_resource type="Resource" id="NoteLine_2"]
 script = ExtResource("nl_script")
 kind = 1
+prompt = "꿀을 얼마나 졸이셨을까?"
 text = "꿀은 숟가락으로 떠서 {blank} 늘어질 때까지 졸인다"
 choices = Array[String](["물처럼", "실처럼", "돌처럼"])
 answer_index = 1

@@ -49,6 +49,7 @@ text = "꼭꼭 눌러 가며 돌돌 만다"
 [sub_resource type="Resource" id="NoteLine_4"]
 script = ExtResource("nl_script")
 kind = 1
+prompt = "칼에 무엇을 바르셨을까?"
 text = "썰기 전에 칼에 {blank}을 바른다"
 choices = Array[String](["물", "참기름", "꿀"])
 answer_index = 1

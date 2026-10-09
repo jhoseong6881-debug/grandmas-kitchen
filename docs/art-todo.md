@@ -35,7 +35,7 @@
 | scenes/kitchen/kitchen.tscn (Background) | 부엌 배경 | 1920x1080 | 할 일 |
 | scenes/kitchen/kitchen.tscn (Counter) | 조리대 | 1920x300 | 할 일 |
 | data/guests/rabbit.tres (portrait) | 토끼 손님 (기본 표정) — assets/art/characters/rabbit/rabbit_default.png (2026-10-09 새 그림으로 바꿈) | 360x480 | 완료 (2026-10-09) |
-| data/guests/rabbit.tres (expression_portraits) | 토끼 웃음(happy) rabbit_happy.png · 놀람(surprised) rabbit_surprised.png. 시무룩(sad)은 아직 없어서 기본 그림 | 360x480 | 웃음·놀람 완료 (2026-10-09) |
+| data/guests/rabbit.tres (expression_portraits) | 토끼 웃음(happy) rabbit_happy.png · 놀람(surprised) rabbit_surprised.png · 시무룩(sad) rabbit_sad.png (2026-10-09 네 장 모두 고친 그림으로 바꿈) | 360x480 | 완료 (2026-10-09) |
 | scenes/kitchen/guest_spot.tscn (SpeechBubble) | 말풍선 | 가변 (늘어나는 9칸 그림) | 할 일 |
 | scenes/kitchen/minigames/chop_minigame.tscn (Board) | 도마 | 900x500 | 할 일 |
 | scenes/kitchen/minigames/chop_minigame.tscn (Ingredient, Slices) | 썰기 전 재료 / 썬 조각 (재료마다) | 420x160 / 24x120 | 할 일 |
@@ -137,6 +137,6 @@
 | scenes/ui/goal_board.tscn → scripts/ui/goal_board.gd (Board Texture) | 목표판: 나무 틀 안 크림색 종이 (9칸 늘이기, 가장자리 Board Margin 칸 그대로). 지금은 코드로 그린 도트 판 | 원본 약 26x26 이상, 배경 투명 | 할 일 |
 | scenes/ui/goal_button.tscn → scripts/ui/goal_button.gd (Board Icon) | 계절 목표 버튼 아이콘: 과녁에 화살 (누르면 목표판이 크게 뜸). 지금은 코드로 그린 도트 과녁 | 96x96 (원본 32x32, 배경 투명) | 할 일 |
 | scenes/kitchen/note_puzzle_board.tscn (Paper) | 번진 할머니 노트 퍼즐 창의 노트 종이 (왼쪽, 손글씨 줄을 게임이 올림). 지금은 크림색 상자. 펼친 노트 그림(recipe_note_book)과 맞추면 좋음 | 792x672 | 할 일 |
-| scripts/kitchen/note_puzzle_board.gd (번진 자국) | 노트의 번진 잉크 자국 몇 가지 (지금은 보라·주황 단색 띠) | 약 160x48 | 선택 |
+| scenes/kitchen/note_puzzle_board.tscn (Smudge Texture) | 노트의 번진 잉크 얼룩 하나 (흰색·회색으로 그리면 게임이 잉크색으로 물들임. 지금은 코드로 그린 동글동글 얼룩). 낱말 칸 216x48, 재료 칸 144x48 로 늘려 그린다 | 72x16 (화면 216x48) | 선택 |
 | data/pantry/*.tres (Icon) | 노트 퍼즐 재료 카드에 쓰는 부엌 기본양념 아이콘. 지금 쓰는 것: 기름(cooking_oil), 물(water), 도토리가루(acorn_flour), 밀가루(flour). 모두 단색 네모 | 48x48 (원본 16x16) | 할 일 |
 | data/garnishes/*.tres (Shaker Image) | 요리 "완성~!" 장면 오른쪽에 세워 두는 고명 병: 깨소금·참기름·꿀·고춧가루 (서 있는 모습, 배경 투명. 병이 기울어져 뿌리므로 위가 입구). 지금은 코드로 그린 뚜껑 + 유리병 + 이름표 | 150x210 (원본 50x70) | 할 일 |

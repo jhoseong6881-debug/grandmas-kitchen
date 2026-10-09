@@ -33,6 +33,7 @@ text = "당근은 큼직하게 깍둑 썬다"
 [sub_resource type="Resource" id="NoteLine_2"]
 script = ExtResource("nl_script")
 kind = 2
+prompt = "당근 다음엔 뭘 넣으셨을까? 차례로 골라요"
 text = "냄비에 차례로 넣고 조린다\n   {blank}"
 wrong_line = "음… 꿀을 일찍 넣으면 쓴맛이 날 텐데."
 order_answer = Array[ExtResource("2_ingredient")]([ExtResource("3_carrot"), ExtResource("np_water"), ExtResource("4_honey")])

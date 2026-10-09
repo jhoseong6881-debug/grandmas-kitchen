@@ -32,6 +32,7 @@ text = "당근은 잘게 다진다"
 [sub_resource type="Resource" id="NoteLine_2"]
 script = ExtResource("nl_script")
 kind = 2
+prompt = "당근 다음엔 뭘 넣으셨을까? 차례로 골라요"
 text = "그릇에 차례로 넣고 섞는다\n   {blank}"
 wrong_line = "음… 계란부터면 반죽이 멍울지겠는데."
 order_answer = Array[ExtResource("2_ingredient")]([ExtResource("3_carrot"), ExtResource("np_acorn_flour"), ExtResource("5_egg")])
@@ -43,6 +44,7 @@ container_name = "그릇"
 [sub_resource type="Resource" id="NoteLine_3"]
 script = ExtResource("nl_script")
 kind = 1
+prompt = "전은 몇 번 뒤집으셨을까?"
 text = "전은 {blank} 뒤집는다"
 choices = Array[String](["한 번만", "여러 번"])
 wrong_line = "음… 자꾸 뒤집으면 전이 울 텐데."

@@ -39,6 +39,7 @@ text = "그릇에 밥, 묵, 버섯을 차곡차곡 담는다"
 [sub_resource type="Resource" id="NoteLine_3"]
 script = ExtResource("nl_script")
 kind = 1
+prompt = "봄 국물은 어떻게 부으셨을까?"
 text = "봄 국물은 {blank} 붓는다"
 choices = Array[String](["따끈하게", "차갑게"])
 wrong_line = "음… 쌀쌀한 봄엔 속이 시리겠는데."

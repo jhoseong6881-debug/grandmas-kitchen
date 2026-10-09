@@ -36,6 +36,7 @@ text = "간장, 참기름, 깨를 섞어 양념을 만든다"
 [sub_resource type="Resource" id="NoteLine_3"]
 script = ExtResource("nl_script")
 kind = 1
+prompt = "할머니는 무엇으로 버무리셨을까?"
 text = "양념은 {blank} 살살 버무린다"
 choices = Array[String](["숟가락으로", "손으로", "거품기로"])
 answer_index = 1

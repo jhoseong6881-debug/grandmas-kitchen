@@ -24,6 +24,7 @@ secret_end = 0.45
 [sub_resource type="Resource" id="NoteLine_1"]
 script = ExtResource("nl_script")
 kind = 1
+prompt = "버섯은 어떻게 손질하셨을까?"
 text = "버섯은 {blank}"
 choices = Array[String](["물에 박박 씻는다", "마른 행주로 톡톡 턴다"])
 answer_index = 1
@@ -36,6 +37,7 @@ text = "결대로 쭉쭉 찢어 달군 팬에 올린다"
 [sub_resource type="Resource" id="NoteLine_3"]
 script = ExtResource("nl_script")
 kind = 1
+prompt = "소금은 언제 뿌리셨을까?"
 text = "소금은 {blank} 솔솔 뿌린다"
 choices = Array[String](["처음에", "다 볶고"])
 answer_index = 1

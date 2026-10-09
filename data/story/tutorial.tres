@@ -39,7 +39,14 @@ expression = &""
 lines = Array[String](["저녁엔 이 평상에서 손님들 이야기를 들어요. 할머니도 늘 그랬어요.", "다들 할머니 레시피 노트를 한 장씩 맡아 두고 있대요. 가까워지면… 돌려줄 거예요.", "그, 그리고… 앞으로는 저 말고 다른 이웃들도 저녁마다 이야기하러 올 거예요."])
 line_expressions = Array[StringName]([&"", &"", &""])
 
+[sub_resource type="Resource" id="Tip_note_puzzle"]
+script = ExtResource("2_tip")
+id = &"note_puzzle"
+expression = &""
+lines = Array[String](["어, 할머니 노트다! …오래돼서 군데군데 잉크가 번졌네요.", "번진 자리에 뭐라고 적혀 있었을지, 오른쪽에서 골라 채워 보세요.", "노트 아래 할머니 말씀이 힌트예요. 틀려도 괜찮아요… 다시 고르면 돼요."])
+line_expressions = Array[StringName]([&"surprised", &"", &""])
+
 [resource]
 script = ExtResource("1_book")
 guide = ExtResource("3_rabbit")
-tips = Array[ExtResource("2_tip")]([SubResource("Tip_garden"), SubResource("Tip_menu"), SubResource("Tip_garnish"), SubResource("Tip_result"), SubResource("Tip_porch")])
+tips = Array[ExtResource("2_tip")]([SubResource("Tip_garden"), SubResource("Tip_menu"), SubResource("Tip_garnish"), SubResource("Tip_result"), SubResource("Tip_porch"), SubResource("Tip_note_puzzle")])

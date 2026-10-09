@@ -18,6 +18,8 @@ const ORDER_SEPARATOR: String = " → "
 @export var choices: Array[String] = []
 ## 정답 보기 번호 (choices 에서 몇 번째인지, 0부터)
 @export var answer_index: int = 0
+## 이 줄을 채울 때 조리대 위에 나오는 질문 (예: "불은 어떻게 하셨을까?"). 비워 두면 퍼즐 창의 기본 문구를 쓴다.
+@export var prompt: String = ""
 ## 틀린 보기를 골랐을 때 (넣는 순서: 순서가 틀렸을 때) 떠오르는 한 줄. 비워 두면 퍼즐 창의 기본 문구를 쓴다.
 @export var wrong_line: String = ""
 

@@ -31,6 +31,7 @@ text = "버섯은 도톰하게 썬다"
 [sub_resource type="Resource" id="NoteLine_2"]
 script = ExtResource("nl_script")
 kind = 2
+prompt = "버섯에 무슨 옷부터 입히셨을까? 차례로 골라요"
 text = "버섯에 차례로 옷을 입힌다\n   {blank}"
 wrong_line = "음… 계란이 주르륵 흘러내리겠는데."
 order_answer = Array[ExtResource("2_ingredient")]([ExtResource("3_mushroom"), ExtResource("np_flour"), ExtResource("4_egg")])
