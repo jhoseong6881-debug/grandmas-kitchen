@@ -126,7 +126,10 @@ func _ready() -> void:
 	_add_goal_board()
 	RainOverlay.apply_daytime(self, true)
 	_focus_next_thing_to_do()
-	TutorialDialog.show_once(self, &"garden")
+	await TutorialDialog.show_once(self, &"garden")
+	# 버섯 원목이 열린 뒤 처음 맞는 아침에, 원목이 왜 생겼는지 한 번 알려 준다.
+	if GameState.is_place_unlocked(LOGS_PLACE_ID):
+		TutorialDialog.show_once(self, &"mushroom_logs")
 
 
 func _add_goal_board() -> void:

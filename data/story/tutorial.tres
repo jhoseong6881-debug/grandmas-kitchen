@@ -46,7 +46,14 @@ expression = &""
 lines = Array[String](["어, 할머니 노트다! …오래돼서 군데군데 잉크가 번졌네요.", "번진 자리에 뭐라고 적혀 있었을지, 오른쪽에서 골라 채워 보세요.", "노트 아래 할머니 말씀이 힌트예요. 틀려도 괜찮아요… 다시 고르면 돼요."])
 line_expressions = Array[StringName]([&"surprised", &"", &""])
 
+[sub_resource type="Resource" id="Tip_mushroom_logs"]
+script = ExtResource("2_tip")
+id = &"mushroom_logs"
+expression = &""
+lines = Array[String](["어, 버섯이 생겼네요! 그럼… 집 뒤 숲 그늘에 있는 할머니 버섯 원목을 다시 쓸 수 있어요.", "할머니는 봄마다 그 원목에 버섯을 키우셨어요. 버섯 하나를 씨앗 삼아 심으면, 며칠 뒤 여러 개가 돋아나요.", "오른쪽 아래 '버섯 원목으로'를 눌러 가 봐요. 이제 아침마다 당근 텃밭이랑 같이 둘러보면 돼요."])
+line_expressions = Array[StringName]([&"surprised", &"", &"happy"])
+
 [resource]
 script = ExtResource("1_book")
 guide = ExtResource("3_rabbit")
-tips = Array[ExtResource("2_tip")]([SubResource("Tip_garden"), SubResource("Tip_menu"), SubResource("Tip_garnish"), SubResource("Tip_result"), SubResource("Tip_porch"), SubResource("Tip_note_puzzle")])
+tips = Array[ExtResource("2_tip")]([SubResource("Tip_garden"), SubResource("Tip_menu"), SubResource("Tip_garnish"), SubResource("Tip_result"), SubResource("Tip_porch"), SubResource("Tip_note_puzzle"), SubResource("Tip_mushroom_logs")])

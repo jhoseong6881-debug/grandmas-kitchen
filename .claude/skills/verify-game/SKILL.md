@@ -29,6 +29,7 @@ tools/check/run.sh menu_note_suggest
   `chop_target` — 썰기는 하얀 칸 안에서만 썰리고 칸 밖은 톡 치기만 하는지, 칸 안에서 다 썰면 끝나는지 (chop_minigame 을 바꾸면 돌린다).
   `rice_water` — 밥 짓기 물 맞추기: 넘치면 따라 내고 다시, 모자라면 기다림, 알맞으면 불 조절로 (rice_minigame 을 바꾸면 돌린다).
   `rice_fire` — 밥 짓기 불 조절(가마솥 3단 불): 센불 → 뚜껑 두 번 들썩 → 중불 → 약불 뜸, 안 맞는 불은 진행만 멈춤.
+  `logs_tip` — 버섯 원목이 열린 뒤 첫 아침에 토끼 원목 안내가 한 번만, 텃밭 첫 안내와 겹치지 않고 나오는지 (garden.gd·처음 안내를 바꾸면 돌린다).
   시나리오는 끝 코드가 0 이어도 게임 쪽 `SCRIPT ERROR` 는 못 센다 → `grep SCRIPT /tmp/grandmas-kitchen-check/scenario_<이름>.log` 도 본다.
 
 ## 2. 바꾼 곳에 맞는 검사
