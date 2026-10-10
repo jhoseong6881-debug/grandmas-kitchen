@@ -92,7 +92,7 @@
 | data/recipes/mushroom_egg_jeon.tres (finished_image) | 버섯 계란전 완성 그림 | 미정 | 할 일 |
 | data/recipes/honey_egg_roll.tres (finished_image) | 꿀 계란말이 완성 그림 | 미정 | 할 일 |
 | data/recipes/acorn_jelly_mushroom_bap.tres (finished_image) | 버섯 도토리묵밥 완성 그림 | 미정 | 할 일 |
-| scenes/ui/guest_notebook.tscn (Book) | 손님 수첩 종이 (+ 손님 얼굴 작은 그림) | 1440x840 | 할 일 |
+| scenes/ui/guest_notebook.tscn (Book) | 손님 수첩 종이 (2026-10-10 손님 얼굴 그림 칸을 넣으며 커짐. 얼굴은 손님 초상화 portrait 를 그대로 씀) | 1800x960 | 할 일 |
 | scenes/porch/spring_feast.tscn (Sky, Lanterns, Ground, Pyeongsang) | 봄 잔치 밤 배경 (등불, 잔칫상 차린 평상) | 1920x1080 | 할 일 |
 | data/guests/*.tres (feast_portrait) | 잔치에 앉은 손님 다섯 (앉은 모습). 비워 두면 손님 그림(portrait)을 대신 쓰고, 그것도 없으면 임시 사각형 | 180x240 | 할 일 |
 | scenes/porch/spring_feast.tscn (Letter, NoteCard) | 할머니 편지지 / 완성된 노트 | 1240x820 | 할 일 |

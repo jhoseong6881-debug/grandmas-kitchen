@@ -5,6 +5,8 @@ extends Control
 ## 비법은 아직 모르면 ●●●●, 알면 비법 한 줄, 할머니 손맛으로 대접한 적이 있으면 도장(♥)이 붙는다.
 ## 한 번도 대접하지 않은 손님과 아직 노트로 되찾지 못한 요리는 "???"로 가린다.
 ## 점심에 왔다가 대접받지 못하고 돌아간 손님은 이름만 보이고 기록은 비어 있다.
+## 기록 왼쪽에 손님 얼굴 그림(AnimalGuest.portrait, 360×480 그대로)이 나온다. 그림이 없으면 손님 색(icon_placeholder_color)의 임시 네모.
+## 아직 얼굴을 못 본 손님은 까만 실루엣과 "?" 로 보여서 누구일지 궁금하게 한다.
 ## open() 으로 열고, 닫기 버튼이나 Esc/게임패드 B(ui_cancel)로 닫는다.
 
 const UNKNOWN_TEXT: String = "???"
@@ -26,14 +28,25 @@ const SECRET_TITLE_TEXT: String = "할머니 비법"
 const SECRET_LINE_FORMAT: String = "• %s — %s%s"
 const SECRET_UNKNOWN_TEXT: String = "●●●●"
 const GRANDMA_STAMP_TEXT: String = "  ♥ 할머니 손맛"
+## 실루엣: 그림 모양(투명도)만 남기고 한 가지 색으로 칠한다
+const SILHOUETTE_SHADER_CODE: String = """
+shader_type canvas_item;
+uniform vec4 fill_color : source_color;
+void fragment() {
+	COLOR = vec4(fill_color.rgb, texture(TEXTURE, UV).a * fill_color.a);
+}
+"""
 ## 수첩을 펼 때 나는 소리 (data/sounds/ 의 id)
 const OPEN_SOUND: StringName = &"book"
 
 @export var guest_button_font_size: int = 36
 @export var guest_button_height: float = 72.0
+## 아직 못 만난 손님의 실루엣 색
+@export var silhouette_color: Color = Color(0.3, 0.22, 0.16)
 
 ## 수첩을 열기 전에 선택돼 있던 버튼. 닫으면 다시 선택한다.
 var _previous_focus: Control
+var _silhouette_material: ShaderMaterial
 
 @onready var _guest_list: VBoxContainer = %GuestList
 @onready var _name_label: Label = %NameLabel
@@ -45,10 +58,18 @@ var _previous_focus: Control
 @onready var _regular_label: Label = %RegularLabel
 @onready var _secret_label: Label = %SecretLabel
 @onready var _close_button: Button = %CloseButton
+@onready var _portrait: TextureRect = %Portrait
+@onready var _portrait_placeholder: ColorRect = %PortraitPlaceholder
+@onready var _unknown_mark: Label = %UnknownMark
 
 
 func _ready() -> void:
 	_close_button.pressed.connect(close)
+	var shader: Shader = Shader.new()
+	shader.code = SILHOUETTE_SHADER_CODE
+	_silhouette_material = ShaderMaterial.new()
+	_silhouette_material.shader = shader
+	_silhouette_material.set_shader_parameter("fill_color", silhouette_color)
 	hide()
 
 
@@ -112,6 +133,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _show_guest(guest: AnimalGuest) -> void:
+	_show_portrait(guest, GameState.has_seen_guest(guest.id))
 	if not GameState.has_met_guest(guest.id):
 		var is_seen: bool = GameState.has_seen_guest(guest.id)
 		_name_label.text = guest.display_name if is_seen else UNKNOWN_TEXT
@@ -133,6 +155,18 @@ func _show_guest(guest: AnimalGuest) -> void:
 	_note_label.text = NOTE_HINT_TEXT if has_page_left else (NO_NOTE_TEXT if not guest.note_recipes.is_empty() else "")
 	_secret_label.text = _secret_text(guest)
 	_regular_label.text = _regular_text(guest)
+
+
+## 손님 얼굴 그림. 얼굴을 본 손님은 그대로, 아직 못 본 손님은 실루엣과 "?".
+## 그림이 없으면 손님 색 임시 네모 (못 본 손님이면 실루엣 색 네모).
+func _show_portrait(guest: AnimalGuest, is_face_known: bool) -> void:
+	var texture: Texture2D = guest.get_portrait()
+	_portrait.texture = texture
+	_portrait.visible = texture != null
+	_portrait.material = null if is_face_known else _silhouette_material
+	_portrait_placeholder.visible = texture == null
+	_portrait_placeholder.color = guest.icon_placeholder_color if is_face_known else silhouette_color
+	_unknown_mark.visible = not is_face_known
 
 
 ## "♥♥♡♡ 이웃 · 입맛: 달콤한 맛 (꿀 한 숟갈)". 하트는 단골 단계만큼 찬다 (첫 단계는 하트 없음).

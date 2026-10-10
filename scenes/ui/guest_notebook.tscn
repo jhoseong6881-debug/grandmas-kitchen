@@ -42,10 +42,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -720.0
-offset_top = -420.0
-offset_right = 720.0
-offset_bottom = 420.0
+offset_left = -900.0
+offset_top = -480.0
+offset_right = 900.0
+offset_bottom = 480.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_book")
@@ -66,7 +66,7 @@ layout_mode = 0
 offset_left = 60.0
 offset_top = 130.0
 offset_right = 360.0
-offset_bottom = 760.0
+offset_bottom = 880.0
 theme_override_constants/separation = 16
 
 [node name="Divider" type="ColorRect" parent="Book"]
@@ -74,15 +74,49 @@ layout_mode = 0
 offset_left = 400.0
 offset_top = 130.0
 offset_right = 404.0
-offset_bottom = 780.0
+offset_bottom = 900.0
 color = Color(0.78, 0.65, 0.48, 1)
+
+[node name="PortraitPlaceholder" type="ColorRect" parent="Book"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 450.0
+offset_top = 150.0
+offset_right = 810.0
+offset_bottom = 630.0
+color = Color(0.86, 0.84, 0.8, 1)
+
+[node name="Portrait" type="TextureRect" parent="Book"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 450.0
+offset_top = 150.0
+offset_right = 810.0
+offset_bottom = 630.0
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UnknownMark" type="Label" parent="Book"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 450.0
+offset_top = 150.0
+offset_right = 810.0
+offset_bottom = 630.0
+theme_override_colors/font_color = Color(0.98, 0.94, 0.82, 1)
+theme_override_font_sizes/font_size = 144
+text = "?"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Details" type="VBoxContainer" parent="Book"]
 layout_mode = 0
-offset_left = 450.0
+offset_left = 860.0
 offset_top = 130.0
-offset_right = 1380.0
-offset_bottom = 680.0
+offset_right = 1740.0
+offset_bottom = 830.0
 theme_override_constants/separation = 26
 
 [node name="NameLabel" type="Label" parent="Book/Details"]
@@ -144,9 +178,9 @@ autowrap_mode = 3
 [node name="CloseButton" type="Button" parent="Book"]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 1160.0
-offset_top = 720.0
-offset_right = 1380.0
-offset_bottom = 790.0
+offset_left = 1520.0
+offset_top = 860.0
+offset_right = 1740.0
+offset_bottom = 930.0
 theme_override_font_sizes/font_size = 36
 text = "닫기"
