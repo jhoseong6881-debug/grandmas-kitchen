@@ -1,6 +1,7 @@
 extends Node
 ## 시나리오 시험: 손님 수첩 "하나씩 알아 가기"
-## (좋아하는 요리는 대접해야 한 칸씩, 싫어하는 요리는 대접했거나 이웃이 되면, 알아낸 것 숫자와 ★, 세이브 유지·옛 세이브 호환).
+## (좋아하는 요리는 대접해야 한 칸씩, 싫어하는 요리는 대접했거나 이웃이 되면, 알아낸 것 숫자와 ★, 세이브 유지·옛 세이브 호환,
+##  새로 적히면 기록 수가 늘고 수첩 버튼에 새 기록 표시 ●).
 ## 쓰는 법: tools/check/run.sh notebook_known_dishes  (시험용 사본에 오토로드로 붙여 돌린다. 끝 코드 = 실패 수)
 
 var fails: int = 0
@@ -40,7 +41,20 @@ func _run() -> void:
 	var before: Vector2i = book._get_knowledge(bear)
 	check(before.x == 1, "처음: 알아낸 것 1칸 (성격·밥값) — %s" % before)
 
+	GameState.mark_notebook_viewed()
+	var entries_before: int = GameState.count_notebook_entries()
 	GameState.record_guest_dish(bear.id, liked.id)
+	check(GameState.count_notebook_entries() == entries_before + 1, "좋아하는 요리를 알아내면 수첩 기록 수가 늘어남 (알림 조건)")
+	check(GameState.has_unviewed_notebook_entries(), "새로 적히면 수첩 버튼에 ● 표시")
+	GameState.mark_notebook_viewed()
+	var not_favorite: Recipe = null
+	for r: Recipe in GameData.get_all_recipes():
+		if r not in bear.favorite_recipes and r not in bear.disliked_recipes:
+			not_favorite = r
+	GameState.record_guest_dish(bear.id, not_favorite.id)
+	check(GameState.count_notebook_entries() == entries_before + 1 and not GameState.has_unviewed_notebook_entries(),
+			"좋아하지도 싫어하지도 않는 요리는 수첩에 새로 적히지 않음 (알림 없음)")
+	GameState.guest_known_dish_ids[bear.id].erase(not_favorite.id)
 	book._show_guest(bear)
 	check(liked.display_name in book._likes_label.text.replace("\n", " "), "대접한 좋아하는 요리가 적힘")
 	check(book._likes_label.text.count("???") == bear.favorite_recipes.size() - 1, "나머지는 ??? 그대로")
@@ -49,7 +63,9 @@ func _run() -> void:
 	check(GameState.guest_known_dish_ids[bear.id].size() == 1, "같은 요리를 두 번 대접해도 한 번만 적힘")
 
 	var settings: RegularSettings = GameData.get_regular_settings()
+	var entries_before_tier: int = GameState.count_notebook_entries()
 	GameState.add_affection(bear.id, settings.tier_thresholds[settings.dislike_reveal_tier])
+	check(GameState.count_notebook_entries() == entries_before_tier + bear.disliked_recipes.size(), "이웃이 되면 싫어하는 요리가 새 기록으로 늘어남 (알림 조건)")
 	book._show_guest(bear)
 	check(disliked.display_name in book._dislikes_label.text.replace("\n", " ") and "???" not in book._dislikes_label.text,
 			"이웃이 되면 싫어하는 요리를 털어놓음 (%s)" % book._dislikes_label.text)
@@ -92,6 +108,9 @@ func _run() -> void:
 		for r: Recipe in guest.favorite_recipes + guest.disliked_recipes:
 			all_known = all_known and GameState.knows_guest_dish(guest.id, r.id)
 	check(all_known, "옛 세이브: 만난 손님의 좋아하는/싫어하는 요리가 모두 적힘")
+	var unviewed: Array[String] = GameState._notebook_keys().filter(func(key: String) -> bool:
+			return (key.begins_with("like:") or key.begins_with("dislike:")) and key not in GameState.notebook_viewed_keys)
+	check(unviewed.is_empty(), "옛 세이브: 원래 보이던 요리 칸으로 ● 를 켜지 않음 (%s)" % [unviewed])
 	var rabbit: AnimalGuest = GameData.get_guest(&"rabbit")
 	check(not GameState.knows_guest_dish(rabbit.id, rabbit.favorite_recipes[0].id), "옛 세이브: 안 만난 손님은 비어 있음")
 	GameState.new_game()

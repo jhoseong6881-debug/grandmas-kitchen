@@ -26,6 +26,9 @@ const TIER_UP_FORMAT: String = "%s%s 더 가까워졌어요 · %s"
 const REQUEST_JOIN: String = " "
 const REQUEST_DONE_POP_TEXT: String = "♪ 부탁을 들어줬어요!"
 const PROMISE_KEPT_POP_TEXT: String = "★ 약속을 지켰어요!"
+## 대접하고 손님 수첩에 새로 적힌 것(처음 만남, 좋아하는/싫어하는 요리, 입맛)이 있을 때 떠오르는 글과 소리
+const NOTEBOOK_POP_TEXT: String = "수첩에 새로 적었어요!"
+const NOTEBOOK_POP_SOUND: StringName = &"book"
 const PROMISE_BONUS_FORMAT: String = "  약속 덤 +%d"
 const BIRTHDAY_BONUS_FORMAT: String = " (생일 덤 +%d)"
 const REQUEST_MISSED_LINE: String = "부탁한 대로는 아니지만… 그래도 맛있어요!"
@@ -810,6 +813,7 @@ func _serve(garnish: Garnish) -> void:
 	var settings: RegularSettings = GameData.get_regular_settings()
 	var tier: int = GameState.get_regular_tier(guest.id)
 	var is_grandma_taste: bool = _is_grandma_cook()
+	var notebook_entries_before: int = GameState.count_notebook_entries()
 	var is_taste_match: bool = guest.favorite_garnish != null and guest.favorite_garnish.id == garnish.id
 	if current_request != null and current_request.is_garnish_request():
 		_is_request_met = current_request.garnish.id == garnish.id
@@ -916,6 +920,9 @@ func _serve(garnish: Garnish) -> void:
 	GameState.record_served_guest(guest.id)
 	# 손님 수첩: 이 손님에게 대접해 본 요리로 적는다 (좋아하는/싫어하는 요리 칸이 하나씩 채워진다).
 	GameState.record_guest_dish(guest.id, current_order.id)
+	if GameState.count_notebook_entries() > notebook_entries_before:
+		pops.append(NOTEBOOK_POP_TEXT)
+		pop_sounds.append(NOTEBOOK_POP_SOUND)
 	current_request = null
 	_guests_served += 1
 	_update_lunch_label()

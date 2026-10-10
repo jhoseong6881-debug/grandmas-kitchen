@@ -213,7 +213,7 @@ func record_served_guest(guest_id: StringName) -> void:
 		notebook_changed.emit()
 
 
-## 손님 수첩에 아직 안 본 기록(처음 대접한 손님, 새로 알아낸 입맛)이 있는지
+## 손님 수첩에 아직 안 본 기록(처음 대접한 손님, 새로 알아낸 입맛·좋아하는 요리·싫어하는 요리)이 있는지
 func has_unviewed_notebook_entries() -> bool:
 	return _notebook_keys().any(func(key: String) -> bool: return key not in notebook_viewed_keys)
 
@@ -226,10 +226,25 @@ func mark_notebook_viewed() -> void:
 	notebook_changed.emit()
 
 
+## 손님 수첩에 적힌 기록 수. 부엌이 대접 앞뒤로 세어서 늘었으면 "수첩에 새로 적었어요"를 띄운다.
+func count_notebook_entries() -> int:
+	return _notebook_keys().size()
+
+
+## 손님 수첩에 적힌 기록 ("guest:토끼 id", "taste:토끼 id", "like:토끼 id:요리 id", "dislike:토끼 id:요리 id")
 func _notebook_keys() -> Array[String]:
 	var keys: Array[String] = []
 	for guest_id: StringName in met_guest_ids:
 		keys.append("guest:" + guest_id)
+		var guest: AnimalGuest = GameData.get_guest(guest_id)
+		if guest == null:
+			continue
+		for recipe: Recipe in guest.favorite_recipes:
+			if recipe != null and knows_guest_dish(guest_id, recipe.id):
+				keys.append("like:%s:%s" % [guest_id, recipe.id])
+		for recipe: Recipe in guest.disliked_recipes:
+			if recipe != null and knows_guest_dislike(guest_id, recipe.id):
+				keys.append("dislike:%s:%s" % [guest_id, recipe.id])
 	for guest_id: StringName in known_taste_guest_ids:
 		keys.append("taste:" + guest_id)
 	return keys
@@ -617,6 +632,8 @@ func add_affection(guest_id: StringName, points: int) -> int:
 	for tier: int in range(before + 1, after + 1):
 		pending.append(tier)
 	pending_reward_tiers[guest_id] = pending
+	# 가까워지면 손님 수첩에 새로 적히는 것(싫어하는 요리)이 생길 수 있다.
+	notebook_changed.emit()
 	return after
 
 
@@ -1099,6 +1116,10 @@ func _load_guest_known_dishes(data: Dictionary) -> void:
 			for recipe: Recipe in guest.favorite_recipes + guest.disliked_recipes:
 				if recipe != null and not knows_guest_dish(guest_id, recipe.id):
 					record_guest_dish(guest_id, recipe.id)
+		# 그때도 보이던 칸이라 수첩 버튼에 새 기록 표시(●)를 켜지 않는다.
+		for key: String in _notebook_keys():
+			if (key.begins_with("like:") or key.begins_with("dislike:")) and key not in notebook_viewed_keys:
+				notebook_viewed_keys.append(key)
 		return
 	var dish_data: Dictionary = data["guest_known_dish_ids"]
 	for guest_id: String in dish_data:
