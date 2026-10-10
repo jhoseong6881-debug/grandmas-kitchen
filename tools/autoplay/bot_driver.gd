@@ -303,7 +303,9 @@ func _kitchen(k: Node) -> void:
 			var want: Ingredient = line.order_answer[board._order_filled]
 			var pick_card: Ingredient = want
 			if wrong:
-				var others: Array[Ingredient] = line.get_order_cards().filter(func(c: Ingredient) -> bool: return c != want)
+				# 맞게 넣은 카드는 조리대에서 치워지니, 지금 조리대에 남은 카드 중에서만 틀린 카드를 고른다.
+				var on_counter: Array = board._row_buttons().map(func(b: Button) -> String: return b.text)
+				var others: Array[Ingredient] = line.get_order_cards().filter(func(c: Ingredient) -> bool: return c != want and c.display_name in on_counter)
 				if not others.is_empty():
 					pick_card = others.pick_random()
 			for b: Button in board._row_buttons():
