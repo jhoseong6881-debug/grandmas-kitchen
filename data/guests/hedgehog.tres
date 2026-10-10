@@ -189,6 +189,7 @@ taste_match_line = "…흥. 맵싸하군. …마음에 든다."
 regular_rewards = Array[ExtResource("30_reward")]([SubResource("Reward_1"), SubResource("Reward_2"), SubResource("Reward_3")])
 home_name = "고슴도치네 덤불"
 home_color = Color(0.5, 0.62, 0.4, 1)
+home_map_position = Vector2(475, 238)
 home_greeting_lines = Array[String](["…왔냐. 가시 조심해서 들어와.", "…또 왔군. …차는 없다. 버섯은 있다."])
 home_talks = Array[ExtResource("10_talk")]([SubResource("HomeTalk_1"), SubResource("HomeTalk_2"), SubResource("HomeTalk_3")])
 favorite_gift = ExtResource("31_gift")

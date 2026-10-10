@@ -195,6 +195,7 @@ taste_match_line = "음~! 꿀이다! 이렇게 달콤할 수가!"
 regular_rewards = Array[ExtResource("30_reward")]([SubResource("Reward_1"), SubResource("Reward_2"), SubResource("Reward_3")])
 home_name = "곰네 동굴"
 home_color = Color(0.55, 0.47, 0.4, 1)
+home_map_position = Vector2(165, 238)
 home_greeting_lines = Array[String](["어, {name}! 동굴까지 와 줬네. 앉아, 바위가 따뜻해.", "왔어? 방금 낮잠에서 깼어. …아니, 아침잠인가. 음~"])
 home_talks = Array[ExtResource("10_talk")]([SubResource("HomeTalk_1"), SubResource("HomeTalk_2"), SubResource("HomeTalk_3")])
 favorite_gift = ExtResource("31_gift")

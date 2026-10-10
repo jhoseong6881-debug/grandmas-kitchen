@@ -194,6 +194,7 @@ taste_match_line = "꼬꼬! 이 고소한 냄새! 내 입맛을 아는구나!"
 regular_rewards = Array[ExtResource("30_reward")]([SubResource("Reward_1"), SubResource("Reward_2"), SubResource("Reward_3")])
 home_name = "암탉네 닭장"
 home_color = Color(0.93, 0.8, 0.5, 1)
+home_map_position = Vector2(320, 88)
 home_greeting_lines = Array[String](["꼬꼬! {name} 왔구나! 마침 아침 소식 한 바퀴 돌고 왔어.", "어머, 또 왔네! 닭장이 좀 시끄럽지? 앉아, 앉아!"])
 home_talks = Array[ExtResource("9_talk")]([SubResource("HomeTalk_1"), SubResource("HomeTalk_2"), SubResource("HomeTalk_3")])
 favorite_gift = ExtResource("31_gift")

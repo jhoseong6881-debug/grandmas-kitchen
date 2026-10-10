@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://scripts/garden/village.gd" id="1_village"]
 [ext_resource type="PackedScene" path="res://scenes/ui/inventory_panel.tscn" id="2_inventory"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen/guest_spot.tscn" id="3_guest_spot"]
+[ext_resource type="Script" path="res://scripts/garden/village_map.gd" id="4_map"]
 
 [node name="Village" type="Control"]
 layout_mode = 3
@@ -13,47 +14,27 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_village")
 
-[node name="Sky" type="ColorRect" parent="."]
+[node name="MapPicture" type="ColorRect" parent="."]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.74, 0.87, 0.93, 1)
-
-[node name="Ground" type="ColorRect" parent="."]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -520.0
-grow_horizontal = 2
-grow_vertical = 0
+mouse_filter = 2
 color = Color(0.56, 0.7, 0.42, 1)
+script = ExtResource("4_map")
 
-[node name="Path" type="ColorRect" parent="."]
+[node name="HomeMap" type="Control" parent="."]
+unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -300.0
-offset_bottom = -220.0
 grow_horizontal = 2
-grow_vertical = 0
-color = Color(0.82, 0.72, 0.52, 1)
-
-[node name="HomeRow" type="HBoxContainer" parent="."]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 80.0
-offset_top = 340.0
-offset_right = 1840.0
-offset_bottom = 720.0
-theme_override_constants/separation = 40
-alignment = 1
+grow_vertical = 2
+mouse_filter = 2
 
 [node name="HomeBackdrop" type="ColorRect" parent="."]
 unique_name_in_owner = true

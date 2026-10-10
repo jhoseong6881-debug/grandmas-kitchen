@@ -207,6 +207,7 @@ taste_match_line = "이거예요! 당근 맛이 그대로 나요."
 regular_rewards = Array[ExtResource("30_reward")]([SubResource("Reward_1"), SubResource("Reward_2"), SubResource("Reward_3")])
 home_name = "토끼네 굴"
 home_color = Color(0.86, 0.72, 0.68, 1)
+home_map_position = Vector2(110, 125)
 home_greeting_lines = Array[String](["어, 어서 오세요! 우리 집에 손님이 오다니… 잠깐만요, 당근 좀 치울게요.", "{name}! 또 와 주셨네요. 헤헤, 이번엔 미리 청소해 뒀어요."])
 home_talks = Array[ExtResource("9_talk")]([SubResource("HomeTalk_1"), SubResource("HomeTalk_2"), SubResource("HomeTalk_3")])
 favorite_gift = ExtResource("31_gift")

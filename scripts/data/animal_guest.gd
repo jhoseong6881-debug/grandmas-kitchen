@@ -98,6 +98,8 @@ const PLACEHOLDER_ICON_PIXELS: int = 12
 ## 집 그림 (마을 길 버튼과 집 안 배경). 비워 두면 home_color 색의 임시 사각형.
 @export var home_picture: Texture2D
 @export var home_color: Color = Color(0.75, 0.68, 0.55)
+## 마을 지도 위 집 자리 (지도 원본 640x360 기준 픽셀, 집 한가운데). 음수면 할매식당 둘레에 저절로 놓는다.
+@export var home_map_position: Vector2 = Vector2(-1.0, -1.0)
 ## 집에 들렀을 때 하는 인사 (들를 때마다 돌아가며 하나). {name} 은 주인공 이름.
 @export_multiline var home_greeting_lines: Array[String] = []
 ## 집에서 나누는 이야기 (들를 때마다 순서대로 하나, 다 나누면 처음부터). 대답 고르기는 저녁 평상 대화와 같다.

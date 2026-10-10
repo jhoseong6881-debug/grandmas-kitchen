@@ -198,6 +198,7 @@ taste_match_line = "…! 깨가 톡톡. …제일 좋아하는 맛이에요."
 regular_rewards = Array[ExtResource("30_reward")]([SubResource("Reward_1"), SubResource("Reward_2"), SubResource("Reward_3")])
 home_name = "다람쥐네 나무 구멍"
 home_color = Color(0.7, 0.52, 0.36, 1)
+home_map_position = Vector2(530, 125)
 home_greeting_lines = Array[String](["…앗. {name}. …들어오세요. 좁아요.", "…또 왔어요? …헤헤. 도토리 꺼내 놓을게요."])
 home_talks = Array[ExtResource("10_talk")]([SubResource("HomeTalk_1"), SubResource("HomeTalk_2"), SubResource("HomeTalk_3")])
 favorite_gift = ExtResource("31_gift")

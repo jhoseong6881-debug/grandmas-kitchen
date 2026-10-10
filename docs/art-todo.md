@@ -119,8 +119,8 @@
 | scenes/garden/market.tscn (Merchant) | 너구리 상인 (넉살 좋은 떠돌이 장사꾼) | 220x260 | 할 일 |
 | scenes/garden/market.tscn (Stall, StallRoof) | 장터 가판과 차양 | 460x200 / 500x60 | 할 일 |
 | scenes/garden/market.tscn (Sky, Ground) | 숲속 장터 배경 | 1920x1080 | 선택 |
-| scenes/garden/village.tscn (Sky, Ground, Path) | 아침 마을 길 배경 (2026-10-10) | 1920x1080 (원본 640x360) | 할 일 |
-| data/guests/*.tres (home_picture) | 손님 집 5채: 토끼네 굴 · 암탉네 닭장 · 다람쥐네 나무 구멍 · 곰네 동굴 · 고슴도치네 덤불 (마을 길 버튼에 3배로 보임. 없으면 home_color 색 사각형) | 원본 60x60 정도 (화면 180x180) | 할 일 |
+| data/village_settings.tres (map_picture) | 할머니가 손으로 그린 마을 지도 (2026-10-10, 종이 지도 느낌). 가운데 할매식당, 시냇물·다리·나무, 집마다 이어지는 점선 길. 집 그림·이름표·하트는 게임이 얹으니 그리지 않는다. 집 자리는 손님 .tres 의 home_map_position(원본 픽셀: 토끼 110,125 · 암탉 320,88 · 다람쥐 530,125 · 곰 165,238 · 고슴도치 475,238, 할매식당 320,200)에 맞춘다. 비워 둘 곳: 위쪽 띠(y 0~40, 날짜 글과 가진 재료), 아래 가운데(돌아가기 버튼 x 250~390, y 290~360). 없으면 임시 종이 지도 | 1920x1080 (원본 640x360) | 할 일 |
+| data/guests/*.tres (home_picture) | 손님 집 5채: 토끼네 굴 · 암탉네 닭장 · 다람쥐네 나무 구멍 · 곰네 동굴 · 고슴도치네 덤불 (마을 지도 위에 3배로 보임. 없으면 home_color 색 사각형) | 원본 60x60 정도 (화면 180x180) | 할 일 |
 | scenes/garden/village.tscn (HomeBackdrop) | 집 안 배경 (지금은 집 색을 어둡게 한 단색). 집마다 다르게 하려면 손님 데이터에 항목을 하나 더 만든다 | 1920x1080 | 선택 |
 | scenes/ui/sunset_transition.tscn (SkyTop, SkyGlow, Sun, Hill) | 해 지는 장면: 노을 하늘, 지는 해, 산 실루엣 (해가 내려가는 건 코드가 함) | 1920x1080 / 해 180x180 | 할 일 |
 | scenes/kitchen/guest_spot.gd (걸어 들어오기) | 손님 걷는 모습 (선택: 걸음마다 바뀌는 2장, 지금은 통통 튀기만 함) | 360x480 | 선택 |

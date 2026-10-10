@@ -26,6 +26,18 @@ extends Resource
 ## 선물을 받은 손님이 따로 할 말이 없을 때
 @export_multiline var default_gift_thanks_line: String = ""
 
+## 오늘 들른 집에 찍히는 도장 글
+@export var visited_stamp_text: String = "다녀왔어요"
+
+@export_group("마을 지도")
+## 할머니가 그린 마을 지도 (원본 640x360, 3배로 키워 화면을 채운다). 비워 두면 임시로 그린 종이 지도와 점선 길.
+@export var map_picture: Texture2D
+## 지도 위 할매식당 자리 (원본 픽셀). 임시 지도에서는 여기서 집마다 점선 길이 이어진다.
+@export var restaurant_map_position: Vector2 = Vector2(320.0, 200.0)
+@export var restaurant_name: String = "할매식당"
+## 지도 자리가 비어 있는 손님 집을 할매식당 둘레에 놓을 때의 가로·세로 반지름 (원본 픽셀)
+@export var auto_home_radius: Vector2 = Vector2(210.0, 110.0)
+
 
 func is_open(day: int) -> bool:
 	return day >= open_day
