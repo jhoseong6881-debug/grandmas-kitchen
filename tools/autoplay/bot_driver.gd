@@ -9,6 +9,7 @@ var lines: Array[String] = []
 var _busy: bool = false
 var _garden_done_day: int = -1
 var _market_done_day: int = -1
+var _village_done_day: int = -1
 var _porch_logged_day: int = -1
 var _kitchen_logged_day: int = -1
 var _finished: bool = false
@@ -88,6 +89,7 @@ func _tick() -> void:
 	match scene.scene_file_path:
 		"res://scenes/garden/garden.tscn": await _garden(scene)
 		"res://scenes/garden/market.tscn": await _market(scene)
+		"res://scenes/garden/village.tscn": await _village(scene)
 		"res://scenes/garden/mushroom_logs.tscn": _press_back(scene)
 		"res://scenes/kitchen/kitchen.tscn": await _kitchen(scene)
 		"res://scenes/porch/porch.tscn": _porch(scene)
@@ -170,6 +172,15 @@ func _garden(g: Node) -> void:
 			if get_tree().current_scene != null and get_tree().current_scene.scene_file_path.ends_with("market.tscn"):
 				break
 		return
+	# 마을 길 (장터 다음, 메뉴판 전에 한 번)
+	if _village_done_day != day and g._village_button.visible:
+		_village_done_day = day
+		g._village_button.pressed.emit()
+		for i: int in 120:
+			await get_tree().process_frame
+			if get_tree().current_scene != null and get_tree().current_scene.scene_file_path.ends_with("village.tscn"):
+				break
+		return
 	if true:
 		# 메뉴판
 		g._menu_board.open()
@@ -204,6 +215,52 @@ func _market(m: Node) -> void:
 			done.append("%s×%d→%s" % [t.give_ingredient.display_name, t.give_amount, t.get_ingredient.display_name])
 	day_log[GameState.current_day]["market"] = done
 	m._on_back_button_pressed()
+
+## 만난 손님 집 중 하나(날마다 돌아가며)에 들러 이야기하고, 넉넉한 재료만 선물한다 (좋아하는 선물 먼저, 없으면 가장 많은 것, 모자라면 선물 없이).
+func _village(v: Node) -> void:
+	await get_tree().create_timer(0.3, true, false, true).timeout
+	if not is_instance_valid(v):
+		_log("  (마을 길 화면이 기다리는 사이 바뀜: 지금 %s)" % _scene_path())
+		return
+	var day: int = GameState.current_day
+	var known: Array[AnimalGuest] = GameData.get_season_guests().filter(
+			func(guest: AnimalGuest) -> bool: return GameState.has_met_guest(guest.id))
+	var result: String = "-"
+	if not GameState.can_visit_home_today() or known.is_empty():
+		result = "못 들름 (오늘 들를 수 없음 또는 만난 손님 없음)"
+	else:
+		var guest: AnimalGuest = known[day % known.size()]
+		var tier_before: int = GameState.get_regular_tier(guest.id)
+		var affection_before: int = GameState.get_affection(guest.id)
+		v._visit(guest)
+		v._on_next_pressed()
+		if v._current_talk != null:
+			v._on_talk_reply(day % 2)
+		if v._next_button.visible:
+			v._on_next_pressed()
+		var choices: Array = v._gift_choices
+		var amount: int = GameData.get_village_settings().gift_amount
+		var pick: int = choices.size()
+		var fav_index: int = choices.find(guest.favorite_gift)
+		if fav_index >= 0 and GameState.get_ingredient_count(guest.favorite_gift.id) >= amount + 10:
+			pick = fav_index
+		else:
+			# 요리할 몫을 넉넉히 남기고 남는 재료만 준다 (선물 때문에 점심 재료가 모자라지 않게)
+			var most: int = amount + 10
+			for i: int in choices.size():
+				var have: int = GameState.get_ingredient_count(choices[i].id)
+				if have >= most:
+					most = have; pick = i
+		var gift_text: String = "선물 없음" if pick >= choices.size() else "%s×%d" % [choices[pick].display_name, amount]
+		v._on_gift_chosen(pick)
+		result = "%s %d번째 (%s, 단골도 %d→%d%s)" % [guest.display_name, GameState.home_visit_counts.get(guest.id, 0), gift_text,
+				affection_before, GameState.get_affection(guest.id),
+				", 단계 업" if GameState.get_regular_tier(guest.id) > tier_before else ""]
+		if not v._back_button.visible:
+			_log("  !! 마을 길: 들른 뒤 돌아가기 버튼이 안 보임")
+	if day_log.has(day):
+		day_log[day]["village"] = result
+	v._back_button.pressed.emit()
 
 func _press_back(s: Node) -> void:
 	if "_back_button" in s: s._back_button.pressed.emit()
@@ -355,6 +412,7 @@ func _write_day(day: int) -> void:
 	_log("── %d일째 %s%s" % [day, ("[" + special.display_name + "] ") if special else "", "(비)" if GameState.is_raining_today else ""])
 	_log("  손님: %s / 대접 %s, 돌아감 %s / 바구니 %s / 장터 %s" % [", ".join(d.get("guests", []).map(func(i: StringName) -> String: return GameData.get_guest(i).display_name)),
 		d.get("served", "?"), d.get("home", 0), d.get("basket", []), d.get("market", "-")])
+	if d.has("village"): _log("  마실: %s" % d["village"])
 	if not d.get("boxes", []).is_empty(): _log("  도시락: %s" % ", ".join(d["boxes"]))
 	if not d.get("puzzles", []).is_empty(): _log("  노트 퍼즐: %s" % ", ".join(d["puzzles"]))
 	if not d.get("garnish", []).is_empty(): _log("  고명: %s" % ", ".join(d["garnish"]))

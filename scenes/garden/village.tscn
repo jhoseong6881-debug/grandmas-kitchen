@@ -1,0 +1,164 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/garden/village.gd" id="1_village"]
+[ext_resource type="PackedScene" path="res://scenes/ui/inventory_panel.tscn" id="2_inventory"]
+[ext_resource type="PackedScene" path="res://scenes/kitchen/guest_spot.tscn" id="3_guest_spot"]
+
+[node name="Village" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_village")
+
+[node name="Sky" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.74, 0.87, 0.93, 1)
+
+[node name="Ground" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -520.0
+grow_horizontal = 2
+grow_vertical = 0
+color = Color(0.56, 0.7, 0.42, 1)
+
+[node name="Path" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -300.0
+offset_bottom = -220.0
+grow_horizontal = 2
+grow_vertical = 0
+color = Color(0.82, 0.72, 0.52, 1)
+
+[node name="HomeRow" type="HBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 80.0
+offset_top = 340.0
+offset_right = 1840.0
+offset_bottom = 720.0
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="HomeBackdrop" type="ColorRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.5, 0.42, 0.32, 1)
+
+[node name="DayLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 48.0
+offset_top = 36.0
+offset_right = 948.0
+offset_bottom = 96.0
+theme_override_colors/font_color = Color(0.32, 0.22, 0.14, 1)
+theme_override_font_sizes/font_size = 48
+text = "봄 2일째 · 마을 길"
+
+[node name="InventoryPanel" parent="." instance=ExtResource("2_inventory")]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -608.0
+offset_top = 36.0
+offset_right = -48.0
+offset_bottom = 136.0
+grow_horizontal = 0
+
+[node name="GuestSpot" parent="." instance=ExtResource("3_guest_spot")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 760.0
+offset_top = 300.0
+offset_right = 1800.0
+offset_bottom = 780.0
+sit_drop = 0.0
+
+[node name="ReplyBox" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 1030.0
+offset_top = 490.0
+offset_right = 1790.0
+offset_bottom = 860.0
+theme_override_constants/separation = 16
+
+[node name="NextButton" type="Button" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -180.0
+offset_top = -200.0
+offset_right = 180.0
+offset_bottom = -120.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 36
+text = "다음"
+
+[node name="BackButton" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -200.0
+offset_right = 200.0
+offset_bottom = -120.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 36
+text = "← 텃밭으로"
+
+[node name="StatusLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -800.0
+offset_top = -100.0
+offset_right = 800.0
+offset_bottom = -40.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 0.96, 0.88, 1)
+theme_override_colors/font_outline_color = Color(0.3, 0.2, 0.12, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 36
+horizontal_alignment = 1

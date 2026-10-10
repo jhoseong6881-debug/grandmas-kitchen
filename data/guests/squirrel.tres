@@ -140,6 +140,24 @@ open_day = 11
 basket_note = "…할머니 나무에 물 줬어요. {name}도 지나가면 인사해 주세요."
 talks = Array[ExtResource("10_talk")]([SubResource("StoryTalk_5"), SubResource("StoryTalk_6")])
 
+[sub_resource type="Resource" id="HomeTalk_1"]
+script = ExtResource("10_talk")
+line = "…여기가 제 나무 구멍이에요. 안쪽에 도토리 창고가 있어요."
+replies = Array[String](["구경해도 돼요?", "많이 모았네요"])
+reactions = Array[String](["…조금만요. …제일 깊은 데는 비밀이에요.", "…아직 반도 안 찼어요. 겨울 전까지 꽉 채울 거예요."])
+
+[sub_resource type="Resource" id="HomeTalk_2"]
+script = ExtResource("10_talk")
+line = "…할머니가 묵 쑤는 거, 창문으로 몰래 본 적 있어요."
+replies = Array[String](["어땠어요?", "다음엔 같이 쒀 봐요"])
+reactions = Array[String](["…계속 저었어요. 팔이 아플 텐데, 웃으면서요.", "…! …같이요? …네. 저, 젓는 건 잘해요."])
+
+[sub_resource type="Resource" id="HomeTalk_3"]
+script = ExtResource("10_talk")
+line = "…밤에 바람 불면 나무가 흔들려요. 예전엔 무서웠어요."
+replies = Array[String](["지금은요?", "무서우면 밥집으로 와요"])
+reactions = Array[String](["…지금은 밥집 불빛 보면서 자요. 그럼 안 무서워요.", "…네. …진짜 갈 수도 있어요."])
+
 [resource]
 script = ExtResource("1_guest")
 id = &"squirrel"
@@ -178,3 +196,10 @@ favorite_garnish = ExtResource("20_garnish")
 taste_miss_line = "…맛있어요. …톡톡 씹히는 게 있으면 더 좋을 것 같아요."
 taste_match_line = "…! 깨가 톡톡. …제일 좋아하는 맛이에요."
 regular_rewards = Array[ExtResource("30_reward")]([SubResource("Reward_1"), SubResource("Reward_2"), SubResource("Reward_3")])
+home_name = "다람쥐네 나무 구멍"
+home_color = Color(0.7, 0.52, 0.36, 1)
+home_greeting_lines = Array[String](["…앗. {name}. …들어오세요. 좁아요.", "…또 왔어요? …헤헤. 도토리 꺼내 놓을게요."])
+home_talks = Array[ExtResource("10_talk")]([SubResource("HomeTalk_1"), SubResource("HomeTalk_2"), SubResource("HomeTalk_3")])
+favorite_gift = ExtResource("31_gift")
+favorite_gift_line = "…도토리! …이건 창고 제일 앞에 둘 거예요. 제일 아끼는 자리요."
+gift_thanks_line = "…{ingredient}. …고맙습니다. 잘 둘게요."

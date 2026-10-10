@@ -2,7 +2,8 @@ extends Control
 ## 아침 당근 텃밭 장면. 다 자란 칸을 눌러 채소를 거두고, 빈 칸에 심을 작물을 고르고,
 ## 이웃이 두고 간 바구니를 열어 본 뒤 오늘의 메뉴를 골라 부엌으로 간다.
 ## 이웃 바구니에는 어젯밤 평상에 왔던 손님들이 한 명에 하나씩 밥값 재료를 두고 간다 (평상에 아무도 안 왔으면 비어 있다).
-## 버섯 원목으로 가는 길도 여기서 간다. 장날(MarketSettings)에는 숲속 장터로 가는 버튼도 생긴다. 칸을 다루는 일은 PlotRow 가 맡는다.
+## 버섯 원목으로 가는 길도 여기서 간다. 장날(MarketSettings)에는 숲속 장터로 가는 버튼도 생긴다.
+## 마을 길(VillageSettings.open_day 부터)로 나가 이웃 손님 집에 들를 수도 있다. 칸을 다루는 일은 PlotRow 가 맡는다.
 ## 물 주기나 비료 같은 복잡한 농사는 없다.
 
 const DAY_TEXT_FORMAT: String = "%s %d일째 아침"
@@ -35,6 +36,8 @@ const MORNING_SOUND: StringName = &"morning_birds"
 @export_file("*.tscn") var logs_scene_path: String = "res://scenes/garden/mushroom_logs.tscn"
 ## 숲속 장터 장면 (장날에만 갈 수 있다)
 @export_file("*.tscn") var market_scene_path: String = "res://scenes/garden/market.tscn"
+## 마을 길 장면 (이웃 손님 집에 들른다)
+@export_file("*.tscn") var village_scene_path: String = "res://scenes/garden/village.tscn"
 ## 목표판 (노트, 소문, 장날, 봄 잔치)과 놓을 자리 (손님 수첩 버튼 아래)
 ## 계절 목표 버튼 (누르면 목표판이 크게 뜬다)
 @export var goal_board_scene: PackedScene = preload("res://scenes/ui/goal_button.tscn")
@@ -56,6 +59,7 @@ const MORNING_SOUND: StringName = &"morning_birds"
 @onready var _plot_row: PlotRow = %PlotRow
 @onready var _logs_button: Button = %LogsButton
 @onready var _market_button: Button = %MarketButton
+@onready var _village_button: Button = %VillageButton
 @onready var _feast_button: Button = %FeastButton
 @onready var _feast_prep_panel: FeastPrepPanel = %FeastPrepPanel
 @onready var _basket_button: Button = %BasketButton
@@ -106,8 +110,10 @@ func _ready() -> void:
 	if setup != null and setup.morning_tips.has(GameState.current_day) and GameState.current_season == Season.Id.SPRING \
 			and not GameState.is_spring_completed:
 		_set_status(_status_text + "\n" + setup.morning_tips[GameState.current_day])
+	_show_village_button()
 	_show_unlock_notice()
 	_market_button.pressed.connect(get_tree().change_scene_to_file.bind(market_scene_path))
+	_village_button.pressed.connect(get_tree().change_scene_to_file.bind(village_scene_path))
 	_feast_button.pressed.connect(_on_feast_button_pressed)
 	_feast_prep_panel.closed.connect(_focus_next_thing_to_do)
 	_basket_note.closed.connect(_focus_next_thing_to_do)
@@ -226,6 +232,15 @@ func _get_feast_prep() -> FeastPrep:
 	return ending.feast_prep if ending != null else null
 
 
+## 마을 길이 열린 날부터 버튼을 보여 준다. 첫 봄에 열린 그날 아침에만 아래 글에 안내 한 줄.
+func _show_village_button() -> void:
+	var settings: VillageSettings = GameData.get_village_settings()
+	_village_button.visible = settings.is_open(GameState.current_day)
+	var is_first_spring: bool = GameState.current_season == Season.Id.SPRING and not GameState.is_spring_completed
+	if GameState.current_day == settings.open_day and is_first_spring and not settings.unlocked_text.is_empty():
+		_set_status(_status_text + "\n" + settings.unlocked_text)
+
+
 ## 버섯 원목이 잠겨 있으면 가는 버튼을 숨긴다. 뭐가 있는지 미리 알 수 없게 해서, 열릴 때 반가운 발견이 되게.
 func _update_logs_button() -> void:
 	_logs_button.visible = GameState.is_place_unlocked(LOGS_PLACE_ID)
@@ -283,7 +298,7 @@ func _on_menu_confirmed(recipe_ids: Array[StringName]) -> void:
 	get_tree().change_scene_to_file(kitchen_scene_path)
 
 
-## 아직 할 일(거둘 칸, 심을 수 있는 빈 칸, 안 연 바구니, 장날에 안 가 본 장터, 오늘 안 열어 본 잔치 바구니)이 있으면 그걸, 없으면 부엌으로 가기 버튼을 선택해 둔다.
+## 아직 할 일(거둘 칸, 심을 수 있는 빈 칸, 안 연 바구니, 장날에 안 가 본 장터, 오늘 안 열어 본 잔치 바구니, 오늘 안 들른 마을 길)이 있으면 그걸, 없으면 부엌으로 가기 버튼을 선택해 둔다.
 ## 그래야 게임패드 A 버튼만으로도 아침을 진행할 수 있다.
 func _focus_next_thing_to_do() -> void:
 	var plot_button: Button = _plot_row.get_next_action_button()
@@ -299,7 +314,15 @@ func _focus_next_thing_to_do() -> void:
 	if _feast_button.visible and not GameState.has_opened_feast_prep_today:
 		_feast_button.grab_focus()
 		return
+	if _village_button.visible and GameState.todays_visited_home_ids.is_empty() and _village_has_open_home():
+		_village_button.grab_focus()
+		return
 	_kitchen_button.grab_focus()
+
+
+## 마을 길에 들를 수 있는 집(밥집에서 만난 손님 집)이 하나라도 있는지
+func _village_has_open_home() -> bool:
+	return GameData.get_season_guests().any(func(guest: AnimalGuest) -> bool: return GameState.has_met_guest(guest.id))
 
 
 ## 버튼 위로 글자가 떠오르며 사라진다. (예: "+1 당근")

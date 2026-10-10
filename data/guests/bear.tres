@@ -136,6 +136,24 @@ open_day = 12
 basket_note = "그 금, 오늘 밤에 그어 줄게. 까치발 들면 안 돼."
 talks = Array[ExtResource("10_talk")]([SubResource("StoryTalk_5"), SubResource("StoryTalk_6")])
 
+[sub_resource type="Resource" id="HomeTalk_1"]
+script = ExtResource("10_talk")
+line = "여기가 내 동굴. 겨울 내내 여기서 잤어. 아직 좀 졸려."
+replies = Array[String](["푹 주무셨어요?", "봄인데 일어나셔야죠"])
+reactions = Array[String](["응. 할머니 꿈 꾸면서. 깨니까 배고프더라. 음~", "알아, 알아. 그래서 밥집 가잖아. 그게 내 아침 운동이야."])
+
+[sub_resource type="Resource" id="HomeTalk_2"]
+script = ExtResource("10_talk")
+line = "동굴 앞 벌집 보여? 벌들이랑은 오래된 사이야. 꿀은 조금씩만 나눠 받아."
+replies = Array[String](["벌이랑 친해요?", "그래서 꿀이 맛있구나"])
+reactions = Array[String](["어릴 땐 엄청 쏘였지. 이제는 서로 봐주는 사이. 음~", "응. 욕심내면 맛이 없어. 할머니가 그랬어."])
+
+[sub_resource type="Resource" id="HomeTalk_3"]
+script = ExtResource("10_talk")
+line = "저 선반 위 도시락 통, 할머니가 겨울잠 전에 싸 주시던 거야."
+replies = Array[String](["아직 간직하고 계셨어요?", "반질반질하게 닦아 두셨네요"])
+reactions = Array[String](["버릴 수가 없더라. 꿀 냄새가 아직 나.", "응. 할머니가 보면 웃으실 거야. 음~"])
+
 [resource]
 script = ExtResource("1_guest")
 id = &"bear"
@@ -175,3 +193,10 @@ favorite_garnish = ExtResource("20_garnish")
 taste_miss_line = "음~ 맛있다. 근데 조금만 더 달콤했으면…"
 taste_match_line = "음~! 꿀이다! 이렇게 달콤할 수가!"
 regular_rewards = Array[ExtResource("30_reward")]([SubResource("Reward_1"), SubResource("Reward_2"), SubResource("Reward_3")])
+home_name = "곰네 동굴"
+home_color = Color(0.55, 0.47, 0.4, 1)
+home_greeting_lines = Array[String](["어, {name}! 동굴까지 와 줬네. 앉아, 바위가 따뜻해.", "왔어? 방금 낮잠에서 깼어. …아니, 아침잠인가. 음~"])
+home_talks = Array[ExtResource("10_talk")]([SubResource("HomeTalk_1"), SubResource("HomeTalk_2"), SubResource("HomeTalk_3")])
+favorite_gift = ExtResource("31_gift")
+favorite_gift_line = "꿀이다! 음~ 벌들이 준 꿀이 돌고 돌아 또 나한테 왔네. 좋다."
+gift_thanks_line = "{ingredient}? 음~ 고마워. 배고플 때 하나씩 먹을게."

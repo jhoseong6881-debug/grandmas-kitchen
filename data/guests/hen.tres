@@ -135,6 +135,24 @@ open_day = 9
 basket_note = "막내가 오늘 아침 처음으로 마실을 따라나섰어. 할머니 이름 부르니까 삐약 대답하더라. 꼬꼬."
 talks = Array[ExtResource("9_talk")]([SubResource("StoryTalk_5"), SubResource("StoryTalk_6")])
 
+[sub_resource type="Resource" id="HomeTalk_1"]
+script = ExtResource("9_talk")
+line = "여기가 내 닭장이야. 네 할머니가 손수 지붕을 얹어 주셨지."
+replies = Array[String](["할머니가 지붕을요?", "튼튼해 보여요"])
+reactions = Array[String](["그럼! 망치질도 잘하셨어. 손가락은 몇 번 찧으셨지만. 꼬꼬!", "비 한 방울 안 새! 할머니 솜씨는 다 튼튼해."])
+
+[sub_resource type="Resource" id="HomeTalk_2"]
+script = ExtResource("9_talk")
+line = "오늘 숲 소식 들을래? 다람쥐가 도토리 묻은 데를 또 까먹었대."
+replies = Array[String](["또요?", "같이 찾아 줘야겠어요"])
+reactions = Array[String](["또! 해마다 그래. 그 덕에 뒷산에 도토리나무가 늘었지 뭐야.", "어머, 착하기도 하지. 근데 걔는 들키면 부끄러워서 숨을 거야. 꼬꼬!"])
+
+[sub_resource type="Resource" id="HomeTalk_3"]
+script = ExtResource("9_talk")
+line = "아침마다 네 집 앞을 지나가. 굴뚝에서 연기 나는 걸 보면 마음이 놓여."
+replies = Array[String](["저는 꼬꼬 소리에 일어나요", "할머니 계실 때도 그랬어요?"])
+reactions = Array[String](["그럼 내가 자명종이네! 내일은 더 크게 울어 줄까? 꼬꼬!", "응. 연기가 안 나던 겨울이 제일 길었어. …이제 괜찮아."])
+
 [resource]
 script = ExtResource("1_guest")
 id = &"hen"
@@ -174,3 +192,10 @@ favorite_garnish = ExtResource("20_garnish")
 taste_miss_line = "맛있다만… 고소한 참기름 향이 살짝 났으면 딱인데!"
 taste_match_line = "꼬꼬! 이 고소한 냄새! 내 입맛을 아는구나!"
 regular_rewards = Array[ExtResource("30_reward")]([SubResource("Reward_1"), SubResource("Reward_2"), SubResource("Reward_3")])
+home_name = "암탉네 닭장"
+home_color = Color(0.93, 0.8, 0.5, 1)
+home_greeting_lines = Array[String](["꼬꼬! {name} 왔구나! 마침 아침 소식 한 바퀴 돌고 왔어.", "어머, 또 왔네! 닭장이 좀 시끄럽지? 앉아, 앉아!"])
+home_talks = Array[ExtResource("9_talk")]([SubResource("HomeTalk_1"), SubResource("HomeTalk_2"), SubResource("HomeTalk_3")])
+favorite_gift = ExtResource("31_gift")
+favorite_gift_line = "어머, 내 계란을 아껴 뒀다가 들고 왔구나? 꼬꼬, 그 마음이 고맙네!"
+gift_thanks_line = "{ingredient}? 어머, 고마워라! 이웃들한테 자랑해야지. 꼬꼬!"

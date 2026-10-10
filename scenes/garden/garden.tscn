@@ -190,6 +190,18 @@ theme_override_font_sizes/font_size = 24
 text = "봄 잔치 바구니
 0 / 50"
 
+[node name="VillageButton" type="Button" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 1460.0
+offset_top = 500.0
+offset_right = 1760.0
+offset_bottom = 600.0
+theme_override_font_sizes/font_size = 24
+text = "이웃집 마실
+마을 길로 →"
+
 [node name="GuestNotebook" parent="." unique_id=410802552 instance=ExtResource("3_notebook")]
 unique_name_in_owner = true
 layout_mode = 1

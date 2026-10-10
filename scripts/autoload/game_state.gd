@@ -18,7 +18,7 @@ const SAVE_TEMP_PATH: String = "user://save.json.tmp"
 const SAVE_BACKUP_PATH: String = "user://save.json.bak"
 ## 세이브의 각 값이 가져야 할 모양 (모양이 틀린 세이브는 상한 것으로 보고 백업을 쓴다)
 const SAVE_DICTIONARY_KEYS: PackedStringArray = ["inventory", "extra_plots", "feast_prep_delivered", "guest_affection",
-		"guest_story_progress", "pending_reward_tiers", "garden", "guest_known_dish_ids"]
+		"guest_story_progress", "pending_reward_tiers", "garden", "guest_known_dish_ids", "home_visit_counts"]
 const SAVE_ARRAY_KEYS: PackedStringArray = ["basket_guest_ids", "grandma_taste_recipe_ids", "keepsake_ids",
 		"known_taste_guest_ids", "learned_secret_ids", "menu_recipe_ids", "solved_note_puzzle_ids", "declined_note_puzzle_ids", "met_guest_ids", "porch_met_guest_ids",
 		"seen_duo_talk_ids", "seen_guest_ids", "seen_memory_ids", "seen_story_chapter_ids", "todays_guest_ids",
@@ -68,6 +68,10 @@ var is_raining_today: bool = false
 var todays_market_trades: Dictionary[StringName, int] = {}
 ## 오늘 장터에 다녀왔는지. 텃밭이 장터 버튼과 부엌 버튼 중 무엇을 먼저 선택해 둘지 정할 때 쓴다. 저장하지 않는다.
 var has_visited_market_today: bool = false
+## 오늘 아침 마을 길에서 들른 집의 손님 id (저장하지 않는다. 장터처럼 하루 동안만)
+var todays_visited_home_ids: Array[StringName] = []
+## 손님별로 집에 들른 횟수 (집 이야기를 차례로 꺼내는 데 쓴다)
+var home_visit_counts: Dictionary[StringName, int] = {}
 ## 아침에 고른 오늘의 메뉴 (레시피 id). 점심 손님은 이 안에서만 주문한다.
 ## 다음 날 아침 메뉴판에서 미리 골라 두는 데도 쓰고, 세이브에도 넣는다. 비어 있으면 메뉴 제한이 없다.
 var menu_recipe_ids: Array[StringName] = []
@@ -196,6 +200,7 @@ func advance_day() -> void:
 	todays_note_puzzle_id = &""
 	todays_market_trades.clear()
 	has_visited_market_today = false
+	todays_visited_home_ids.clear()
 	has_opened_feast_prep_today = false
 	for place_id: StringName in plot_days_left:
 		var days: Array = plot_days_left[place_id]
@@ -514,6 +519,7 @@ func start_next_season() -> bool:
 	todays_guest_ids.clear()
 	todays_guests_day = 0
 	has_visited_market_today = false
+	todays_visited_home_ids.clear()
 	is_feast_prep_announced = false
 	feast_prep_delivered.clear()
 	has_opened_feast_prep_today = false
@@ -698,6 +704,22 @@ func knows_guest_dislike(guest_id: StringName, recipe_id: StringName) -> bool:
 
 # --- 숲속 장터 ---
 
+# --- 마을 길 ---
+
+## 오늘 마을 길에서 집에 더 들를 수 있는지
+func can_visit_home_today() -> bool:
+	var settings: VillageSettings = GameData.get_village_settings()
+	return settings.is_open(current_day) and todays_visited_home_ids.size() < settings.visits_per_day
+
+
+## 손님 집에 들른다. 이번이 그 집에 몇 번째로 들른 것인지 돌려준다 (첫 방문 = 1).
+func visit_home(guest_id: StringName) -> int:
+	if guest_id not in todays_visited_home_ids:
+		todays_visited_home_ids.append(guest_id)
+	home_visit_counts[guest_id] = home_visit_counts.get(guest_id, 0) + 1
+	return home_visit_counts[guest_id]
+
+
 func get_market_trade_count(trade_id: StringName) -> int:
 	return todays_market_trades.get(trade_id, 0)
 
@@ -819,6 +841,8 @@ func new_game() -> void:
 	seen_memory_ids.clear()
 	todays_market_trades.clear()
 	has_visited_market_today = false
+	todays_visited_home_ids.clear()
+	home_visit_counts.clear()
 	is_feast_prep_announced = false
 	feast_prep_delivered.clear()
 	has_opened_feast_prep_today = false
@@ -1009,6 +1033,7 @@ func _to_save_data() -> Dictionary:
 		"todays_guests_day": todays_guests_day,
 		"is_feast_prep_announced": is_feast_prep_announced,
 		"feast_prep_delivered": _string_keys(feast_prep_delivered),
+		"home_visit_counts": _string_keys(home_visit_counts),
 	}
 
 
@@ -1102,6 +1127,10 @@ func _from_save_data(data: Dictionary) -> void:
 	var feast_data: Dictionary = data.get("feast_prep_delivered", {})
 	for ingredient_id: String in feast_data:
 		feast_prep_delivered[StringName(ingredient_id)] = int(feast_data[ingredient_id])
+	# 마을 길이 생기기 전(2026-10-10) 세이브에는 없다 → 아무 집에도 안 들른 것으로.
+	var visit_data: Dictionary = data.get("home_visit_counts", {})
+	for guest_id: String in visit_data:
+		home_visit_counts[StringName(guest_id)] = int(visit_data[guest_id])
 	_load_guest_known_dishes(data)
 
 

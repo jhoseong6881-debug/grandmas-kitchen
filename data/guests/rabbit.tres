@@ -143,6 +143,24 @@ open_day = 10
 basket_note = "김밥 다 먹었어요? …다 먹었으면 좋겠다."
 talks = Array[ExtResource("9_talk")]([SubResource("StoryTalk_6"), SubResource("StoryTalk_7")])
 
+[sub_resource type="Resource" id="HomeTalk_1"]
+script = ExtResource("9_talk")
+line = "여기가 제 굴이에요. 좁죠? …그래도 당근 말리기엔 딱 좋아요."
+replies = Array[String](["당근을 말려요?", "아늑하고 좋은데요"])
+reactions = Array[String](["네! 겨울에 먹으려고요. 할머니가 말린 당근으로 차도 끓여 주셨어요.", "정, 정말요? …아늑하다는 말, 처음 들어 봐요."])
+
+[sub_resource type="Resource" id="HomeTalk_2"]
+script = ExtResource("9_talk")
+line = "창가 화분 보이세요? 할머니가 주신 당근이에요. 꽃이 피었어요."
+replies = Array[String](["당근도 꽃이 피어요?", "잘 키우셨네요"])
+reactions = Array[String](["네! 하얗고 자잘한 꽃이요. 꽃이 지면 씨앗을 받을 수 있대요. 할머니가 알려 주셨어요.", "헤헤… 할머니한테 보여 드리고 싶었는데. 대신 {name}한테 보여 드려요."])
+
+[sub_resource type="Resource" id="HomeTalk_3"]
+script = ExtResource("9_talk")
+line = "밤에 굴 앞에 앉아 있으면 밥집 불빛이 보여요. 다시 켜져서… 좋아요."
+replies = Array[String](["밤마다 켜 둘게요", "저녁에 평상으로 놀러 오세요"])
+reactions = Array[String](["…네. 그 불빛 보면서 잘게요.", "가, 가도 돼요? …그럼 별 보러 갈게요."])
+
 [resource]
 script = ExtResource("1_guest")
 id = &"rabbit"
@@ -187,3 +205,10 @@ favorite_garnish = ExtResource("20_garnish")
 taste_miss_line = "음… 저는 당근 본맛이 좋은데. 아무것도 안 올려도 돼요."
 taste_match_line = "이거예요! 당근 맛이 그대로 나요."
 regular_rewards = Array[ExtResource("30_reward")]([SubResource("Reward_1"), SubResource("Reward_2"), SubResource("Reward_3")])
+home_name = "토끼네 굴"
+home_color = Color(0.86, 0.72, 0.68, 1)
+home_greeting_lines = Array[String](["어, 어서 오세요! 우리 집에 손님이 오다니… 잠깐만요, 당근 좀 치울게요.", "{name}! 또 와 주셨네요. 헤헤, 이번엔 미리 청소해 뒀어요."])
+home_talks = Array[ExtResource("9_talk")]([SubResource("HomeTalk_1"), SubResource("HomeTalk_2"), SubResource("HomeTalk_3")])
+favorite_gift = ExtResource("31_gift")
+favorite_gift_line = "당, 당근이다! …제 것보다 더 예뻐요. 아껴 먹을게요!"
+gift_thanks_line = "{ingredient}… 저 주시는 거예요? 고, 고맙습니다!"

@@ -15,6 +15,7 @@ const REGULAR_SETTINGS_PATH: String = "res://data/regular_settings.tres"
 const REPUTATION_SETTINGS_PATH: String = "res://data/reputation_settings.tres"
 const STARTING_SETUP_PATH: String = "res://data/starting_setup.tres"
 const MENU_SETTINGS_PATH: String = "res://data/menu_settings.tres"
+const VILLAGE_SETTINGS_PATH: String = "res://data/village_settings.tres"
 ## 계절 데이터(SeasonData) 폴더. 같은 폴더의 계절 마무리·잔치 준비 파일은 계절 데이터가 가리키므로 여기서는 건너뛴다.
 const SEASONS_DIR: String = "res://data/seasons/"
 const RESOURCE_EXTENSIONS: PackedStringArray = ["tres", "res"]
@@ -29,6 +30,7 @@ var _requests: Dictionary[StringName, GuestRequest] = {}
 var _regular_settings: RegularSettings
 var _reputation_settings: ReputationSettings
 var _menu_settings: MenuSettings
+var _village_settings: VillageSettings
 var _starting_setup: StartingSetup
 var _seasons: Dictionary[Season.Id, SeasonData] = {}
 ## 비가 오지 않는 계절, 장터가 없는 계절에 돌려주는 빈 설정
@@ -89,6 +91,11 @@ func _ready() -> void:
 	else:
 		push_warning("메뉴 설정 파일이 없습니다: %s" % MENU_SETTINGS_PATH)
 		_menu_settings = MenuSettings.new()
+	if ResourceLoader.exists(VILLAGE_SETTINGS_PATH):
+		_village_settings = load(VILLAGE_SETTINGS_PATH)
+	else:
+		push_warning("마을 길 설정 파일이 없습니다: %s" % VILLAGE_SETTINGS_PATH)
+		_village_settings = VillageSettings.new()
 	for resource: Resource in _load_folder(GARNISHES_DIR):
 		if resource is Garnish:
 			_register(_garnishes, resource.id, resource)
@@ -145,6 +152,11 @@ func get_reputation_settings() -> ReputationSettings:
 ## 오늘의 메뉴 칸 수 규칙
 func get_menu_settings() -> MenuSettings:
 	return _menu_settings
+
+
+## 아침 마을 길 규칙 (파일이 없으면 기본값)
+func get_village_settings() -> VillageSettings:
+	return _village_settings
 
 
 ## 지금 계절의 장터 설정 (장터가 없는 계절이면 장날이 없는 빈 설정)

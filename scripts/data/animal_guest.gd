@@ -92,6 +92,22 @@ const PLACEHOLDER_ICON_PIXELS: int = 12
 ## 단골 단계가 오를 때 받는 보상 (첫 칸 = 이웃, 둘째 = 단골, 셋째 = 식구)
 @export var regular_rewards: Array[RegularReward] = []
 
+@export_group("마을 길 집")
+## 아침 마을 길에서 보이는 집 이름 (예: 토끼네 굴). 비워 두면 "○○네 집".
+@export var home_name: String = ""
+## 집 그림 (마을 길 버튼과 집 안 배경). 비워 두면 home_color 색의 임시 사각형.
+@export var home_picture: Texture2D
+@export var home_color: Color = Color(0.75, 0.68, 0.55)
+## 집에 들렀을 때 하는 인사 (들를 때마다 돌아가며 하나). {name} 은 주인공 이름.
+@export_multiline var home_greeting_lines: Array[String] = []
+## 집에서 나누는 이야기 (들를 때마다 순서대로 하나, 다 나누면 처음부터). 대답 고르기는 저녁 평상 대화와 같다.
+@export var home_talks: Array[EveningTalk] = []
+## 받으면 특히 기뻐하는 선물 재료 (비워 두면 없음)
+@export var favorite_gift: Ingredient
+## 좋아하는 선물을 받았을 때 / 다른 선물을 받았을 때 하는 말. {ingredient} 는 재료 이름.
+@export_multiline var favorite_gift_line: String = ""
+@export_multiline var gift_thanks_line: String = ""
+
 
 ## 그림이 없을 때 쓰는 임시 사각형 (처음 쓸 때 한 번 만들어 둔다)
 var _placeholder_icon: Texture2D

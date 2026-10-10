@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="VillageSettings" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/village_settings.gd" id="1_village"]
+
+[resource]
+script = ExtResource("1_village")
+open_day = 2
+gift_amount = 2
+unlocked_text = "마을 길이 열렸어요! 아침마다 이웃 집 한 곳에 들를 수 있어요."
+choose_text = "오늘은 누구네 집에 들러 볼까요? (하루에 한 집)"
+visited_text = "오늘은 벌써 이웃 집에 다녀왔어요. 내일 또 와요."
+gift_prompt_text = "남는 재료를 선물로 두고 올까요?"
+no_gift_reply = "오늘은 이야기만 하고 갈게요"
+default_gift_thanks_line = "고마워요! 잘 쓸게요."
