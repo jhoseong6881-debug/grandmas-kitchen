@@ -27,6 +27,8 @@ extends Resource
 @export var promise_payment_bonus: int = 1
 ## 약속을 물을 때 주인공이 고르는 대답 (받기, 거절). 거절해도 벌은 없다.
 @export var promise_replies: Array[String] = ["좋아요, 준비해 둘게요", "내일은 어려울 것 같아요"]
+## 이 단골 단계(1 = 이웃)가 되면 손님이 싫어하는 요리를 털어놓아 손님 수첩에 적힌다 (대접해 봐도 적힌다)
+@export var dislike_reveal_tier: int = 1
 ## 단계마다 밥값에 더해 주는 덤 (첫 번째 밥값 재료에 더한다). 길이는 tier_names 와 같게.
 @export var tier_payment_bonus: Array[int] = [0, 1, 1, 2]
 

@@ -18,7 +18,7 @@ const SAVE_TEMP_PATH: String = "user://save.json.tmp"
 const SAVE_BACKUP_PATH: String = "user://save.json.bak"
 ## 세이브의 각 값이 가져야 할 모양 (모양이 틀린 세이브는 상한 것으로 보고 백업을 쓴다)
 const SAVE_DICTIONARY_KEYS: PackedStringArray = ["inventory", "extra_plots", "feast_prep_delivered", "guest_affection",
-		"guest_story_progress", "pending_reward_tiers", "garden"]
+		"guest_story_progress", "pending_reward_tiers", "garden", "guest_known_dish_ids"]
 const SAVE_ARRAY_KEYS: PackedStringArray = ["basket_guest_ids", "grandma_taste_recipe_ids", "keepsake_ids",
 		"known_taste_guest_ids", "learned_secret_ids", "menu_recipe_ids", "solved_note_puzzle_ids", "declined_note_puzzle_ids", "met_guest_ids", "porch_met_guest_ids",
 		"seen_duo_talk_ids", "seen_guest_ids", "seen_memory_ids", "seen_story_chapter_ids", "todays_guest_ids",
@@ -103,6 +103,8 @@ var grandma_taste_recipe_ids: Array[StringName] = []
 var guest_affection: Dictionary[StringName, int] = {}
 ## 입맛(좋아하는 고명)을 알아낸 손님 id. 손님 수첩에 입맛을 보여 줄 때 쓴다.
 var known_taste_guest_ids: Array[StringName] = []
+## 손님 id → 손님 수첩에 적힌 요리 id (그 손님에게 대접해 본 요리). 좋아하는/싫어하는 요리 칸이 하나씩 채워진다.
+var guest_known_dish_ids: Dictionary[StringName, Array] = {}
 ## 손님 수첩에서 이미 본 기록 ("guest:토끼 id", "taste:토끼 id"). 아직 안 본 기록이 있으면 수첩 버튼에 ● 표시.
 var notebook_viewed_keys: Array[String] = []
 ## 이미 본 처음 안내(TutorialTip.id). 한 번 본 안내는 다시 나오지 않는다.
@@ -655,6 +657,28 @@ func learn_taste(guest_id: StringName) -> void:
 		notebook_changed.emit()
 
 
+## 이 손님에게 이 요리를 대접했다: 손님 수첩의 좋아하는/싫어하는 요리 칸에 적힌다.
+func record_guest_dish(guest_id: StringName, recipe_id: StringName) -> void:
+	var dishes: Array = guest_known_dish_ids.get(guest_id, [])
+	if recipe_id in dishes:
+		return
+	dishes.append(recipe_id)
+	guest_known_dish_ids[guest_id] = dishes
+	notebook_changed.emit()
+
+
+## 손님 수첩에 이 손님의 이 요리가 적혀 있는지 (대접해 본 요리)
+func knows_guest_dish(guest_id: StringName, recipe_id: StringName) -> bool:
+	return recipe_id in guest_known_dish_ids.get(guest_id, [])
+
+
+## 손님 수첩에 이 손님이 싫어하는 이 요리가 적혀 있는지: 대접해 봤거나, 가까워져서 손님이 털어놓았을 때
+## (RegularSettings.dislike_reveal_tier 단계부터)
+func knows_guest_dislike(guest_id: StringName, recipe_id: StringName) -> bool:
+	return knows_guest_dish(guest_id, recipe_id) \
+			or get_regular_tier(guest_id) >= GameData.get_regular_settings().dislike_reveal_tier
+
+
 # --- 숲속 장터 ---
 
 func get_market_trade_count(trade_id: StringName) -> int:
@@ -760,6 +784,7 @@ func new_game() -> void:
 	grandma_taste_recipe_ids.clear()
 	guest_affection.clear()
 	known_taste_guest_ids.clear()
+	guest_known_dish_ids.clear()
 	notebook_viewed_keys.clear()
 	seen_tutorial_ids.clear()
 	pending_reward_tiers.clear()
@@ -943,6 +968,7 @@ func _to_save_data() -> Dictionary:
 		"grandma_taste_recipe_ids": Array(grandma_taste_recipe_ids).map(func(recipe_id: StringName) -> String: return String(recipe_id)),
 		"guest_affection": _string_keys(guest_affection),
 		"known_taste_guest_ids": Array(known_taste_guest_ids).map(func(guest_id: StringName) -> String: return String(guest_id)),
+		"guest_known_dish_ids": _string_keys(guest_known_dish_ids),
 		"notebook_viewed_keys": notebook_viewed_keys.duplicate(),
 		"seen_tutorial_ids": Array(seen_tutorial_ids).map(func(tip_id: StringName) -> String: return String(tip_id)),
 		"pending_reward_tiers": _string_keys(pending_reward_tiers),
@@ -1059,6 +1085,26 @@ func _from_save_data(data: Dictionary) -> void:
 	var feast_data: Dictionary = data.get("feast_prep_delivered", {})
 	for ingredient_id: String in feast_data:
 		feast_prep_delivered[StringName(ingredient_id)] = int(feast_data[ingredient_id])
+	_load_guest_known_dishes(data)
+
+
+## 손님 수첩에 적힌 요리를 불러온다.
+## 이 기록이 생기기 전(2026-10-10) 세이브: 그때는 만난 손님의 좋아하는/싫어하는 요리가 모두 보였으니, 모두 적힌 것으로 친다.
+func _load_guest_known_dishes(data: Dictionary) -> void:
+	if not data.has("guest_known_dish_ids"):
+		for guest_id: StringName in met_guest_ids:
+			var guest: AnimalGuest = GameData.get_guest(guest_id)
+			if guest == null:
+				continue
+			for recipe: Recipe in guest.favorite_recipes + guest.disliked_recipes:
+				if recipe != null and not knows_guest_dish(guest_id, recipe.id):
+					record_guest_dish(guest_id, recipe.id)
+		return
+	var dish_data: Dictionary = data["guest_known_dish_ids"]
+	for guest_id: String in dish_data:
+		if dish_data[guest_id] is Array:
+			guest_known_dish_ids[StringName(guest_id)] = Array(dish_data[guest_id]).map(
+					func(recipe_id: Variant) -> StringName: return StringName(str(recipe_id)))
 
 
 ## {밭 id: [{"crop": 작물 id, "days_left": 남은 날}, ...]}

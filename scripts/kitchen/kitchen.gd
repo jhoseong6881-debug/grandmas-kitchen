@@ -914,6 +914,8 @@ func _serve(garnish: Garnish) -> void:
 	Sound.play(RECEIVE_SOUND)
 	_set_payment_status(payment, is_grandma_taste or is_request_met, bonus_text)
 	GameState.record_served_guest(guest.id)
+	# 손님 수첩: 이 손님에게 대접해 본 요리로 적는다 (좋아하는/싫어하는 요리 칸이 하나씩 채워진다).
+	GameState.record_guest_dish(guest.id, current_order.id)
 	current_request = null
 	_guests_served += 1
 	_update_lunch_label()
